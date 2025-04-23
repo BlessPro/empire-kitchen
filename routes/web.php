@@ -9,6 +9,7 @@ use App\Http\Controllers\DesignerController;
 use App\Http\Controllers\AccountantController;
 use App\Http\Controllers\SalesController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('main');
@@ -27,8 +28,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/designer/dashboard', [DesignerController::class, 'index'])->middleware('role:designer');
     Route::get('/accountant/dashboard', [AccountantController::class, 'index'])->middleware('role:accountant');
     Route::get('/sales/dashboard', [SalesController::class, 'index'])->middleware('RoleMiddleware:sales_accountant');
+    Route::get('/admin/dashboard', [AdminController::class, 'show'])->name('admin.dashboard');
 
 });
+
+
 // Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware('role:admin');
 // Route::get('/tech/dashboard', [TechController::class, 'index'])->middleware('role:tech_supervisor');
 // Route::get('/designer/dashboard', [DesignerController::class, 'index'])->middleware('role:designer');

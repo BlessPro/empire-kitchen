@@ -1,10 +1,14 @@
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-fuchsia-950 text-white flex flex-col justify-between">
+    <aside class="fixed top-0 left-0 w-64 h-screen bg-fuchsia-950 text-white shadow-lg z-50 flex flex-col justify-between">
+
+            {{-- <aside class="bg-fuchsia-950 text-white flex flex-col justify-between"> --}}
+
       <div>
-        <div class="flex items-center justify-center h-20  border-purple-700 pt-8 pr-8 pb-8 pl-8 mt-7 mb-7">
-          <img src="empire-kitchengold-icon.png" class="w-76px h-86px " alt="Logo" class="h-10" />
-        </div>
+        <div class="flex items-center justify-center h-20 border-purple-700 pt-8 pr-8 pb-8 pl-8 mt-7 mb-7">
+            <img src="/empire-kitchengold-icon.png" alt="Logo" class="w-[190px] h-[160px]" />
+          </div>
+
            <!--nav-items-->
         <nav class=" ">
           <!--dashboard-->
@@ -60,9 +64,25 @@
       </div>
 
       <!--Logout-->
+
+
       <div class="px-4 py-6">
-        <a href="#" class="flex items-center text-sm hover:text-purple-300">
-          <i data-feather="log-out" class="mr-2"></i> Logout
-        </a>
+        <form method="POST" action="{{ route('logout') }}">
+          @csrf
+          <a :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();" class="flex items-center text-sm hover:text-purple-300">
+            <i data-feather="log-out" class="mr-2"></i> {{ __('Log Out') }}
+          </a>
+        </form>
       </div>
+{{--
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+      <div class="px-4 py-6">
+        <a  :href="route('logout')"onclick="event.preventDefault();this.closest('form').submit();" hover{cursor:pointer;} class="flex items-center text-sm hover:text-purple-300">
+          <i data-feather="log-out" class="mr-2"></i> {{ __('Log Out') }}
+
+        </a>
+
+      </div>
+        </form> --}}
     </aside>

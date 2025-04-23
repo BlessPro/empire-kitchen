@@ -14,9 +14,9 @@
     <div class="w-full md:w-1/2 flex flex-col justify-center items-center px-8 py-12">
 
       <!-- Logo -->
-      <div class="mb-6">
+      <div class=" mb-[-20px]">
         <!-- Replace with your logo image if needed -->
-        <img src="/empire-kitchen-logo.png" alt="Empire Kitchens Logo" class="w-16 h-16 mx-auto" />
+        <img src="/empire-kitchen-logo.png" alt="Empire Kitchens Logo" class="w-[170px] h-[170px] " />
       </div>
 
       <!-- Welcome Text -->

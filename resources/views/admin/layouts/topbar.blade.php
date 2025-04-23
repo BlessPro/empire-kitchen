@@ -1,7 +1,7 @@
 {{-- contains the profile --}}
 
     <!--Profile bar begins-->
-    <div class="bg-white pt-6 pb-2 pr-4 pl-4">
+    <div class="bg-white pt-6 pb-2 pr-4 pl-4 fixed top-0 left-0 right-0 z-40 shadow-md">
         <div class="flex justify-between items-center mb-6">
 
           <!-- Empty div for spacing on the left -->
@@ -26,12 +26,17 @@
               <i data-feather="bell"></i>
               <span class="absolute -top-2 -right-2 bg-purple-600 text-white rounded-full text-xs px-1.5">12</span>
             </button>
+
             <div class="flex items-center space-x-2">
               <div class="text-right">
-                <div class="text-sm font-semibold">Daniel Mensah</div>
-                <div class="text-xs text-gray-500">Administrator</div>
+                <div class="text-sm font-semibold">{{ auth()->user()->name }}</div>
+                <div class="text-xs text-gray-500">{{ auth()->user()->role }}</div>
               </div>
-              <img src="profilepic.JPG" alt="Avatar" class="w-10 h-10 rounded-full" />
+              <img
+              src="{{ auth()->user()->profile_photo_path ? asset('storage/' . auth()->user()->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
+              alt="Profile Photo"
+              class="w-10 h-10 rounded-full border-2 border-yellow-300"
+          >
             </div>
           </div>
 
