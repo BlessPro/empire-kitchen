@@ -4,7 +4,7 @@
         @include('admin.layouts.header')
 
 
-        <main class="ml-64 mt-[100px] flex-1 bg-gray-100 min-h-screen  items-center">
+        {<main class="ml-64 mt-[100px] flex-1 bg-gray-100 min-h-screen  items-center">
 
             <div class="p-6 bg-[#F9F7F7]">
              <div class="mb-[20px]">
@@ -138,6 +138,30 @@
                      </thead>
                      <tbody class="text-gray-700">
 
+
+                        {{-- inserting data from clients and projects table into blade table --}}
+
+                        @if (!isset($projects))
+                        <tr>
+                            <td colspan="5" class="text-center py-4">No projects found.</td>
+                        </tr>
+                    @if (isset($projects) && is_iterable($projects))
+                        @foreach ($projects as $project)
+                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="py-3 px-4 font-semibold">{{ $project->name }}</td>
+                            <td class="py-3 px-4 capitalize">{{ $project->status }}</td>
+                            <td class="py-3 px-4">
+                                {{ $project->client->title }} {{ $project->client->firstname }} {{ $project->client->lastname }}
+                            </td>
+                            <td class="py-3 px-4">
+                                {{ $project->start_date->diffForHumans() }}
+                            </td>
+                            <td class="py-3 px-4">₦{{ number_format($project->cost, 2) }}</td>
+                        @endforeach
+                    @endif
+
+                    @endif
+
                      </tbody>
                    </table>
                    <div class="mt-6 flex  flex justify-between items-center  pb-5 pr-6 pl-6">
@@ -156,7 +180,12 @@
            </div>
          </div>
          </main>
-         @vite(['resources/js/app.js'])
+
+
+         {{-- @extends('layouts.app') --}}
+
+
+         {{-- @vite(['resources/js/app.js']) --}}
 
     </x-slot>
 

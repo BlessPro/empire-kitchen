@@ -242,22 +242,22 @@ const currentItems = allProjects.slice(start, end);
 const tbody = document.querySelector("table tbody");
 tbody.innerHTML = "";
 
-currentItems.forEach(item => {
-tbody.innerHTML += `
-  <tr class="border-t hover:bg-gray-50">
-    <td class="p-4"><input type="checkbox" class="child-checkbox"/></td>
-    <td class="p-4 font-normal text-[15px]">${item.name}</td>
-    <td class="p-4">
-      <span class="px-3 py-1 text-sm rounded-full ${item.statusStyle}">${item.status}</span>
-    </td>
-    <td class="p-4 font-normal text-[15px]">${item.client}</td>
-    <td class="p-4 font-normal text-[15px]">${item.duration}</td>
-    <td class="p-4 font-normal text-[15px]">${item.cost}</td>
+// currentItems.forEach(item => {
+// tbody.innerHTML += `
+//   <tr class="border-t hover:bg-gray-50">
+//     <td class="p-4"><input type="checkbox" class="child-checkbox"/></td>
+//     <td class="p-4 font-normal text-[15px]">${item.name}</td>
+//     <td class="p-4">
+//       <span class="px-3 py-1 text-sm rounded-full ${item.statusStyle}">${item.status}</span>
+//     </td>
+//     <td class="p-4 font-normal text-[15px]">${item.client}</td>
+//     <td class="p-4 font-normal text-[15px]">${item.duration}</td>
+//     <td class="p-4 font-normal text-[15px]">${item.cost}</td>
 
-    <td class="p-4 text-right"><button class="text-gray-500 hover:text-red-500"><i data-feather="layers" class="mr-3"></i> </button></td>
-  </tr>
-`;
-});
+//     <td class="p-4 text-right"><button class="text-gray-500 hover:text-red-500"><i data-feather="layers" class="mr-3"></i> </button></td>
+//   </tr>
+// `;
+// });
 
 // When 'selectAll' is toggled
 document.getElementById("selectAll").addEventListener("change", function () {

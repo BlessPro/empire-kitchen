@@ -91,7 +91,7 @@
     </form>
 
     </div>
-g
+
 
     <!-- Right Section (Image) -->
     <div class="hidden md:block md:w-1/2 h-full relative">
