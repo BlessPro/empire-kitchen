@@ -10,9 +10,9 @@
           </div>
 
            <!--nav-items-->
-        <nav class=" ">
+        <nav class="">
           <!--dashboard-->
-          <a href="#" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
+          <a href="{{route('admin.dashboard')}}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
             <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
             <!-- Feather Icon -->
             <i data-feather="grid" class="feather-icon mr-3 stroke-white group-hover:stroke-yellow-300 transition-all duration-300"></i>
@@ -20,41 +20,41 @@
           </a>
 
              <!--Client Management-->
-          <a href="#" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
+          <a href="{{ route('admin.ClientManagement') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
             <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
             <!-- Feather Icon -->
             <i data-feather="users" class="mr-3"></i> Client Management
           </a>
 
              <!--Project Management-->
-          <a href="#" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
+          <a href="{{ route('admin.ProjectManagement') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
             <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
             <i data-feather="layers" class="mr-3"></i> Project Management
           </a>
 
           <!--Schedule Installation-->
-          <a href="#" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
+          <a href="{{ route('admin.ScheduleInstallation') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
             <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
 
             <i data-feather="calendar" class="mr-3"></i> Schedule Installation
           </a>
 
           <!--Reports and Analytics-->
-          <a href="#" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
+          <a href="{{ route('admin.ReportsandAnalytics') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
             <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
 
             <i data-feather="bar-chart-2" class="mr-3"></i> Reports and Analytics
           </a>
 
           <!--Project Management-->
-          <a href="#" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
+          <a href="{{ route('admin.Settings') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
             <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
 
             <i data-feather="settings" class="mr-3"></i> Settings
           </a>
 
           <!--Inbox-->
-          <a href="#" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
+          <a href="{{ route('admin.Inbox') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
             <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
             <!-- Feather Icon -->
             <i data-feather="mail" class="mr-3"></i> Inbox

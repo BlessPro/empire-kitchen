@@ -14,7 +14,15 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Models\Project;
+use App\Http\Controllers\ClientManagementController;
+use App\Http\Controllers\ProjectManagementController;
+use App\Http\Controllers\Settings;
+use App\Http\Controllers\Inbox;
+use App\Http\Controllers\ReportsandAnalytics;
+use App\Http\Controllers\ScheduleInstallationController;
 
+use App\Http\Controllers\RoleMiddleware;
 Route::get('/', function () {
     return view('main');
 });
@@ -23,17 +31,35 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+
+    //navigating to
+    Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware('role:admin');
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard')->middleware('auth');
+    //navigating with admin login
+    Route::get('/admin/dashboard', [AdminController::class, 'tableview'])->name('admin.dashboard')->middleware('auth');
+    Route::get('/admin/ClientManagement', [ClientManagementController::class, 'index'])->name('admin.ClientManagement')->middleware('auth');
+    Route::get('/admin/ProjectManagement', [ProjectManagementController::class, 'index'])->name('admin.ProjectManagement')->middleware('auth');
+    Route::get('/admin/Settings', [Settings::class, 'index'])->name('admin.Settings')->middleware('auth');
+    Route::get('/admin/Inbox', [Inbox::class, 'index'])->name('admin.Inbox')->middleware('auth');
+    Route::get('/admin/ReportsandAnalytics', [ReportsandAnalytics::class, 'index'])->name('admin.ReportsandAnalytics')->middleware('auth');
+    Route::get('/admin/ScheduleInstallation', [ScheduleInstallationController::class, 'index'])->name('admin.ScheduleInstallation')->middleware('auth');
+
+    //navigating with tech user login
+
     Route::get('/tech/dashboard', [TechController::class, 'index'])->middleware('role:tech_supervisor');
+    //navigating with Designer user login
+
     Route::get('/designer/dashboard', [DesignerController::class, 'index'])->middleware('role:designer');
+       //navigating with tech accountant login
+
     Route::get('/accountant/dashboard', [AccountantController::class, 'index'])->middleware('role:accountant');
-    Route::get('/sales/dashboard', [SalesController::class, 'index'])->middleware('RoleMiddleware:sales_accountant');
-    Route::get('/admin/dashboard', [ProjectController::class, 'index'])->middleware('auth');
-    // Route::get('/admin/dashboard', [AdminController::class, 'show'])->name('admin.dashboard');
+        //navigating with sales accountant  user login
+
+    Route::get('/sales/dashboard', [SalesController::class, 'index'])->middleware(middleware: 'RoleMiddleware:sales_accountant');
+
 
 });
 

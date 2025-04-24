@@ -3,6 +3,7 @@
 namespace App\Http\Controller;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
@@ -10,22 +11,18 @@ use App\Models\User;
  class DashboardController extends Controller
  {
 
-public function show($id)
-{
-    // Fetch the user by ID
-    $user = User::findOrFail($id);
-
-    // Check if the user exists, and pass it to the view
-    return view('admin.dashboard', ['user' => $user]);
-    // If you want to pass the logged-in user, you can do so like this:
-    // $user = Auth::user();
-    // return view('admin.dashboard', compact('user'));
-    // Or if you want to pass the user from the route parameter:
-    // return view('admin.dashboard', ['user' => $user]);
-}
+    public function tableview()
+    {
+        $projects = Project::with('client')->paginate(10);
+        return view('projects.index', compact('projects'));
+    }
 
 
-// namespace App\Http\Controllers;
+
+ }
+
+
+ // namespace App\Http\Controllers;
 
 // use App\Http\Controllers\Controller;
 // use Illuminate\Http\Request;
@@ -41,4 +38,3 @@ public function show($id)
 
 //         return view('admin.dashboard', compact('user'));
 //     }
- }
