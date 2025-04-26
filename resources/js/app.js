@@ -2,6 +2,9 @@
 // It includes functionality for charts, table pagination, and a month filter.
 // It uses Chart.js for charting and Feather Icons for icon rendering.
 feather.replace();
+
+
+
 //variables for the charts
 const ctx = document.getElementById('clientsChart').getContext('2d');
 //variales for the pipeline chart
@@ -137,7 +140,7 @@ monthSelect.appendChild(option);
 });
 
 
-posting content into the table
+// posting content into the table
 const allProjects = [
 {
 name: "Maple Street",
@@ -203,7 +206,7 @@ cost: "$10,000"
   duration: "2 weeks",
   cost: "$20,000"
 },
-,
+
 {
 name: "Smith Residence",
 status: "Completed",
@@ -227,7 +230,7 @@ statusStyle: "border border-yellow-500 text-yellow-600",
 client: "Ngozi Ogunde",
 duration: "2 months",
 cost: "$10,000"
-},
+}
 // Add more entries as needed...
 ];
 
@@ -259,7 +262,7 @@ tbody.innerHTML += `
 `;
 });
 
-When 'selectAll' is toggled
+// When 'selectAll' is toggled
 document.getElementById("selectAll").addEventListener("change", function () {
 const isChecked = this.checked;
 const checkboxes = document.querySelectorAll(".child-checkbox");

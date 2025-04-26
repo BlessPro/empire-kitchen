@@ -1,4 +1,5 @@
 <?php
+// modified: 24.04.2025
 
 namespace App\Http\Controllers;
 
@@ -7,9 +8,40 @@ use App\Models\User;
 use App\Models\Project;
 class AdminController extends Controller
 {
-    public function index()
+    // public function index()
+    // {
+    //     return view('admin.dashboard'); // Or just return a test string
+    // }
+
+
+    // public function dashboard()
+    // {
+    // // Bar chart logic
+    // $latestProjectWithAllDates = Project::whereNotNull('measurement_date')
+    //     ->whereNotNull('design_date')
+    //     ->whereNotNull('installation_date')
+    //     ->whereNotNull('production_date')
+    //     ->latest()
+    //     ->first();
+
+    // // Table logic
+    // $projects = Project::with('client')->get();
+
+    // return view('admin.dashboard', compact('latestProjectWithAllDates', 'projects'));
+
+    public function dashboard()
     {
-        return view('admin.dashboard'); // Or just return a test string
+        $latestProjectWithAllDates = Project::whereNotNull('measurement_date')
+            ->whereNotNull('design_date')
+            ->whereNotNull('installation_date')
+            ->whereNotNull('production_date')
+            ->latest()
+            ->first();
+
+        $projects = Project::with('client')->get();
+
+        return view('admin.dashboard', compact('latestProjectWithAllDates', 'projects'));
+
     }
 
 
@@ -22,4 +54,5 @@ class AdminController extends Controller
 
 
 }
+
 

@@ -10,7 +10,9 @@
   .group:hover .feather {
     fill: currentColor;
   }
-
+  .group:active .feather {
+    fill: currentColor;
+  }
   input[type="checkbox"] {
     appearance: none;
     -webkit-appearance: none;

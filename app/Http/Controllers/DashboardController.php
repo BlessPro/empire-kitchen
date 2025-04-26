@@ -1,40 +1,46 @@
 <?php
 
-namespace App\Http\Controller;
+namespace App\Http\Controllers;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+// use Illuminate\Support\Facades\Gate;
+//created on 2025-04-23
+// app/Http/Controllers/ProjectController.php
 
+class DashboardController extends Controller
+{
+    //
 
- class DashboardController extends Controller
- {
+    // public function index()
+    // {
+    //     $projects = Project::latest()->take(5)->get(); // or however many you want
 
-    public function tableview()
-    {
-        $projects = Project::with('client')->paginate(10);
-        return view('projects.index', compact('projects'));
-    }
+    //     return view('admin.bick', compact('projects'));
+    // }
 
+    // public function dashboard()
+    // {
+    //     $latestProjectWithAllDates = Project::whereNotNull('measurement_date')
+    //         ->whereNotNull('design_date')
+    //         ->whereNotNull('installation_date')
+    //         ->whereNotNull('production_date')
+    //         ->latest()
+    //         ->first();
 
+    //     $projects = Project::with('client')->get();
 
- }
+    //     return view('admin.bick', compact('latestProjectWithAllDates', 'projects'));
 
+    // }
 
- // namespace App\Http\Controllers;
+    public function index()
+{
+    $projects = Project::paginate(10); // fetch paginated projects
+    return view('admin/Dashboard', compact('projects'));
+}
 
-// use App\Http\Controllers\Controller;
-// use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Auth;
-
-// class DashboardController extends Controller
-// {
-//     //
-
-//     public function index()
-//     {
-//         $user = Auth::user(); // get logged-in user
-
-//         return view('admin.dashboard', compact('user'));
-//     }
+}

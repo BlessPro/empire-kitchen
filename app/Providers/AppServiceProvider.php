@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
         //
 
         Paginator::useTailwind();
+        Paginator::useBootstrap();
+
 
     }
 }

@@ -20,6 +20,13 @@ class Project extends Model
         'first_assigned_tech_supervisor', 'second_assigned_tech_supervisor',
         'first_assigned_designer', 'second_assigned_designer', 'cost'
     ];
+    protected $casts = [
+        'start_date' => 'datetime',
+        'measurement_date' => 'datetime',
+        'design_date' => 'datetime',
+        'production_date' => 'datetime',
+        'installation_date' => 'datetime',
+    ];
 
     protected $dates = ['start_date'];
 

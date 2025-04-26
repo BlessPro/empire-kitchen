@@ -73,7 +73,7 @@ class="group relative flex items-center p-5 transition
                                {{ request()->routeIs('admin.ProjectManagement') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
                                Project Management
                  </a>
-
+                 
                            <!--testing active ProjectManagement?-->
           <!--Schedule Installation-->
           {{-- <a href="{{ route('admin.ScheduleInstallation') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
@@ -162,17 +162,15 @@ class="group relative flex items-center p-5 transition
 
       <!--Logout-->
 
+
       <div class="px-4 py-6">
         <form method="POST" action="{{ route('logout') }}">
           @csrf
-          <a href="{{ route('logout') }}"
-             onclick="event.preventDefault(); this.closest('form').submit();"
-             class="flex items-center text-sm hover:text-purple-300 cursor-pointer">
+          <a :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();" class="flex items-center text-sm hover:text-purple-300">
             <i data-feather="log-out" class="mr-2"></i> {{ __('Log Out') }}
           </a>
         </form>
       </div>
-
 {{--
         <form method="POST" action="{{ route('logout') }}">
             @csrf

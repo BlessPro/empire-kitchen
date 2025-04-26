@@ -42,7 +42,7 @@ class AuthenticatedSessionController extends Controller
 
 private function redirectBasedOnRole(): string
 {
-    $role = auth()->user()->role;
+    $role = Auth::user()->role;
 
     return match ($role) {
         'admin' => route('admin.dashboard'),

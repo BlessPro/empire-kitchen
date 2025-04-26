@@ -12,10 +12,16 @@ use Illuminate\Support\Facades\Auth;
 // app/Http/Controllers/ProjectController.php
 class ProjectController extends Controller
 {
+    // public function index()
+    // {
+    //     $projects = Project::with('client')->paginate(10);
+    //     return view('projects.index', compact('projects'));
+    // }
     public function index()
-    {
-        $projects = Project::with('client')->paginate(10);
-        return view('projects.index', compact('projects'));
-    }
+{
+    $projects = Project::paginate(10); // fetch paginated projects
+    return view('admin/ProjectManagement', compact('projects'));
+}
+
 }
 
