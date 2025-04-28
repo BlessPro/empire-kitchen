@@ -150,7 +150,7 @@
                                <td class="p-4"><input type="checkbox" class="child-checkbox" /></td>
                                <td class="p-4 font-normal text-[15px]">{{ $project->name }}</td>
                                <td class="p-4">
-                                   <span class="px-3 py-1 text-sm rounded-full ">{{ $project->status }}</span>
+                                   <span class="px-3 py-1 text-sm ">{{ $project->status }}</span>
                                </td>
                                <td  class="px-3 py-1 text-sm rounded-full ${item.statusStyle}">{{ $project->client->firstname . ' ' . $project->client->lastname}}</td>
                                <td class="p-4 font-normal text-[15px]">{{ $project->start_date->diffForHumans() }}</td>

@@ -31,11 +31,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])
-    
-        ->name('admin.dashboard');
-});
     //profile route
     Route::middleware('auth')->group(function () {
 
@@ -46,18 +41,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     //Navigation with admin login
 
     // Admin Route
-
-
-    // Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard')->middleware('auth');
     //navigating with admin login
-    // Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard')->middleware('auth');
 
-
-    // Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
-
-
-    Route::get('/admin/ClientManagement', [ClientManagementController::class, 'index'])->name('admin.ClientManagement')->middleware('auth');
-    // Route::get('/admin/ProjectManagement', [ProjectManagementController::class, 'index'])->name('admin.ProjectManagement')->middleware('auth');
+// for the client management
+    Route::get('/admin/ClientManagement', [ClientManagementController::class, 'index'])->name('admin.ClientManagement');
     Route::get('/admin/Settings', [Settings::class, 'index'])->name('admin.Settings')->middleware('auth');
     Route::get('/admin/Inbox', [Inbox::class, 'index'])->name('admin.Inbox')->middleware('auth');
     Route::get('/admin/ReportsandAnalytics', [ReportsandAnalytics::class, 'index'])->name('admin.ReportsandAnalytics')->middleware('auth');
