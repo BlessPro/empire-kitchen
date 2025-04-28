@@ -17,11 +17,13 @@ class ProjectController extends Controller
     //     $projects = Project::with('client')->paginate(10);
     //     return view('projects.index', compact('projects'));
     // }
+
     public function index()
 {
-    $projects = Project::paginate(10); // fetch paginated projects
-    return view('admin/ProjectManagement', compact('projects'));
-}
+    $projects = Project::paginate(15); // fetch paginated projects
+    dd($projects);
 
+    return view('admin/Dashboard2', compact('projects'));
+}
 }
 

@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -59,10 +60,14 @@ Route::middleware('auth')->group(function () {
 });
 
 // Admin
+// Route::middleware(['auth', 'role:admin'])->group(function () {
+//     Route::get('/admin/dashboard', function () {
+//         return view('admin.dashboard');
+//     })->name('admin.dashboard');
+// });
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])
+        ->name('admin.dashboard');
 });
 
 // Technical Supervisor

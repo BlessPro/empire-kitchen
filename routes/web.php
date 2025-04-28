@@ -31,11 +31,23 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
-    //navigating to
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])
+    
+        ->name('admin.dashboard');
+});
+    //profile route
     Route::middleware('auth')->group(function () {
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    //Navigation with admin login
+
+    // Admin Route
+
+
     // Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard')->middleware('auth');
     //navigating with admin login
     // Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard')->middleware('auth');
@@ -64,10 +76,11 @@ Route::get('/dashboard', function () {
 
     Route::get('/sales/dashboard', [SalesController::class, 'index'])->middleware(middleware: 'RoleMiddleware:sales_accountant');
 
-    Route::get('/admin/bick', [DashboardController::class, 'dashboard']);
-    Route::get('/admin/ProjectManagement', [ProjectController::class, 'index'])->name('admin.ProjectManagement');
+    // Route::get('/admin/bick', [DashboardController::class, 'dashboard']);
+    Route::get('/admin/ProjectManagement', action: [ProjectController::class, 'index'])->name('admin.ProjectManagement');
 
-    Route::get('/admin/Dashboard', [DashboardController::class, 'index'])->name('admin.Dashboard');
+
+    Route::get('/admin/Dashboard2',  [ProjectController::class, 'index'])->name('admin.Dashboard2');
 
 });
 

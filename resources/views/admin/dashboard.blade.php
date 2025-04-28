@@ -3,9 +3,10 @@
 
         @include('admin.layouts.header')
 
+        {{-- {{ dd($projects) }} --}}
+
 
         <main class="ml-64 mt-[100px] flex-1 bg-gray-100 min-h-screen  items-center">
-
             <div class="p-6 bg-[#F9F7F7]">
              <div class="mb-[20px]">
              <h2 class="text-[25px] font-semi-bold text-gray-900 "> Overview </h2>
@@ -66,7 +67,7 @@
 
              <!--try-->
 
-             <!--the pipeline bar chart begins-->
+           <!--the pipeline bar chart begins-->
              <div class="bg-white p-4 rounded-[30px] shadow">
 
              <div class="flex items-center justify-between px-5 py-2 space-x-6">
@@ -94,6 +95,7 @@
 
                  <canvas id="ProjectsPipeline"  class="w-full h-full"></canvas>
              </div>
+
            <!--the pipeline bar chart begins-->
            </div>
 
@@ -122,149 +124,55 @@
 
 
              {{--Testing the table logic--}}
-             @if(isset($projects))
-             @foreach($projects as $project)
-                 <p>{{ $project->title }}</p>
-             @endforeach
-         @else
-             <p>No projects found.</p>
-         @endif
-                  <!--My projects table begins-->
-                   {{-- <table class="min-w-full text-left">
-                     <thead class="text-sm text-gray-600 bg-gray-100">
-                       <tr>
-                         <th class="p-4 font-medium">
-                           <input type="checkbox" id="selectAll" />
-                         </th>
-                         <th class="p-4 font-mediumt text-[15px]">Project Name</th>
-                         <th class="p-4 font-mediumt text-[15px]">Status</th>
-                         <th class="p-4 font-mediumt text-[15px]">Client Name</th>
-                         <th class="p-4 font-mediumt text-[15px]">Duration</th>
-                         <th class="p-4 font-mediumt text-[15px]">Cost</th>
-                         <th class="p-4 font-mediumt text-[15px]">you</th>
-                       </tr>
-                     </thead>
-<tbody>
-
-</tbody> --}}
 
 
 
-{{--
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Project Name</th>
-            <th>Status</th>
-            <th>Client Name</th>
-            <th>Duration</th>
-            <th>Cost</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse ($projects as $project)
-            <tr>
-                <td>{{ $project->project_name }}</td>
-                <td>{{ $project->status }}</td>
-                <td>{{ $project->client->name ?? 'N/A' }}</td>
-                <td>
-                    {{ $project->created_at->diffForHumans() }} --}}
-                    {{-- Or you can use: $project->created_at->diff(now())->format('%w weeks') --}}
-                {{-- </td>
-                <td>GH₵ {{ number_format($project->cost, 2) }}</td>
-            </tr>
-            @empty
-            <li>No projects available.</li>
-        @endforelse
-    </tbody>
-</table> --}}
+                        <table class="min-w-full text-left">
+                                <thead class="text-sm text-gray-600 bg-gray-100">
+                                  <tr>
+                                    <th class="p-4 font-medium">
+                                      <input type="checkbox" id="selectAll" />
+                                    </th>
+                                    <th class="p-4 font-mediumt text-[15px]">Project Name</th>
+                                    <th class="p-4 font-mediumt text-[15px]">Status</th>
+                                    <th class="p-4 font-mediumt text-[15px]">Client Name</th>
+                                    <th class="p-4 font-mediumt text-[15px]">Duration</th>
+                                    <th class="p-4 font-mediumt text-[15px]">Cost</th>
+                                    <th class="p-4 font-mediumt text-[15px]"></th>
+                                  </tr>
+                                </thead>
+                           <!-- Add other columns as needed -->
+                         </tr>
+                       </thead>
+                       <tbody>
+                        @foreach($projects as $project)
+                           <tr class="border-t hover:bg-gray-50">
+                               <td class="p-4"><input type="checkbox" class="child-checkbox" /></td>
+                               <td class="p-4 font-normal text-[15px]">{{ $project->name }}</td>
+                               <td class="p-4">
+                                   <span class="px-3 py-1 text-sm rounded-full ">{{ $project->status }}</span>
+                               </td>
+                               <td  class="px-3 py-1 text-sm rounded-full ${item.statusStyle}">{{ $project->client->firstname . ' ' . $project->client->lastname}}</td>
+                               <td class="p-4 font-normal text-[15px]">{{ $project->start_date->diffForHumans() }}</td>
+                               <td class="p-4 font-normal text-[15px]">{{ $project->cost }}</td>
+                               <td class="p-4 text-right">
+                                   <button class="text-gray-500 hover:text-red-500">
+                                       <i data-feather="trash-2" class="mr-3"></i>
+                                   </button>
+                               </td>
+                           </tr>
+                       @endforeach
 
 
-<table class="min-w-full text-left">
-    <thead class="text-sm text-gray-600 bg-gray-100">
-      <tr>
-        <th class="p-4 font-medium">
-          <input type="checkbox" id="selectAll" />
-        </th>
-        <th class="p-4 font-mediumt text-[15px]">Project Name</th>
-        <th class="p-4 font-mediumt text-[15px]">Status</th>
-        <th class="p-4 font-mediumt text-[15px]">Client Name</th>
-        <th class="p-4 font-mediumt text-[15px]">Duration</th>
-        <th class="p-4 font-mediumt text-[15px]">Cost</th>
-        <th class="p-4 font-mediumt text-[15px]">delete</th>
-      </tr>
-    </thead>
-<!-- Add other columns as needed -->
-</tr>
-</thead>
-<tbody>
-@foreach($projects as $project)
-<tr class="border-t hover:bg-gray-50">
- <td class="p-4"><input type="checkbox" class="child-checkbox"/></td>
- <td class="p-4 font-normal text-[15px]">{{ $project->name }}</td>
- <td class="p-4">
-   <span class="px-3 py-1 text-sm rounded-full {{ $project->statusStyle }}">{{ $project->status }}</span>
- </td>
- <td class="p-4 font-normal text-[15px]">{{ $project->client->firstname }}</td>
- <td class="p-4 font-normal text-[15px]">  {{ $project->start_date->diffForHumans() }}</td>
- <td class="p-4 font-normal text-[15px]">{{ $project->cost }}</td>
 
- <td class="p-4 text-right"><button class="text-gray-500 hover:text-red-500"><i data-feather="layers" class="mr-3"></i> </button></td>
-</tr>
-@endforeach
-</tbody>
+                     </table>
 
-{{--working table--}}
+                     <div class="mt-4">
+                        {{ $projects->links('pagination::tailwind') }}
+                    </div>
 
-                        {{-- inserting data from clients and projects table into blade table --}}
 
-                        {{-- @if (!isset($projects))
-                        <tr>
-                            <td colspan="5" class="py-4 text-center">No projects found.</td>
-                        </tr> --}}
-                    {{-- @if (isset($projects) && is_iterable($projects)) --}}
-                      {{--    @foreach ($projects as $project)
-                        <tr class="border-b border-gray-200 hover:bg-gray-100">
-                            <td class="px-4 py-3 font-semibold">{{ $project->name }}</td>
-                            <td class="px-4 py-3 capitalize">{{ $project->status }}</td>
-                            <td class="px-4 py-3">
-                                {{ $project->client->title }} {{ $project->client->firstname }} {{ $project->client->lastname }}
-                            </td>
-                            <td class="px-4 py-3">
-                                {{ $project->start_date->diffForHumans() }}
-                            </td>
-                            <td class="px-4 py-3">₦{{ number_format($project->cost, 2) }}</td>
-                        @endforeach
-                   @endif
 
-                    @endif
-
-                     </tbody>
-                   </table>--}}
-                   {{-- @foreach($projects as $project)
-                   <tr>
-                       <td>{{ $project->project_name }}</td>
-                       <td>{{ $project->status }}</td>
-                       <td>{{ $project->client->firstname }} {{ $project->client->lastname }}</td>
-                       <td>{{ $project->cost }}</td>
-                       <td>{{ $project->start_date->diffForHumans() }}</td>
-                   </tr>
-                    @endforeach --}}
-
-<!-- Pagination -->
-{{-- {{ $projects->links() }} --}}
-
-                   {{-- <div class="flex items-center justify-between pb-5 pl-6 pr-6 mt-6">
-                     <p class="text-sm text-gray-500 results-text">Showing 1 to 3 of 50 results</p>
-                     <nav class="flex items-center gap-1">
-                       <button id="prevPage" class="px-3 py-1.5 rounded-md border text-sm text-gray-500 hover:bg-gray-100 disabled:opacity-50">
-                         Previous
-                       </button>
-                       <button id="nextPage" class="px-3 py-1.5 rounded-md border text-sm text-gray-500 hover:bg-gray-100">
-                         Next
-                       </button>
-                     </nav>
-                   </div> --}}
 
 
            </div>
@@ -273,11 +181,8 @@
 
 
 
-
          @vite(['resources/js/app.js'])
 
     </x-slot>
-
-
 
 </x-layouts.app>
