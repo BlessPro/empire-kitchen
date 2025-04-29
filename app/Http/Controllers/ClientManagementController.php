@@ -28,11 +28,46 @@ class ClientManagementController extends Controller
         $clients = Client::withCount('projects')->paginate(5); // Fetch clients with projects count
         return view('admin.ClientManagement', compact('clients'));
     }
-    public function exportPdf()
+//fofr storing clients
+
+// public function store(Request $request)
+// {
+//     $client = Client::create($request->only([
+
+
+// 'title', 'firstname', 'lastname', 'othernames', 'phone_number', 'location'
+
+
+
+//     ]));
+
+//     return response()->json(['message' => 'Client successfully created']);
+// }
+
+public function store(Request $request)
 {
+    $request->validate([
+        'title' => 'required|string|max:10',
+        'firstname' => 'required|string|max:50',
+        'lastname' => 'required|string|max:50',
+        'othernames' => 'nullable|string|max:100',
+        'phone_number' => 'required|string|max:20',
+        'location' => 'required|string|max:100',
+    ]);
 
-    $pdf = Pdf::loadView('admin.exports.clients', compact('clients')); // Create a new blade view for the PDF
+    $client = Client::create($request->only([
+        'title', 'firstname', 'lastname', 'othernames', 'phone_number', 'location'
+    ]));
 
-    return $pdf->download('clients_list.pdf'); // Or ->stream() to view directly
+    return response()->json(['message' => 'Client successfully created']);
 }
+
+
+//     public function exportPdf()
+// {
+
+//     $pdf = Pdf::loadView('admin.exports.clients', compact('clients')); // Create a new blade view for the PDF
+
+//     return $pdf->download('clients_list.pdf'); // Or ->stream() to view directly
+// }
 }

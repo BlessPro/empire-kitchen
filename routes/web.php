@@ -45,6 +45,10 @@ Route::get('/dashboard', function () {
 
 // for the client management
     Route::get('/admin/ClientManagement', [ClientManagementController::class, 'index'])->name('admin.ClientManagement');
+    //for saving the client
+    Route::post('/clients/store', [ClientManagementController::class, 'store'])->name('clients.store');
+
+// Route::post('/clients', [ClientManagementController::class, 'store'])->name('clients.store');
     Route::get('/admin/Settings', [Settings::class, 'index'])->name('admin.Settings')->middleware('auth');
     Route::get('/admin/Inbox', [Inbox::class, 'index'])->name('admin.Inbox')->middleware('auth');
     Route::get('/admin/ReportsandAnalytics', [ReportsandAnalytics::class, 'index'])->name('admin.ReportsandAnalytics')->middleware('auth');

@@ -183,3 +183,52 @@ option.selected = true;
 monthSelect.appendChild(option);
 });
 
+//for the form submittion
+//added29.04.2025
+// Open/Close Modals
+// DOM Elements
+const openClientModalBtn = document.getElementById('openClientModal');
+const closeClientModalBtn = document.getElementById('closeClientModal');
+const closeSuccessModalBtn = document.getElementById('closeSuccessModal');
+const clientModal = document.getElementById('clientModal');
+const successModal = document.getElementById('successModal');
+const clientForm = document.getElementById('clientForm');
+
+// Event Listeners
+openClientModalBtn.addEventListener('click', () => {
+    clientModal.classList.remove('hidden');
+});
+
+closeClientModalBtn.addEventListener('click', () => {
+    clientModal.classList.add('hidden');
+});
+
+closeSuccessModalBtn.addEventListener('click', () => {
+    successModal.classList.add('hidden');
+});
+
+// Form Submission
+clientForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    try {
+        const response = await fetch(clientForm.action, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+            },
+            body: new FormData(clientForm)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            clientModal.classList.add('hidden');
+            successModal.classList.remove('hidden');
+            clientForm.reset();
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
