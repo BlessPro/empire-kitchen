@@ -37,7 +37,7 @@
                     <!-- Card Item  begins-->
                     @foreach ($pending as $project)
 
-                    <div class="p-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
+                    <div onclick="window.location='{{ route('admin.clients.projects2', $client->id) }}'" class="p-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
                         <h3 class="font-semibold text-gray-800 mb-3">{{ $project->name }}</h3>
                         <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
                             <i data-feather="calendar"
@@ -69,7 +69,7 @@
             <div>
                 <div class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
                     <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#4F46E5]">
-                        <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $ongoing->count() }}</h5></span> Pending
+                        <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $ongoing->count() }}</h5></span> Ongoing
                     </div>
                     <div class="pt-5 space-y-5 ">
 
@@ -107,7 +107,7 @@
             <div>
                 <div class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
                     <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#22C55E]">
-                        <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $completed->count() }}</h5></span> Pending
+                        <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $completed->count() }}</h5></span> Completed
                     </div>
                     <div class="pt-5 space-y-5 ">
 

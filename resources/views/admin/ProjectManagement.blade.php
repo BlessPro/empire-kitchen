@@ -25,7 +25,11 @@
                 <div class="pt-5 space-y-5 ">
 
                     <!-- Card Item -->
-                    <div class="p-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
+                    <div class="p-5 bg-white rounded-[20px] shadow hover:bg-gray-100 " >
+
+                        {{-- <tr onclick="window.location='{{ route('admin.clients.projects2', $client->id) }}'" class="cursor-pointer hover:bg-gray-100"> --}}
+
+
                         <h3 class="font-semibold text-gray-800">Cabinets Bedroom</h3>
                         <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
                             <i data-feather="calendar"

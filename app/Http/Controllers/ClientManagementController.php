@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Client; // Import the Client model
 use Barryvdh\DomPDF\Facade\Pdf; // Import the Pdf facade
+use App\Exports\ProjectsExport; // Ensure this import exists after creating the export class
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class ClientManagementController extends Controller
 {
@@ -28,6 +31,15 @@ class ClientManagementController extends Controller
         $clients = Client::withCount('projects')->paginate(10); // Fetch clients with projects count
         return view('admin.ClientManagement', compact('clients'));
     }
+
+    public function showprojectInfo(Client $client)
+    {
+        $projects = $client->projects;
+
+        return view('admin.ClientManagement.projectInfo', compact('client', 'projects'));
+    }
+
+
 //fofr storing clients
 
 // public function store(Request $request)

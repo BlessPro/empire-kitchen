@@ -50,6 +50,10 @@ Route::get('/dashboard', function () {
     //for handling client projects
     Route::get('/admin/clients/{client}/projects', [ClientManagementController::class, 'showClientProjects'])
     ->name('admin.clients.projects');
+
+    Route::get('/admin/clients/{client}/projects2', [ClientManagementController::class, 'showprojectInfo'])
+    ->name('admin.clients.projects2');
+
 // Route::post('/clients', [ClientManagementController::class, 'store'])->name('clients.store');
     Route::get('/admin/Settings', [Settings::class, 'index'])->name('admin.Settings')->middleware('auth');
     Route::get('/admin/Inbox', [Inbox::class, 'index'])->name('admin.Inbox')->middleware('auth');
