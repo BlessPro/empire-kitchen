@@ -72,7 +72,7 @@
               <!-- Title Dropdown -->
               <div class="mb-4">
                 <label for="title" class="block text-sm font-medium text-gray-700 mb-3">Title</label>
-                <select name="title" 
+                <select name="title"
                   id="title"
                   class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -123,13 +123,30 @@
 
 
 <!-- SUCCESS MODAL -->
-<div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+{{-- <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-lg p-6 w-full max-w-sm text-center">
-        <div class="bg-fuchsia-900 opacity-25"><i data-feather="user text-fuchsia-900" class="feather-icon mr-3 group"></i></div>
+        <div class="bg-fuchsia-900 opacity-25"><i data-feather="user" class="feather-icon mr-3 group"></i></div>
         <h2 class="text-lg font-semibold mb-4">Client successfully created</h2>
-        <button id="closeSuccessModal" class="bg-green-600 text-white px-4 py-2 justify-end rounded">OK</button>
+        <div class="right-0"><button id="closeSuccessModal" class="bg-fuchsia-900 text-white px-4 py-2  rounded-full">OK</button></div>
+    </div>
+</div> --}}
+
+<div id="successModal" class="flex fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-lg p-6 w-full max-w-sm">
+        <div class="flex items-center justify-center w-10 h-10 mb-[10px] bg-fuchsia-100 rounded-full">
+            <i data-feather="user-plus" class="text-fuchsia-900 ml-[3px]"></i>
+        </div>
+        <h2 class="text-lg font-semibold mb-4 text-left">Client successfully created</h2>
+
+        <!-- Right-Aligned Button -->
+        <div class="flex justify-end">
+            <button id="closeSuccessModal" class="bg-fuchsia-900 text-white px-4 py-2 rounded-full">
+                OK
+            </button>
+        </div>
     </div>
 </div>
+
 
           <!--test code-->
 

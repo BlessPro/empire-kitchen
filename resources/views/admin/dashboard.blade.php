@@ -157,7 +157,7 @@
                                <td class="p-4 font-normal text-[15px]">{{ $project->cost }}</td>
                                <td class="p-4 text-right">
                                    <button class="text-gray-500 hover:text-red-500">
-                                       <i data-feather="trash-2" class="mr-3"></i>
+                                       <i data-feather="trash" class="mr-3"></i>
                                    </button>
                                </td>
                            </tr>

@@ -54,7 +54,7 @@ class AdminController extends Controller
             ->latest()
             ->first();
 
-    $projects = Project::paginate(15); // fetch paginated projects
+    $projects = Project::paginate(10); // fetch paginated projects
     return view('admin/dashboard', compact(['latestProjectWithAllDates','projects']));
 
 }

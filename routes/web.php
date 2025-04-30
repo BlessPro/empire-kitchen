@@ -70,7 +70,7 @@ Route::get('/dashboard', function () {
     Route::get('/sales/dashboard', [SalesController::class, 'index'])->middleware(middleware: 'RoleMiddleware:sales_accountant');
 
     // Route::get('/admin/bick', [DashboardController::class, 'dashboard']);
-    Route::get('/admin/ProjectManagement', action: [ProjectController::class, 'index'])->name('admin.ProjectManagement');
+    Route::get('/admin/ProjectManagement',  [ProjectController::class, 'index'])->name('admin.ProjectManagement');
 
 
     Route::get('/admin/Dashboard2',  [ProjectController::class, 'index'])->name('admin.Dashboard2');

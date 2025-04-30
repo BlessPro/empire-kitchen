@@ -40,7 +40,7 @@
             @include('admin.layouts.topbar')
 
                 @isset($header)
-                    <div class="mb-6   text-gray-800">
+                    <div class="mb-6  bg-[#F9F7F7] text-gray-800">
                         {{ $header }}
                     </div>
                 @endisset
