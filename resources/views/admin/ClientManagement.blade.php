@@ -10,15 +10,15 @@
           <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold">Clients Management</h1>
             {{-- <button class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">+ Add Project</button> --}}
-<!-- ADD CLIENT BUTTON -->
-<button id="openAddClientModal" class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
-    + Add Client
-</button>
+            <!-- ADD CLIENT BUTTON -->
+            <button id="openAddClientModal" class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
+                + Add Client
+            </button>
 
-{{-- another test --}}
+            {{-- another test --}}
 
-{{-- another test --}}
-        </div>
+            {{-- another test --}}
+            </div>
 
         <!--test code-->
 
@@ -88,11 +88,11 @@
               <!-- Phone Number -->
               <div class="flex flex-col sm:flex-row gap-4">
               <div class="mb-4">
-                <label for="phone" class="block text-sm font-medium text-gray-700 mb-3">Phone Number</label>
+                <label for="phone" class="block text-sm font-medium  mb-3">Phone Number</label>
                 <input
                   type="tel"
-                  id="phone" name="phone_number"                  placeholder="Enter phone number"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  id="phone" name="phone_number" placeholder="Enter phone number"
+                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none text-gray-200 focus:ring-2 focus:ring-blue-500"
                 >
               </div>
 
@@ -101,8 +101,9 @@
                 <label for="location" class="block text-sm font-medium text-gray-700 mb-3">Location</label>
                 <input
                   type="text"
-                  id="location" name="location"                  placeholder="Enter location"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  id="location" name="location"
+                  placeholder="Enter location"
+                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
               </div>
               </div>
@@ -119,21 +120,18 @@
               </button> --}}
         </form>
     </div>
-</div>
+
 
 <!-- SUCCESS MODAL -->
 <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-lg p-6 w-full max-w-sm text-center">
         <div class="bg-fuchsia-900 opacity-25"><i data-feather="user text-fuchsia-900" class="feather-icon mr-3 group"></i></div>
         <h2 class="text-lg font-semibold mb-4">Client successfully created</h2>
-        <button id="closeSuccessModal" class="bg-green-600 text-white px-4 py-2 rounded">OK</button>
+        <button id="closeSuccessModal" class="bg-green-600 text-white px-4 py-2 justify-end rounded">OK</button>
     </div>
 </div>
 
           <!--test code-->
-
-
-
 
         <!--head ends-->
         <!--table begins-->
@@ -143,30 +141,9 @@
             <h2 class="text-sm text-gray-600 ">Manage all your Clients here</h2>
             </div>
             <div class="overflow-x-auto">
-              {{-- <table class="min-w-full pt-6 pb-5 pl-6 text-sm text-left">
-                <thead class="pt-6 pb-5 pl-6 bg-gray-200">
-                  <tr class="text-black-900 ">
-                    <th class="p-4 font-bold">
-                      Client Name
-                      <span class="inline-block ml-1">&#8597;</span>
-                    </th>
-                    <th class="p-4 font-bold">
-                      Phone Number
-                      <span class="inline-block ml-1">&#8597;</span>
-                    </th>
-                    <th class="p-4 font-bold">
-                      Projects
-                      <span class="inline-block ml-1">&#8597;</span>
-                    </th>
-                    <th class="p-4 font-bold">
-                      Location
-                      <span class="inline-block ml-1">&#8597;</span>
-                    </th>
-                  </tr>
-                </thead> --}}
-                <table class="min-w-full text-left">
+                 <table class="min-w-full text-left">
                     <thead class="items-center text-sm text-gray-600 bg-gray-100">
-                      <tr>
+                      <tr >
 
                         <th class="p-4 font-mediumt text-[15px] items-center">Client Name</th>
                         <th class="p-4 font-mediumt text-[15px] items-center">Phone Number</th>
@@ -180,7 +157,7 @@
 
 
                 @foreach ( $clients as $client )
-                <tr class="items-center border-t hover:bg-gray-50">
+                <tr onclick="window.location='{{ route('admin.clients.projects', $client->id) }}'" class="cursor-pointer hover:bg-gray-100">
                     <td class="p-4 font-normal text-[15px] items-center">{{$client->title. ' '.$client->firstname . ' '.$client->lastname }}</td>
 
                     <td class="p-4 font-normal text-[15px] items-center">{{$client->phone_number}}</td>
@@ -202,9 +179,8 @@
             </div>
 
 
-
+             </div>
     </div>
-</div>
 </main>
 <script>
     document.getElementById('openAddClientModal').addEventListener('click', function () {

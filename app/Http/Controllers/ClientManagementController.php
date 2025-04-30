@@ -25,7 +25,7 @@ class ClientManagementController extends Controller
 
     public function index()
     {
-        $clients = Client::withCount('projects')->paginate(5); // Fetch clients with projects count
+        $clients = Client::withCount('projects')->paginate(10); // Fetch clients with projects count
         return view('admin.ClientManagement', compact('clients'));
     }
 //fofr storing clients
@@ -63,11 +63,20 @@ public function store(Request $request)
 }
 
 
-//     public function exportPdf()
-// {
+// redirecting to the client projects
+// public function showClientProjects(Client $client)
+//written on 30.04.2025, 12:54am
 
-//     $pdf = Pdf::loadView('admin.exports.clients', compact('clients')); // Create a new blade view for the PDF
+public function showClientProjects(Client $client)
+{
+    $projects = $client->projects;
 
-//     return $pdf->download('clients_list.pdf'); // Or ->stream() to view directly
-// }
+    $pending = $projects->where('status', 'pending');
+    $ongoing = $projects->where('status', 'in_progress');
+    $completed = $projects->where('status', 'completed');
+
+    return view('admin.ClientManagement.client-projects', compact('client', 'pending', 'ongoing', 'completed'));
+}
+
+
 }
