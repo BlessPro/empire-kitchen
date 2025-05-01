@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Project;
 
 class ProjectManagementController extends Controller
 {
@@ -24,11 +25,7 @@ class ProjectManagementController extends Controller
     {
         return view('admin.ProjectManagement.show', compact('id'));
     }
-    public function destroy($id)
-    {
-        // Logic to delete the project
-        return redirect()->route('admin.ProjectManagement.index')->with('success', 'Project deleted successfully.');
-    }
+  
     public function store(Request $request)
     {
         // Logic to store the project
@@ -39,4 +36,13 @@ class ProjectManagementController extends Controller
         // Logic to update the project
         return redirect()->route('admin.ProjectManagement.index')->with('success', 'Project updated successfully.');
     }
+
+    public function destroy($id)
+{
+    $project = Project::findOrFail($id);
+    $project->delete();
+
+    return redirect()->back()->with('success', 'Project deleted successfully!');
+}
+
 }

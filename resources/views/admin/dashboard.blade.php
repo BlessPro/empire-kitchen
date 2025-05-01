@@ -4,7 +4,16 @@
         @include('admin.layouts.header')
 
         {{-- {{ dd($projects) }} --}}
+        @php
+        $statusClasses = [
+            'in_progress' => 'bg-yellow-100 text-yellow-700 px-2 py-1 border border-yellow-500 rounded-full text-xs',
+            'completed' => 'bg-green-100 text-green-700 px-2 py-1 border border-green-500 rounded-full text-xs',
+            'pending' => 'bg-blue-100 text-blue-700 px-2 py-1 border border-blue-500 rounded-full text-xs',
+        ];
 
+
+        $defaultClass = 'bg-gray-100 text-gray-800';
+    @endphp
 
         <main class="ml-64 mt-[100px] flex-1 bg-gray-100 min-h-screen  items-center">
             <div class="p-6 bg-[#F9F7F7]">
@@ -138,7 +147,7 @@
                                     <th class="p-4 font-mediumt text-[15px]">Client Name</th>
                                     <th class="p-4 font-mediumt text-[15px]">Duration</th>
                                     <th class="p-4 font-mediumt text-[15px]">Cost</th>
-                                    <th class="p-4 font-mediumt text-[15px]"></th>
+                                    <th class="p-4 font-mediumt text-[15px]">Del</th>
                                   </tr>
                                 </thead>
                            <!-- Add other columns as needed -->
@@ -150,19 +159,34 @@
                                <td class="p-4"><input type="checkbox" class="child-checkbox" /></td>
                                <td class="p-4 font-normal text-[15px]">{{ $project->name }}</td>
                                <td class="p-4">
-                                   <span class="px-3 py-1 text-sm ">{{ $project->status }}</span>
+                                   <span class="px-3 py-1 text-sm {{ $statusClasses[$project->status] ?? $defaultClass }}">{{ $project->status }}</span>
                                </td>
                                <td  class="px-3 py-1 text-sm rounded-full ${item.statusStyle}">{{ $project->client->firstname . ' ' . $project->client->lastname}}</td>
-                               <td class="p-4 font-normal text-[15px]">{{ $project->start_date->diffForHumans() }}</td>
+                               <td id="itemstatus" class="p-4 font-normal text-[15px]">{{ $project->start_date->diffForHumans() }}</td>
                                <td class="p-4 font-normal text-[15px]">{{ $project->cost }}</td>
                                <td class="p-4 text-right">
-                                   <button class="text-gray-500 hover:text-red-500">
+                                   {{-- <button class="text-gray-500 hover:text-red-500">
                                        <i data-feather="trash" class="mr-3"></i>
-                                   </button>
+                                   </button> --}}
+
+                                   <form action="{{ route('projects.destroy', $project->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="text-gray-500 hover:text-red-500">
+                                        <i data-feather="trash" class="mr-3"></i>
+                                    </button>
+                                    </form>
                                </td>
                            </tr>
                        @endforeach
 
+                       {{-- <form action="{{ route('projects.destroy', $project->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="text-gray-500 hover:text-red-500">
+                            <i data-feather="trash" class="mr-3"></i>
+                        </button>
+                        </form> --}}
 
 
                      </table>

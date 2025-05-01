@@ -50,9 +50,12 @@ Route::get('/dashboard', function () {
     //for handling client projects
     Route::get('/admin/clients/{client}/projects', [ClientManagementController::class, 'showClientProjects'])
     ->name('admin.clients.projects');
-
+//for the project info
     Route::get('/admin/clients/{client}/projects2', [ClientManagementController::class, 'showprojectInfo'])
     ->name('admin.clients.projects2');
+    //deleting project from the dashboard
+    Route::delete('admin/dashboard/projects/{id}', [ProjectManagementController::class, 'destroy'])->name('projects.destroy');
+
 
 // Route::post('/clients', [ClientManagementController::class, 'store'])->name('clients.store');
     Route::get('/admin/Settings', [Settings::class, 'index'])->name('admin.Settings')->middleware('auth');

@@ -232,3 +232,25 @@ clientForm.addEventListener('submit', async (e) => {
         console.error('Error:', error);
     }
 });
+
+
+// adding style to the  status
+// written on 1.05.2025
+// Holiday
+
+    // When 'selectAll' is toggled
+    document.getElementById("selectAll").addEventListener("change", function () {
+        const isChecked = this.checked;
+        const checkboxes = document.querySelectorAll(".child-checkbox");
+        checkboxes.forEach(cb => cb.checked = isChecked);
+        });
+        // When 'selectAll' is unchecked
+
+        const allCheckboxes = document.querySelectorAll(".child-checkbox");
+        allCheckboxes.forEach(cb => {
+        cb.addEventListener("change", () => {
+        const allChecked = Array.from(allCheckboxes).every(c => c.checked);
+        document.getElementById("selectAll").checked = allChecked;
+        });
+        });
+    
