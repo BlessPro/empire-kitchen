@@ -2,6 +2,17 @@
     <x-slot name="header">
         @include('admin.layouts.header')
 
+
+        @php
+        $statusClasses = [
+            'in progress' => 'bg-yellow-100 text-yellow-700 px-2 py-1 border border-yellow-500 rounded-full text-xs',
+            'completed' => 'bg-green-100 text-green-700 px-2 py-1 border border-green-500 rounded-full text-xs',
+            'pending' => 'bg-blue-100 text-blue-700 px-2 py-1 border border-blue-500 rounded-full text-xs',
+        ];
+
+
+        $defaultClass = 'bg-gray-100 text-gray-800';
+    @endphp
         <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
             <!--head begins-->
 
@@ -12,26 +23,28 @@
    <div class="flex items-center justify-between mb-6">
     <div class="flex items-center justify-between mb-6">
      <span><i data-feather="home" class="w-[5] h-[5] text-fuchsia-900 ml-[3px]"></i></span>
-     <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>  
+     <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>
      <a href="{{ route('admin.ClientManagement') }}">
-         <h3 class="font-sans font-normal text-black cursor-pointer hover:underline">Clients Management</h3>
-     </a>
+        <h3 class="font-sans font-normal text-black cursor-pointer hover:underline">Clients Management</h3>
+    </a>
+
          <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>
- </span> <span class="font-semibold text-fuchsia-900">{{ $client->title . ' '.$client->firstname . ' '.$client->lastname }} kjnjk</span>
-</span> <span class="font-semibold text-fuchsia-900">jlnmlnjkhh</span>
+        </h3>
+
+        <span><span class="mr-[12px] font-normal text-black-900">{{$project->client->title . ' '.$project->client->firstname . ' '.$project->client->lastname }}</span> </span>
+        <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>
+        <h3 class="font-semibold text-fuchsia-900">{{ $project->name}}</h3>
+
+    </div>
 
 
-{{-- {{ $client->projects->first()->name }} --}}
 
-</div>
- 
- 
     {{-- <button class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">+ Add Project</button> --}}
      <!-- ADD CLIENT BUTTON -->
      <button id="openAddClientModal" class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
          + Add Client
      </button>
- 
+
      </div>
                     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
                         <!-- Left Section: Project Info -->
@@ -40,30 +53,47 @@
 
 
                           <!-- Project Header -->
-                          <div class="flex items-start justify-between">
+                          {{-- <div class="flex items-start justify-between">
                             <div>
+
                               <h2 class="text-2xl font-semibold text-gray-800">Wardrobe</h2>
                               <span class="inline-block mt-1 px-3 py-0.5 text-xs bg-green-100 text-green-600 rounded-full">Completed</span>
                             </div>
                             <div class="flex text-sm text-right text-gray-600">
                               <span><i data-feather="home" class="text-fuchsia-900 mr-[12px] ml-[3px]"></i></span>       </span><span class="mr-[12px] font-semibold text-fuchsia-900">{{ $client->title . ' '.$client->firstname . ' '.$client->lastname }}</span> </span>
                             </div>
-                          </div>
+                          </div> --}}
+
+
+                          <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-2xl font-semibold text-gray-800 mr-[12px] ">{{ $project->name}}</h2>
+                                <span class="inline-block mt-1 px-3 py-0.5 text-xs bg-green-100 text-green-600 rounded-full ml-[6px] {{ $statusClasses[$project->status] ?? $defaultClass }}">{{ $project->status}}</span>
+
+
+                            </div>
+
+                             <!-- ADD CLIENT BUTTON -->
+                             <div class="flex text-sm text-right text-gray-600">
+                                <span><i data-feather="home" class="text-fuchsia-900 mr-[12px] ml-[3px]"></i></span>       </span><span class="mr-[12px] font-semibold text-fuchsia-900">{{$project->client->title . ' '.$project->client->firstname . ' '.$project->client->lastname }}</span> </span>
+                              </div>
+
+                             </div>
 
                           <!-- Project Details -->
                           <div class="mt-6 space-y-4 text-sm text-gray-700">
                             <div class="flex items-center gap-2">
                               <span class="font-medium">Due Date:</span>
-                              <span>Dec 12, 2025</span>
+                              <span>{{ $project->due_date}}</span>
                             </div>
                             <div class="flex items-center gap-2">
                               <span class="font-medium">Address:</span>
-                              <span><span class="mr-[12px] font-normal text-black-900">{{ $client->location }}</span> </span>
+                              <span><span class="mr-[12px] font-normal text-black-900">{{ $project->client->location }}</span> </span>
                             </div>
                             <div class="flex items-center gap-2">
                               <span class="font-medium">Client:</span>
-                              
-                              <span><span class="mr-[12px] font-normal text-black-900">{{ $client->title . ' '.$client->firstname . ' '.$client->lastname }}</span> </span>
+
+                              <span><span class="mr-[12px] font-normal text-black-900">{{$project->client->title . ' '.$project->client->firstname . ' '.$project->client->lastname }}</span> </span>
 
                           </div>
                         </div>
@@ -72,49 +102,75 @@
                           <div class="mt-6">
                             <h3 class="text-sm font-semibold text-gray-800">Additional Note</h3>
                             <p class="mt-1 text-sm text-gray-600">
-                              Double-check all fittings, seals, and appliance functionality after installation. Cabinets, countertops, and appliances must be level for proper installation.
-                            </p>
+                                {{ $project->description}}                          </p>
                           </div>
 
                           <!-- Measurement -->
+
+
+
                           <div class="mt-6">
                             <h3 class="mb-2 text-sm font-semibold text-gray-800">Measurement (in length, width, height)</h3>
                             <div class="flex gap-4">
+                                @foreach ($project->measurement as $measurement)
+
                               <div class="flex items-center gap-1">
-                                📐 <span>3.5mm</span>
+                                📐 <span>   <p>Length: {{ $measurement->length }}</p>
+                                </span>
                               </div>
                               <div class="flex items-center gap-1">
-                                📐 <span>3.5mm</span>
+                                📐 <span><p>Width: {{ $measurement->width }}</p>
+                                </span>
                               </div>
                               <div class="flex items-center gap-1">
-                                📐 <span>3.5mm</span>
+                                📐 <span><p>Length: {{ $measurement->height }}</p>
+                                </span>
                               </div>
+                              @endforeach
+
                             </div>
                           </div>
 
+{{--
+                          <h2>Measurements</h2>
+                          <ul>
+                              @foreach ($project->measurements as $measurement)
+                                  <li>{{ $measurement->measurement_detail }}</li>
+                              @endforeach
+                          </ul>
+
+                          <h2>Installations</h2>
+                          <ul>
+                              @foreach ($project->installations as $installation)
+                                  <li>{{ $installation->installation_detail }}</li>
+                              @endforeach
+                          </ul>
+
+                          <h2>Designs</h2>
+                          <ul>
+                              @foreach ($project->designs as $design)
+                                  <li>{{ $design->design_detail }}</li>
+                              @endforeach
+                          </ul> --}}
+
                           <!-- Attachments -->
                           <div class="mt-6">
-                            <h3 class="mb-2 text-sm font-semibold text-gray-800">Attachments after measurement</h3>
+                            <h3 class="mb-2 text-sm font-semibold text-gray-800">Design attachment</h3>
                             <ul class="space-y-2">
+                                @foreach ($project->design as $design)
+
                               <li class="flex items-center justify-between p-3 bg-gray-100 rounded">
                                 <div>
-                                  <p class="text-sm font-medium">Image9067.png</p>
-                                  <p class="text-xs text-gray-500">Uploaded on 8/10/25 · 11MB</p>
+                                  <img src="{{$project->design_image_path}}">
+                                  <p class="text-xs text-gray-500">Uploaded on {{ $design->uploaded_at }}</p>
                                 </div>
-                                <div class="flex gap-3 text-purple-600">
+                                {{-- <div class="flex gap-3 text-purple-600">
                                   👁️ 📥
-                                </div>
+                                </div> --}}
                               </li>
-                              <li class="flex items-center justify-between p-3 bg-gray-100 rounded">
-                                <div>
-                                  <p class="text-sm font-medium">Image9068.png</p>
-                                  <p class="text-xs text-gray-500">Uploaded on 8/10/25 · 11MB</p>
-                                </div>
-                                <div class="flex gap-3 text-purple-600">
-                                  👁️ 📥
-                                </div>
-                              </li>
-                              <li class="flex items-center justify-between p-3 bg-gray-100 rounded">
+                              @endforeach
+
+                              {{-- <li class="flex items-center justify-between p-3 bg-gray-100 rounded">
                                 <div>
                                   <p class="text-sm font-medium">Image9077.png</p>
                                   <p class="text-xs text-gray-500">Uploaded on 8/10/25 · 11MB</p>
@@ -122,7 +178,7 @@
                                 <div class="flex gap-3 text-purple-600">
                                   👁️ 📥
                                 </div>
-                              </li>
+                              </li> --}}
                             </ul>
                           </div>
                         </div>
@@ -131,23 +187,45 @@
                         <div class="flex flex-col justify-between p-6 bg-white shadow rounded-xl">
                           <div>
                             <h3 class="mb-4 text-lg font-semibold text-gray-800">Comments</h3>
-                            <ul class="space-y-4">
-                              <li class="flex items-start gap-3">
-                                <img src="https://i.pravatar.cc/40" class="w-10 h-10 rounded-full" />
-                                <div>
-                                  <p class="text-sm font-semibold text-gray-800">Jackson Beverly <span class="text-xs font-normal text-gray-400">· 18mins ago</span></p>
-                                  <p class="text-sm text-gray-600">Great progress on the designs Patrick. Keep it up 🙌🚀</p>
-                                </div>
-                              </li>
+                            <ul class="space-y-4" id="commentsList">
+                                @forelse ($project->comments as $comment)
+                                <li class="flex items-start gap-3">
+                                  <img
+                                  src="{{ auth()->user()->profile_pic ? asset('storage/' . auth()->user()->profile_pic) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
+                                  alt="Profile Photo"
+                                  class="w-10 h-10 border-2 border-yellow-300 rounded-[10px]">
+                              <div>
+                                    <p class="text-sm font-semibold text-gray-800">{{ $comment->user->name }} <span class="text-xs font-normal text-gray-400">{{ $comment->user->created_at ->diffForHumans() }}</span></p>
+                                    <p class="text-sm text-gray-600">{{ $comment->comment }}</p>
+                                  </div>
+                                </li>
+                                @empty
+                                    <p>No comments yet.</p>
+                                @endforelse
                               <!-- Repeat for other users -->
                             </ul>
                           </div>
+                          {{-- My test code for comment --}}
 
                           <div class="mt-6">
+
+                            <form method="POST" id="commentForm" action="{{ route('project.comment.store', $project->id) }}">
+                                @csrf
+                                <textarea name="comment" placeholder="Start typing" class="w-full px-4 py-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+                                <button type="submit" class="px-4 py-2 mt-2 text-white rounded bg-fuchsia-900">Post Comment</button>
+                            </form>
+{{--                             
                             <input type="text" placeholder="Start typing" class="w-full px-4 py-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-purple-500" />
-                            <button class="px-4 py-2 mt-2 text-sm text-white bg-purple-600 rounded hover:bg-purple-700">Comment</button>
+                            <button class="px-4 py-2 mt-2 text-sm text-white bg-purple-600 rounded hover:bg-purple-700">Comment</button> --}}
                           </div>
                         </div>
+
+                        {{-- <form method="POST" action="{{ route('project.comment.store', $project->id) }}">
+                            @csrf
+                            <textarea name="comment" class="w-full p-2 border rounded" rows="3" placeholder="Write a comment..."></textarea>
+                            <button type="submit" class="px-4 py-2 mt-2 text-white rounded bg-fuchsia-900">Post Comment</button>
+                        </form>
+                         --}}
                       </div>
 
 <!-- ADD CLIENT MODAL -->
@@ -270,6 +348,8 @@
                 </div>
         </main>
         <script>
+
+            //for the pop
             document.getElementById('openAddClientModal').addEventListener('click', function () {
                 document.getElementById('addClientModal').classList.remove('hidden');
             });
@@ -312,6 +392,9 @@
                 document.getElementById('successModal').classList.add('hidden');
                 location.reload(); // refresh to update the table
             });
+
+
+            
         </script>
 
 

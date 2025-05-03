@@ -15,7 +15,7 @@
 <div class="flex items-center justify-between mb-6">
    <div class="flex items-center justify-between mb-6">
     <span><i data-feather="home" class="w-[5] h-[5] text-fuchsia-900 ml-[3px]"></i></span>
-    <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>  
+    <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>
     <a href="{{ route('admin.ClientManagement') }}">
         <h3 class="font-sans font-normal text-black cursor-pointer hover:underline">Clients Management</h3>
     </a>
@@ -45,8 +45,12 @@
 
                     <!-- Card Item  begins-->
                     @foreach ($pending as $project)
+                    {{-- <a href="{{ route('admin.clients.projects2
+                    ', $project->id) }}"> --}}
 
-                    <div onclick="window.location='{{ route('admin.clients.projects2', $client->id) }}'" class="p-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
+<a href="{{ route('admin.projects.info', $project->id) }}">
+
+                    <div  class="p-5 bg-white rounded-[20px] mb-[20px] shadow hover:bg-gray-100">
                         <h3 class="mb-3 font-semibold text-gray-800">{{ $project->name }}</h3>
                         <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
                             <i data-feather="calendar"
@@ -64,6 +68,7 @@
                             </div>
                         </div>
                     </div>
+                </a>
                     @endforeach
     <!--another text-semibold-->
 
@@ -71,12 +76,15 @@
                 </div>
             </div>
 
-            <!-- Pending Column begins-->
+            <!-- Pen2
+                0
+
+                g Column begins-->
 
 
             <!-- Ongoing Column begins-->
             <div>
-                <div onclick="window.location='{{ route('admin.clients.projects2', $client->id) }}'" class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
+                <div  class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
                     <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#4F46E5]">
                         <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $ongoing->count() }}</h5></span> Ongoing
                     </div>
@@ -84,8 +92,8 @@
 
                         <!-- Card Item -->
                         @foreach ($ongoing as $project)
-
-                        <div class="p-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
+                        <a href="{{ route('admin.projects.info', $project->id) }}">
+                        <div class="p-5 bg-white rounded-[20px] mb-[20px] shadow hover:bg-gray-100">
                             <h3 class="mb-3 font-semibold text-gray-800">{{ $project->name }}</h3>
                             <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
                                 <i data-feather="calendar"
@@ -103,6 +111,7 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                         @endforeach
                              <!-- Card Item ends-->
 
@@ -114,7 +123,7 @@
 
             <!-- Completed Column begins-->
             <div>
-                <div onclick="window.location='{{ route('admin.clients.projects2', $client->id) }}'" class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
+                <div class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
                     <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#22C55E]">
                         <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $completed->count() }}</h5></span> Completed
                     </div>
@@ -122,8 +131,8 @@
 
                         <!-- Card Item begins-->
                         @foreach ($completed as $project)
-
-                        <div class="p-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
+                        <a href="{{ route('admin.projects.info', $project->id) }}">
+                        <div class="p-5 bg-white rounded-[20px] mb-[20px] shadow hover:bg-gray-100">
                             <h3 class="mb-3 font-semibold text-gray-800">{{ $project->name }}</h3>
                             <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
                                 <i data-feather="calendar"
@@ -141,6 +150,7 @@
                                 </div>
                             </div>
                         </div>
+                    </a>
                         @endforeach
                          <!-- Card Item ends-->
 

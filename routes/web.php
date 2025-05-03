@@ -20,6 +20,7 @@ use App\Http\Controllers\Settings;
 use App\Http\Controllers\Inbox;
 use App\Http\Controllers\ReportsandAnalytics;
 use App\Http\Controllers\ScheduleInstallationController;
+use App\Http\Controllers\CommentController;
 
 use App\Http\Controllers\RoleMiddleware;
 Route::get('/', function () {
@@ -51,13 +52,17 @@ Route::get('/dashboard', function () {
     Route::get('/admin/clients/{client}/projects', [ClientManagementController::class, 'showClientProjects'])
     ->name('admin.clients.projects');
 //for the project info
-    Route::get('/admin/clients/{client}/projects2', [ClientManagementController::class, 'showprojectInfo'])
-    ->name('admin.clients.projects2');
-    Route::get('/admin/clients/{client}/projects2', [ClientManagementController::class, 'showprojectname'])
-    ->name('admin.clients.projects2');
-    
+    // Route::get('/admin/clients/{client}/projects2', [ClientManagementController::class, 'showprojectInfo'])
+    // ->name('admin.clients.projects2');
+    // Route::get('/admin/clients/{project}/projects2', [ClientManagementController::class, 'showprojectname'])
+    // ->name('admin.clients.projects2');
+    Route::get('/admin/projects/{project}/info', [ClientManagementController::class, 'showProjectname'])->name('admin.projects.info');
+
     //deleting project from the dashboard
     Route::delete('admin/dashboard/projects/{id}', [ProjectManagementController::class, 'destroy'])->name('projects.destroy');
+//storing comment
+
+Route::post('/admin/projects/{project}/comments', [CommentController::class, 'store'])->name('project.comment.store');
 
 
 // Route::post('/clients', [ClientManagementController::class, 'store'])->name('clients.store');

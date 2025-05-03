@@ -50,16 +50,33 @@ class ClientManagementController extends Controller
     //     return view('admin.ClientManagement.projectInfo', compact('client', 'projects'));
 
     // }
+
+//     public function showProjectname(Project $project)
+// {
+//     // Load the client relationship if needed
+//     $project->load('client');
+
+//     return view('admin.ClientManagement.projectinfo', compact('project'));
+// }
+
+public function showProjectname(Project $project)
+{
+    $project->load(['client', 'measurement', 'installation', 'design','comments.user']);
+
+    return view('admin.ClientManagement.projectinfo', compact('project'));
+}
+
+
     // public function showprojectInfo(Client $clientId)
     // {
     //     // Fetch client
     //     $client = Client::findOrFail($clientId);
-    
+
     //     // Fetch projects **with related measurement, installation, designs**
     //     $projects = Project::with(['measurement', 'installation', 'designs'])
     //                 ->where('client_id', $clientId)
     //                 ->get();
-    
+
     //     return view('admin.ClientManagement.projectinfo', compact('client', 'projects'));
     // }
 //     public function showprojectInfo(Client $client)
@@ -77,22 +94,20 @@ class ClientManagementController extends Controller
 // {
 //     // Get the first project related to the client
 //     $client = Client::with('projects')->findOrFail($clientId);
-    
+
 //     // Make sure there's at least one project linked to the client
 //     $project = $client->projects->first(); // This gives the first project for the client
-    
+
 //     return view('admin.ClientManagement.projectinfo', compact('client', 'project'));
 // }
-public function showprojectname(Client $client)
-{
-    $projects = $client->projects;
+// public function showprojectname(Client $client)
+// {
+//     $projects = $client->projects->name;
 
-    $pending = $projects->where('status', 'pending');
-    $ongoing = $projects->where('status', 'in progress');
-    $completed = $projects->where('status', 'completed');
 
-    return view('admin.ClientManagement.client-projects', compact('client', 'projects', 'pending', 'ongoing', 'completed'));
-}
+
+//     return view('admin.ClientManagement.client-projects', compact('project',  'pending', 'ongoing', 'completed'));
+// }
 
 //fofr storing clients
 
@@ -142,7 +157,7 @@ public function showClientProjects(Client $client)
     $ongoing = $projects->where('status', 'in progress');
     $completed = $projects->where('status', 'completed');
 
-    return view('admin.ClientManagement.client-projects', compact('client', 'pending', 'ongoing', 'completed','project'));
+    return view('admin.ClientManagement.client-projects', compact('client', 'pending', 'ongoing', 'completed'));
 }
 
 

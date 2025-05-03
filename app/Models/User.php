@@ -62,7 +62,7 @@ public function installations()
     return $this->hasMany(Installation::class, 'user_id');
 }
 
-public function comments()
+public function Comments()
 {
     return $this->hasMany(Comment::class);
 }

@@ -64,6 +64,8 @@ return new class extends Migration
             $table->unsignedBigInteger('client_id');
             $table->enum('status', ['pending', 'in progress', 'completed'])->default('pending');
             $table->date('start_date');
+            $table->date('due_date');
+
             $table->decimal('cost', 10, 2)->default(0.00);
             $table->timestamps();
 

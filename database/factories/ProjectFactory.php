@@ -20,6 +20,7 @@ class ProjectFactory extends Factory
             'client_id' => Client::factory(), // Automatically creates a client
             'status' => $this->faker->randomElement(['pending', 'in progress', 'completed']),
             'start_date' => $this->faker->date(),
+            'due_date' => $this->faker->date(),
             'cost' => $this->faker->randomFloat(2, 1000, 10000),
         ];
     }

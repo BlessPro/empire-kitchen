@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
 // Project Comments Table
-Schema::create('project_comments', function (Blueprint $table) {
+Schema::create('comments', function (Blueprint $table) {
     $table->id();
     $table->unsignedBigInteger('project_id');
     $table->unsignedBigInteger('user_id')->nullable();
     $table->text('comment');
+
     $table->timestamps();
 
     $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');

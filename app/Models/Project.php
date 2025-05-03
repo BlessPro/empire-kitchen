@@ -41,13 +41,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Comments;
 class Project extends Model
 {
 
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description', 'additional_notes', 'cost', 'start_date',
+        'name', 'description', 'additional_notes', 'cost', 'start_date','due_date',
         'client_id', 'status'
     ];
     protected $casts = [
@@ -56,6 +57,7 @@ class Project extends Model
         'design_date' => 'datetime',
         'production_date' => 'datetime',
         'installation_date' => 'datetime',
+        'due_date' => 'datetime',
     ];
 
     public function client()
@@ -77,8 +79,7 @@ class Project extends Model
     {
         return $this->hasMany(Installation::class);
     }
-
-    public function comment()
+    public function Comments()
     {
         return $this->hasMany(Comment::class);
     }
