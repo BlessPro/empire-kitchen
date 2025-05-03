@@ -253,4 +253,50 @@ clientForm.addEventListener('submit', async (e) => {
         document.getElementById("selectAll").checked = allChecked;
         });
         });
-    
+
+
+        //copied from the client management page to be used for the client, poject info and client-porjects page.
+    document.getElementById('openAddClientModal').addEventListener('click', function () {
+        document.getElementById('addClientModal').classList.remove('hidden');
+    });
+
+    document.getElementById('cancelAddClient').addEventListener('click', function () {
+        document.getElementById('addClientModal').classList.add('hidden');
+    });
+
+    document.getElementById('addClientForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+
+
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        fetch("{{ route('clients.store') }}", {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            },
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Something went wrong');
+            return response.json();
+        })
+        .then(data => {
+            // Close form modal and show success modal
+            document.getElementById('addClientModal').classList.add('hidden');
+            document.getElementById('successModal').classList.remove('hidden');
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+        });
+    });
+
+    document.getElementById('closeSuccessModal').addEventListener('click', function () {
+        document.getElementById('successModal').classList.add('hidden');
+        location.reload(); // refresh to update the table
+    });
+
+

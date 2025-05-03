@@ -15,29 +15,25 @@
                 + Add Client
             </button>
 
-            {{-- another test --}}
 
-            {{-- another test --}}
             </div>
-
-        <!--test code-->
 
 
 <!-- ADD CLIENT MODAL -->
-<div id="addClientModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+<div id="addClientModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
     <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
-        <div class="flex flex-col sm:flex-row gap-4 justify-between mb-4">
-        <h2 class="text-xl font-semibold mb-4">Add New Client</h2>
-        <button type="button" id="cancelAddClient" class="text-black px-4 py-2 "> <i data-feather="x"
-    class="feather-icon mr-3 group"></i></button>
+        <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
+        <h2 class="mb-4 text-xl font-semibold">Add New Client</h2>
+        <button type="button" id="cancelAddClient" class="px-4 py-2 text-black "> <i data-feather="x"
+    class="mr-3 feather-icon group"></i></button>
         </div>
         <form id="addClientForm" method="POST">
             @csrf
 
-<div class="flex flex-col sm:flex-row gap-4">
+<div class="flex flex-col gap-4 sm:flex-row">
               <!-- First Name -->
             <div class="mb-4">
-                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-3">First Name</label>
+                <label for="firstName" class="block mb-3 text-sm font-medium text-gray-700">First Name</label>
                 <input
                 id="firstName" name="firstname"
                   type="text"
@@ -48,7 +44,7 @@
 
               <!-- Last Name -->
               <div class="mb-4">
-                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-3">Last Name</label>
+                <label for="lastName" class="block mb-3 text-sm font-medium text-gray-700">Last Name</label>
                 <input
                 id="lastName" name="lastname"  id="lastName"
                   placeholder="Enter last name"
@@ -58,10 +54,10 @@
             </div>
 
 
-            <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex flex-col gap-4 sm:flex-row">
               <!-- Other Names -->
               <div class="mb-4">
-                <label for="otherNames" class="block text-sm font-medium text-gray-700 mb-3">Other Names</label>
+                <label for="otherNames" class="block mb-3 text-sm font-medium text-gray-700">Other Names</label>
                 <input
                   type="text"
                   id="otherNames" name="othernames"                  placeholder="Enter other name"
@@ -71,7 +67,7 @@
 
               <!-- Title Dropdown -->
               <div class="mb-4">
-                <label for="title" class="block text-sm font-medium text-gray-700 mb-3">Title</label>
+                <label for="title" class="block mb-3 text-sm font-medium text-gray-700">Title</label>
                 <select name="title"
                   id="title"
                   class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -86,9 +82,9 @@
             </div>
 
               <!-- Phone Number -->
-              <div class="flex flex-col sm:flex-row gap-4">
+              <div class="flex flex-col gap-4 sm:flex-row">
               <div class="mb-4">
-                <label for="phone" class="block text-sm font-medium  mb-3">Phone Number</label>
+                <label for="phone" class="block mb-3 text-sm font-medium">Phone Number</label>
                 <input
                   type="tel"
                   id="phone" name="phone_number" placeholder="Enter phone number"
@@ -98,7 +94,7 @@
 
               <!-- Location -->
               <div class="mb-6">
-                <label for="location" class="block text-sm font-medium text-gray-700 mb-3">Location</label>
+                <label for="location" class="block mb-3 text-sm font-medium text-gray-700">Location</label>
                 <input
                   type="text"
                   id="location" name="location"
@@ -123,30 +119,30 @@
 
 
 <!-- SUCCESS MODAL -->
-{{-- <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg p-6 w-full max-w-sm text-center">
-        <div class="bg-fuchsia-900 opacity-25"><i data-feather="user" class="feather-icon mr-3 group"></i></div>
-        <h2 class="text-lg font-semibold mb-4">Client successfully created</h2>
-        <div class="right-0"><button id="closeSuccessModal" class="bg-fuchsia-900 text-white px-4 py-2  rounded-full">OK</button></div>
+{{-- <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
+    <div class="w-full max-w-sm p-6 text-center bg-white rounded-lg">
+        <div class="opacity-25 bg-fuchsia-900"><i data-feather="user" class="mr-3 feather-icon group"></i></div>
+        <h2 class="mb-4 text-lg font-semibold">Client successfully created</h2>
+        <div class="right-0"><button id="closeSuccessModal" class="px-4 py-2 text-white rounded-full bg-fuchsia-900">OK</button></div>
     </div>
 </div> --}}
 
-<div id="successModal" class="flex fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50 hidden">
-    <div class="bg-white rounded-lg p-6 w-full max-w-sm">
+<div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
+    <div class="w-full max-w-sm p-6 bg-white rounded-lg">
         <div class="flex items-center justify-center w-10 h-10 mb-[10px] bg-fuchsia-100 rounded-full">
             <i data-feather="user-plus" class="text-fuchsia-900 ml-[3px]"></i>
         </div>
-        <h2 class="text-lg font-semibold mb-4 text-left">Client successfully created</h2>
+        <h2 class="mb-4 text-lg font-semibold text-left">Client successfully created</h2>
 
         <!-- Right-Aligned Button -->
         <div class="flex justify-end">
-            <button id="closeSuccessModal" class="bg-fuchsia-900 text-white px-4 py-2 rounded-full">
+            <button id="closeSuccessModal" class="px-4 py-2 text-white rounded-full bg-fuchsia-900">
                 OK
             </button>
         </div>
     </div>
 </div>
-
+<!-- SUCCESS MODAL  ENDS-->
 
           <!--test code-->
 
@@ -186,7 +182,7 @@
 
                 </tbody>
               </table>
-              <div class="mt-4 ml-5 mr-5 mb-5">
+              <div class="mt-4 mb-5 ml-5 mr-5">
                 {{ $clients->links('pagination::tailwind') }}
             </div>
             </div>
@@ -200,6 +196,8 @@
     </div>
 </main>
 <script>
+
+    //for the pop up
     document.getElementById('openAddClientModal').addEventListener('click', function () {
         document.getElementById('addClientModal').classList.remove('hidden');
     });

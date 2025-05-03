@@ -6,7 +6,7 @@
         {{-- {{ dd($projects) }} --}}
         @php
         $statusClasses = [
-            'in_progress' => 'bg-yellow-100 text-yellow-700 px-2 py-1 border border-yellow-500 rounded-full text-xs',
+            'in progress' => 'bg-yellow-100 text-yellow-700 px-2 py-1 border border-yellow-500 rounded-full text-xs',
             'completed' => 'bg-green-100 text-green-700 px-2 py-1 border border-green-500 rounded-full text-xs',
             'pending' => 'bg-blue-100 text-blue-700 px-2 py-1 border border-blue-500 rounded-full text-xs',
         ];
@@ -161,7 +161,7 @@
                                <td class="p-4">
                                    <span class="px-3 py-1 text-sm {{ $statusClasses[$project->status] ?? $defaultClass }}">{{ $project->status }}</span>
                                </td>
-                               <td  class="px-3 py-1 text-sm rounded-full ${item.statusStyle}">{{ $project->client->firstname . ' ' . $project->client->lastname}}</td>
+                               <td  class="px-3 py-1 text-sm  ${item.statusStyle}">{{ $project->client->firstname . ' ' . $project->client->lastname}}</td>
                                <td id="itemstatus" class="p-4 font-normal text-[15px]">{{ $project->start_date->diffForHumans() }}</td>
                                <td class="p-4 font-normal text-[15px]">{{ $project->cost }}</td>
                                <td class="p-4 text-right">
@@ -191,7 +191,7 @@
 
                      </table>
 
-                     <div class="mt-4">
+                     <div class="mt-4 mb-5 ml-5 mr-5">
                         {{ $projects->links('pagination::tailwind') }}
                     </div>
 
@@ -202,8 +202,23 @@
            </div>
          </div>
          </main>
+         <script>
+         document.getElementById("selectAll").addEventListener("change", function () {
+            const isChecked = this.checked;
+            const checkboxes = document.querySelectorAll(".child-checkbox");
+            checkboxes.forEach(cb => cb.checked = isChecked);
+            });
+            // When 'selectAll' is unchecked
 
+            const allCheckboxes = document.querySelectorAll(".child-checkbox");
+            allCheckboxes.forEach(cb => {
+            cb.addEventListener("change", () => {
+            const allChecked = Array.from(allCheckboxes).every(c => c.checked);
+            document.getElementById("selectAll").checked = allChecked;
+            });
+            });
 
+</script>
 
          @vite(['resources/js/app.js'])
 

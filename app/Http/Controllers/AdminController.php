@@ -47,15 +47,17 @@ class AdminController extends Controller
 
     public function index()
 {
-          $latestProjectWithAllDates = Project::whereNotNull('measurement_date')
-            ->whereNotNull('design_date')
-            ->whereNotNull('installation_date')
-            ->whereNotNull('production_date')
-            ->latest()
-            ->first();
+        //   $latestProjectWithAllDates = Project::whereNotNull('measurement_date');
+            // ->whereNotNull('design_date')
+            // ->whereNotNull('installation_date')
+            // ->whereNotNull('production_date')
+            // ->latest()
+            // ->first();
 
     $projects = Project::paginate(10); // fetch paginated projects
-    return view('admin/dashboard', compact(['latestProjectWithAllDates','projects']));
+    // return view('admin/dashboard', compact(['latestProjectWithAllDates','projects']));
+    return view('admin/dashboard', compact(['projects']));
+
 
 }
 

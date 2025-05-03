@@ -53,6 +53,9 @@ Route::get('/dashboard', function () {
 //for the project info
     Route::get('/admin/clients/{client}/projects2', [ClientManagementController::class, 'showprojectInfo'])
     ->name('admin.clients.projects2');
+    Route::get('/admin/clients/{client}/projects2', [ClientManagementController::class, 'showprojectname'])
+    ->name('admin.clients.projects2');
+    
     //deleting project from the dashboard
     Route::delete('admin/dashboard/projects/{id}', [ProjectManagementController::class, 'destroy'])->name('projects.destroy');
 

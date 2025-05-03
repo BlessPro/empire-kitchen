@@ -78,7 +78,7 @@
         <div class="flex items-center justify-between mb-6 text-sm">
           <label class="flex items-center">
             <input type="checkbox" class="form-checkbox text-[#5a0562] mr-2" checked />
-            <span>Remember now</span>
+            <span onclick="window.location='{{ route('admin.clients.projects2'">Remember now</span>
           </label>
           <a href="#" class="[#5a0562] font-medium hover:underline">Forgot Password</a>
         </div>
