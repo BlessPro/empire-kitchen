@@ -27,6 +27,6 @@ class Design extends Model
 
     public function designer()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'designer_id');
     }
 }

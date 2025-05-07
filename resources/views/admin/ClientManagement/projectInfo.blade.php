@@ -91,9 +91,9 @@
                               <span><span class="mr-[12px] font-normal text-black-900">{{ $project->client->location }}</span> </span>
                             </div>
                             <div class="flex items-center gap-2">
-                              <span class="font-medium">Client:</span>
+                              <span class="font-medium">Tech Supervisor:</span>
 
-                              <span><span class="mr-[12px] font-normal text-black-900">{{$project->client->title . ' '.$project->client->firstname . ' '.$project->client->lastname }}</span> </span>
+                              <span><span class="mr-[12px] font-normal text-black-900">{{ $project->techSupervisor?->name ?? 'Not Assigned' }}</span> </span>
 
                           </div>
                         </div>
@@ -214,7 +214,7 @@
                                 <textarea name="comment" placeholder="Start typing" class="w-full px-4 py-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
                                 <button type="submit" class="px-4 py-2 mt-2 text-white rounded bg-fuchsia-900">Post Comment</button>
                             </form>
-{{--                             
+{{--
                             <input type="text" placeholder="Start typing" class="w-full px-4 py-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-purple-500" />
                             <button class="px-4 py-2 mt-2 text-sm text-white bg-purple-600 rounded hover:bg-purple-700">Comment</button> --}}
                           </div>
@@ -238,7 +238,7 @@
         </div>
         <form id="addClientForm" method="POST">
             @csrf
-
+            <div id="formErrors" class="mb-4 text-sm text-red-500"></div>
 <div class="flex flex-col gap-4 sm:flex-row">
               <!-- First Name -->
             <div class="mb-4">
@@ -348,45 +348,69 @@
                 </div>
         </main>
         <script>
+document.getElementById('addClientForm').addEventListener('submit', function (e) {
+    e.preventDefault();
 
-            //for the pop
-            document.getElementById('openAddClientModal').addEventListener('click', function () {
-                document.getElementById('addClientModal').classList.remove('hidden');
-            });
+    const title = document.getElementById('title').value.trim();
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const otherNames = document.getElementById('otherNames').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const location = document.getElementById('location').value.trim();
 
-            document.getElementById('cancelAddClient').addEventListener('click', function () {
-                document.getElementById('addClientModal').classList.add('hidden');
-            });
+    let errors = [];
 
-            document.getElementById('addClientForm').addEventListener('submit', function (e) {
-                e.preventDefault();
+    if (!title) errors.push('Please select a title.');
+    if (!firstName) errors.push('First name is required.');
+    if (!lastName) errors.push('Last name is required.');
+    if (!phone) errors.push('Phone number is required.');
+    if (!location) errors.push('Location is required.');
 
+    // Optional: check phone format
+    const phoneRegex = /^[0-9]{10,15}$/;
+    if (phone && !phoneRegex.test(phone)) {
+        errors.push('Phone number must be 10-15 digits.');
+    }
 
+    // Show errors if any
+    const errorContainer = document.getElementById('formErrors');
+    if (!errorContainer) {
+        // if you haven't added an error container div yet, fallback to alert
+        if (errors.length > 0) {
+            alert(errors.join('\n'));
+            return;
+        }
+    } else {
+        errorContainer.innerHTML = '';
+        if (errors.length > 0) {
+            errorContainer.innerHTML = errors.map(e => `<div>${e}</div>`).join('');
+            return;
+        }
+    }
 
+    // If no errors, proceed to submit
+    const form = e.target;
+    const formData = new FormData(form);
 
-                const form = e.target;
-                const formData = new FormData(form);
-
-                fetch("{{ route('clients.store') }}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    },
-                    body: formData,
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Something went wrong');
-                    return response.json();
-                })
-                .then(data => {
-                    // Close form modal and show success modal
-                    document.getElementById('addClientModal').classList.add('hidden');
-                    document.getElementById('successModal').classList.remove('hidden');
-                })
-                .catch(error => {
-                    alert('Error: ' + error.message);
-                });
-            });
+    fetch("{{ route('clients.store') }}", {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        },
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Something went wrong');
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById('addClientModal').classList.add('hidden');
+        document.getElementById('successModal').classList.remove('hidden');
+    })
+    .catch(error => {
+        alert('Error: ' + error.message);
+    });
+});
 
             document.getElementById('closeSuccessModal').addEventListener('click', function () {
                 document.getElementById('successModal').classList.add('hidden');
@@ -394,7 +418,7 @@
             });
 
 
-            
+
         </script>
 
 

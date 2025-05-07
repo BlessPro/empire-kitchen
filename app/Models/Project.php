@@ -48,15 +48,16 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'description', 'additional_notes', 'cost', 'start_date','due_date',
-        'client_id', 'status'
+        'name', 'description', 'additional_notes', 'cost', 'start_date', 'due_date',
+        'client_id', 'status', 'current_stage' // ✅ added this
     ];
+
     protected $casts = [
         'start_date' => 'datetime',
-        'measurement_date' => 'datetime',
-        'design_date' => 'datetime',
-        'production_date' => 'datetime',
-        'installation_date' => 'datetime',
+        // 'measurement_date' => 'datetime',
+        // 'design_date' => 'datetime',
+        // 'production_date' => 'datetime',
+        // 'installation_date' => 'datetime',
         'due_date' => 'datetime',
     ];
 
@@ -83,4 +84,30 @@ class Project extends Model
     {
         return $this->hasMany(Comment::class);
     }
+    public function admin()
+{
+    return $this->belongsTo(User::class, 'admin_id');
+}
+
+public function designer()
+{
+    return $this->belongsTo(User::class, 'designer_id');
+}
+
+public function techSupervisor()
+{
+    return $this->belongsTo(User::class, 'tech_supervisor_id');
+}
+
+public function salesAccountant()
+{
+    return $this->belongsTo(User::class, 'sales_accountant_id');
+}
+
+public function accountant()
+{
+    return $this->belongsTo(User::class, 'accountant_id');
+}
+
+
 }

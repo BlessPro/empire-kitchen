@@ -9,6 +9,7 @@ use App\Models\Project; // Import the Project model
 use Barryvdh\DomPDF\Facade\Pdf; // Import the Pdf facade
 use App\Exports\ProjectsExport; // Ensure this import exists after creating the export class
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator; // Import the Validator facade
 
 
 class ClientManagementController extends Controller
@@ -126,9 +127,27 @@ public function showProjectname(Project $project)
 // }
 
 
+// public function store(Request $request)
+// {
+//     $request->validate([
+//         'title' => 'required|string|max:10',
+//         'firstname' => 'required|string|max:50',
+//         'lastname' => 'required|string|max:50',
+//         'othernames' => 'nullable|string|max:100',
+//         'phone_number' => 'required|string|max:20',
+//         'location' => 'required|string|max:100',
+//     ]);
+
+//     $client = Client::create($request->only([
+//         'title', 'firstname', 'lastname', 'othernames', 'phone_number', 'location'
+//     ]));
+
+//     return response()->json(['message' => 'Client successfully created']);
+// }
+
 public function store(Request $request)
 {
-    $request->validate([
+    $validator = Validator::make($request->all(), [
         'title' => 'required|string|max:10',
         'firstname' => 'required|string|max:50',
         'lastname' => 'required|string|max:50',
@@ -136,6 +155,10 @@ public function store(Request $request)
         'phone_number' => 'required|string|max:20',
         'location' => 'required|string|max:100',
     ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
 
     $client = Client::create($request->only([
         'title', 'firstname', 'lastname', 'othernames', 'phone_number', 'location'

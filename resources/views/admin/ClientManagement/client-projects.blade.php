@@ -60,7 +60,7 @@
                         <div class="flex items-center justify-between mt-4">
                             <div class="flex items-center gap-3">
                                 <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-8 h-8 rounded-full">
-                                <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->client->title . ' '.$project->client->firstname . ' '.$project->client->lastname }}</p>
+                                <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->techSupervisor?->name ?? 'Not Assigned' }}</p>
                                 </span>
                             </div>
                             <div class="flex items-center gap-1 text-sm text-gray-400">
@@ -103,7 +103,7 @@
                             <div class="flex items-center justify-between mt-4">
                                 <div class="flex items-center gap-3">
                                     <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-8 h-8 rounded-full">
-                                    <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->client->title . ' '.$project->client->firstname . ' '.$project->client->lastname }}</p>
+                                    <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->techSupervisor?->name ?? 'Not Assigned' }}</p>
                                     </span>
                                 </div>
                                 <div class="flex items-center gap-1 text-sm text-gray-400">
@@ -141,8 +141,10 @@
                             </div>
                             <div class="flex items-center justify-between mt-4">
                                 <div class="flex items-center gap-3">
-                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-8 h-8 rounded-full">
-                                    <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->client->title . ' '.$project->client->firstname . ' '.$project->client->lastname }}</p>
+                                    <img
+                                    
+                                     alt="technical supervisor" class="w-8 h-8 rounded-full">
+                                    <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->techSupervisor?->name ?? 'Not Assigned' }}</p>
                                     </span>
                                 </div>
                                 <div class="flex items-center gap-1 text-sm text-gray-400">

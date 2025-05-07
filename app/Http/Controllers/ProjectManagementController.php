@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Measurement;
 use Illuminate\Http\Request;
 use App\Models\Project;
 
@@ -21,11 +22,26 @@ class ProjectManagementController extends Controller
     {
         return view('admin.ProjectManagement.edit', compact('id'));
     }
-    public function show($id)
-    {
-        return view('admin.ProjectManagement.show', compact('id'));
-    }
-  
+
+
+//     public function show()
+// {
+//     $project = Project::with(relations: ['measurements', 'designs', 'productions', 'installations']);
+
+//     return view('admin.ProjectManagement', compact('measurements'));
+// }
+//looping through table  for records to push to the project blade
+public function project_stage()
+{
+    $measurements = Project::with('measurement')->where('current_stage', 'measurement')->get();
+    $designs = Project::with('design')->where('current_stage', 'design')->get();
+    $installations = Project::with('installation')->where('current_stage', 'installation')->get();
+
+    return view('admin.ProjectManagement', compact('measurements', 'designs', 'installations'));
+}
+
+
+
     public function store(Request $request)
     {
         // Logic to store the project

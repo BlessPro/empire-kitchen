@@ -55,29 +55,62 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    // public function up()
+    // {
+    //     Schema::create('projects', function (Blueprint $table) {
+    //         $table->id();
+    //         $table->string('name');
+    //         $table->text('description')->nullable();
+    //         $table->unsignedBigInteger('client_id');
+    //         $table->enum('status', ['pending', 'in progress', 'completed'])->default('pending');
+    //         $table->date('start_date');
+    //         $table->date('due_date');
+
+    //         $table->decimal('cost', 10, 2)->default(0.00);
+    //         $table->timestamps();
+
+    //         $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
+    //     });
+    // }
+
+    // /**
+    //  * Reverse the migrations.
+    //  */
+    // public function down(): void
+    // {
+    //     Schema::dropIfExists('projects');
+    // }
+
     public function up()
-    {
-        Schema::create('projects', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->unsignedBigInteger('client_id');
-            $table->enum('status', ['pending', 'in progress', 'completed'])->default('pending');
-            $table->date('start_date');
-            $table->date('due_date');
+{
+    Schema::create('projects', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->text('description')->nullable();
+        $table->unsignedBigInteger('client_id');
 
-            $table->decimal('cost', 10, 2)->default(0.00);
-            $table->timestamps();
+        // Add user role foreign keys (all referencing users table)
+        $table->unsignedBigInteger('admin_id')->nullable();
+        $table->unsignedBigInteger('designer_id')->nullable();
+        $table->unsignedBigInteger('tech_supervisor_id')->nullable();
+        $table->unsignedBigInteger('sales_accountant_id')->nullable();
+        $table->unsignedBigInteger('accountant_id')->nullable();
 
-            $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
-        });
-    }
+        $table->enum('status', ['pending', 'in progress', 'completed'])->default('pending');
+        $table->date('start_date');
+        $table->date('due_date');
+        $table->decimal('cost', 10, 2)->default(0.00);
+        $table->timestamps();
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('projects');
-    }
+        $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
+
+        // Foreign keys to users table
+        $table->foreign('admin_id')->references('id')->on('users')->onDelete('set null');
+        $table->foreign('designer_id')->references('id')->on('users')->onDelete('set null');
+        $table->foreign('tech_supervisor_id')->references('id')->on('users')->onDelete('set null');
+        $table->foreign('sales_accountant_id')->references('id')->on('users')->onDelete('set null');
+        $table->foreign('accountant_id')->references('id')->on('users')->onDelete('set null');
+    });
+}
+
 };

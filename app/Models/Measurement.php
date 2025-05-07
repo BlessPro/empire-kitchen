@@ -26,6 +26,6 @@ class Measurement extends Model
 
     public function techSupervisor()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'tech_supervisor_id');
     }
 }

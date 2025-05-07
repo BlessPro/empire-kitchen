@@ -85,8 +85,9 @@ Route::post('/admin/projects/{project}/comments', [CommentController::class, 'st
     Route::get('/sales/dashboard', [SalesController::class, 'index'])->middleware(middleware: 'RoleMiddleware:sales_accountant');
 
     // Route::get('/admin/bick', [DashboardController::class, 'dashboard']);
-    Route::get('/admin/ProjectManagement',  [ProjectController::class, 'index'])->name('admin.ProjectManagement');
-
+    // Route::get('/admin/ProjectManagement',  [ProjectController::class, 'index'])->name('admin.ProjectManagement');
+//for the looping card on the project management page
+    Route::get('/admin/ProjectManagement',  [ProjectManagementController::class, 'project_stage'])->name('admin.ProjectManagement');
 
     Route::get('/admin/Dashboard2',  [ProjectController::class, 'index'])->name('admin.Dashboard2');
 
