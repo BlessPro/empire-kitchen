@@ -7,6 +7,10 @@ feather.replace();
 
 //variables for the charts
 const clientsChartCtx = document.getElementById('clientsChart').getContext('2d');
+// const clientsChartCtx1 = document.getElementById('clientsChart1').getContext('2d');
+// const clientsChartCtx2 = document.getElementById('clientsChart2').getContext('2d');
+
+
 //variales for the pipeline chart
 const pipeline_chart=document.getElementById('ProjectsPipeline').getContext('2d');
 //initializing the barcharts
@@ -84,7 +88,7 @@ y: {
 //     }
 //   }
 // });
-//initializing the doughnut chart
+//initializing the doughnut chart for the admin/dashboard
 const ctx = document.getElementById('clientsChart').getContext('2d');
 new Chart(ctx, {
 type: 'doughnut',
@@ -113,6 +117,34 @@ options: {
 }
 });
 
+//initializing the doughnut chart for the admin/report page
+const ctx1 = document.getElementById('clientsChart1').getContext('2d');
+new Chart(ctx1, {
+type: 'doughnut',
+data: {
+  labels: ['Completed Projects', 'Pending Projects', 'Closed Projects'],
+  datasets: [{
+    data: [5, 25, 16],
+    backgroundColor: ['#f97316', '#581c87', '#8b5cf6', '#eab308', '#3b82f6'],
+    borderWidth: 1,
+      borderColor: '#fff',
+      hoverOffset: 8,
+      borderRadius: 7,
+      spacing: 4,
+  }]
+},
+options: {
+  cutout: '70%',
+  plugins: {
+    legend: {
+      display: false,
+      position: 'right',
+      borderRadius: 5,
+    },
+
+  }
+}
+});
 // // Prepare the data for the chart (extract values from the projects)
 // const measurementData = pipelineData.map(project => project.measurement_date ? 1 : 0);
 // const designData = pipelineData.map(project => project.design_date ? 1 : 0);

@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Project;
 
 class ReportsandAnalytics extends Controller
 {
     //
     public function index()
     {
-        return view('admin.ReportsandAnalytics');
+        $projects = Project::paginate(10); // fetch paginated projects
+        // return view('admin/dashboard', compact(['latestProjectWithAllDates','projects']));
+        return view('admin.ReportsandAnalytics', compact(['projects']));
     }
     public function create()
     {
