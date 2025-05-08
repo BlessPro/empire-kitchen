@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Users;
 
 class Settings extends Controller
 {
@@ -12,6 +14,37 @@ class Settings extends Controller
     {
         return view('admin.Settings');
     }
+
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'phone_number' => 'required|numeric',
+            'role' => 'required|string',
+            // 'admin_name' => 'required|string|max:255',
+            
+        ]);
+
+
+    
+        User::create([
+            'name' => $request->name,
+            'due_date' => $request->due_date,
+            'cost' => $request->cost,
+            'location' => $request->location,
+            'description' => $request->description,
+            'start_date' => now(), // or any other default value
+            // 'admin_name' => $request->admin_id,
+            'client_id' => $request->client_id,
+            'tech_supervisor_id' => $request->tech_supervisor_id,
+            'current_stage' => 'measurement', // if default stage is needed
+        ]);
+    
+        return response()->json(['message' => 'Project created']);
+    }
+    
     public function create()
     {
         return view('admin.Settings.create');
@@ -26,14 +59,16 @@ class Settings extends Controller
     }
     public function destroy($id)
     {
-        // Logic to delete the project
-        return redirect()->route('admin.Settings.index')->with('success', 'Project deleted successfully.');
+        $users = User::findOrFail($id);
+        $users->delete();
+    
+        return redirect()->back()->with('success', 'User successfully! deleted ');
     }
-    public function store(Request $request)
-    {
-        // Logic to store the project
-        return redirect()->route('admin.Settings.index')->with('success', 'Project created successfully.');
-    }
+    // public function store(Request $request)
+    // {
+    //     // Logic to store the project
+    //     return redirect()->route('admin.Settings.index')->with('success', 'Project created successfully.');
+    // }
     public function update(Request $request, $id)
     {
         // Logic to update the project
@@ -154,4 +189,10 @@ class Settings extends Controller
         // Logic to update the custom dashboards
         return redirect()->route('admin.Settings.index')->with('success', 'Custom dashboards updated successfully.');
     }
+    public function showUsers()
+    {     
+        $users = User::orderBy('created_at', 'desc')->paginate(10);
+        return view('admin.settings', compact('users'));
+    }
+    
 }

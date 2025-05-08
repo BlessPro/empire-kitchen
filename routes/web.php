@@ -66,7 +66,11 @@ Route::post('/admin/projects/{project}/comments', [CommentController::class, 'st
 
 
 // Route::post('/clients', [ClientManagementController::class, 'store'])->name('clients.store');
-    Route::get('/admin/Settings', [Settings::class, 'index'])->name('admin.Settings')->middleware('auth');
+    Route::get('/admin/settings', [Settings::class, 'showUsers'])->name('admin.Settings')->middleware('auth');
+    //delete user
+    Route::delete('admin/dashboard/user/{id}', [settings::class, 'destroy'])->name('settings.destroy');
+    //storing comment
+    
     Route::get('/admin/Inbox', [Inbox::class, 'index'])->name('admin.Inbox')->middleware('auth');
     Route::get('/admin/ReportsandAnalytics', [ReportsandAnalytics::class, 'index'])->name('admin.ReportsandAnalytics')->middleware('auth');
     Route::get('/admin/ScheduleInstallation', [ScheduleInstallationController::class, 'index'])->name('admin.ScheduleInstallation')->middleware('auth');
@@ -85,7 +89,7 @@ Route::post('/admin/projects/{project}/comments', [CommentController::class, 'st
     Route::get('/sales/dashboard', [SalesController::class, 'index'])->middleware(middleware: 'RoleMiddleware:sales_accountant');
 
     // Route::get('/admin/bick', [DashboardController::class, 'dashboard']);
-    // Route::get('/admin/ProjectManagement',  [ProjectController::class, 'index'])->name('admin.ProjectManagement');
+    //displayinig the users on the settings page
     
     // Route::get('/admin/ProjectManagement',   [ProjectManagementController::class, 'index'])->name('admin.ProjectManagement');
     Route::get('/admin/ProjectManagement', [ProjectManagementController::class, 'index'])->name('admin.ProjectManagement');
@@ -107,7 +111,7 @@ Route::post('/admin/projects/{project}/comments', [CommentController::class, 'st
 // to filter
 });
 
-Route::get('/admin/projects/filter', [AdminController::class, 'filter'])->name('projects.filter');
+// Route::get('/admin/projects/filter', [AdminController::class, 'filter'])->name('projects.filter');
 
 
 
