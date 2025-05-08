@@ -284,6 +284,8 @@
 </div>
 </main>
 <script>
+     // //for the pop up and error handling
+    // Open the modal when the button is clicked
     document.getElementById('openAddClientModal').addEventListener('click', function () {
         document.getElementById('addClientModal').classList.remove('hidden');
     });
@@ -291,42 +293,62 @@
     document.getElementById('cancelAddClient').addEventListener('click', function () {
         document.getElementById('addClientModal').classList.add('hidden');
     });
+    
 
     document.getElementById('addClientForm').addEventListener('submit', function (e) {
-        e.preventDefault();
+    e.preventDefault();
 
+    const form = e.target;
+    const formData = new FormData(form);
 
+    // Clear previous errors
+    document.querySelectorAll('.error-message').forEach(el => el.remove());
+    document.querySelectorAll('input, select').forEach(el => el.classList.remove('border-red-500'));
 
+    fetch("{{ route('clients.store') }}", {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        },
+        body: formData,
+    })
+    .then(async response => {
+        if (!response.ok) {
+            if (response.status === 422) {
+                const data = await response.json();
+                for (const [field, messages] of Object.entries(data.errors)) {
+                    const input = document.querySelector(`[name="${field}"]`);
+                    if (input) {
+                        input.classList.add('border-red-500');
 
-        const form = e.target;
-        const formData = new FormData(form);
+                        const errorText = document.createElement('p');
+                        errorText.className = 'error-message text-red-500 text-sm mt-1';
+                        errorText.textContent = messages[0];
 
-        fetch("{{ route('clients.store') }}", {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            },
-            body: formData,
-        })
-        .then(response => {
-            if (!response.ok) throw new Error('Something went wrong');
+                        input.parentElement.appendChild(errorText);
+                    }
+                }
+            } else {
+                throw new Error('Something went wrong');
+            }
+        } else {
             return response.json();
-        })
-        .then(data => {
-            // Close form modal and show success modal
+        }
+    })
+    .then(data => {
+        if (data) {
             document.getElementById('addClientModal').classList.add('hidden');
             document.getElementById('successModal').classList.remove('hidden');
-        })
-        .catch(error => {
-            alert('Error: ' + error.message);
-        });
+        }
+    })
+    .catch(error => {
+        alert('Error: ' + error.message);
     });
-
-    document.getElementById('closeSuccessModal').addEventListener('click', function () {
+});
+document.getElementById('closeSuccessModal').addEventListener('click', function () {
         document.getElementById('successModal').classList.add('hidden');
         location.reload(); // refresh to update the table
-    });
-</script>
+    });</script>
 
     @vite(['resources/js/app.js'])
 

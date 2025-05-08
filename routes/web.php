@@ -86,8 +86,17 @@ Route::post('/admin/projects/{project}/comments', [CommentController::class, 'st
 
     // Route::get('/admin/bick', [DashboardController::class, 'dashboard']);
     // Route::get('/admin/ProjectManagement',  [ProjectController::class, 'index'])->name('admin.ProjectManagement');
-//for the looping card on the project management page
-    Route::get('/admin/ProjectManagement',   [ProjectManagementController::class, 'project_stage'])->name('admin.ProjectManagement');
+    
+    // Route::get('/admin/ProjectManagement',   [ProjectManagementController::class, 'index'])->name('admin.ProjectManagement');
+    Route::get('/admin/ProjectManagement', [ProjectManagementController::class, 'index'])->name('admin.ProjectManagement');
+
+    //for the looping card on the project management page
+    // Route::get('/admin/ProjectManagement',   [ProjectManagementController::class, 'project_stage'])->name('admin.ProjectManagement');
+    //for the add project pop up
+    Route::post('/projects', [ProjectManagementController::class, 'store'])->name('projects.store');
+
+    //using ajax to load the the client and tech supervisor into the pop up
+    // Route::get('/admin/ProjectManagement/form-data', [ProjectManagementController::class, 'getFormData']);
 
     //For the report and analytics page
     Route::get('/admin/ReportandAnalytics',   [ProjectManagementController::class, 'index'])->name('admin.ReportandAnalytics');
@@ -95,8 +104,11 @@ Route::post('/admin/projects/{project}/comments', [CommentController::class, 'st
 
 
     Route::get('/admin/Dashboard2',  [ProjectController::class, 'index'])->name('admin.Dashboard2');
-
+// to filter
 });
+
+Route::get('/admin/projects/filter', [AdminController::class, 'filter'])->name('projects.filter');
+
 
 
 // Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware('role:admin');

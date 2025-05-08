@@ -116,6 +116,15 @@
              <div class="flex items-center justify-between pt-4 pb-5 pl-6 pr-6">
                <p class="text-gray-600 text-[15px] font-normal">Easily manage your projects here</p>
                <div class="flex gap-3">
+                {{-- <div class="flex gap-3 mb-4">
+                    <button class="px-4 py-2 text-white bg-blue-600 rounded filter-btn" data-status="all">All</button>
+                    <button class="px-4 py-2 text-white bg-yellow-500 rounded filter-btn" data-status="pending">Pending</button>
+                    <button class="px-4 py-2 text-white bg-green-600 rounded filter-btn" data-status="ongoing">Ongoing</button>
+                    <button class="px-4 py-2 text-white bg-purple-700 rounded filter-btn" data-status="completed">Completed</button>
+                </div> --}}
+                
+                
+                
                  <button class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-full">
                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h4M6 10h12M6 14h12M10 18h4" />
@@ -133,70 +142,15 @@
 
 
              {{--Testing the table logic--}}
+             <div id="projectsTableContainer">
+                @include('partials.projects-table', ['projects' => $projects])
+            </div>
+            
 
-
-
-                        <table class="min-w-full text-left">
-                                <thead class="text-sm text-gray-600 bg-gray-100">
-                                  <tr>
-                                    <th class="p-4 font-medium">
-                                      <input type="checkbox" id="selectAll" />
-                                    </th>
-                                    <th class="p-4 font-mediumt text-[15px]">Project Name</th>
-                                    <th class="p-4 font-mediumt text-[15px]">Status</th>
-                                    <th class="p-4 font-mediumt text-[15px]">Client Name</th>
-                                    <th class="p-4 font-mediumt text-[15px]">Duration</th>
-                                    <th class="p-4 font-mediumt text-[15px]">Cost</th>
-                                    <th class="p-4 font-mediumt text-[15px]">Del</th>
-                                  </tr>
-                                </thead>
-                           <!-- Add other columns as needed -->
-                         </tr>
-                       </thead>
-                       <tbody>
-                        @foreach($projects as $project)
-                           <tr class="border-t hover:bg-gray-50">
-                               <td class="p-4"><input type="checkbox" class="child-checkbox" /></td>
-                               <td class="p-4 font-normal text-[15px]">{{ $project->name }}</td>
-                               <td class="p-4">
-                                   <span class="px-3 py-1 text-sm {{ $statusClasses[$project->status] ?? $defaultClass }}">{{ $project->status }}</span>
-                               </td>
-                               <td  class="px-3 py-1 text-sm  ${item.statusStyle}">{{ $project->client->firstname . ' ' . $project->client->lastname}}</td>
-                               <td id="itemstatus" class="p-4 font-normal text-[15px]">{{ $project->start_date->diffForHumans() }}</td>
-                               <td class="p-4 font-normal text-[15px]">{{ $project->cost }}</td>
-                               <td class="p-4 text-right">
-                                   {{-- <button class="text-gray-500 hover:text-red-500">
-                                       <i data-feather="trash" class="mr-3"></i>
-                                   </button> --}}
-
-                                   <form action="{{ route('projects.destroy', $project->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="text-gray-500 hover:text-red-500">
-                                        <i data-feather="trash" class="mr-3"></i>
-                                    </button>
-                                    </form>
-                               </td>
-                           </tr>
-                       @endforeach
-
-                       {{-- <form action="{{ route('projects.destroy', $project->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-                        @csrf
-                        @method('DELETE')
-                        <button class="text-gray-500 hover:text-red-500">
-                            <i data-feather="trash" class="mr-3"></i>
-                        </button>
-                        </form> --}}
-
-
-                     </table>
-
+{{-- table was here --}}
                      <div class="mt-4 mb-5 ml-5 mr-5">
                         {{ $projects->links('pagination::tailwind') }}
                     </div>
-
-
-
 
 
            </div>
@@ -217,6 +171,27 @@
             document.getElementById("selectAll").checked = allChecked;
             });
             });
+
+
+          
+document.querySelectorAll('.filter-btn').forEach(button => {
+    button.addEventListener('click', function () {
+        const status = this.dataset.status;
+
+        fetch(`/admin/projects/filter?status=${status}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('projectsTableContainer').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error fetching filtered projects:', error);
+            });
+    });
+});
+
+
+
+
 
 </script>
 

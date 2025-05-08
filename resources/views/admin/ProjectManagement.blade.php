@@ -11,10 +11,10 @@
         <div class="flex items-center justify-between mb-6">
 
  <!-- Top Navbar -->
- <h1 class="text-2xl font-bold">Clients Management</h1>
+ <h1 class="text-2xl font-bold">Project Management</h1>
 
- <button id="openAddClientModal" class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
-     + Add Client
+ <button id="openAddProjectModal" class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
+     + Add Project
  </button>
 
 
@@ -26,7 +26,7 @@
     <!-- Pending Column -->
     <div class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
         <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#F59E0B]">
-            <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">2</h5></span> Measurement
+            <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $measurements->count() }}</h5></span> Measurement
         </div>
         <div class="pt-5 space-y-5 ">
 
@@ -43,7 +43,7 @@
                 <div class="flex items-center justify-between mt-4">
                     <div class="flex items-center gap-3">
                         <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-8 h-8 rounded-full">
-                        <span class="text-sm text-gray-700">Marilyn Stanton</span>
+                        <span class="text-sm text-gray-700">{{ $project->client->title. ' '.$project->client->firstname . ' '.$project->client->lastname}}</span>
                     </div>
                     <div class="flex items-center gap-1 text-sm text-gray-400">
                         💬 0
@@ -65,7 +65,7 @@
     <div>
         <div class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
             <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#4F46E5]">
-                <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">2</h5></span> Design
+                <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $measurements->count() }}</h5></span> Design
             </div>
             <div class="pt-5 space-y-5 ">
 
@@ -82,7 +82,7 @@
                     <div class="flex items-center justify-between mt-4">
                         <div class="flex items-center gap-3">
                             <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-8 h-8 rounded-full">
-                            <span class="text-sm text-gray-700">Marilyn Stanton</span>
+                            <span class="text-sm text-gray-700">{{ $project->client->title. ' '.$project->client->firstname . ' '.$project->client->lastname}}</span>
                         </div>
                         <div class="flex items-center gap-1 text-sm text-gray-400">
                             💬 0
@@ -102,7 +102,7 @@
     <div>
         <div class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
             <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#22C55E]">
-                <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">2</h5></span> Production
+                <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $measurements->count() }}</h5></span> Production
             </div>
             <div class="pt-5 space-y-5 ">
 
@@ -119,7 +119,7 @@
                     <div class="flex items-center justify-between mt-4">
                         <div class="flex items-center gap-3">
                             <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-8 h-8 rounded-full">
-                            <span class="text-sm text-gray-700">Marilyn Stanton</span>
+                            <span class="text-sm text-gray-700">{{ $project->client->title. ' '.$project->client->firstname . ' '.$project->client->lastname}}</span>
                         </div>
                         <div class="flex items-center gap-1 text-sm text-gray-400">
                             💬 0
@@ -141,7 +141,7 @@
      <div>
         <div class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
             <div class="flex items-center py-2 pl-2 pr-5 text-white rounded-full bg-fuchsia-500">
-                <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">2</h5></span> Installation
+                <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $measurements->count() }}</h5></span> Installation
             </div>
             <div class="pt-5 space-y-5 ">
 
@@ -177,8 +177,238 @@
         </div>
     </div>
 </div>
+{{-- 
+<!-- Add Project Modal -->
+<div id="addProjectModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-40">
+    <div class="w-full max-w-xl p-6 bg-white rounded-lg">
+      <h2 class="mb-4 text-xl font-bold">Add New Project</h2>
+  
+      <form id="addProjectForm" method="POST">
+        @csrf
+  
+        <!-- Select Client -->
+        <div class="mb-4">
+          <label for="client_id" class="block text-sm font-medium text-gray-700">Client Name</label>
+          <select name="client_id" id="client_id" class="w-full px-3 py-2 border border-gray-300 rounded">
+            <option disabled selected>Select a client</option>
+            @foreach ($clients as $client)
+              <option value="{{ $client->id }}">{{ $client->firstname }} {{ $client->lastname }}</option>
+            @endforeach
+          </select>
+        </div>
+        
+  
+        <!-- Select Tech Supervisor -->
+        <div class="mb-4">
+          <label for="tech_supervisor_id" class="block text-sm font-medium text-gray-700">Tech Supervisor</label>
+          <select name="tech_supervisor_id" id="tech_supervisor_id" class="w-full px-3 py-2 border border-gray-300 rounded">
+            <option disabled selected>Select a supervisor</option>
+            @foreach ($techSupervisors as $supervisor)
+              <option value="{{ $supervisor->id }}">{{ $supervisor->name }}</option>
+            @endforeach
+          </select>
+        </div>
+  
+        <!-- Submit -->
+        <div class="flex justify-end">
+          <button type="submit" class="px-4 py-2 text-white rounded bg-fuchsia-900">Save Project</button>
+        </div>
+      </form>
+    </div>
+  </div> --}}
+
+  <div id="addProjectModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
+        <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
+        <h2 class="mb-4 text-xl font-semibold">Add New Project</h2>
+        <button type="button" id="cancelAddClient" class="px-4 py-2 text-black "> <i data-feather="x"
+    class="mr-3 feather-icon group"></i></button>
+        </div>
+  <form id="addProjectForm" method="POST">
+    @csrf
+  
+    <!--group row 1-->
+    <div class="flex flex-col gap-4 sm:flex-row">
+
+    <!-- Project Name -->
+    <div class="mb-4">
+      <label for="name" class="block mb-3 text-sm font-medium text-gray-700">Project Name</label>
+      <input type="text" name="name" id="name" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+    </div>
+  
+    <!-- Due Date -->
+    <div class="mb-4">
+      <label for="due_date" class="block mb-3 text-sm font-medium text-gray-700">Due Date</label>
+      <input type="date" name="due_date" id="due_date" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+    </div>
+    </div>
+        <!--group row 1-->
+
+        <!--group row -->
+
+    <!-- Cost -->
+    <div class="mb-4">
+      <label for="cost" class="block text-sm font-medium text-gray-700">Project Cost</label>
+      <input type="number" name="cost" id="cost" class="w-full px-3 py-2 border border-gray-300 rounded" required>
+    </div>
+  
+    <!-- Location -->
+    <div class="mb-4">
+      <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+      <input type="text" name="location" id="location" class="w-full px-3 py-2 border border-gray-300 rounded" required>
+    </div>
+      <!--group row2 -->
+
+    <!--group row 3 -->
+
+    <!-- Description -->
+    <div class="mb-4">
+      <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+      <textarea name="description" id="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded" required></textarea>
+    </div>
+      <!--group row 3-->
+
+
+      
+    <!--group row 4-->
+
+    <!-- Admin Name -->
+    {{-- <div class="mb-4">
+      <label for="admin_name" class="block text-sm font-medium text-gray-700">Admin</label>
+      <input type="text" name="name" id="admin_name" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded" readonly value="{{ auth()->user()->name }}">
+    </div> --}}
+  
+    <!-- Select Client -->
+    <div class="mb-4">
+      <label for="client_id" class="block text-sm font-medium text-gray-700">Client Name</label>
+      <select name="client_id" id="client_id" class="w-full px-3 py-2 border border-gray-300 rounded" required>
+        <option disabled selected>Select a client</option>
+        @foreach ($clients as $client)
+          <option value="{{ $client->id }}">{{ $client->firstname }} {{ $client->lastname }}</option>
+        @endforeach
+      </select>
+    </div>
+  
+    <!-- Select Tech Supervisor -->
+    <div class="mb-4">
+      <label for="tech_supervisor_id" class="block text-sm font-medium text-gray-700">Tech Supervisor</label>
+      <select name="tech_supervisor_id" id="tech_supervisor_id" class="w-full px-3 py-2 border border-gray-300 rounded" required>
+        <option disabled selected>Select a supervisor</option>
+        @foreach ($techSupervisors as $supervisor)
+          <option value="{{ $supervisor->id }}">{{ $supervisor->name }}</option>
+        @endforeach
+      </select>
+    </div>
+      <!--group row 4 ends-->
+
+    <!-- Submit -->
+    <div class="flex justify-end">
+      <button type="submit" class="px-4 py-2 text-white rounded bg-fuchsia-900">Save Project</button>
+    </div>
+  </form>
 </div>
- </div>
- </main>
+</div>
+<div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
+    <div class="w-full max-w-sm p-6 bg-white rounded-lg">
+        <div class="flex items-center justify-center w-10 h-10 mb-[10px] bg-fuchsia-100 rounded-full">
+            <i data-feather="user-plus" class="text-fuchsia-900 ml-[3px]"></i>
+        </div>
+        <h2 class="mb-4 text-lg font-semibold text-left">Project successfully created</h2>
+
+        <!-- Right-Aligned Button -->
+        <div class="flex justify-end">
+            <button id="closeSuccessModal" class="px-4 py-2 text-white rounded-full bg-fuchsia-900">
+                OK
+            </button>
+        </div>
+    </div>
+</div>
+<!---end of pop up--->  
+
+  
+</div>
+</div>
+</main>
+  
+  <script>
+
+document.getElementById('openAddProjectModal').addEventListener('click', function () {
+    document.getElementById('addProjectModal').classList.remove('hidden');
+});
+
+// document.getElementById('addProjectForm').addEventListener('submit', function (e) {
+//     e.preventDefault();
+
+//     const form = e.target;
+//     const formData = new FormData(form);
+
+//     fetch("{{ route('projects.store') }}", {
+//         method: 'POST',
+//         headers: {
+//             'X-CSRF-TOKEN': '{{ csrf_token() }}',
+//         },
+//         body: formData,
+//     })
+//     .then(response => {
+//         if (!response.ok) throw new Error('Submission failed');
+//         return response.json();
+//     })
+//     .then(data => {
+//         document.getElementById('addProjectModal').classList.add('hidden');
+//         alert('Project created successfully!');
+//     })
+//     .catch(error => {
+//         alert('Error: ' + error.message);
+//     });
+// });
+
+
+document.getElementById('addProjectForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // for the close (X) button
+document.getElementById('cancelAddClient').addEventListener('click', function () {
+        document.getElementById('addClientModal').classList.add('hidden');
+    });
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    fetch("{{ route('projects.store') }}", {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'  // Tell Laravel you want JSON
+        },
+        body: formData,
+    })
+    .then(async response => {
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Validation failed');
+        }
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById('addProjectModal').classList.add('hidden');
+        // alert('Project created successfully!');
+
+        document.getElementById('successModal').classList.remove('hidden');
+        // Optionally refresh data here
+    })
+    .catch(error => {
+        alert('Error: ' + error.message);
+    });
+});
+
+
+//reloading the page
+document.getElementById('closeSuccessModal').addEventListener('click', function () {
+        document.getElementById('successModal').classList.add('hidden');
+        location.reload(); // refresh to update the table
+    });
+
+    </script>
+
     </x-slot>
 </x-layouts.app>

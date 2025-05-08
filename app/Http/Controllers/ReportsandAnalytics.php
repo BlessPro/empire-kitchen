@@ -10,11 +10,21 @@ class ReportsandAnalytics extends Controller
 {
     //
     public function index()
-    {
-        $projects = Project::paginate(10); // fetch paginated projects
+    {     
+         $statusCounts = [
+        'Pending' => Project::where('status', 'pending')->count(),
+        'Ongoing' => Project::where('status', 'in progress')->count(),
+        'Completed' => Project::where('status', 'completed')->count(),
+    ];
+
+    // return redirect()->route('admin.ReportsandAnalytics')->with('success', 'Report sent successfully.');
+
+        $projects = Project::orderBy('created_at','desc')->paginate(10); // fetch paginated projects
         // return view('admin/dashboard', compact(['latestProjectWithAllDates','projects']));
-        return view('admin.ReportsandAnalytics', compact(['projects']));
+        return view('admin.ReportsandAnalytics', compact('projects','statusCounts'));
     }
+
+    
     public function create()
     {
         return view('admin.ReportsandAnalytics.create');
@@ -82,4 +92,16 @@ class ReportsandAnalytics extends Controller
         // Logic to schedule the report
         return redirect()->route('admin.ReportsandAnalytics.index')->with('success', 'Report scheduled successfully.');
     }
+
+    // public function status(Request $request)
+    // {
+    //     // Logic to send the report
+    //     $statusCounts = [
+    //         'Pending' => Project::where('status', 'pending')->count(),
+    //         'Ongoing' => Project::where('status', 'ongoing')->count(),
+    //         'Completed' => Project::where('status', 'completed')->count(),
+    //     ];
+    
+    //     return redirect()->route('admin.ReportsandAnalytics')->with('success', 'Report sent successfully.');
+    // }
 }

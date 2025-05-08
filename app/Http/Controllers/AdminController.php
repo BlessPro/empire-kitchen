@@ -47,19 +47,46 @@ class AdminController extends Controller
 
     public function index()
 {
-        //   $latestProjectWithAllDates = Project::whereNotNull('measurement_date');
-            // ->whereNotNull('design_date')
-            // ->whereNotNull('installation_date')
-            // ->whereNotNull('production_date')
-            // ->latest()
-            // ->first();
+      
 
-    $projects = Project::paginate(10); // fetch paginated projects
+    $projects = Project::orderBy('created_at','desc')->paginate(10); // fetch paginated projects
     // return view('admin/dashboard', compact(['latestProjectWithAllDates','projects']));
     return view('admin/dashboard', compact(['projects']));
 
 
 }
+
+
+// public function filter(Request $request)
+// {
+//     $status = $request->query('status');
+
+//     $query = Project::with('client')->orderBy('created_at', 'desc');
+
+//     if ($status && $status !== 'all') {
+//         $query->where('status', $status);
+//     }
+
+//     $projects = $query->paginate(10);
+
+//     return view('partials.projects-table', compact('projects'));
+// }
+
+// public function filter(Request $request)
+// {
+//     $status = $request->query('status');
+
+//     $projectsQuery = Project::with('client')->latest();
+
+//     if ($status) {
+//         $projectsQuery->where('status', $status);
+//     }
+
+//     $projects = $projectsQuery->paginate(10);
+
+//     return view('partials.projects-table', compact('projects'))->render();
+// }
+
 
     //This method is for displaying name, role and profilepic of a logged user
     // public function tableview()

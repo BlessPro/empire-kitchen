@@ -152,7 +152,7 @@ public function store(Request $request)
         'firstname' => 'required|string|max:50',
         'lastname' => 'required|string|max:50',
         'othernames' => 'nullable|string|max:100',
-        'phone_number' => 'required|string|max:20',
+        'phone_number' => 'required|numeric|digits_between:10,15',
         'location' => 'required|string|max:100',
     ]);
 

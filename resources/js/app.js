@@ -125,7 +125,7 @@ data: {
   labels: ['Completed Projects', 'Pending Projects', 'Closed Projects'],
   datasets: [{
     data: [5, 25, 16],
-    backgroundColor: ['#f97316', '#581c87', '#8b5cf6', '#eab308', '#3b82f6'],
+    backgroundColor: ['#6B1E72', '#FF7300','#9151FF' ],
     borderWidth: 1,
       borderColor: '#fff',
       hoverOffset: 8,
