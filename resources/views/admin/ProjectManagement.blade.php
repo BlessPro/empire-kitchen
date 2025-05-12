@@ -221,8 +221,8 @@
     <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
         <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
         <h2 class="mb-4 text-xl font-semibold">Add New Project</h2>
-        <button type="button" id="cancelAddClient" class="px-4 py-2 text-black "> <i data-feather="x"
-    class="mr-3 feather-icon group"></i></button>
+        <button type="button" id="cancelAddProject" class="px-4 py-2 text-black "> <i data-feather="x"
+            class="mr-3 feather-icon group"></i></button>
         </div>
   <form id="addProjectForm" method="POST">
     @csrf
@@ -244,18 +244,22 @@
     </div>
         <!--group row 1-->
 
-        <!--group row -->
 
+        
+        <!--group row -->
     <!-- Cost -->
+    <div class="flex flex-col gap-4 sm:flex-row">
+
     <div class="mb-4">
-      <label for="cost" class="block text-sm font-medium text-gray-700">Project Cost</label>
-      <input type="number" name="cost" id="cost" class="w-full px-3 py-2 border border-gray-300 rounded" required>
+      <label for="cost" class="block mb-3 text-sm font-medium text-gray-700">Project Cost</label>
+      <input type="number" name="cost" id="cost" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
     </div>
   
     <!-- Location -->
     <div class="mb-4">
-      <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
-      <input type="text" name="location" id="location" class="w-full px-3 py-2 border border-gray-300 rounded" required>
+      <label for="location" class="block mb-3 text-sm font-medium text-gray-700">Location</label>
+      <input type="text" name="location" id="location" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+    </div>
     </div>
       <!--group row2 -->
 
@@ -263,8 +267,8 @@
 
     <!-- Description -->
     <div class="mb-4">
-      <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-      <textarea name="description" id="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded" required></textarea>
+      <label for="description" class="block mb-3 text-sm font-medium text-gray-700">Description</label>
+      <textarea name="description" id="description" rows="3" class="block w-full px-3 py-2 mb-3 text-sm font-medium text-gray-700 border border-gray-300 rounded" required></textarea>
     </div>
       <!--group row 3-->
 
@@ -272,16 +276,13 @@
       
     <!--group row 4-->
 
-    <!-- Admin Name -->
-    {{-- <div class="mb-4">
-      <label for="admin_name" class="block text-sm font-medium text-gray-700">Admin</label>
-      <input type="text" name="name" id="admin_name" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded" readonly value="{{ auth()->user()->name }}">
-    </div> --}}
   
     <!-- Select Client -->
+    <div class="flex flex-col gap-4 sm:flex-row">
+
     <div class="mb-4">
-      <label for="client_id" class="block text-sm font-medium text-gray-700">Client Name</label>
-      <select name="client_id" id="client_id" class="w-full px-3 py-2 border border-gray-300 rounded" required>
+      <label for="client_id" class="block mb-3 text-sm font-medium text-gray-700">Client Name</label>
+      <select name="client_id" id="client_id" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
         <option disabled selected>Select a client</option>
         @foreach ($clients as $client)
           <option value="{{ $client->id }}">{{ $client->firstname }} {{ $client->lastname }}</option>
@@ -291,29 +292,28 @@
   
     <!-- Select Tech Supervisor -->
     <div class="mb-4">
-      <label for="tech_supervisor_id" class="block text-sm font-medium text-gray-700">Tech Supervisor</label>
-      <select name="tech_supervisor_id" id="tech_supervisor_id" class="w-full px-3 py-2 border border-gray-300 rounded" required>
+      <label for="tech_supervisor_id" class="block mb-3 text-sm font-medium text-gray-700">Tech Supervisor</label>
+      <select name="tech_supervisor_id" id="tech_supervisor_id" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
         <option disabled selected>Select a supervisor</option>
         @foreach ($techSupervisors as $supervisor)
           <option value="{{ $supervisor->id }}">{{ $supervisor->name }}</option>
         @endforeach
       </select>
     </div>
+    </div>
       <!--group row 4 ends-->
 
     <!-- Submit -->
-    <div class="flex justify-end">
-      <button type="submit" class="px-4 py-2 text-white rounded bg-fuchsia-900">Save Project</button>
-    </div>
-  </form>
+    <button type="submit" class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 rounded">Save Project</button>
+</form>
 </div>
-</div>
-<div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
+
+<div id="successModal2" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
     <div class="w-full max-w-sm p-6 bg-white rounded-lg">
         <div class="flex items-center justify-center w-10 h-10 mb-[10px] bg-fuchsia-100 rounded-full">
             <i data-feather="user-plus" class="text-fuchsia-900 ml-[3px]"></i>
         </div>
-        <h2 class="mb-4 text-lg font-semibold text-left">Project successfully created</h2>
+        <h2 class="mb-4 text-lg font-semibold text-left">Client successfully created</h2>
 
         <!-- Right-Aligned Button -->
         <div class="flex justify-end">
@@ -330,85 +330,70 @@
 </div>
 </main>
   
-  <script>
+<script>
 
-document.getElementById('openAddProjectModal').addEventListener('click', function () {
-    document.getElementById('addProjectModal').classList.remove('hidden');
-});
+    // document.getElementById('openAddProjectModal').addEventListener('click', function () {
+    //     document.getElementById('addProjectModal').classList.remove('hidden');
+    // });
+    document.getElementById('openAddProjectModal').addEventListener('click', function () {
+            document.getElementById('addProjectModal').classList.remove('hidden');
+        });
+          // for the close (X) button
+          document.getElementById('cancelAddProject').addEventListener('click', function () {
+            document.getElementById('addProjectModal').classList.add('hidden');
+        });
+    document.getElementById('addProjectForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+    
+  
+    
+   
+    
+        const form = e.target;
+        const formData = new FormData(form);
+    
+        fetch("{{ route('projects.store') }}", {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'  // Tell Laravel you want JSON
+            },
+            body: formData,
+        })
+        .then(async response => {
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Validation failed');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // document.getElementById('addProjectModal').classList.add('hidden');
+            // // alert('Project created successfully!');    
+            // document.getElementById('successModal').classList.remove('hidden');
+            // // Optionally refresh data here
+            if (data) 
+            console.log(data);{
 
-// document.getElementById('addProjectForm').addEventListener('submit', function (e) {
-//     e.preventDefault();
+            document.getElementById('addProjectModal').classList.add('hidden');
+            document.getElementById('successModal2').classList.remove('hidden');
 
-//     const form = e.target;
-//     const formData = new FormData(form);
+            //  alert('Project created successfully!');    
 
-//     fetch("{{ route('projects.store') }}", {
-//         method: 'POST',
-//         headers: {
-//             'X-CSRF-TOKEN': '{{ csrf_token() }}',
-//         },
-//         body: formData,
-//     })
-//     .then(response => {
-//         if (!response.ok) throw new Error('Submission failed');
-//         return response.json();
-//     })
-//     .then(data => {
-//         document.getElementById('addProjectModal').classList.add('hidden');
-//         alert('Project created successfully!');
-//     })
-//     .catch(error => {
-//         alert('Error: ' + error.message);
-//     });
-// });
-
-
-document.getElementById('addProjectForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    // for the close (X) button
-document.getElementById('cancelAddClient').addEventListener('click', function () {
-        document.getElementById('addClientModal').classList.add('hidden');
-    });
-
-    const form = e.target;
-    const formData = new FormData(form);
-
-    fetch("{{ route('projects.store') }}", {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Accept': 'application/json'  // Tell Laravel you want JSON
-        },
-        body: formData,
-    })
-    .then(async response => {
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Validation failed');
         }
-        return response.json();
-    })
-    .then(data => {
-        document.getElementById('addProjectModal').classList.add('hidden');
-        // alert('Project created successfully!');
-
-        document.getElementById('successModal').classList.remove('hidden');
-        // Optionally refresh data here
-    })
-    .catch(error => {
-        alert('Error: ' + error.message);
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+        });
     });
-});
-
-
-//reloading the page
-document.getElementById('closeSuccessModal').addEventListener('click', function () {
-        document.getElementById('successModal').classList.add('hidden');
-        location.reload(); // refresh to update the table
-    });
-
-    </script>
-
+    
+    
+    //reloading the page
+    document.getElementById('closeSuccessModal').addEventListener('click', function () {
+            document.getElementById('successModal').classList.add('hidden');
+            location.reload(); // refresh to update the table
+        });
+    
+        </script>
     </x-slot>
 </x-layouts.app>

@@ -122,9 +122,9 @@
                     <button class="px-4 py-2 text-white bg-green-600 rounded filter-btn" data-status="ongoing">Ongoing</button>
                     <button class="px-4 py-2 text-white bg-purple-700 rounded filter-btn" data-status="completed">Completed</button>
                 </div> --}}
-                
-                
-                
+
+
+
                  <button class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-full">
                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h4M6 10h12M6 14h12M10 18h4" />
@@ -145,7 +145,7 @@
              <div id="projectsTableContainer">
                 @include('partials.projects-table', ['projects' => $projects])
             </div>
-            
+
 
 {{-- table was here --}}
                      <div class="mt-4 mb-5 ml-5 mr-5">
@@ -173,7 +173,7 @@
             });
 
 
-          
+
 document.querySelectorAll('.filter-btn').forEach(button => {
     button.addEventListener('click', function () {
         const status = this.dataset.status;

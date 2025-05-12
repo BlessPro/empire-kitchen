@@ -94,7 +94,10 @@ class ProjectManagementController extends Controller
         'current_stage' => 'measurement', // if default stage is needed
     ]);
 
-    return response()->json(['message' => 'Project created']);
+    // return response()->json(['message' => 'Project created']);
+    return response()->json(['success' => true]);
+
+
 }
 
     

@@ -21,6 +21,8 @@ use App\Http\Controllers\Inbox;
 use App\Http\Controllers\ReportsandAnalytics;
 use App\Http\Controllers\ScheduleInstallationController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\UserController;
+
 
 use App\Http\Controllers\RoleMiddleware;
 Route::get('/', function () {
@@ -51,6 +53,7 @@ Route::get('/dashboard', function () {
     //for handling client projects
     Route::get('/admin/clients/{client}/projects', [ClientManagementController::class, 'showClientProjects'])
     ->name('admin.clients.projects');
+
 //for the project info
     // Route::get('/admin/clients/{client}/projects2', [ClientManagementController::class, 'showprojectInfo'])
     // ->name('admin.clients.projects2');
@@ -67,10 +70,33 @@ Route::post('/admin/projects/{project}/comments', [CommentController::class, 'st
 
 // Route::post('/clients', [ClientManagementController::class, 'store'])->name('clients.store');
     Route::get('/admin/settings', [Settings::class, 'showUsers'])->name('admin.Settings')->middleware('auth');
+
+   //for the edit pop up
+
+// Route::get('/admin/settings', [UserController::class, 'index'])->name('admin.settings');
+Route::get('/admin/users/{id}', [UserController::class, 'edit'])->name('admin.users.edit');
+Route::post('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
+
+//for rditing logged user
+Route::post('/admin/settings/update', [settings::class, 'update'])->name('admin.settings.update');
+
+
     //delete user
     Route::delete('admin/dashboard/user/{id}', [settings::class, 'destroy'])->name('settings.destroy');
+
+    //storing the user
+    Route::post('/users', [settings::class, 'store'])->name('users.store');
+
     //storing comment
-    
+
+    // Route::get('/admin/settings', [settings::class, 'showClientProjects'])
+    // ->name('admin.settings');
+    // //for the edit pop up
+    // Route::prefix('admin')->group(function () {
+    //     Route::get('/settings', [settings::class, 'index'])->name('admin.settings');
+    //     Route::post('/update-user', [settings::class, 'update'])->name('admin.updateUser');
+    // });
+
     Route::get('/admin/Inbox', [Inbox::class, 'index'])->name('admin.Inbox')->middleware('auth');
     Route::get('/admin/ReportsandAnalytics', [ReportsandAnalytics::class, 'index'])->name('admin.ReportsandAnalytics')->middleware('auth');
     Route::get('/admin/ScheduleInstallation', [ScheduleInstallationController::class, 'index'])->name('admin.ScheduleInstallation')->middleware('auth');
@@ -90,13 +116,12 @@ Route::post('/admin/projects/{project}/comments', [CommentController::class, 'st
 
     // Route::get('/admin/bick', [DashboardController::class, 'dashboard']);
     //displayinig the users on the settings page
-    
+
     // Route::get('/admin/ProjectManagement',   [ProjectManagementController::class, 'index'])->name('admin.ProjectManagement');
     Route::get('/admin/ProjectManagement', [ProjectManagementController::class, 'index'])->name('admin.ProjectManagement');
 
     //for the looping card on the project management page
-    // Route::get('/admin/ProjectManagement',   [ProjectManagementController::class, 'project_stage'])->name('admin.ProjectManagement');
-    //for the add project pop up
+
     Route::post('/projects', [ProjectManagementController::class, 'store'])->name('projects.store');
 
     //using ajax to load the the client and tech supervisor into the pop up
@@ -113,12 +138,5 @@ Route::post('/admin/projects/{project}/comments', [CommentController::class, 'st
 
 // Route::get('/admin/projects/filter', [AdminController::class, 'filter'])->name('projects.filter');
 
-
-
-// Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware('role:admin');
-// Route::get('/tech/dashboard', [TechController::class, 'index'])->middleware('role:tech_supervisor');
-// Route::get('/designer/dashboard', [DesignerController::class, 'index'])->middleware('role:designer');
-// Route::get('/accountant/dashboard', [AccountantController::class, 'index'])->middleware('role:accountant');
-// Route::get('/sales/dashboard', [SalesController::class, 'index'])->middleware('role:sales_accountant');
 
 require __DIR__.'/auth.php';

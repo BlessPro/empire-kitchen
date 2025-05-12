@@ -66,6 +66,8 @@
                 btn.classList.add('border-fuchsia-900', 'text-fuchsia-900');
             });
         });
+
+        
     </script>
     
     </x-slot>

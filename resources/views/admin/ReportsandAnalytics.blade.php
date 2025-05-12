@@ -64,7 +64,7 @@
                               </li>
                               <li class="flex items-center">
                                 <span class="w-10 h-5 rounded-[15px] bg-orange-500  mr-3"></span>
-                                <span class="text-gray-800 font-normal text-[15px]">Pending Projects {{ $statusCounts['Ongoing'] }}</span>
+                                <span class="text-gray-800 font-normal text-[15px]">Ongoing Projects {{ $statusCounts['Ongoing'] }}</span>
                               </li>
                               <li class="flex items-center">
                                 <span class="w-10 h-5 rounded-[15px] bg-violet-500 mr-3"></span>
@@ -207,7 +207,7 @@
                });
                });
 
-               
+
 // Initializing the doughnut chart for the Project status
 const ctx1 = document.getElementById('clientsChart1').getContext('2d');
 new Chart(ctx1, {
@@ -272,7 +272,7 @@ monthSelect.appendChild(option);
 new Chart(ctx2, {
 type: 'doughnut',
 data: {
-  labels: ['Incoming Payments', 'Outgoing Payments'],   
+  labels: ['Incoming Payments', 'Outgoing Payments'],
   datasets: [{
     data: [5, 25],
     backgroundColor: ['#EAB308','#9151FF'],

@@ -6,7 +6,6 @@ feather.replace();
 
 
 //variables for the charts
-const clientsChartCtx = document.getElementById('clientsChart').getContext('2d');
 // const clientsChartCtx1 = document.getElementById('clientsChart1').getContext('2d');
 // const clientsChartCtx2 = document.getElementById('clientsChart2').getContext('2d');
 
