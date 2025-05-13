@@ -3,7 +3,7 @@
     <p class="mb-3 ml-6 text-sm text-gray-500">You can change your profile here</p></div>
     {{-- <button class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">+ Add Project</button> --}}
     <!-- ADD CLIENT BUTTON -->
-   
+
     </div>
 
     <form id="accountForm" action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
@@ -38,11 +38,11 @@
         </div>
 
         <!-- Form -->
-        
-      <div id="accountTab" class="w-full mt-6">
-        <div class="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2"> 
 
-      
+      <div id="accountTab" class="w-full mt-6">
+        <div class="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2">
+
+
             <div>
             <label class="block mb-1 text-sm font-medium">Full Name</label>
             <input type="text" name="name" id="name" value="{{ auth()->user()->name }}" class="w-full px-4 py-2 border rounded-lg" >
@@ -88,14 +88,15 @@
 
         <div class="flex justify-end mt-8 space-x-4">
           <button class="px-6 py-2 text-gray-600 border rounded-lg">Save Changes</button>
-          <button class="px-6 py-2 text-white bg-purple-700 rounded-lg">Edit Profile</button>
+          {{-- <button class="px-6 py-2 text-white bg-purple-700 rounded-lg">Edit Profile</button> --}}
         </div>
       </div>
     </div>
 </form>
 
 
-{{-- 
+
+{{--
       <div id="accountTab" class="w-full mt-6">
         <form id="accountForm" action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" class="max-w-xl p-6 mx-auto bg-white rounded-lg shadow">
             @csrf
@@ -135,4 +136,3 @@
         </select>
         <input type="hidden" name="role" value="{{ auth()->user()->role }}">
     </div> --}}
-    
