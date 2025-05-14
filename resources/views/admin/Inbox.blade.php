@@ -1,67 +1,151 @@
 <x-layouts.app>
     <x-slot name="header">
-        
-{{--         
-        <main class="flex h-screen bg-gray-100">
-            <!-- Sidebar width maintained -->
-            <div class="w-1/3 overflow-y-auto bg-white border-r">
-                <div class="flex items-center justify-between p-4">
-                    <h2 class="text-xl font-semibold">Inbox</h2>
-                    <a href="#" class="font-medium text-purple-600 hover:underline">+ Create</a>
-                </div>
-                <div class="px-4 pb-2">
-                    <input type="text" placeholder="Search messages" class="w-full px-4 py-2 border rounded-lg focus:outline-none">
-                </div>
-                <div class="px-4 pb-4 mt-4 space-y-2 overflow-y-auto">
-                    <div class="flex items-start p-3 space-x-4 bg-yellow-100 rounded-lg">
-                        <img src="https://via.placeholder.com/40" class="rounded-full" />
-                        <div class="flex-1">
-                            <div class="flex justify-between">
-                                <span class="font-semibold">Kwesi Boadu</span>
-                                <span class="text-xs text-gray-500">Yesterday</span>
-                            </div>
-                            <div class="text-sm text-purple-700">Accountant</div>
-                            <p class="text-xs text-gray-500 truncate">You: Lorem ipsum dolor sit amet...</p>
-                        </div>
-                    </div>
-                </div>
+  <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+        <!--head begins-->
+
+            <div class="p-6 bg-[#F9F7F7]">
+             <div class="mb-[20px]">
+
+  <!-- Main Content -->
+  <main class="flex flex-col flex-1">
+    <!-- Topbar -->
+    <header class="flex items-center justify-between p-4 bg-white shadow">
+      <input type="text" placeholder="Search for anything" class="w-1/3 px-4 py-2 border rounded" />
+      <div class="flex items-center space-x-4">
+        <div class="relative">
+          <span class="absolute top-0 right-0 inline-block w-2 h-2 bg-purple-500 rounded-full"></span>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+        </div>
+        <div class="text-sm text-right">
+          <div class="font-bold">Daniel Mensah</div>
+          <div class="text-gray-500">Administrator</div>
+        </div>
+        <img src="admin-profile.jpg" class="w-10 h-10 rounded-full" alt="Avatar">
+      </div>
+    </header>
+
+    <!-- Messaging Interface -->
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Chat List -->
+      <aside class="w-1/3 overflow-y-auto bg-white border-r">
+        <div class="flex items-center justify-between p-4 border-b">
+          <h2 class="text-lg font-semibold">Inbox</h2>
+          <button class="font-medium text-purple-700">+ Create</button>
+        </div>
+        <div class="px-4 py-2">
+          <input type="text" placeholder="Search messages" class="w-full px-3 py-2 border rounded" />
+        </div>
+        <!-- Contact List -->
+        <ul>
+          <li class="flex items-center px-4 py-3 space-x-3 border-b cursor-pointer hover:bg-gray-100">
+            <img src="admin-profile.jpg" class="flex items-center justify-center w-[48px] h-[47px] font-bold text-white rounded-full mt-[-13px]" alt="">
+              <div>
+              <div class="font-bold">Kojo Mensah</div>
+              <div class="text-sm text-gray-500">Technical Supervisor</div>
+              <div class="text-xs text-gray-400">Can you check the server status?</div>
             </div>
-
-            <!-- Chat panel -->
-            <div class="flex flex-col flex-1">
-                <div class="flex items-center justify-between px-6 py-4 bg-white border-b">
-                    <div>
-                        <h3 class="text-lg font-semibold">Kwesi Boadu</h3>
-                        <p class="text-sm text-green-500">Online</p>
-                    </div>
-                    <button class="text-xl text-gray-500">⋮</button>
-                </div>
-
-                <!-- Chat body -->
-                <div class="flex-1 p-6 space-y-4 overflow-y-auto bg-gray-50">
-                    <div class="flex items-start space-x-2">
-                        <img src="https://via.placeholder.com/32" class="rounded-full" />
-                        <div class="p-3 text-sm bg-white rounded-lg shadow">
-                            <p>Yes Sir</p>
-                            <span class="text-xs text-gray-400">11:25 ✓✓</span>
-                        </div>
-                    </div>
-                    <div class="flex justify-end">
-                        <div class="max-w-md p-3 text-sm text-white bg-purple-900 rounded-lg shadow">
-                            <p>Thanks! Let me know ASAP. This is affecting new sign-ups.</p>
-                            <span class="block text-xs text-right text-purple-300">11:25 ✓✓ Sent</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Message input -->
-                <div class="p-4 bg-white border-t">
-                    <div class="flex items-center space-x-2">
-                        <input type="text" placeholder="Write your message here..." class="flex-1 px-4 py-2 border rounded-full focus:outline-none">
-                        <button class="p-2 text-white bg-purple-900 rounded-full">➤</button>
-                    </div>
-                </div>
+          </li>
+          <li class="flex items-center px-4 py-3 space-x-3 border-b cursor-pointer hover:bg-gray-100">
+            <img src="admin-profile.jpg" class="flex items-center justify-center w-[48px] h-[47px] font-bold text-white rounded-full mt-[-13px]" alt="">
+            <div>
+              <div class="font-bold">Yaw Adomako</div>
+              <div class="text-sm text-gray-500">Designer</div>
+              <div class="text-xs text-gray-400">New designs uploaded</div>
             </div>
-        </main> --}}
+          </li>
+          <li class="flex items-center px-4 py-3 space-x-3 bg-yellow-100 border-b cursor-pointer">
+            <img src="admin-profile.jpg" class="flex items-center justify-center w-[48px] h-[47px] font-bold text-white rounded-full mt-[-13px]" alt="">
+            <div>
+              <div class="font-bold">Kwesi Boadu</div>
+              <div class="text-sm text-gray-500">Accountant</div>
+              <div class="text-xs text-gray-400">Updated payment schedule</div>
+            </div>
+          </li>
+        </ul>
+
+
+
+                              <!-- Repeat for other users -->
+                            </ul>
+      </aside>
+
+      <!-- Chat Window -->
+      <section class="flex flex-col flex-1 bg-gray-100">
+        <div class="flex items-center justify-between px-6 py-4 bg-white border-b">
+          <div>
+            <div class="font-bold">Kwesi Boadu</div>
+            <div class="text-sm text-green-600">Online</div>
+          </div>
+          <div class="flex space-x-3">
+            <button>⋮</button>
+          </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="flex-1 p-6 space-y-4 overflow-y-auto">
+          <div class="flex justify-start ">
+            <img src="admin-profile.jpg" class="flex items-center justify-center w-[42px] h-[42px] font-bold text-white rounded-full mr-3" alt="">
+
+            <div class="px-4 py-2 text-sm bg-white rounded-[9px] shadow">Yes Sir <span class="ml-2 text-xs text-gray-400">11:25</span></div>
+          </div>
+          <div class="flex justify-start">
+                <img src="admin-profile.jpg" class="flex items-center justify-center w-[42px] h-[42px] font-bold text-white rounded-full mr-3" alt="">
+            <div class="px-4 py-2 text-sm bg-white rounded-[9px] shadow">Got it. I'll look into the email server... <span class="ml-2 text-xs text-gray-400">11:25</span></div>
+          </div>
+          <div class="flex justify-end">
+
+            <div class="px-4 py-2 text-sm text-white bg-purple-700 rounded-[9px] shadow">Thanks! Let me know ASAP... <span class="ml-2 text-xs text-white">11:25</span></div>
+          </div>
+          <div class="flex justify-start">
+                        <img src="admin-profile.jpg" class="flex items-center justify-center w-[42px] h-[42px] font-bold text-white rounded-full mr-3" alt="">
+
+            <div class="px-4 py-2 text-sm bg-white rounded-[9px] shadow">Will update you in 30 mins. <span class="ml-2 text-xs text-gray-400">11:25</span></div>
+          </div>
+          <div class="flex justify-start">
+                        <img src="admin-profile.jpg" class="flex items-center justify-center w-[42px] h-[42px] font-bold text-white rounded-full mr-3" alt="">
+
+            <div class="px-4 py-2 text-sm bg-white rounded-[9px] shadow">Do you want it to trigger... <span class="ml-2 text-xs text-gray-400">11:25</span></div>
+          </div>
+          <div class="flex justify-end">
+            <div class="px-4 py-2 text-sm text-white bg-purple-700 rounded-[9px] shadow">Just a report for now... <span class="ml-2 text-xs text-white">11:25</span></div>
+          </div>
+          <div class="text-xs text-center text-gray-500">12 January</div>
+          <div class="flex justify-start">
+                <img src="admin-profile.jpg" class="flex items-center justify-center w-[42px] h-[42px] font-bold text-white rounded-full mr-3" alt="">
+
+            <div class="px-4 py-2 text-sm bg-white rounded-[9px] shadow">One of the measurements... <span class="ml-2 text-xs text-gray-400">11:25</span></div>
+          </div>
+          <div class="flex justify-end">
+            <div class="px-4 py-2 text-sm text-white bg-purple-700 rounded-[9px] shadow">Great. Keep me posted. <span class="ml-2 text-xs text-white">11:25</span></div>
+          </div>
+        </div>
+
+        <!-- Message Input -->
+        <div class="flex items-center p-4 space-x-4 bg-white border-t">
+          <input type="text" placeholder="Write your message here..." class="flex-1 px-4 py-2 border rounded" />
+          <button class="px-4 py-2 text-white bg-purple-700 rounded hover:bg-purple-800">Send</button>
+        </div>
+      </section>
+         <ul class="space-y-4" id="commentsList">
+
+    </div>
+  </main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+        </main>
     </x-slot>
 </x-layouts.app>
