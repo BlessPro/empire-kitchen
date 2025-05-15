@@ -9,7 +9,7 @@
     <div class="w-1/4 h-screen p-4 overflow-y-auto bg-gray-200">
         <h2 class="mb-4 text-xl font-bold">Users</h2>
         @foreach(App\Models\User::where('id', '!=', auth()->id())->get() as $chatUser)
-            <a href="{{ route('inbox.index', $chatUser->id) }}" class="block px-3 py-2 rounded hover:bg-gray-300">
+            <a href="{{ route('messages.index', $chatUser->id) }}" class="block px-3 py-2 rounded hover:bg-gray-300">
                 {{ $chatUser->name }}
             </a>
         @endforeach
@@ -56,7 +56,7 @@
 
         if (!message.trim()) return;
 
-        const res = await axios.post('admin/inbox', {
+        const res = await axios.post('/messages', {
             message: message,
             receiver_id: receiverId
         });

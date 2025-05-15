@@ -6,13 +6,15 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class Inbox extends Controller
+use App\Events\NewMessageEvent;
+use App\Models\Message;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
+class InboxController extends Controller
 {
     //
-    public function index()
-    {
-        return view('admin.inbox');
-    }
+
     public function create()
     {
         return view('admin.inbox.create');
@@ -30,11 +32,11 @@ class Inbox extends Controller
         // Logic to delete the project
         return redirect()->route('admin.inbox.index')->with('success', 'Project deleted successfully.');
     }
-    public function store(Request $request)
-    {
-        // Logic to store the project
-        return redirect()->route('admin.inbox.index')->with('success', 'Project created successfully.');
-    }
+    // public function store(Request $request)
+    // {
+    //     // Logic to store the project
+    //     return redirect()->route('admin.inbox.index')->with('success', 'Project created successfully.');
+    // }
     public function update(Request $request, $id)
     {
         // Logic to update the project
@@ -209,6 +211,49 @@ class Inbox extends Controller
     {
         // Logic to mark messages as deleted
         return redirect()->route('admin.inbox.index')->with('success', 'Messages marked as deleted successfully.');
-    }   
+    }
+
+
+
+// 1. CONTROLLER: app/Http/Controllers/MessageController.php
+
+
+
+
+
+    // Fetch messages between auth user and another user
+    public function index(User $user)
+    {
+        $messages = Message::where(function ($q) use ($user) {
+            $q->where('sender_id', Auth::id())
+              ->where('receiver_id', $user->id);
+        })->orWhere(function ($q) use ($user) {
+            $q->where('sender_id', $user->id)
+              ->where('receiver_id', Auth::id());
+        })->orderBy('created_at')->get();
+
+        return view('admin.inbox', compact('messages', 'user'));
+    }
+
+    // Send a message
+    public function store(Request $request)
+    {
+        $request->validate([
+            'receiver_id' => 'required|exists:users,id',
+            'message' => 'required|string'
+        ]);
+
+        $message = Message::create([
+            'sender_id' => Auth::id(),
+            'receiver_id' => $request->receiver_id,
+            'message' => $request->message
+        ]);
+
+        broadcast(new NewMessageEvent($message))->toOthers();
+
+        return response()->json($message);
+    }
+
+
 
 }

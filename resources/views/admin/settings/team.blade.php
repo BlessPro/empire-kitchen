@@ -147,11 +147,15 @@
 
             </div>
             <div>
-                <label class="block mb-4 text-sm font-medium text-gray-700">Confirm Password</label>
+
+              <label class="block mb-4 text-sm font-medium text-gray-700">Profile Picture</label>
+                <input type="file" name="profile_pic" accept="image/*" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                {{-- <label class="block mb-4 text-sm font-medium text-gray-700">Confirm Password</label>
                 <input type="password" id="password_confirmation"
                 name="password_confirmation"
                 class="w-[270px] px-3 py-2 border border-gray-300 rounded-md
-                 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                 focus:outline-none focus:ring-2 focus:ring-blue-500" required> --}}
             </div>
 
             </div>
@@ -159,10 +163,10 @@
 
           <!---group 4 begins-->
 
-            <div>
+            {{-- <div>
                 <label class="block mb-4 text-sm font-medium text-gray-700">Profile Picture</label>
                 <input type="file" name="profile_pic" accept="image/*" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
+            </div> --}}
              <!---group 4 ends-->
 
              <button type="submit" class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 rounded">Save Client</button>
@@ -244,7 +248,7 @@
                 <span id="passwordError" class="block mt-1 text-sm text-red-500"></span>
 
             </div>
-    
+
 
             <div>
                 <label class="block mb-2.5 text-sm font-medium text-gray-700">Profile Picture</label>
@@ -256,12 +260,12 @@
 
           <!---group 4 begins-->
 
-          
+
              <!---group 4 ends-->
 
              <button type="submit" class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 rounded">Save Client</button>
-    
-    
+
+
             </form>
 
 </div>
@@ -369,7 +373,7 @@ document.querySelectorAll('.editUserBtn').forEach(btn => {
                 document.getElementById('edit_phone_number').value = data.phone_number;
                 document.getElementById('edit_role').value = data.role;
                 document.getElementById('edit_profile_preview').src = `/storage/${data.profile_pic}`;
-                
+
                 // Use Tailwind class toggling
                 document.getElementById('editUserModal').classList.remove('hidden');
                 document.getElementById('editUserModal').classList.add('flex');
@@ -431,12 +435,12 @@ document.getElementById('successOkBtn').addEventListener('click', function () {
     const passwordError = document.getElementById('passwordError');
 
     // Clear previous error
-    passwordError.textContent = '';
+    // passwordError.textContent = '';
 
-    if (password !== confirmPassword) {
-        passwordError.textContent = 'Passwords do not match.';
-        return;
-    }
+    // if (password !== confirmPassword) {
+    //     passwordError.textContent = 'Passwords do not match.';
+    //     return;
+    // }
 
         const form = e.target;
         const formData = new FormData(form);
@@ -475,7 +479,7 @@ document.getElementById('successOkBtn').addEventListener('click', function () {
             location.reload(); // refresh to update the table
         });
 
-        
+
         //editing logged user's details
         document.getElementById('account_profile_pic').addEventListener('change', function (e) {
     const file = e.target.files[0];

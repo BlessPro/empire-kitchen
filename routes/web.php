@@ -7,6 +7,7 @@ use App\Http\Controllers\TechController;
 use App\Http\Controllers\DesignerController;
 use App\Http\Controllers\AccountantController;
 use App\Http\Controllers\SalesController;
+use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController; // Ensure this class exists in the specified namespace
 use App\Http\Controllers\ProjectController;
@@ -21,7 +22,10 @@ use App\Http\Controllers\Inbox;
 use App\Http\Controllers\ReportsandAnalytics;
 use App\Http\Controllers\ScheduleInstallationController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\InboxController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MessageController;
+
 
 
 use App\Http\Controllers\RoleMiddleware;
@@ -89,15 +93,14 @@ Route::post('/admin/settings/update', [settings::class, 'update'])->name('admin.
 
     //storing comment
 
-    // Route::get('/admin/settings', [settings::class, 'showClientProjects'])
-    // ->name('admin.settings');
-    // //for the edit pop up
-    // Route::prefix('admin')->group(function () {
-    //     Route::get('/settings', [settings::class, 'index'])->name('admin.settings');
-    //     Route::post('/update-user', [settings::class, 'update'])->name('admin.updateUser');
+    Route::get('/admin/Inbox', [InboxController::class, 'index'])->name('admin.Inbox')->middleware('auth');
+
+    // For the MessageSending
+    // Route::middleware(['auth'])->group(function () {
+        Route::get('admin/inbox/{user}', [InboxController::class, 'index'])->name('inbox.index');
+        Route::post('admin/inbox', [InboxController::class, 'store'])->name('inbox.store');
     // });
 
-    Route::get('/admin/Inbox', [Inbox::class, 'index'])->name('admin.Inbox')->middleware('auth');
     Route::get('/admin/ReportsandAnalytics', [ReportsandAnalytics::class, 'index'])->name('admin.ReportsandAnalytics')->middleware('auth');
     Route::get('/admin/ScheduleInstallation', [ScheduleInstallationController::class, 'index'])->name('admin.ScheduleInstallation')->middleware('auth');
 
