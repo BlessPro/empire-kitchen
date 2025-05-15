@@ -97,9 +97,17 @@ Route::post('/admin/settings/update', [settings::class, 'update'])->name('admin.
 
     // For the MessageSending
     // Route::middleware(['auth'])->group(function () {
-        Route::get('admin/inbox/{user}', [InboxController::class, 'index'])->name('inbox.index');
-        Route::post('admin/inbox', [InboxController::class, 'store'])->name('inbox.store');
+      //  Route::get('admin/inbox/{user}', [InboxController::class, 'index'])->name('inbox.index');
+      //  Route::post('admin/inbox', [InboxController::class, 'store'])->name('inbox.store');
     // });
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/inbox/{userId?}', [InboxController::class, 'index'])->name('inbox');
+    Route::post('/inbox/send', [InboxController::class, 'sendMessage'])->name('inbox.send');
+    Route::get('/inbox/fetch/{userId}', [InboxController::class, 'fetchMessages'])->name('inbox.fetch');
+});
+
 
     Route::get('/admin/ReportsandAnalytics', [ReportsandAnalytics::class, 'index'])->name('admin.ReportsandAnalytics')->middleware('auth');
     Route::get('/admin/ScheduleInstallation', [ScheduleInstallationController::class, 'index'])->name('admin.ScheduleInstallation')->middleware('auth');
