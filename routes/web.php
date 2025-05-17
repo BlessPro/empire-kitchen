@@ -25,10 +25,17 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\InboxController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MessageController;
-
-
+use App\Http\Controllers\techClientController;
+use App\Http\Controllers\techProjectManagementController;
+use App\Http\Controllers\techReportsandAnalyticsController;
+use App\Http\Controllers\techScheduleInstallationController;
+use App\Http\Controllers\techSettingsController;
+use App\Http\Controllers\techInboxController;
+use App\Http\Controllers\TechAssignDesignersController;
+use App\Http\Controllers\MeasurementController;
 
 use App\Http\Controllers\RoleMiddleware;
+
 Route::get('/', function () {
     return view('main');
 });
@@ -50,7 +57,7 @@ Route::get('/dashboard', function () {
     // Admin Route
     //navigating with admin login
 
-// for the client management
+    // for the client management
     Route::get('/admin/ClientManagement', [ClientManagementController::class, 'index'])->name('admin.ClientManagement');
     //for saving the client
     Route::post('/clients/store', [ClientManagementController::class, 'store'])->name('clients.store');
@@ -58,31 +65,27 @@ Route::get('/dashboard', function () {
     Route::get('/admin/clients/{client}/projects', [ClientManagementController::class, 'showClientProjects'])
     ->name('admin.clients.projects');
 
-//for the project info
-    // Route::get('/admin/clients/{client}/projects2', [ClientManagementController::class, 'showprojectInfo'])
-    // ->name('admin.clients.projects2');
-    // Route::get('/admin/clients/{project}/projects2', [ClientManagementController::class, 'showprojectname'])
-    // ->name('admin.clients.projects2');
+    //for the project info
+  
     Route::get('/admin/projects/{project}/info', [ClientManagementController::class, 'showProjectname'])->name('admin.projects.info');
 
     //deleting project from the dashboard
     Route::delete('admin/dashboard/projects/{id}', [ProjectManagementController::class, 'destroy'])->name('projects.destroy');
-//storing comment
+    //storing comment
 
-Route::post('/admin/projects/{project}/comments', [CommentController::class, 'store'])->name('project.comment.store');
+    Route::post('/admin/projects/{project}/comments', [CommentController::class, 'store'])->name('project.comment.store');
 
 
-// Route::post('/clients', [ClientManagementController::class, 'store'])->name('clients.store');
+    // Route::post('/clients', [ClientManagementController::class, 'store'])->name('clients.store');
     Route::get('/admin/settings', [Settings::class, 'showUsers'])->name('admin.Settings')->middleware('auth');
 
    //for the edit pop up
 
-// Route::get('/admin/settings', [UserController::class, 'index'])->name('admin.settings');
-Route::get('/admin/users/{id}', [UserController::class, 'edit'])->name('admin.users.edit');
-Route::post('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
+    Route::get('/admin/users/{id}', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::post('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
 
-//for rditing logged user
-Route::post('/admin/settings/update', [settings::class, 'update'])->name('admin.settings.update');
+    //for rditing logged user
+    Route::post('/admin/settings/update', [settings::class, 'update'])->name('admin.settings.update');
 
 
     //delete user
@@ -92,17 +95,10 @@ Route::post('/admin/settings/update', [settings::class, 'update'])->name('admin.
     Route::post('/users', [settings::class, 'store'])->name('users.store');
 
     //storing comment
-
     Route::get('/admin/Inbox', [InboxController::class, 'index'])->name('admin.Inbox')->middleware('auth');
 
     // For the MessageSending
-    // Route::middleware(['auth'])->group(function () {
-      //  Route::get('admin/inbox/{user}', [InboxController::class, 'index'])->name('inbox.index');
-      //  Route::post('admin/inbox', [InboxController::class, 'store'])->name('inbox.store');
-    // });
-
-
-Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
     Route::get('/inbox/{userId?}', [InboxController::class, 'index'])->name('inbox');
     Route::post('/inbox/send', [InboxController::class, 'sendMessage'])->name('inbox.send');
     Route::get('/inbox/fetch/{userId}', [InboxController::class, 'fetchMessages'])->name('inbox.fetch');
@@ -113,9 +109,35 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/ScheduleInstallation', [ScheduleInstallationController::class, 'index'])->name('admin.ScheduleInstallation')->middleware('auth');
 
     //navigating with tech user login
-
     Route::get('/tech/dashboard', [TechController::class, 'index'])->middleware('role:tech_supervisor');
+    //navigate tech tabs page 
+    Route::get('/tech/ClientManagement', [techClientController::class, 'index'])->name('tech.ClientManagement');
+    Route::get('/tech/ProjectManagement', [techProjectManagementController::class, 'index'])->name('tech.ProjectManagement');
+    Route::get('/tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'index'])->name('tech.ReportsandAnalytics');
+    Route::get('/tech/ScheduleInstallation', [techScheduleInstallationController::class, 'index'])->name('tech.ScheduleInstallation');
+    Route::get('/tech/Settings', [techSettingsController::class, 'index'])->name('tech.Settings');
+    Route::get('/tech/Inbox', [techInboxController::class, 'index'])->name('tech.Inbox');
+    Route::get('/tech/AssignDesigners', [techAssignDesignersController::class, 'index'])->name('tech.AssignDesigners');
+
+
+     // For the MessageSending
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/tech/inbox/{userId?}', [techInboxController::class, 'index'])->name('tech.inbox');
+    Route::post('/tech/inbox/send', [techInboxController::class, 'sendMessage'])->name('tech.inbox.send');
+    Route::get('/tech/inbox/fetch/{userId}', [techInboxController::class, 'fetchMessages'])->name('tech.inbox.fetch');
+});
+
+    //for the tech account tab on the settings page
+    Route::post('/tech/settings/update', [settings::class, 'update'])->name('tech.settings.update');
+
+    Route::get('tech/ClientManagement', [techClientController::class, 'clientProjects'])->name('tech.ClientManagement');
+
+
+
+
+    
     //navigating with Designer user login
+
 
     Route::get('/designer/dashboard', [DesignerController::class, 'index'])->middleware('role:designer');
        //navigating with tech accountant login

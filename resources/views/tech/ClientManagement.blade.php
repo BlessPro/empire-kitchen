@@ -1,0 +1,123 @@
+   <x-tech-layout>
+   <x-slot name="header">
+<!--written on 16.05.2025-->
+        @include('admin.layouts.header')
+         </x-slot>
+        <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+        <!--head begins-->
+
+            <div class="]">
+             <div class="mb-[20px]"> 
+                
+                
+                <h2 class="font-semibold text-[30px] mb-6">My Client </h2>
+        <div class="mb-20 bg-white shadow rounded-2xl">
+            <div class="pt-6 pb-5 pl-6 ">
+            <h2 class="text-sm text-gray-600 ">Manage all your Clients here</h2>
+            </div>
+            <div class="overflow-x-auto">
+                 <table class="min-w-full text-left">
+                    <thead class="items-center text-sm text-gray-600 bg-gray-100">
+                      <tr >
+
+                        <th class="p-4 font-mediumt text-[15px] items-center">Client Name</th>
+                        <th class="p-4 font-mediumt text-[15px] items-center">Phone Number</th>
+                        <th class="p-4 font-mediumt text-[15px] items-center">Location</th>
+                        <th class="p-4 font-mediumt text-[15px] items-center">Measurement Date</th>
+                        <th class="p-4 font-mediumt text-[15px] items-center">Status</th>
+                        <th class="p-4 font-mediumt text-[15px] items-center">Action</th>
+
+
+                      </tr>
+                    </thead>
+                 <tbody>
+                @foreach ($clients as $client)
+                    @foreach ($client->projects as $project)
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="px-4 py-2">{{ $client->firstname }} {{ $client->lastname }}</td>
+                            <td class="px-4 py-2">{{ $client->phone_number }}</td>
+                            <td class="px-4 py-2">{{ $client->location }}</td>
+                            <td class="px-4 py-2">
+                                @if ($project->measurement->first())
+                                    {{ \Carbon\Carbon::parse($project->measurement->first()->measured_at)->format('d M Y') }}
+                                @else
+                                    <span class="italic text-gray-400">Not measured</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-2">
+                                <span class="inline-block px-2 py-1 text-sm text-blue-700 bg-blue-100 rounded">
+                                    {{ $project->current_stage }}
+                                </span>
+                            </td>
+                        <td class="px-4 py-2"> <i data-feather="eye" class="text-"></i> </td>
+        
+                        </tr>
+                    @endforeach
+                @endforeach
+            </tbody>
+              </table>
+  <div class="mt-4">
+    {!! $clients->links('pagination::tailwind') !!}
+</div>
+
+              <div class="mt-4 mb-5 ml-5 mr-5">
+            </div>
+            </div>
+
+            <!-- Pagination -->
+
+            </div>
+
+           </div>
+    </div>
+    </main>
+    </x-tech-layout>
+
+{{-- 
+<x-tech-layout>
+   <x-slot name="header">
+<!--written on 16.05.2025-->
+        @include('admin.layouts.header')
+         </x-slot>
+@section('content')
+<div class="container px-4 py-6 mx-auto">
+    <h1 class="mb-6 text-2xl font-bold">Clients in Measurement Stage</h1>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-200 shadow-sm">
+            <thead>
+                <tr class="text-sm text-left text-gray-600 uppercase bg-gray-100">
+                    <th class="px-4 py-2">Client Name</th>
+                    <th class="px-4 py-2">Phone Number</th>
+                    <th class="px-4 py-2">Location</th>
+                    <th class="px-4 py-2">Measurement Date</th>
+                    <th class="px-4 py-2">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($clients as $client)
+                    @foreach ($client->projects as $project)
+                        <tr class="border-b hover:bg-gray-50">
+                            <td class="px-4 py-2">{{ $client->firstname }} {{ $client->lastname }}</td>
+                            <td class="px-4 py-2">{{ $client->phone_number }}</td>
+                            <td class="px-4 py-2">{{ $client->location }}</td>
+                            <td class="px-4 py-2">
+                                @if ($project->measurement->first())
+                                    {{ \Carbon\Carbon::parse($project->measurement->first()->measured_at)->format('d M Y') }}
+                                @else
+                                    <span class="italic text-gray-400">Not measured</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-2">
+                                <span class="inline-block px-2 py-1 text-sm text-blue-700 bg-blue-100 rounded">
+                                    {{ $project->current_stage }}
+                                </span>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+ </x-tech-layout> --}}

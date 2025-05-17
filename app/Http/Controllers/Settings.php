@@ -123,16 +123,7 @@ public function store(Request $request)
 
         return redirect()->back()->with('success', 'User successfully! deleted ');
     }
-    // public function store(Request $request)
-    // {
-    //     // Logic to store the project
-    //     return redirect()->route('admin.Settings.index')->with('success', 'Project created successfully.');
-    // }
-    // public function update(Request $request, $id)
-    // {
-    //     // Logic to update the project
-    //     return redirect()->route('admin.Settings.index')->with('success', 'Project updated successfully.');
-    // }
+ 
     public function changePassword(Request $request)
     {
         // Logic to change the password

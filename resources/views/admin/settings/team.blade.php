@@ -148,17 +148,22 @@
             </div>
             <div>
 
-              <label class="block mb-4 text-sm font-medium text-gray-700">Profile Picture</label>
-                <input type="file" name="profile_pic" accept="image/*" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
 
-                {{-- <label class="block mb-4 text-sm font-medium text-gray-700">Confirm Password</label>
+                <label class="block mb-4 text-sm font-medium text-gray-700">Confirm Password</label>
                 <input type="password" id="password_confirmation"
                 name="password_confirmation"
                 class="w-[270px] px-3 py-2 border border-gray-300 rounded-md
-                 focus:outline-none focus:ring-2 focus:ring-blue-500" required> --}}
+                 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
             </div>
+   
+            </div>
+                     <div class="">
 
-            </div>
+
+                     <label class="block mb-4 text-sm font-medium text-gray-700">Profile Picture</label>
+
+                <input type="file" name="profile_pic" accept="image/*" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                     </div>s
               <!---group 3 ends-->
 
           <!---group 4 begins-->
@@ -173,6 +178,31 @@
     </form>
 
 </div>
+</div>
+
+{{-- <div id="successModal1" tabindex="-1" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
+    <div class="p-6 text-center bg-white rounded-md shadow-lg w-72">
+        <p class="mb-4">User successfully added!</p>
+        <button id="successOkBtn1" class="px-4 py-2 text-white rounded-full bg-fuchsia-900">OK</button>
+    </div>
+</div> --}}
+
+
+
+<div id="successModal1" tabindex="-1" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
+    <div class="w-full max-w-sm p-6 bg-white rounded-lg">
+        <div class="flex items-center justify-center w-10 h-10 mb-[10px] bg-fuchsia-100 rounded-full">
+            <i data-feather="edit" class="text-fuchsia-900 ml-[3px]"></i>
+        </div>
+        <h2 class="mb-4 text-lg font-semibold text-left">User successfully added</h2>
+
+        <!-- Right-Aligned Button -->
+        <div class="flex justify-end">
+            <button id="successOkBtn1" class="px-4 py-2 text-white rounded-full bg-fuchsia-900">
+                OK
+            </button>
+        </div>
+    </div>
 </div>
  {{-- add user pop up  ends--}}
 
@@ -417,22 +447,22 @@ document.getElementById('successOkBtn').addEventListener('click', function () {
 
     // Add User Modal
 
-    document.getElementById('openAddUserModal').addEventListener('click', function () {
-        document.getElementById('addUserModal').classList.remove('hidden');
-    });
+    // document.getElementById('openAddUserModal').addEventListener('click', function () {
+    //     document.getElementById('addUserModal').classList.remove('hidden');
+    // });
 
           // for the close (X) button
-          document.getElementById('cancelAddUser').addEventListener('click', function () {
-            document.getElementById('addUserModal').classList.add('hidden');
-        });
+        //   document.getElementById('cancelAddUser').addEventListener('click', function () {
+        //     document.getElementById('addUserModal').classList.add('hidden');
+        // });
 
 
-    document.getElementById('addUserForm').addEventListener('submit', function (e) {
-        e.preventDefault();
 
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('password_confirmation').value;
-    const passwordError = document.getElementById('passwordError');
+
+
+    // const password = document.getElementById('password').value;
+    // const confirmPassword = document.getElementById('password_confirmation').value;
+    // const passwordError = document.getElementById('passwordError');
 
     // Clear previous error
     // passwordError.textContent = '';
@@ -441,6 +471,86 @@ document.getElementById('successOkBtn').addEventListener('click', function () {
     //     passwordError.textContent = 'Passwords do not match.';
     //     return;
     // }
+
+//      document.getElementById('addUserForm').addEventListener('submit', function (e) {
+//         e.preventDefault();
+//         const form = e.target;
+//         const formData = new FormData(form);
+
+//         fetch("{{ route('users.store') }}", {
+//             method: 'POST',
+//             headers: {
+//                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
+//                 'Accept': 'application/json'  // Tell Laravel you want JSON
+//             },
+//             body: formData,
+//         })
+//         .then(async response => {
+//             if (!response.ok) {
+//                 const errorData = await response.json();
+//                 throw new Error(errorData.message || 'Validation failed');
+//             }
+//             return response.json();
+//         })
+//         .then(data => {
+//             document.getElementById('addUserModal').classList.add('hidden');
+//             // alert('Project created successfully!');
+
+//             document.getElementById('AddsuccessModal').classList.remove('hidden');
+//             // Optionally refresh data here
+//         })
+//         .catch(error => {
+//             // alert('Error: ' + error.message);
+//         });
+//     });
+
+
+//     //reloading the page
+//     document.getElementById('closeSuccessModal').addEventListener('click', function () {
+//             document.getElementById('successModal').classList.add('hidden');
+//             location.reload(); // refresh to update the table
+//         });
+
+
+//         //editing logged user's details
+//         document.getElementById('account_profile_pic').addEventListener('change', function (e) {
+//     const file = e.target.files[0];
+//     if (file) {
+//         document.getElementById('account_profile_preview').src = URL.createObjectURL(file);
+//     }
+// });
+
+
+
+    // document.getElementById('openAddProjectModal').addEventListener('click', function () {
+    //     document.getElementById('addProjectModal').classList.remove('hidden');
+    // });
+    document.getElementById('openAddUserModal').addEventListener('click', function () {
+            document.getElementById('addUserModal').classList.remove('hidden');
+        });
+          // for the close (X) button
+          document.getElementById('cancelAddUser').addEventListener('click', function () {
+            document.getElementById('addUserModal').classList.add('hidden');
+        });
+
+
+    //      const password = document.getElementById('password').value;
+    // const confirmPassword = document.getElementById('password_confirmation').value;
+    // const passwordError = document.getElementById('passwordError');
+
+    // Clear previous error
+    // passwordError.textContent = '';
+
+    // if (password !== confirmPassword) {
+    //     passwordError.textContent = 'Passwords do not match.';
+    //     return;
+    // }
+    document.getElementById('addUserForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+
+
+
 
         const form = e.target;
         const formData = new FormData(form);
@@ -461,32 +571,31 @@ document.getElementById('successOkBtn').addEventListener('click', function () {
             return response.json();
         })
         .then(data => {
-            document.getElementById('addUserModal').classList.add('hidden');
-            // alert('Project created successfully!');
+            // document.getElementById('addProjectModal').classList.add('hidden');
+            // // alert('Project created successfully!');
+            // document.getElementById('successModal').classList.remove('hidden');
+            // // Optionally refresh data here
+            if (data)
+            console.log(data);{
 
-            document.getElementById('successModal').classList.remove('hidden');
-            // Optionally refresh data here
+            document.getElementById('addUserModal').classList.add('hidden');
+            document.getElementById('successModal1').classList.remove('hidden');
+
+            //  alert('Project created successfully!');
+
+        }
         })
         .catch(error => {
-            // alert('Error: ' + error.message);
+            alert('Error: ' + error.message);
         });
     });
 
 
     //reloading the page
-    document.getElementById('closeSuccessModal').addEventListener('click', function () {
-            document.getElementById('successModal').classList.add('hidden');
+    document.getElementById('successOkBtn1').addEventListener('click', function () {
+            document.getElementById('successModal1').classList.add('hidden');
             location.reload(); // refresh to update the table
         });
-
-
-        //editing logged user's details
-        document.getElementById('account_profile_pic').addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    if (file) {
-        document.getElementById('account_profile_preview').src = URL.createObjectURL(file);
-    }
-});
 
 
 </script>

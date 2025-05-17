@@ -21,7 +21,7 @@
             <!-- Page Heading -->
             @isset($header)
                 <header class="bg-white shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
@@ -49,24 +49,37 @@
   <!--Modified for laravel/blade on 15.04.2025 -->
 
 
-</style>
-</head>
+{{-- </style>
+</head> --}}
 <body class="bg-gray-100 ">
     <div class="flex min-h-screen">
 
         {{-- Admin Sidebar --}}
-        @include('admin.layouts.header')
+
         @include('admin.layouts.sidebar')
+
+        
+        {{-- elseif(auth()->user()->role == 'tech'){
+        @include('tech.layouts.sidebar')
+        } --}}
+        {{-- else{
+        @include('admin.layouts.sidebar')
+        } --}}
+            @include('admin.layouts.topbar')
+
+        {{-- Sidebar --}}
+
+        @include('admin.layouts.header')
 
         {{-- Sidebar --}}
 
 
         {{-- Main Content --}}
 
-        <div class="flex-1 flex flex-col">
+        <div class="flex flex-col flex-1">
 
             {{-- Topbar/Profile Bar --}}
-            @include('admin.layouts.topbar')
+            {{-- @include('admin.layouts.topbar') --}}
 
             <main class="p-4">
                 @isset($header)
