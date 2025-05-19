@@ -44,37 +44,39 @@
                    <canvas id="clientsChart"  class="w-full h-full"></canvas>
                  </div>
                 <span class="flex flex-col items-center justify-center">
+                    
                  <!-- Legend -->
+
                  <ul class="items-center space-y-3">
                    <li class="flex items-center">
                      <span class="w-10 h-5 mr-3 bg-orange-500 rounded-full"></span>
                      <span class="text-gray-800 font-normal text-[15px]">New Clients (5)</span>
                    </li>
+
                    <li class="flex items-center">
                      <span class="w-10 h-5 rounded-[15px] bg-purple-900 mr-3"></span>
                      <span class="text-gray-800 font-normal text-[15px]">Schd. Measurements (10)</span>
                    </li>
+
                    <li class="flex items-center">
                      <span class="w-10 h-5 rounded-[15px] bg-violet-500 mr-3"></span>
                      <span class="text-gray-800 font-normal text-[15px]">Pending Designs (7)</span>
                    </li>
+
                    <li class="flex items-center">
                      <span class="w-10 h-5 rounded-[15px] bg-yellow-400 mr-3"></span>
                      <span class="text-gray-800 font-normal text-[15px]">Quotes (9)</span>
                    </li>
+
                    <li class="flex items-center">
                      <span class="w-10 h-5 rounded-[15px] bg-blue-500 mr-3"></span>
                      <span class="text-gray-800 font-normal text-[15px]">Payments (6)</span>
                    </li>
                  </ul>
                 </span>
-
                </div>
-                            <!--try-->
 
-             </div>
-
-             <!--try-->
+            </div>
 
            <!--the pipeline bar chart begins-->
              <div class="bg-white p-4 rounded-[30px] shadow">
@@ -147,7 +149,7 @@
             </div>
 
 
-{{-- table was here --}}
+            {{-- table was here --}}
                      <div class="mt-4 mb-5 ml-5 mr-5">
                         {{ $projects->links('pagination::tailwind') }}
                     </div>

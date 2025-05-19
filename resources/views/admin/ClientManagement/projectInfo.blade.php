@@ -88,12 +88,12 @@
                             </div>
                             <div class="flex items-center gap-2">
                               <span class="font-medium">Address:</span>
-                              <span><span class="mr-[12px] font-normal text-black-900">{{ $project->client->location }}</span> </span>
+                              <span><span class="mr-[12px] font-normal text-black-900">{{ $project->location }}</span> </span>
                             </div>
                             <div class="flex items-center gap-2">
                               <span class="font-medium">Tech Supervisor:</span>
 
-                              <span><span class="mr-[12px] font-normal text-black-900">{{ $project->techSupervisor?->name ?? 'Not Assigned' }}</span> </span>
+                              <span><span class="mr-[12px] font-normal text-black-900">{{ $project->techSupervisor->name ?? 'Not Assigned' }}</span> </span>
 
                           </div>
                         </div>
@@ -357,7 +357,7 @@
     document.getElementById('cancelAddClient').addEventListener('click', function () {
         document.getElementById('addClientModal').classList.add('hidden');
     });
-    
+
 
     document.getElementById('addClientForm').addEventListener('submit', function (e) {
     e.preventDefault();

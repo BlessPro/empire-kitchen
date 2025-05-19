@@ -14,9 +14,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Installation extends Model
 {
+    // protected $fillable = [
+    //     'project_id', 'user_id', 'installation_image_path', 'installed_at'
+    // ];
+
     protected $fillable = [
-        'project_id', 'user_id', 'installation_image_path', 'installed_at'
-    ];
+    'client_id',
+    'project_id',
+    'user_id',
+    'installation_image_path',
+    'installed_at',
+    'start_time',
+    'end_time',
+    'notes',
+];
+
 
     public function project()
     {

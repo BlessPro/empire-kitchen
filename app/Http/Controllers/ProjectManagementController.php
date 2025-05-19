@@ -17,8 +17,8 @@ class ProjectManagementController extends Controller
         $measurements = Project::with('measurement')->where('current_stage', 'measurement')->get();
         $designs = Project::with('design')->where('current_stage', 'design')->get();
         $installations = Project::with('installation')->where('current_stage', 'installation')->get();
-    
-    
+
+
 
     $clients = Client::all();
     $techSupervisors = User::where('role', 'tech_supervisor')->get();
@@ -34,13 +34,13 @@ class ProjectManagementController extends Controller
     // {
     //     $clients = Client::select('id', 'firstname', 'lastname')->get();
     //     $techSupervisors = User::where('role', 'tech_supervisor')->select('id', 'name')->get();
-    
+
     //     return response()->json([
     //         'clients' => $clients,
     //         'techSupervisors' => $techSupervisors
     //     ]);
     // }
-    
+
 
 
     public function create()
@@ -59,12 +59,12 @@ class ProjectManagementController extends Controller
     //         'client_id' => 'required|exists:clients,id',
     //         'tech_supervisor_id' => 'required|exists:users,id',
     //     ]);
-    
+
     //     Project::create([
     //         'client_id' => $request->client_id,
     //         'tech_supervisor_id' => $request->tech_supervisor_id,
     //     ]);
-    
+
     //     return response()->json(['message' => 'Project created']);
     // }
 
@@ -90,7 +90,7 @@ class ProjectManagementController extends Controller
         'start_date' => now(), // or any other default value
         // 'admin_name' => $request->admin_id,
         'client_id' => $request->client_id,
-        'tech_supervisor_id' => $request->tech_supervisor_id,
+        'tech_supervisor_id' => $request->tech_supervisor,
         'current_stage' => 'measurement', // if default stage is needed
     ]);
 
@@ -100,7 +100,7 @@ class ProjectManagementController extends Controller
 
 }
 
-    
+
 //looping through table  for records to push to the project blade
 public function project_stage()
 {
@@ -113,7 +113,7 @@ public function project_stage()
 
 
 
- 
+
     public function update(Request $request, $id)
     {
         // Logic to update the project

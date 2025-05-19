@@ -33,6 +33,7 @@ use App\Http\Controllers\techSettingsController;
 use App\Http\Controllers\techInboxController;
 use App\Http\Controllers\TechAssignDesignersController;
 use App\Http\Controllers\MeasurementController;
+use App\Http\Controllers\InstallationController;
 
 use App\Http\Controllers\RoleMiddleware;
 
@@ -66,7 +67,7 @@ Route::get('/dashboard', function () {
     ->name('admin.clients.projects');
 
     //for the project info
-  
+
     Route::get('/admin/projects/{project}/info', [ClientManagementController::class, 'showProjectname'])->name('admin.projects.info');
 
     //deleting project from the dashboard
@@ -110,7 +111,7 @@ Route::get('/dashboard', function () {
 
     //navigating with tech user login
     Route::get('/tech/dashboard', [TechController::class, 'index'])->middleware('role:tech_supervisor');
-    //navigate tech tabs page 
+    //navigate tech tabs page
     Route::get('/tech/ClientManagement', [techClientController::class, 'index'])->name('tech.ClientManagement');
     Route::get('/tech/ProjectManagement', [techProjectManagementController::class, 'index'])->name('tech.ProjectManagement');
     Route::get('/tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'index'])->name('tech.ReportsandAnalytics');
@@ -135,7 +136,7 @@ Route::get('/dashboard', function () {
 
 
 
-    
+
     //navigating with Designer user login
 
 
@@ -163,6 +164,26 @@ Route::get('/dashboard', function () {
     //For the report and analytics page
     Route::get('/admin/ReportandAnalytics',   [ProjectManagementController::class, 'index'])->name('admin.ReportandAnalytics');
 
+    // for scheduling the installation on admin level
+//     // API route for FullCalendar events
+// Route::get('/api/calendar/events', [InstallationController::class, 'calendarEvents']);
+
+// // Web route to store a new installation
+// Route::post('/installation', [InstallationController::class, 'store'])->name('installation.store');
+
+Route::prefix('admin')->group(function () {
+    Route::post('/installations/store', [InstallationController::class, 'store'])->name('installation.store');
+});
+
+
+// Route::post('admin/installations/store', [InstallationController::class, 'store'])->name('admin.installation.store');
+Route::get('/installations/events', [InstallationController::class, 'calendarEvents'])->name('installation.events');
+
+Route::get('/api/projects/by-client/{client}', function ($clientId) {
+    return \App\Models\Project::where('client_id', $clientId)
+        ->where('current_stage', '<>', 'installation') // only those not yet installed
+        ->get(['id', 'name']);
+});
 
 
     Route::get('/admin/Dashboard2',  [ProjectController::class, 'index'])->name('admin.Dashboard2');

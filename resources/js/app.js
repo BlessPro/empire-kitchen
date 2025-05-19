@@ -16,7 +16,7 @@ const pipeline_chart=document.getElementById('ProjectsPipeline').getContext('2d'
 new Chart(pipeline_chart, {
 type: 'bar',
 data: {
-  labels: ['Smith', 'New build', 'Lake view home project', 'Johnson Remodel'],
+  labels: ['', '', '', ''],
 
   datasets: [{
     data: [5, 10, 25, 9, 6],
