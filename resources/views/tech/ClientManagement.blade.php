@@ -70,6 +70,8 @@
 
                             <i data-feather="eye" class="text-gray-600"></i> </td>
                                 </a>
+
+
                         </tr>
                     @endforeach
                 @endforeach

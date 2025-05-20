@@ -179,6 +179,10 @@
                                           <td class="p-4 font-normal text-[15px]">{{ $project->cost }}</td>
                                       </tr>
                                   @endforeach
+
+
+   
+
                                     </tbody>
                                 </table>
 

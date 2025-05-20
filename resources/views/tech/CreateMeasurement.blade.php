@@ -40,9 +40,10 @@
               <!-- Space Dimensions -->
               <div>
                 <h2 class="text-lg font-semibold text-purple-800 mb-4">Space Dimensions</h2>
+                <h2 class="text-lg font-semibold text-purple-800 mb-4"> {{ $project->name}}</h2>
 
 
-                <form action="{{ route('measurements.store') }}" method="POST" enctype="multipart/form-data">
+                {{-- <form action="{{ route('measurements.store') }}" method="POST" enctype="multipart/form-data">
               @csrf
               <!-- existing fields -->
               <input type="text" name="length" ... >
@@ -59,11 +60,14 @@
               <textarea name="obstacles" ...></textarea>
 
               <button type="submit">Save Measurement</button>
-            </form>
-
-    <form>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            </form> --}}
+{{-- action="{{ route('measurements.store') }}" method="POST" enctype="multipart/form-data" --}}
+    <form action="{{ route('tech.measurements.store') }}" method="POST" enctype="multipart/form-data">
+   @csrf
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
+            <input type="hidden" name="project_id" value="{{ $project->id }}">
+
         <label  class="block text-sm font-medium text-gray-700 mb-1">Length (in meters/feet)</label>
         <input type="text" name="length" class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
       </div>
@@ -102,13 +106,14 @@
               <p><span class="font-medium text-purple-600">Click here</span> to upload your file or drag.</p>
               <p class="mt-1 text-xs text-gray-400">Supported format: SVG, JPG, PNG (10MB each)</p>
             </div>
-            <input type="file" name="profile_pic" id="account_profile_input" class="hidden" onchange="previewProfile(event)">
+            {{-- <input type="file" name="profile_pic" id="account_profile_input" class="hidden" onchange="previewProfile(event)"> --}}
+            <input type="file" name="images[]" id="account_profile_input" class="hidden" multiple onchange="previewProfile(event)">
 
           </div>
   </div>
 
   <!-- Obstruction Question -->
-  <div>
+  {{-- <div>
     <label class="block text-sm font-medium text-gray-700 mb-2">Are there any other obstructions or challenges?</label>
     <div class="flex items-center gap-6">
       <label class="inline-flex items-center">
@@ -120,7 +125,7 @@
         <span class="ml-2">No</span>
       </label>
     </div>
-  </div>
+  </div> --}}
 
   <!-- Obstruction Description -->
   <div>

@@ -138,9 +138,14 @@ Route::get('/dashboard', function () {
     //for the create management page
     Route::get('tech/CreateMeasurement', [MeasurementController::class, 'StoreCreateMeasurement'])->name('tech.CreateMeasurement');
     // for saving the measurement
-    Route::post('/measurements', [MeasurementController::class, 'store'])->name('measurements.store');
+    // Route::post('/measurements', [MeasurementController::class, 'store'])->name('measurements.store');
+
+    Route::post('tech/measurements', [MeasurementController::class, 'store'])->name('tech.measurements.store');
+   // Route::get('/tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'showMeasurementProjects'])->name('tech.ReportsandAnalytics');
+    Route::get('tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'reportsAndAnalytics'])->name('tech.ReportsandAnalytics');
 
 
+// Route::get('/measurements/create', [MeasurementController::class, 'create'])->name('measurements.create');
 
 
 

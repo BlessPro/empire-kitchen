@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Measurement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Project;
 
 class MeasurementController extends Controller
 {
@@ -47,16 +48,21 @@ public function clientProjects()
 
 }
 
-public function StoreCreateMeasurement(){
+public function StoreCreateMeasurement(Project $project){
 
-    return view('tech.CreateMeasurement');
+    return view('tech.CreateMeasurement', compact('project'));
 }
 
+// public function create(Project $project)
+// {
+//     return view('measurements.create', compact('project'));
+// }
 
 
 public function store(Request $request)
 {
     $validated = $request->validate([
+        'project_id' => 'required|exists:projects,id',
         'length' => 'required|numeric',
         'height' => 'required|numeric',
         'width' => 'required|numeric',
@@ -79,12 +85,13 @@ public function store(Request $request)
         'height' => $validated['height'],
         'width' => $validated['width'],
         'obstacles' => $validated['obstacles'] ?? null,
-        'measured_at' => now(),
+        'created_at' => now(),
         'images' => $imagePaths,
     ]);
 
     return back()->with('success', 'Measurement saved successfully.');
-}
+
+ }
 
 
 }
