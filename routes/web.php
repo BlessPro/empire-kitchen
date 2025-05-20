@@ -128,14 +128,17 @@ Route::get('/dashboard', function () {
 
     //for the viewing the client projects
     Route::get('/tech/projects/{project}/info', [techClientController::class, 'showProjectname'])->name('tech.projects.info');
-// comments
+    // comments
     Route::post('/tech/projects/{project}/comments', [CommentController::class, 'store'])->name('techproject.comment.store');
 
+    Route::get('tech/ClientManagement', [techClientController::class, 'clientProjects'])->name('tech.ClientManagement');
 
     //for the tech account tab on the settings page
     Route::post('/tech/settings/update', [settings::class, 'update'])->name('tech.settings.update');
-
-    Route::get('tech/ClientManagement', [techClientController::class, 'clientProjects'])->name('tech.ClientManagement');
+    //for the create management page
+    Route::get('tech/CreateMeasurement', [MeasurementController::class, 'StoreCreateMeasurement'])->name('tech.CreateMeasurement');
+    // for saving the measurement
+    Route::post('/measurements', [MeasurementController::class, 'store'])->name('measurements.store');
 
 
 

@@ -42,7 +42,7 @@
  <!-- Top Navbar -->
 
  <button
-onclick="window.location='{{ route('tech.CreateManagement') }}'"
+onclick="window.location='{{ route('tech.CreateMeasurement') }}'"
      id="openMeasurementModal" class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
      + Add Measurement
  </button>
@@ -97,21 +97,19 @@ onclick="window.location='{{ route('tech.CreateManagement') }}'"
                           <div class="mt-6">
                             <h3 class="mb-2 text-sm font-semibold text-gray-800">Measurement (in length, width, height)</h3>
                             <div class="flex gap-4">
-                                @foreach ($project->measurement as $measurement)
-
-                              <div class="flex items-center gap-1">
-                                📐 <span>   <p>Length: {{ $measurement->length }}</p>
-                                </span>
-                              </div>
-                              <div class="flex items-center gap-1">
-                                📐 <span><p>Width: {{ $measurement->width }}</p>
-                                </span>
-                              </div>
-                              <div class="flex items-center gap-1">
-                                📐 <span><p>Length: {{ $measurement->height }}</p>
-                                </span>
-                              </div>
-                              @endforeach
+                             @forelse ($project->measurement as $measurement)
+    <div class="flex items-center gap-1">
+        📐 <span><p>Length: {{ $measurement->length }}</p></span>
+    </div>
+    <div class="flex items-center gap-1">
+        📐 <span><p>Width: {{ $measurement->width }}</p></span>
+    </div>
+    <div class="flex items-center gap-1">
+        📐 <span><p>Height: {{ $measurement->height }}</p></span>
+    </div>
+@empty
+    <p onclick="window.location='{{ route('tech.CreateMeasurement') }}'" class="ml-50 font-semibold text-[13px] cursor-pointer text-fuchsia-900 hover:text-[#F59E0B]">+ Add measurement</p>
+@endforelse
 
                             </div>
                           </div>

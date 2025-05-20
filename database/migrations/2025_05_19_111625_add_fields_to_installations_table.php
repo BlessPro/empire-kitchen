@@ -15,9 +15,6 @@ return new class extends Migration
         //     //
         // });
         Schema::table('installations', function (Blueprint $table) {
-    $table->unsignedBigInteger('client_id')->nullable();
-    $table->timestamp('start_time')->nullable();
-    $table->timestamp('end_time')->nullable();
 
     $table->foreign('client_id')->references('id')->on('clients')->onDelete('set null');
 });

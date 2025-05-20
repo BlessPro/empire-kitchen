@@ -32,7 +32,7 @@
 
             <!-- Card Item -->
             @forelse($measurements as $project)
-            <a href="{{ route('admin.projects.info', $project->id) }}">
+            <a href="{{ route('tech.projects.info', $project->id) }}">
 
             <div class="p-5 mb-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
                 <h3 class="font-semibold text-gray-800">{{ $project->name }}</h3>
@@ -147,7 +147,7 @@
 
                 <!-- Card Item -->
                 @forelse($measurements as $project)
-                <a href="{{ route('admin.projects.info', $project->id) }}">
+                <a href="{{ route('tech.projects.info', $project->id) }}">
 
                 <div class="p-5 mb-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
                     <h3 class="font-semibold text-gray-800">{{ $project->name }}</h3>

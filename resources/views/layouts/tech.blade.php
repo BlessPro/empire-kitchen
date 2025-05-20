@@ -7,7 +7,7 @@
 
  @include('admin.layouts.header')
 
-<body class="bg-gray-100 ">
+<body class="bg-[#F9F7F7] ">
     <div class="flex min-h-screen">
 
         {{-- Admin Sidebar --}}

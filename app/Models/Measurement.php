@@ -15,9 +15,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Measurement extends Model
 {
-    protected $fillable = [
-        'project_id', 'user_id', 'length', 'width', 'height', 'measured_at'
+   protected $fillable = [
+    'project_id', 'user_id', 'length', 'width', 'height', 'obstacles', 'measured_at', 'images'
     ];
+    
+    protected $casts = [
+        'images' => 'array',
+    ];
+    
 
     public function project()
     {

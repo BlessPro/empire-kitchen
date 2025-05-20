@@ -2,7 +2,7 @@
     <x-slot name="header">
 <!--written on 26.04.2025-->
         @include('admin.layouts.header')
-        <main class="ml-64 mt-[100px] flex-1 bg-gray-100 min-h-screen  items-center">
+        <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
         <!--head begins-->
 
             <div class="p-6 bg-[#F9F7F7]">
@@ -108,7 +108,7 @@
 
                 <button type="submit" class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 rounded">Save Client</button>
             </div>
-            
+
         </form>
     </div>
 
@@ -202,7 +202,7 @@
     document.getElementById('cancelAddClient').addEventListener('click', function () {
         document.getElementById('addClientModal').classList.add('hidden');
     });
-    
+
 
     document.getElementById('addClientForm').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -261,7 +261,7 @@ document.getElementById('closeSuccessModal').addEventListener('click', function 
         location.reload(); // refresh to update the table
     });
 
-    
+
 </script>
 
          @vite(['resources/js/app.js'])
