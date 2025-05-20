@@ -31,5 +31,19 @@ public function clientProjects()
     return view('tech.ClientManagement', compact('clients'));
 }
 
+public function showProjectInfo(Project $project)
+{
+    $project->load(['client', 'measurement', 'installation', 'design','comments.user']);
+
+    return view('tech.ClientManagement.projectInfo', compact('project'));
+}
+
+public function showProjectname(Project $project)
+{
+    $project->load(['client', 'measurement', 'installation', 'design','comments.user']);
+
+    return view('tech.ClientManagement.projectInfo', compact('project'));
+}
+
 
 }

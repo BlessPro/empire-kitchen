@@ -63,8 +63,7 @@ Route::get('/dashboard', function () {
     //for saving the client
     Route::post('/clients/store', [ClientManagementController::class, 'store'])->name('clients.store');
     //for handling client projects
-    Route::get('/admin/clients/{client}/projects', [ClientManagementController::class, 'showClientProjects'])
-    ->name('admin.clients.projects');
+
 
     //for the project info
 
@@ -120,13 +119,18 @@ Route::get('/dashboard', function () {
     Route::get('/tech/Inbox', [techInboxController::class, 'index'])->name('tech.Inbox');
     Route::get('/tech/AssignDesigners', [techAssignDesignersController::class, 'index'])->name('tech.AssignDesigners');
 
-
      // For the MessageSending
     Route::middleware(['auth'])->group(function () {
     Route::get('/tech/inbox/{userId?}', [techInboxController::class, 'index'])->name('tech.inbox');
     Route::post('/tech/inbox/send', [techInboxController::class, 'sendMessage'])->name('tech.inbox.send');
     Route::get('/tech/inbox/fetch/{userId}', [techInboxController::class, 'fetchMessages'])->name('tech.inbox.fetch');
 });
+
+    //for the viewing the client projects
+    Route::get('/tech/projects/{project}/info', [techClientController::class, 'showProjectname'])->name('tech.projects.info');
+// comments
+    Route::post('/tech/projects/{project}/comments', [CommentController::class, 'store'])->name('techproject.comment.store');
+
 
     //for the tech account tab on the settings page
     Route::post('/tech/settings/update', [settings::class, 'update'])->name('tech.settings.update');

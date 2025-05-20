@@ -104,7 +104,7 @@ class ProjectManagementController extends Controller
 //looping through table  for records to push to the project blade
 public function project_stage()
 {
-    $measurements = Project::with('measurement')->where('current_stage', 'measurement')->get();
+    $measurements = Project::with('measurement')->where('current_stage', 'measurement')->orderBy('created_at', 'desc')->get();
     $designs = Project::with('design')->where('current_stage', 'design')->get();
     $installations = Project::with('installation')->where('current_stage', 'installation')->get();
 

@@ -5,11 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
 use App\Models\Installation;
 use App\Models\Client;
 use App\Models\Project;
@@ -37,6 +32,8 @@ class InstallationController extends Controller
             'start_time'  => $request->start_time,
             'end_time'    => $request->end_time,
             'notes'       => $request->notes,
+            'user_id'     => Auth::id(), // Assuming the user is authenticated
+            //'images' => $request->file('installation_image_path') ? $request->file('installation_image_path')->store('installations') : null,
         ]);
 
         // Update the project's stage if necessary

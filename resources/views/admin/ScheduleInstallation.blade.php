@@ -30,7 +30,9 @@
     <div class="bg-white p-6 rounded-xl w-full max-w-2xl shadow-lg">
         <h2 class="text-xl font-bold mb-4">Create Installation</h2>
 
-        <form id="installationForm">
+     {{-- //   <form id="installationForm"> --}}
+            <form id="installationForm" enctype="multipart/form-data">
+
             @csrf
             <!-- Client -->
             <div class="mb-4">
@@ -175,20 +177,26 @@
 
         const formData = new FormData(this);
 
-        fetch('{{ route('installation.store') }}', {
+        // fetch('{{ route('installation.store') }}', {
+        //     method: 'POST',
+        //     headers: {
+        //         //'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        //     },
+
+                fetch("{{ route('installation.store') }}", {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                //'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                // 'Accept': 'application/json'  // Tell Laravel you want JSON
             },
+            body: formData,
 
-//            headers: {
-//   'Content-Type': 'application/json',
-//   'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-//}
 
-            body: formData
+
+
+
+
         })
         .then(res => res.json())
         .then(data => {
@@ -196,8 +204,10 @@
                 closeModal();
                 calendar.refetchEvents(); // Refresh the calendar
                 alert('Installation created successfully!');
+
             } else {
                 alert('Error saving installation');
+
             }
         })
         .catch(() => alert('Something went wrong.'));
@@ -211,7 +221,25 @@
 </x-layouts.app>
 
 
+{{---}}
+//            headers: {
+//   'Content-Type': 'application/json',
+//   'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+//}
+// const form = document.getElementById('installationForm');
+// const formDataObj = Object.fromEntries(new FormData(form).entries());
 
+// fetch('{{ route('installation.store') }}', {
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'application/json',
+//         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+//     },
+//     body: JSON.stringify(formDataObj)
+// })
+
+            // body: formData
+            //  body: JSON.stringify(formDataObj)
 
 
 
