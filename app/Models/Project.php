@@ -46,11 +46,16 @@ class Project extends Model
 {
 
     use HasFactory;
+protected $fillable = [
+    'name', 'description', 'additional_notes', 'cost', 'start_date', 'due_date',
+    'client_id', 'status', 'current_stage',
+    'admin_id', 'designer_id', 'tech_supervisor_id', 'sales_accountant_id', 'accountant_id'
+];
 
-    protected $fillable = [
-        'name', 'description', 'additional_notes', 'cost', 'start_date', 'due_date',
-        'client_id', 'status', 'current_stage' // ✅ added this
-    ];
+    // protected $fillable = [
+    //     'name', 'description', 'additional_notes', 'cost', 'start_date', 'due_date',
+    //     'client_id', 'status', 'current_stage' // ✅ added this
+    // ];
 
     protected $casts = [
         'start_date' => 'datetime',
@@ -108,6 +113,9 @@ public function accountant()
 {
     return $this->belongsTo(User::class, 'accountant_id');
 }
+
+
+
 
 
 }

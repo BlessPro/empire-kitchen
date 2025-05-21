@@ -143,6 +143,11 @@ Route::get('/dashboard', function () {
     Route::post('tech/measurements', [MeasurementController::class, 'store'])->name('tech.measurements.store');
    // Route::get('/tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'showMeasurementProjects'])->name('tech.ReportsandAnalytics');
     Route::get('tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'reportsAndAnalytics'])->name('tech.ReportsandAnalytics');
+    //for assigning a Designer// Show the assignment page
+    Route::get('tech/AssignDesigners', [techAssignDesignersController::class, 'showDesignerAssignment'])->name('tech.AssignDesigners');
+
+    // Assign designer to project
+    Route::post('tech/AssignDesigners', [techAssignDesignersController::class, 'assignDesigner'])->name('assign.designer');
 
 
 // Route::get('/measurements/create', [MeasurementController::class, 'create'])->name('measurements.create');

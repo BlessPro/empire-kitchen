@@ -244,8 +244,6 @@
     </div>
         <!--group row 1-->
 
-
-
         <!--group row -->
     <!-- Cost -->
     <div class="flex flex-col gap-4 sm:flex-row">
@@ -272,10 +270,7 @@
     </div>
       <!--group row 3-->
 
-
-
     <!--group row 4-->
-
 
     <!-- Select Client -->
     <div class="flex flex-col gap-4 sm:flex-row">

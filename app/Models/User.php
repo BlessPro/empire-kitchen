@@ -25,7 +25,7 @@ class User extends Authenticatable
         'profile_pic',
     ];
 
-    
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -68,6 +68,14 @@ public function installations()
 public function Comments()
 {
     return $this->hasMany(Comment::class);
+}
+
+public function designedProjects() {
+    return $this->hasMany(Project::class, 'designer_id');
+}
+public function techSupervisedProjects() {
+    return $this->hasMany(Project::class, 'tech_supervisor_id');
+
 }
 
 }
