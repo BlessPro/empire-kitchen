@@ -34,6 +34,7 @@ use App\Http\Controllers\techInboxController;
 use App\Http\Controllers\TechAssignDesignersController;
 use App\Http\Controllers\MeasurementController;
 use App\Http\Controllers\InstallationController;
+use App\Http\Controllers\TechDashboardController;
 
 use App\Http\Controllers\RoleMiddleware;
 
@@ -109,7 +110,14 @@ Route::get('/dashboard', function () {
     Route::get('/admin/ScheduleInstallation', [ScheduleInstallationController::class, 'index'])->name('admin.ScheduleInstallation')->middleware('auth');
 
     //navigating with tech user login
-    Route::get('/tech/dashboard', [TechController::class, 'index'])->middleware('role:tech_supervisor');
+    // Route::get('/tech/dashboard', [TechController::class, 'index'])->middleware('role:tech_supervisor');
+    // Route::get('/tech/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard');
+    Route::get('/tech/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard')->middleware('auth');
+
+//     Route::middleware(['auth', 'verified'])->prefix('tech')->group(function () {
+//     Route::get('/tech/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard');
+// });
+
     //navigate tech tabs page
     Route::get('/tech/ClientManagement', [techClientController::class, 'index'])->name('tech.ClientManagement');
     Route::get('/tech/ProjectManagement', [techProjectManagementController::class, 'index'])->name('tech.ProjectManagement');

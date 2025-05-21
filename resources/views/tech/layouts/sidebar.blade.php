@@ -10,7 +10,7 @@
           </div>
 
           <!--dashboard-->
-       
+
 
           <!--testing active dashboard?-->
           <a href="{{ route('tech.dashboard') }}"
@@ -28,7 +28,7 @@
 
 
               <!--Client Management-->
-        
+
 <!--testing active dashboard?-->
 <a href="{{ route('tech.ClientManagement') }}"
 class="group relative flex items-center p-5 transition
@@ -41,8 +41,8 @@ class="group relative flex items-center p-5 transition
            {{ request()->routeIs('tech.ClientManagement') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
            Client Management
 </a>
-       
-         
+
+
 
                     <!--testing active ProjectManagement?-->
                     <a href="{{ route('tech.ProjectManagement') }}"
@@ -56,7 +56,7 @@ class="group relative flex items-center p-5 transition
                                {{ request()->routeIs('tech.ProjectManagement') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
                                Project Management
                  </a>
-                 
+
                     <a href="{{ route('tech.AssignDesigners') }}"
                               class="group relative flex items-center p-5 transition
                                      {{ request()->routeIs('tech.AssignDesigners') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
@@ -70,7 +70,7 @@ class="group relative flex items-center p-5 transition
                            </a>
                            <!--testing active ProjectManagement?-->
           <!--Schedule Installation-->
-         
+
 
                     <!--testing active ScheduleInstallation?-->
                     <a href="{{ route('tech.ScheduleInstallation') }}"
@@ -87,7 +87,7 @@ class="group relative flex items-center p-5 transition
                            <!--testing active ScheduleInstallation?-->
 
           <!--Reports and Analytics-->
-        
+
 
                               <!--testing active ReportsandAnalytics?-->
                               <a href="{{ route('tech.ReportsandAnalytics') }}"
@@ -102,11 +102,11 @@ class="group relative flex items-center p-5 transition
                                          Reports and Analytics
                            </a>
 
-                           
+
                                      <!--testing active ReportsandAnalytics?-->
 
         <!--Project Management-->
-       
+
                               <!--testing active Settings?-->
                               <a href="{{ route('tech.Settings') }}"
                               class="group relative flex items-center p-5 transition
@@ -122,7 +122,7 @@ class="group relative flex items-center p-5 transition
                                      <!--testing active Settings?-->
 
            <!--Inbox-->
-           
+
               <!--testing active Settings?-->
               <a href="{{ route('tech.Inbox') }}"
               class="group relative flex items-center p-5 transition
@@ -146,7 +146,7 @@ class="group relative flex items-center p-5 transition
       <div class="px-4 py-6">
         <form method="POST" action="{{ route('logout') }}">
           @csrf
-          <a :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();" class="flex items-center text-sm hover:text-purple-300">
+          <a :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();" cursor:pointer; class="flex items-center text-sm hover:text-purple-300">
             <i data-feather="log-out" class="mr-2"></i> {{ __('Log Out') }}
           </a>
         </form>

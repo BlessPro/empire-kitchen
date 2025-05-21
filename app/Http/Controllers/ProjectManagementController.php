@@ -90,7 +90,7 @@ class ProjectManagementController extends Controller
         'start_date' => now(), // or any other default value
         // 'admin_name' => $request->admin_id,
         'client_id' => $request->client_id,
-        'tech_supervisor_id' => $request->tech_supervisor,
+        'tech_supervisor_id' => $request->tech_supervisor_id,
         'current_stage' => 'measurement', // if default stage is needed
     ]);
 

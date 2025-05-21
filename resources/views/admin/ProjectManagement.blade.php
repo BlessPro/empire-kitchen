@@ -177,15 +177,15 @@
         </div>
     </div>
 </div>
-{{-- 
+{{--
 <!-- Add Project Modal -->
 <div id="addProjectModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-40">
     <div class="w-full max-w-xl p-6 bg-white rounded-lg">
       <h2 class="mb-4 text-xl font-bold">Add New Project</h2>
-  
+
       <form id="addProjectForm" method="POST">
         @csrf
-  
+
         <!-- Select Client -->
         <div class="mb-4">
           <label for="client_id" class="block text-sm font-medium text-gray-700">Client Name</label>
@@ -196,8 +196,8 @@
             @endforeach
           </select>
         </div>
-        
-  
+
+
         <!-- Select Tech Supervisor -->
         <div class="mb-4">
           <label for="tech_supervisor_id" class="block text-sm font-medium text-gray-700">Tech Supervisor</label>
@@ -208,7 +208,7 @@
             @endforeach
           </select>
         </div>
-  
+
         <!-- Submit -->
         <div class="flex justify-end">
           <button type="submit" class="px-4 py-2 text-white rounded bg-fuchsia-900">Save Project</button>
@@ -226,7 +226,7 @@
         </div>
   <form id="addProjectForm" method="POST">
     @csrf
-  
+
     <!--group row 1-->
     <div class="flex flex-col gap-4 sm:flex-row">
 
@@ -235,7 +235,7 @@
       <label for="name" class="block mb-3 text-sm font-medium text-gray-700">Project Name</label>
       <input type="text" name="name" id="name" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
     </div>
-  
+
     <!-- Due Date -->
     <div class="mb-4">
       <label for="due_date" class="block mb-3 text-sm font-medium text-gray-700">Due Date</label>
@@ -245,7 +245,7 @@
         <!--group row 1-->
 
 
-        
+
         <!--group row -->
     <!-- Cost -->
     <div class="flex flex-col gap-4 sm:flex-row">
@@ -254,7 +254,7 @@
       <label for="cost" class="block mb-3 text-sm font-medium text-gray-700">Project Cost</label>
       <input type="number" name="cost" id="cost" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
     </div>
-  
+
     <!-- Location -->
     <div class="mb-4">
       <label for="location" class="block mb-3 text-sm font-medium text-gray-700">Location</label>
@@ -273,10 +273,10 @@
       <!--group row 3-->
 
 
-      
+
     <!--group row 4-->
 
-  
+
     <!-- Select Client -->
     <div class="flex flex-col gap-4 sm:flex-row">
 
@@ -289,7 +289,7 @@
         @endforeach
       </select>
     </div>
-  
+
     <!-- Select Tech Supervisor -->
     <div class="mb-4">
       <label for="tech_supervisor_id" class="block mb-3 text-sm font-medium text-gray-700">Tech Supervisor</label>
@@ -298,6 +298,14 @@
         @foreach ($techSupervisors as $supervisor)
           <option value="{{ $supervisor->id }}">{{ $supervisor->name }}</option>
         @endforeach
+         @foreach ($techSupervisors as $techSupervisor)
+                        <option value="{{ $techSupervisor->id }}">
+                            <img src="{{ asset('storage/'
+                            . $techSupervisor->profile_pic) }}"
+                             alt="techSupervisor" width="40" height="40"
+                             class="object-cover w-8 h-8 rounded-full">
+                            {{ $techSupervisor->name }}</option>
+                    @endforeach
       </select>
     </div>
     </div>
@@ -323,13 +331,13 @@
         </div>
     </div>
 </div>
-<!---end of pop up--->  
+<!---end of pop up--->
 
-  
+
 </div>
 </div>
 </main>
-  
+
 <script>
 
     // document.getElementById('openAddProjectModal').addEventListener('click', function () {
@@ -344,14 +352,14 @@
         });
     document.getElementById('addProjectForm').addEventListener('submit', function (e) {
         e.preventDefault();
-    
-  
-    
-   
-    
+
+
+
+
+
         const form = e.target;
         const formData = new FormData(form);
-    
+
         fetch("{{ route('projects.store') }}", {
             method: 'POST',
             headers: {
@@ -369,16 +377,16 @@
         })
         .then(data => {
             // document.getElementById('addProjectModal').classList.add('hidden');
-            // // alert('Project created successfully!');    
+            // // alert('Project created successfully!');
             // document.getElementById('successModal').classList.remove('hidden');
             // // Optionally refresh data here
-            if (data) 
+            if (data)
             console.log(data);{
 
             document.getElementById('addProjectModal').classList.add('hidden');
             document.getElementById('successModal2').classList.remove('hidden');
 
-            //  alert('Project created successfully!');    
+            //  alert('Project created successfully!');
 
         }
         })
@@ -386,14 +394,14 @@
             alert('Error: ' + error.message);
         });
     });
-    
-    
+
+
     //reloading the page
     document.getElementById('closeSuccessModal').addEventListener('click', function () {
             document.getElementById('successModal').classList.add('hidden');
             location.reload(); // refresh to update the table
         });
-    
+
         </script>
     </x-slot>
 </x-layouts.app>

@@ -169,11 +169,30 @@
                                               <span class="px-3 py-1 text-sm {{ $statusClasses[$project->status] ?? $defaultClass }}">{{ $project->status }}</span>
                                           </td>
                                           <td  class="px-3 py-1 text-sm  ${item.statusStyle}">{{ $project->client->firstname . ' ' . $project->client->lastname}}</td>
-                                          <td class="p-4 text-left"> <div class="flex items-center gap-3">
+                                          <td class="p-4 text-left">
+                                            {{-- <div class="flex items-center gap-3">
                                             <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-8 h-8 rounded-full">
                                             <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->techSupervisor?->name ?? 'Not Assigned' }}</p>
                                             </span>
-                                        </div></td>
+                                        </div> --}}
+
+                             @if($project->techSupervisor)
+                            <div class="d-flex align-items-center p-4 font-normal text-[15px] flex items-center py-3 space-x-2 ">
+                              {{-- <img  src="{{ $user->profile_pic ? asset('storage/' . $user->profile_pic) : 'https://i.pravatar.cc/30' }}" > --}}
+                                <img src="{{ asset('storage/' . $project->techSupervisor->profile_pic) }}" alt="designer" width="40" height="40" class="object-cover w-8 h-8 rounded-full">
+                                <span>{{ $project->techSupervisor->name }}</span>
+
+
+
+
+                            </div>
+                        @else
+                            <!-- Button to Open Modal -->
+                            <button onclick="openModal('{{ $project->id }}', '{{ $project->name }}')" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#assignModal" data-project-id="{{ $project->id }}">
+                                Assign
+                            </button>
+                        @endif
+                                    </td>
 
                                           <td id="itemstatus" class="p-4 font-normal text-[15px]">{{ $project->start_date->diffForHumans() }}</td>
                                           <td class="p-4 font-normal text-[15px]">{{ $project->cost }}</td>
@@ -181,7 +200,7 @@
                                   @endforeach
 
 
-   
+
 
                                     </tbody>
                                 </table>

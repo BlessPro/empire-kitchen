@@ -7,10 +7,10 @@
         <!--head begins-->
 
             <div class=" bg-[#F9F7F7]">
-             <div class="mb-[20px]">  
+             <div class="mb-[20px]">
      <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 
-     
+
     <!-- Left Column -->
     <div class="flex flex-col gap-6">
       <!-- Overview -->
@@ -132,7 +132,155 @@
     </div>
 
 
-  </div>    
+ {{ $statusCounts['Measurement'] }},
+                    {{ $statusCounts['Design'] }},
+                    {{ $statusCounts['Production'] }},
+                    {{ $statusCounts['Installation'] }}
+
+
+<!-- Chart.js CDN (in your head section or layout) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="p-4 mt-6 bg-white rounded shadow">
+    <h2 class="mb-4 text-xl font-semibold">Project Stages Overview</h2>
+    <canvas id="projectsBarChart" height="100"></canvas>
+</div>
+{{--
+<script>
+    const ctx = document.getElementById('projectsBarChart').getContext('2d');
+
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: @json($chartLabels),
+            datasets: [{
+                label: 'Projects by Stage',
+                data: @json($chartData),
+                backgroundColor: [
+                    'rgba(59, 130, 246, 0.5)', // measurement - blue
+                    'rgba(34, 197, 94, 0.5)',  // design - green
+                    'rgba(234, 179, 8, 0.5)',  // production - yellow
+                    'rgba(239, 68, 68, 0.5)'   // installation - red
+                ],
+                borderColor: [
+                    'rgba(59, 130, 246, 1)',
+                    'rgba(34, 197, 94, 1)',
+                    'rgba(234, 179, 8, 1)',
+                    'rgba(239, 68, 68, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
+</script>
+ --}}
+
+
+
+{{--
+ <canvas id="projectsBarChart" width="400" height="200"></canvas>
+
+<script>
+    // Wrap in a DOMContentLoaded listener to make sure everything is ready
+    document.addEventListener('DOMContentLoaded', function () {
+        const chartLabels = {!! json_encode($chartLabels) !!};        {{ $statusCounts['Pending'] }},
+
+        const chartData = {!! json_encode($chartData) !!};
+
+        const ctx = document.getElementById('projectsBarChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Projects by Stage',
+                    data: chartData,
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.5)',
+                        'rgba(34, 197, 94, 0.5)',
+                        'rgba(234, 179, 8, 0.5)',
+                        'rgba(239, 68, 68, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(59, 130, 246, 1)',
+                        'rgba(34, 197, 94, 1)',
+                        'rgba(234, 179, 8, 1)',
+                        'rgba(239, 68, 68, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                }
+            }
+        });
+    });
+</script> --}}
+<canvas id="projectsStageChart" width="400" height="200"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('projectsStageChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Measurement', 'Design', 'Production', 'Installation'],
+            datasets: [{
+                label: 'Project Stages',
+                data: [
+                    // {{ $statusCounts['Measurement'] }},
+                    // {{ $statusCounts['Design'] }},
+                    // {{ $statusCounts['Production'] }},
+                    // {{ $statusCounts['Installation'] }}
+              
+                ],
+                backgroundColor: [
+                    '#6B1E72',
+                    '#FF7300',
+                    '#9151FF',
+                    '#2DD4BF'
+                ],
+                borderColor: '#fff',
+                borderWidth: 1,
+                borderRadius: 6,
+                barPercentage: 0.6,
+                categoryPercentage: 0.7,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+  </div>
            </div>
     </div>
 </main>

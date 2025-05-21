@@ -26,8 +26,7 @@ class techAssignDesignersController extends Controller
 public function showDesignerAssignment()
 {
     $projects = Project::with(['client', 'designer'])
-                ->where('current_stage', 'measurement')->orderBy('created_at', 'desc')
-                ->get();
+                ->where('current_stage', 'measurement')->orderBy('created_at', 'desc')->paginate(10);
 
     $designers = User::where('role', 'designer')->get(); // adjust this to match your setup
 

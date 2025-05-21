@@ -117,7 +117,8 @@
 
                 </tbody>
               </table>
-              <div class="mt-4 mb-5 ml-5 mr-5">
+             <div class="mt-4 mb-4 ml-4 mr-4">
+            {{$projects->links('pagination::tailwind')}}
             </div>
             </div>
 
