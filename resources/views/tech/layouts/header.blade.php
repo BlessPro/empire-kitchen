@@ -20,6 +20,8 @@
       <script src="https://cdn.tailwindcss.com"></script>
 
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="https://unpkg.com/alpinejs" defer></script>
+
 
       <!--written on 14.04.2025-->
       <!--Modified on 15.04.1015-->

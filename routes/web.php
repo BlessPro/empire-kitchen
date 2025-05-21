@@ -149,6 +149,8 @@ Route::get('/dashboard', function () {
     // Assign designer to project
     Route::post('tech/AssignDesigners', [techAssignDesignersController::class, 'assignDesigner'])->name('assign.designer');
 
+    // Route::post('/tech/assign-designer', [ProjectController::class, 'assignDesigner'])->name('assign.designer');
+
 
 // Route::get('/measurements/create', [MeasurementController::class, 'create'])->name('measurements.create');
 

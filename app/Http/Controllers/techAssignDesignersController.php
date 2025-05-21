@@ -34,6 +34,8 @@ public function showDesignerAssignment()
     return view('tech.AssignDesigners', compact('projects', 'designers'));
 }
 
+
+
 public function assignDesigner(Request $request)
 {
     $request->validate([
@@ -47,5 +49,20 @@ public function assignDesigner(Request $request)
 
     return redirect()->back()->with('success', 'Designer assigned successfully!');
 }
+
+// public function assignDesignerNEW(Request $request)
+// {
+//     $request->validate([
+//         'project_id' => 'required|exists:projects,id',
+//         'designer_id' => 'required|exists:designers,id',
+//     ]);
+
+//     $project = Project::findOrFail($request->project_id);
+//     $project->designer_id = $request->designer_id;
+//     $project->save();
+
+//     return back()->with('success', 'Designer assigned successfully!');
+// }
+
 
 }

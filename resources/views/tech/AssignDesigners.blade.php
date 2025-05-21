@@ -48,8 +48,8 @@
 
 
 
-                <tr class="cursor-pointer hover:bg-gray-100">
-                    <td class="p-4 font-normal text-[15px] items-center">Berla Mundi</td>
+                {{-- <tr class="cursor-pointer hover:bg-gray-100"> --}}
+                    {{-- <td class="p-4 font-normal text-[15px] items-center">Berla Mundi</td> --}}
 
                     {{-- <td class="p-4 font-normal text-[15px] items-center">0247419436</td> --}}
                     {{-- <td class="p-4 font-normal text-[15px] items-center">hgjhjk</td> --}}
@@ -63,9 +63,9 @@
  --}}
 
 
-                    <span>Bless</span></td>
+                    {{-- <span>Bless</span></td>
 
-                  </tr>
+                  </tr> --}}
 
                      @foreach($projects as $project)
                       <tr class="cursor-pointer hover:bg-gray-100">
@@ -73,7 +73,7 @@
 
                     <td class="p-4 font-normal text-[15px] items-center">{{ $project->name }}</td>
                     {{-- <td class="p-4 font-normal text-[15px] items-center">Kasoa</td> --}}
-                    <td class="p-4 font-normal text-[15px] items-center">   
+                    <td class="p-4 font-normal text-[15px] items-center">
                         {{$project->location}}</td>
                     <td class="p-4 font-normal text-[15px] items-center ">
                         {{ $project->created_at }}
@@ -83,14 +83,14 @@
 
                               <span class="px-3 py-1 text-sm {{ $statusClasses[$project->status] ?? $defaultClass }}">{{ $project->status }}</span>
 
-                        
+
                     </td>
                     <td class="p-4 font-normal text-[15px]  flex items-center py-3 space-x-2">
 
                          @if($project->designer)
                             <div class="d-flex align-items-center p-4 font-normal text-[15px] flex items-center py-3 space-x-2 ">
-                                src="{{ $user->profile_pic ? asset('storage/' . $user->profile_pic) : 'https://i.pravatar.cc/30' }}" 
-                                <img src="{{ asset('storage/' . $project->designer->image) }}" alt="designer" width="40" height="40" class="object-cover w-8 h-8 rounded-full">
+                              {{-- <img  src="{{ $user->profile_pic ? asset('storage/' . $user->profile_pic) : 'https://i.pravatar.cc/30' }}" > --}}
+                                <img src="{{ asset('storage/' . $project->designer->profile_pic) }}" alt="designer" width="40" height="40" class="object-cover w-8 h-8 rounded-full">
                                 <span>{{ $project->designer->name }}</span>
 
 
@@ -99,7 +99,7 @@
                             </div>
                         @else
                             <!-- Button to Open Modal -->
-                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#assignModal" data-project-id="{{ $project->id }}">
+                            <button onclick="openModal('{{ $project->id }}', '{{ $project->name }}')" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#assignModal" data-project-id="{{ $project->id }}">
                                 Assign
                             </button>
                         @endif
@@ -173,7 +173,7 @@
 </div> --}}
 
 <!-- Modal -->
-<div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+{{-- <div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form method="POST" action="{{ route('assign.designer') }}">
         @csrf
@@ -203,30 +203,93 @@
         </div>
     </form>
   </div>
-</div>
+</div> --}}
 
-<script>
+{{-- <script>
     const assignModal = document.getElementById('assignModal');
     assignModal.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget;
         const projectId = button.getAttribute('data-project-id');
         document.getElementById('modalProjectId').value = projectId;
     });
-</script>
+</script> --}}
+
+        {{-- <script>
+
+        const assignModal = document.getElementById('assignModal');
+        assignModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const projectId = button.getAttribute('data-project-id');
+            document.getElementById('modalProjectId').value = projectId;
+        });
+
+        </script> --}}
+
+
+        {{-- Select designer pop-up --}}
+
+
+        <!-- Modal -->
+<div id="assignModal" class="fixed inset-0 z-50 items-center justify-center hidden bg-black bg-opacity-50">
+    <div class="w-full max-w-md p-6 bg-white rounded shadow-md">
+          <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
+        <h2 class="mb-4 text-xl font-semibold">Assign Designer</h2>
+        <button  type="button" onclick="closeModal()" class="px-4 py-2 mt-2 rounded text-fuchsia-900"> <i data-feather="x"
+    class="mr-3 feather-icon group"></i></button>
+        </div>
+        <form method="POST" action="{{ route('tech.AssignDesigners') }}">
+            @csrf
+            <input type="hidden" name="project_id" id="projectIdInput">
+
+            <div class="mb-4">
+                <label class="block mb-1 text-sm font-medium">Project Name</label>
+                <input type="text" id="projectNameInput" disabled readonly class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+            </div>
+
+            <div class="mb-4">
+                <label class="block mb-1 text-sm font-medium">Select Designer</label>
+                <select name="designer_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <option value="">Select a designer</option>
+                    @foreach ($designers as $designer)
+                        <option value="{{ $designer->id }}">
+                            <img src="{{ asset('storage/'
+                            . $designer->profile_pic) }}"
+                             alt="designer" width="40" height="40"
+                             class="object-cover w-8 h-8 rounded-full">
+                            {{ $designer->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="flex justify-end space-x-2">
+                {{-- <button type="button" onclick="closeModal()" class="px-4 py-2 mt-2 rounded text-fuchsia-900 bg-fuchsia-400">Cancel</button> --}}
+                <button type="submit" class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 mt-5 rounded">Assign</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 
 
 
                </div>
             </div>
+
         </main>
 
-        <script>
-    const assignModal = document.getElementById('assignModal');
-    assignModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const projectId = button.getAttribute('data-project-id');
-        document.getElementById('modalProjectId').value = projectId;
-    });
+<script>
+function openModal(projectId, projectName) {
+    document.getElementById('projectIdInput').value = projectId;
+    document.getElementById('projectNameInput').value = projectName;
+    document.getElementById('assignModal').classList.remove('hidden');
+    document.getElementById('assignModal').classList.add('flex');
+}
+
+function closeModal() {
+    document.getElementById('assignModal').classList.add('hidden');
+    document.getElementById('assignModal').classList.remove('flex');
+}
 </script>
+
         </x-tech-layout>

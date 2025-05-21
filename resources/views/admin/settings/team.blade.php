@@ -155,7 +155,7 @@
                 class="w-[270px] px-3 py-2 border border-gray-300 rounded-md
                  focus:outline-none focus:ring-2 focus:ring-blue-500" required>
             </div>
-   
+
             </div>
                      <div class="">
 
@@ -215,7 +215,7 @@
 <div id="editUserModal" tabindex="-1"class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
     <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
         <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
-        <h2 class="mb-4 text-xl font-semibold">Add New Project</h2>
+        <h2 class="mb-4 text-xl font-semibold">Add New User</h2>
         <button type="button" id="closeModalBtn" class="px-4 py-2 text-black "> <i data-feather="x"
     class="mr-3 feather-icon group"></i></button>
         </div>
