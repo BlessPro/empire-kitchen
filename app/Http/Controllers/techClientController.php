@@ -6,6 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Client;
+use app\Models\Measurement;
+use App\Models\Installation;
+use App\Models\Design;
+use App\Models\Comment;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class techClientController extends Controller
 {

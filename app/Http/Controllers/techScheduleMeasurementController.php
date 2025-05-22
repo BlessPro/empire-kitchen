@@ -12,6 +12,6 @@ class techScheduleMeasurementController extends Controller
         public function index(){
     $projects = Project::paginate(15); // fetch paginated projects
 
-    return view('tech/ScheduleInstallation', compact('projects'));
+    return view('tech.ScheduleMeasurement', compact('projects'));
 }
 }

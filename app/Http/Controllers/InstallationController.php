@@ -9,6 +9,7 @@ use App\Models\Installation;
 use App\Models\Client;
 use App\Models\Project;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 
 class InstallationController extends Controller
@@ -104,6 +105,7 @@ public function destroy($id)
     }
 
     $installation->delete();
+    Log::info("Installation deleted: $id");
 
     return response()->json(['success' => true, 'message' => 'Installation deleted successfully']);
 }

@@ -122,7 +122,7 @@ Route::get('/dashboard', function () {
     Route::get('/tech/ClientManagement', [techClientController::class, 'index'])->name('tech.ClientManagement');
     Route::get('/tech/ProjectManagement', [techProjectManagementController::class, 'index'])->name('tech.ProjectManagement');
     Route::get('/tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'index'])->name('tech.ReportsandAnalytics');
-    Route::get('/tech/ScheduleMeasurement', [techScheduleMeasurementController::class, 'index'])->name('tech.ScheduleInstallation');
+    Route::get('/tech/ScheduleMeasurement', [techScheduleMeasurementController::class, 'index'])->name('tech.ScheduleMeasurement');
     Route::get('/tech/Settings', [techSettingsController::class, 'index'])->name('tech.Settings');
     Route::get('/tech/Inbox', [techInboxController::class, 'index'])->name('tech.Inbox');
     Route::get('/tech/AssignDesigners', [techAssignDesignersController::class, 'index'])->name('tech.AssignDesigners');
@@ -217,9 +217,12 @@ Route::get('/api/projects/by-client/{client}', function ($clientId) {
         ->where('current_stage', '<>', 'installation') // only those not yet installed
         ->get(['id', 'name']);
 });
+Route::prefix('admin')->group(function () {
+    Route::delete('/installations/{id}', [InstallationController::class, 'destroy']);
+});
 
 Route::put('/installations/{id}', [InstallationController::class, 'update']);
-Route::delete('/installations/{id}', [InstallationController::class, 'destroy']);
+// Route::delete('/installations/{id}', [InstallationController::class, 'destroy']);
 
     Route::get('/admin/Dashboard2',  [ProjectController::class, 'index'])->name('admin.Dashboard2');
 // to filter

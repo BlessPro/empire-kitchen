@@ -2,9 +2,9 @@
     <x-slot name="header">
 <!--written on 19.05.2025 @ 9:45-->
     <!-- Main Content -->
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
+    </x-slot>
     @include('admin.layouts.header')
-
     <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
         <!--head begins-->
 
@@ -222,7 +222,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Delete Handler
             popup.querySelector('#deleteEventBtn').addEventListener('click', function () {
                 if (confirm('Are you sure you want to delete this installation?')) {
-                    fetch(`/installations/${event.id}`, {
+                   fetch(`admin/installations/${event.id}`,  {
+                        // (`{{ url('/installations') }}/${id}`
+                        // (`/installations/${event.id}`
+                        // fetch(`/admin/installations/${event.id}`,
                         method: 'DELETE',
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -590,7 +593,6 @@ fetch('/installations/store', {
 
 </script>
 
-    </x-slot>
 </x-layouts.app>
 
 

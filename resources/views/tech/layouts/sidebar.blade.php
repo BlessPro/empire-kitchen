@@ -72,19 +72,19 @@ class="group relative flex items-center p-5 transition
           <!--Schedule Installation-->
 
 
-                    <!--testing active ScheduleInstallation?-->
-                    <a href="{{ route('tech.ScheduleInstallation') }}"
+                    <!--testing active ScheduleMeasurement?-->
+                    <a href="{{ route('tech.ScheduleMeasurement') }}"
                     class="group relative flex items-center p-5 transition
-                           {{ request()->routeIs('tech.ScheduleInstallation') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
+                           {{ request()->routeIs('tech.ScheduleMeasurement') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
                      <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
-                                  {{ request()->routeIs('tech.ScheduleInstallation') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
+                                  {{ request()->routeIs('tech.ScheduleMeasurement') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
                                   transition-transform origin-left"></span>
                      <i data-feather="calendar"
                         class="feather-icon mr-3 group
                                {{ request()->routeIs('tech.ScheduleMeasurement') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
                                Schedule Measurement
                  </a>
-                           <!--testing active ScheduleInstallation?-->
+                           <!--testing active ScheduleMeasurement?-->
 
           <!--Reports and Analytics-->
 
