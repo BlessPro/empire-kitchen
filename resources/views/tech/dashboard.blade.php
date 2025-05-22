@@ -50,21 +50,21 @@
 
           <div class="py-2 pl-4 border-l-4 border-orange-500 rounded bg-gray-50">
             <h3 class="font-medium">{{ $project['project_name'] }}</h3>
-            <p class="text-sm text-gray-600">2:30 PM - 5:30 PM</p>
-            <p class="text-sm text-gray-600">👤 Chris Laventher</p>
-            <p class="text-sm text-gray-500">3 hours 0 minutes</p>
+            <p class="text-sm text-gray-600"> {{ $project['start_time'] }} - {{ $project['end_time'] }}</p>
+            <p class="text-sm text-gray-600">👤 {{ auth()->user()->name }}</p>
+            <p class="text-sm text-gray-500">{{ $project['duration'] }} - 📍 {{ $project['location'] }} </p>
           </div>
               @empty
         <p class="text-gray-500">No measurement stage projects assigned yet.</p>
     @endforelse
-
+{{--
           <div class="py-2 pl-4 border-l-4 border-green-500 rounded bg-gray-50">
             <h3 class="font-medium">Smith Residence</h3>
             <p class="text-sm text-gray-600">2:30 PM - 5:30 PM</p>
             <p class="text-sm text-gray-600">📍 Maple Street, West Legon</p>
             <p class="text-sm text-gray-500">3 hours 0 minutes</p>
-          </div>
-          <div class="py-2 pl-4 border-l-4 border-blue-600 rounded bg-gray-50">
+          </div> --}}
+          {{-- <div class="py-2 pl-4 border-l-4 border-blue-600 rounded bg-gray-50">
             <h3 class="font-medium pt-1 pb-1">New Build</h3>
             <p class="text-sm pt-1 pb-1 text-gray-600">{{ \Carbon\Carbon::parse($project['start_time'])
             ->format('d M Y, h:i A') }} -
@@ -72,7 +72,7 @@
                  ->format('d M Y, h:i A') }}</p>
             <p class="text-sm pt-1 pb-1 text-gray-600">{{ auth()->user()->name }}</p>
             <p class="text-sm pt-1 pb-1 text-gray-500">{{ $project['location'] }} {{ $project['duration'] }}</p>
-          </div>
+          </div> --}}
         </div>
       </div>
 
@@ -110,7 +110,7 @@
         </ul>
     </div>
 @endforeach --}}
-{{-- 
+{{--
 @foreach ($projects as $project)
     <div class="project">
         <h3>Project: {{ $project->name }}</h3>
@@ -134,14 +134,56 @@
         </ul>
     </div>
 @endforeach --}}
-@foreach ($projects as $project)
+{{-- @foreach ($projects as $project)
     <h3>{{ $project['project_name'] }}</h3>
     @foreach ($project['measurements'] as $measurement)
         <p>Start: {{ $measurement['start_time'] ?? 'N/A' }}</p>
         <p>End: {{ $measurement['end_time'] ?? 'N/A' }}</p>
         <p>Duration: {{ $measurement['duration'] }}</p>
     @endforeach
-@endforeach
+@endforeach --}}
+{{-- @extends('layouts.app')
+
+@section('content') --}}
+{{-- <div class="container">
+    <h2 class="mb-4">Tech Supervisor Dashboard</h2> --}}
+
+    {{-- Chart Section (if you're using chart data) --}}
+    {{-- <div class="mb-5">
+        <h4>Project Stages</h4>
+        <ul class="list-group list-group-horizontal">
+            @foreach($chartLabels as $index => $label)
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ ucfirst($label) }}
+                    <span class="badge bg-primary rounded-pill">{{ $chartData[$index] }}</span>
+                </li>
+            @endforeach
+        </ul>
+    </div> --}}
+
+    {{-- Project Cards --}}
+    {{-- <div class="row">
+        @forelse($projects as $project)
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Name {{ $project['project_name'] }}</h5>
+                        <p class="card-text">
+                            <strong>Location:</strong> {{ $project['location'] }}<br>
+                            <strong>Start Time:</strong> {{ $project['start_time'] }}<br>
+                            <strong>End Time:</strong> {{ $project['end_time'] }}<br>
+                            <strong>Duration:</strong> {{ $project['duration'] }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="col-12">
+                <p class="text-muted">No measurement-stage projects assigned to you yet.</p>
+            </div>
+        @endforelse
+    </div> --}}
+{{-- w --}}
 
 
     </div>
@@ -224,13 +266,6 @@
 
     <!-- Chart.js CDN (in your head section or layout) -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<div class="bg-white p-4 rounded shadow mt-6">
-    <h2 class="text-xl font-semibold mb-4">Project Stages Overview</h2>
-    <canvas id="projectsBarChart" height="100"></canvas>
-</div>
-{{-- <h2 class="mb-4 text-lg font-semibold">Overview</h2>
-      <p class="mb-2 text-3xl font-bold">45 <span class="text-base font-normal text-gray-600">projects</span></p> --}}
 
 <script>
     const ctx = document.getElementById('projectsBarChart').getContext('2d');

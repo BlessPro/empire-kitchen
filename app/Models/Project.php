@@ -71,7 +71,7 @@ protected $fillable = [
         return $this->belongsTo(Client::class);
     }
 
-    public function measurement()
+    public function measurements()
     {
         return $this->hasMany(Measurement::class);
     }

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
 
-class techScheduleInstallationController extends Controller
+class techScheduleMeasurementController extends Controller
 {
     //
         public function index(){

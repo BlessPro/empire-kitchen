@@ -50,23 +50,23 @@ use Carbon\Carbon;
 class TechDashboardController extends Controller
 {
 
-public function index()
-{
-    $techId = Auth::id();
+// public function index()
+// {
+//     $techId = Auth::id();
 
-    // Chart Data
-    $stages = ['measurement', 'design', 'production', 'installation'];
+//     // Chart Data
+//     $stages = ['measurement', 'design', 'production', 'installation'];
 
-    $projectCounts = Project::where('tech_supervisor_id', $techId)
-        ->whereIn('current_stage', $stages)
-        ->selectRaw('current_stage, COUNT(*) as count')
-        ->groupBy('current_stage')
-        ->pluck('count', 'current_stage');
+//     $projectCounts = Project::where('tech_supervisor_id', $techId)
+//         ->whereIn('current_stage', $stages)
+//         ->selectRaw('current_stage, COUNT(*) as count')
+//         ->groupBy('current_stage')
+//         ->pluck('count', 'current_stage');
 
-    $chartData = [];
-    foreach ($stages as $stage) {
-        $chartData[] = $projectCounts[$stage] ?? 0;
-    }
+//     $chartData = [];
+//     foreach ($stages as $stage) {
+//         $chartData[] = $projectCounts[$stage] ?? 0;
+//     }
 
     // Measurement Projects Info
     // $projects = Project::where('tech_supervisor_id', $techId)
@@ -137,20 +137,72 @@ public function index()
         //     'measurement' => $measurements,
         //     ];
         // });
-$projects = Project::with('measurement')->get()->map(function ($project) {
-    return [
-        'project_name' => $project->name,
-        'measurements' => $project->measurement->map(function ($m) {
-            $start = $m->start_time;
-            $end = $m->end_time;
+// $projects = Project::with('measurement')->get()->map(function ($project) {
+//     return [
+//         'project_name' => $project->name,
+//         'measurements' => $project->measurement->map(function ($m) {
+//             $start = $m->start_time;
+//             $end = $m->end_time;
+//             return [
+//                 'start_time' => $start,
+//                 'end_time' => $end,
+//                 'duration' => ($start && $end) ? $start->diffInHours($end) . ' hours' : 'N/A',
+//             ];
+//         }),
+//     ];
+// });
+
+//     return view('tech.dashboard', [
+//         'chartData' => $chartData,
+//         'chartLabels' => $stages,
+//         'projects' => $projects,
+//     ]);
+// }
+
+
+
+
+// use Carbon\Carbon;
+
+public function index()
+{
+    $techId = Auth::id();
+
+    // Chart Data
+    $stages = ['measurement', 'design', 'production', 'installation'];
+
+    $projectCounts = Project::where('tech_supervisor_id', $techId)
+        ->whereIn('current_stage', $stages)
+        ->selectRaw('current_stage, COUNT(*) as count')
+        ->groupBy('current_stage')
+        ->pluck('count', 'current_stage');
+
+    $chartData = [];
+    foreach ($stages as $stage) {
+        $chartData[] = $projectCounts[$stage] ?? 0;
+    }
+
+    // Get projects with related measurements (hasMany)
+    $projects = Project::where('tech_supervisor_id', $techId)
+        ->where('current_stage', 'measurement')
+        ->with('measurements') // not 'measurement'
+        ->get()
+        ->map(function ($project) {
+            $firstMeasurement = $project->measurements->first(); // You can also use last() or loop over all
+
+            $start = $firstMeasurement?->start_time ? Carbon::parse($firstMeasurement->start_time) : null;
+            $end = $firstMeasurement?->end_time ? Carbon::parse($firstMeasurement->end_time) : null;
+
+            $duration = ($start && $end) ? $start->diffInHours($end) . ' hours' : "";
+
             return [
-                'start_time' => $start,
-                'end_time' => $end,
-                'duration' => ($start && $end) ? $start->diffInHours($end) . ' hours' : 'N/A',
+                'project_name' => $project->name,
+                'location' => $project->location,
+                'start_time' => $start?->toDateTimeString() ?? "",
+                'end_time' => $end?->toDateTimeString() ?? "",
+                'duration' => $duration,
             ];
-        }),
-    ];
-});
+        });
 
     return view('tech.dashboard', [
         'chartData' => $chartData,
@@ -158,4 +210,5 @@ $projects = Project::with('measurement')->get()->map(function ($project) {
         'projects' => $projects,
     ]);
 }
+
 }

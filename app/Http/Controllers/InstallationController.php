@@ -10,6 +10,7 @@ use App\Models\Client;
 use App\Models\Project;
 use Illuminate\Support\Facades\Validator;
 
+
 class InstallationController extends Controller
 {
     public function store(Request $request)
@@ -32,9 +33,9 @@ class InstallationController extends Controller
             'start_time'  => $request->start_time,
             'end_time'    => $request->end_time,
             'notes'       => $request->notes,
-            'user_id'     => Auth::id(), // Assuming the user is authenticated
-            //'images' => $request->file('installation_image_path') ? $request->file('installation_image_path')->store('installations') : null,
-        ]);
+            'created_at'=> now(), // Assuming you want to set the installation date to now
+            'user_id'     => Auth::id(),
+            ]);
 
         // Update the project's stage if necessary
         $project = Project::find($request->project_id);
@@ -63,5 +64,50 @@ class InstallationController extends Controller
 
         return response()->json($events);
     }
+
+
+
+
+public function update(Request $request, $id)
+{
+    $installation = Installation::find($id);
+
+    if (!$installation) {
+        return response()->json(['success' => false, 'message' => 'Installation not found'], 404);
+    }
+
+    // Validate request data (you can adjust rules as needed)
+    $request->validate([
+        'start_time' => 'required|date',
+        'end_time' => 'required|date|after_or_equal:start_time',
+        'notes' => 'nullable|string',
+
+
+
+
+    ]);
+
+    $installation->start_time = $request->input('start_time');
+    $installation->end_time = $request->input('end_time');
+    $installation->notes = $request->input('notes');
+    $installation->save();
+
+    return response()->json(['success' => true, 'message' => 'Installation updated successfully']);
+}
+
+public function destroy($id)
+{
+    $installation = Installation::find($id);
+
+    if (!$installation) {
+        return response()->json(['success' => false, 'message' => 'Installation not found'], 404);
+    }
+
+    $installation->delete();
+
+    return response()->json(['success' => true, 'message' => 'Installation deleted successfully']);
+}
+
+
 }
 

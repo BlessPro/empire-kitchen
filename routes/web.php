@@ -28,7 +28,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\techClientController;
 use App\Http\Controllers\techProjectManagementController;
 use App\Http\Controllers\techReportsandAnalyticsController;
-use App\Http\Controllers\techScheduleInstallationController;
+use App\Http\Controllers\techScheduleMeasurementController;
 use App\Http\Controllers\techSettingsController;
 use App\Http\Controllers\techInboxController;
 use App\Http\Controllers\TechAssignDesignersController;
@@ -122,7 +122,7 @@ Route::get('/dashboard', function () {
     Route::get('/tech/ClientManagement', [techClientController::class, 'index'])->name('tech.ClientManagement');
     Route::get('/tech/ProjectManagement', [techProjectManagementController::class, 'index'])->name('tech.ProjectManagement');
     Route::get('/tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'index'])->name('tech.ReportsandAnalytics');
-    Route::get('/tech/ScheduleInstallation', [techScheduleInstallationController::class, 'index'])->name('tech.ScheduleInstallation');
+    Route::get('/tech/ScheduleMeasurement', [techScheduleMeasurementController::class, 'index'])->name('tech.ScheduleInstallation');
     Route::get('/tech/Settings', [techSettingsController::class, 'index'])->name('tech.Settings');
     Route::get('/tech/Inbox', [techInboxController::class, 'index'])->name('tech.Inbox');
     Route::get('/tech/AssignDesigners', [techAssignDesignersController::class, 'index'])->name('tech.AssignDesigners');
@@ -201,9 +201,12 @@ Route::middleware(['auth', 'verified'])->prefix('tech')->group(function () {
 // // Web route to store a new installation
 // Route::post('/installation', [InstallationController::class, 'store'])->name('installation.store');
 
-Route::prefix('admin')->group(function () {
-    Route::post('/installations/store', [InstallationController::class, 'store'])->name('installation.store');
-});
+// Route::prefix('admin')->group(function () {
+// });
+
+// Route::post('/admin/ScheduleInstallation/store', [InstallationController::class, 'store'])->name('admin.ScheduleInstallation.store');
+
+    Route::post('installations/store', [InstallationController::class, 'store'])->name('installation.store');
 
 
 // Route::post('admin/installations/store', [InstallationController::class, 'store'])->name('admin.installation.store');
@@ -215,6 +218,8 @@ Route::get('/api/projects/by-client/{client}', function ($clientId) {
         ->get(['id', 'name']);
 });
 
+Route::put('/installations/{id}', [InstallationController::class, 'update']);
+Route::delete('/installations/{id}', [InstallationController::class, 'destroy']);
 
     Route::get('/admin/Dashboard2',  [ProjectController::class, 'index'])->name('admin.Dashboard2');
 // to filter

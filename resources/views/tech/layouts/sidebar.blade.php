@@ -81,8 +81,8 @@ class="group relative flex items-center p-5 transition
                                   transition-transform origin-left"></span>
                      <i data-feather="calendar"
                         class="feather-icon mr-3 group
-                               {{ request()->routeIs('tech.ScheduleInstallation') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
-                               Schedule Installation
+                               {{ request()->routeIs('tech.ScheduleMeasurement') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
+                               Schedule Measurement
                  </a>
                            <!--testing active ScheduleInstallation?-->
 
