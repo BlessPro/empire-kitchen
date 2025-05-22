@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\TechDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -71,11 +72,19 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 // Technical Supervisor
+// Route::middleware(['auth', 'role:tech_supervisor'])->group(function () {
+//     Route::get('/tech/dashboard', function () {
+//         return view('tech.dashboard');
+//     })->name('tech.dashboard');
+// });
+
+
 Route::middleware(['auth', 'role:tech_supervisor'])->group(function () {
-    Route::get('/tech/dashboard', function () {
-        return view('tech.dashboard');
-    })->name('tech.dashboard');
+    Route::get('/tech/dashboard', [TechDashboardController::class, 'index'])
+        ->name('tech.dashboard');
 });
+
+
 
 // Designer
 Route::middleware(['auth', 'role:designer'])->group(function () {

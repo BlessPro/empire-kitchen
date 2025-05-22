@@ -112,7 +112,7 @@ Route::get('/dashboard', function () {
     //navigating with tech user login
     // Route::get('/tech/dashboard', [TechController::class, 'index'])->middleware('role:tech_supervisor');
     // Route::get('/tech/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard');
-    Route::get('/tech/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard')->middleware('auth');
+    // Route::get('/tech/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard')->middleware('auth');
 
 //     Route::middleware(['auth', 'verified'])->prefix('tech')->group(function () {
 //     Route::get('/tech/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard');
@@ -159,6 +159,9 @@ Route::get('/dashboard', function () {
 
     // Route::post('/tech/assign-designer', [ProjectController::class, 'assignDesigner'])->name('assign.designer');
 
+Route::middleware(['auth', 'verified'])->prefix('tech')->group(function () {
+    Route::get('/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard');
+});
 
 // Route::get('/measurements/create', [MeasurementController::class, 'create'])->name('measurements.create');
 

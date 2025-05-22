@@ -14,22 +14,30 @@
     <!-- Left Column -->
     <div class="flex flex-col gap-6">
       <!-- Overview -->
-       <div class="p-6 bg-white shadow rounded-2xl">
-      <h2 class="mb-4 text-lg font-semibold">Overview</h2>
-      <p class="mb-2 text-3xl font-bold">45 <span class="text-base font-normal text-gray-600">projects</span></p>
-      <div class="flex mb-4 space-x-1">
-        <div class="w-1/4 h-2 bg-orange-500 rounded"></div>
+      <div class="bg-white p-4 rounded-2xl shadow mt-6">
+    <h2 class="text-xl font-semibold mb-4">Project Stages Overview</h2>
+    <canvas id="projectsBarChart" height="100"></canvas>
+
+</div>
+       {{-- <div class="p-6 bg-white shadow rounded-2xl">
+
+      <div class="flex "> --}}
+        {{-- <div class="w-1/4 h-2 bg-orange-500 rounded"></div>
         <div class="w-1/4 h-2 bg-blue-500 rounded"></div>
         <div class="w-1/4 h-2 bg-green-500 rounded"></div>
-        <div class="w-1/4 h-2 bg-purple-500 rounded"></div>
-      </div>
-      <div class="space-y-2 text-sm text-gray-600">
+        <div class="w-1/4 h-2 bg-purple-500 rounded"></div> --}}
+      {{-- <div class=" p-4 ">
+    <h2 class="text-xl font-semibold mb-4">Project Stages Overview</h2>
+    <canvas id="projectsBarChart" height="100"></canvas>
+</div> --}}
+      {{-- </div> --}}
+      {{-- <div class="space-y-2 text-sm text-gray-600">
         <div class="flex justify-between"><span class="flex items-center"><span class="w-3 h-3 mr-2 bg-orange-500 rounded-full"></span>Measurement</span><span>8</span></div>
         <div class="flex justify-between"><span class="flex items-center"><span class="w-3 h-3 mr-2 bg-blue-500 rounded-full"></span>Design</span><span>11</span></div>
         <div class="flex justify-between"><span class="flex items-center"><span class="w-3 h-3 mr-2 bg-green-500 rounded-full"></span>Production</span><span>5</span></div>
         <div class="flex justify-between"><span class="flex items-center"><span class="w-3 h-3 mr-2 bg-purple-500 rounded-full"></span>Installation</span><span>9</span></div>
-      </div>
-    </div>
+      </div> --}}
+    {{-- </div> --}}
 
       <!-- Upcoming Measurements -->
       <div class="p-6 bg-white rounded-lg shadow">
@@ -38,12 +46,18 @@
           <button class="px-3 py-1 text-sm text-purple-700 border border-purple-700 rounded-full">View All</button>
         </div>
         <div class="space-y-4">
+                @forelse($projects as $project)
+
           <div class="py-2 pl-4 border-l-4 border-orange-500 rounded bg-gray-50">
-            <h3 class="font-medium">New Build</h3>
+            <h3 class="font-medium">{{ $project['project_name'] }}</h3>
             <p class="text-sm text-gray-600">2:30 PM - 5:30 PM</p>
             <p class="text-sm text-gray-600">👤 Chris Laventher</p>
             <p class="text-sm text-gray-500">3 hours 0 minutes</p>
           </div>
+              @empty
+        <p class="text-gray-500">No measurement stage projects assigned yet.</p>
+    @endforelse
+
           <div class="py-2 pl-4 border-l-4 border-green-500 rounded bg-gray-50">
             <h3 class="font-medium">Smith Residence</h3>
             <p class="text-sm text-gray-600">2:30 PM - 5:30 PM</p>
@@ -51,13 +65,85 @@
             <p class="text-sm text-gray-500">3 hours 0 minutes</p>
           </div>
           <div class="py-2 pl-4 border-l-4 border-blue-600 rounded bg-gray-50">
-            <h3 class="font-medium">New Build</h3>
-            <p class="text-sm text-gray-600">2:30 PM - 5:30 PM</p>
-            <p class="text-sm text-gray-600">👤 Chris Laventher</p>
-            <p class="text-sm text-gray-500">3 hours 0 minutes</p>
+            <h3 class="font-medium pt-1 pb-1">New Build</h3>
+            <p class="text-sm pt-1 pb-1 text-gray-600">{{ \Carbon\Carbon::parse($project['start_time'])
+            ->format('d M Y, h:i A') }} -
+                 {{ \Carbon\Carbon::parse($project['end_time'])
+                 ->format('d M Y, h:i A') }}</p>
+            <p class="text-sm pt-1 pb-1 text-gray-600">{{ auth()->user()->name }}</p>
+            <p class="text-sm pt-1 pb-1 text-gray-500">{{ $project['location'] }} {{ $project['duration'] }}</p>
           </div>
         </div>
       </div>
+
+{{--
+   <div class="bg-white p-6 rounded shadow mt-6">
+    <h2 class="text-xl font-semibold mb-4">Measurement Stage Projects</h2>
+    @forelse($projects as $project)
+        <div class="border rounded-lg p-4 mb-4 shadow-sm">
+            <h3 class="text-lg font-bold text-gray-800">{{ $project['project_name'] }}</h3>
+            <p class="text-sm text-gray-600"><strong>Location:</strong> {{ $project['location'] }}</p>
+            <p class="text-sm text-gray-600"><strong>Start Time:</strong> {{ \Carbon\Carbon::parse($project['start_time'])->format('d M Y, h:i A') }}</p>
+            <p class="text-sm text-gray-600"><strong>End Time:</strong>   {{ \Carbon\Carbon::parse($project['end_time'])->format('d M Y, h:i A') }}</p>
+            <p class="text-sm text-gray-600"><strong>Duration:</strong> {{ $project['duration'] }}</p>
+        </div>
+    @empty
+        <p class="text-gray-500">No measurement stage projects assigned yet.</p>
+    @endforelse
+</div> --}}
+
+
+{{-- @foreach ($projects as $project)
+    <div class="project">
+        <h3>Project: {{ $project['project_name'] }}</h3>
+
+        <ul>
+            @forelse ($project['measurement'] as $measurement)
+                <li>
+                    Start: {{ $measurement['start_time'] ?? 'N/A' }} <br>
+                    End: {{ $measurement['end_time'] ?? 'N/A' }} <br>
+                    Duration: {{ $measurement['duration'] }}
+                </li>
+            @empty
+                <li>No measurements found.</li>
+            @endforelse
+        </ul>
+    </div>
+@endforeach --}}
+{{-- 
+@foreach ($projects as $project)
+    <div class="project">
+        <h3>Project: {{ $project->name }}</h3>
+
+        <ul>
+            @forelse ($project->measurement as $measurement)
+                <li>
+                    Start: {{ $measurement->start_time ?? 'N/A' }} <br>
+                    End: {{ $measurement->end_time ?? 'N/A' }} <br>
+                    Duration:
+                    @php
+                        $start = $measurement->start_time;
+                        $end = $measurement->end_time;
+                        $duration = ($start && $end) ? $start->diffInHours($end) . ' hours' : 'N/A';
+                    @endphp
+                    {{ $duration }}
+                </li>
+            @empty
+                <li>No measurements found.</li>
+            @endforelse
+        </ul>
+    </div>
+@endforeach --}}
+@foreach ($projects as $project)
+    <h3>{{ $project['project_name'] }}</h3>
+    @foreach ($project['measurements'] as $measurement)
+        <p>Start: {{ $measurement['start_time'] ?? 'N/A' }}</p>
+        <p>End: {{ $measurement['end_time'] ?? 'N/A' }}</p>
+        <p>Duration: {{ $measurement['duration'] }}</p>
+    @endforeach
+@endforeach
+
+
     </div>
 
 
@@ -132,20 +218,20 @@
     </div>
 
 
- {{ $statusCounts['Measurement'] }},
-                    {{ $statusCounts['Design'] }},
-                    {{ $statusCounts['Production'] }},
-                    {{ $statusCounts['Installation'] }}
+  </div>
+           </div>
+    </div>
 
-
-<!-- Chart.js CDN (in your head section or layout) -->
+    <!-- Chart.js CDN (in your head section or layout) -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="p-4 mt-6 bg-white rounded shadow">
-    <h2 class="mb-4 text-xl font-semibold">Project Stages Overview</h2>
+<div class="bg-white p-4 rounded shadow mt-6">
+    <h2 class="text-xl font-semibold mb-4">Project Stages Overview</h2>
     <canvas id="projectsBarChart" height="100"></canvas>
 </div>
-{{--
+{{-- <h2 class="mb-4 text-lg font-semibold">Overview</h2>
+      <p class="mb-2 text-3xl font-bold">45 <span class="text-base font-normal text-gray-600">projects</span></p> --}}
+
 <script>
     const ctx = document.getElementById('projectsBarChart').getContext('2d');
 
@@ -154,19 +240,19 @@
         data: {
             labels: @json($chartLabels),
             datasets: [{
-                label: 'Projects by Stage',
+                // label: 'Projects by Stage',
                 data: @json($chartData),
                 backgroundColor: [
-                    'rgba(59, 130, 246, 0.5)', // measurement - blue
-                    'rgba(34, 197, 94, 0.5)',  // design - green
-                    'rgba(234, 179, 8, 0.5)',  // production - yellow
-                    'rgba(239, 68, 68, 0.5)'   // installation - red
+                    '#FF7300', // measurement - blue
+                    '#0065D2',  // design - green
+                    '#14BA6D',  // production - yellow
+                    '#9747FF'   // installation - red
                 ],
                 borderColor: [
-                    'rgba(59, 130, 246, 1)',
-                    'rgba(34, 197, 94, 1)',
-                    'rgba(234, 179, 8, 1)',
-                    'rgba(239, 68, 68, 1)'
+                    '#FF7300',
+                    '#0065D2',
+                    '#14BA6D',
+                    '#9747FF'
                 ],
                 borderWidth: 1
             }]
@@ -181,107 +267,6 @@
         }
     });
 </script>
- --}}
 
-
-
-{{--
- <canvas id="projectsBarChart" width="400" height="200"></canvas>
-
-<script>
-    // Wrap in a DOMContentLoaded listener to make sure everything is ready
-    document.addEventListener('DOMContentLoaded', function () {
-        const chartLabels = {!! json_encode($chartLabels) !!};        {{ $statusCounts['Pending'] }},
-
-        const chartData = {!! json_encode($chartData) !!};
-
-        const ctx = document.getElementById('projectsBarChart').getContext('2d');
-        const myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: chartLabels,
-                datasets: [{
-                    label: 'Projects by Stage',
-                    data: chartData,
-                    backgroundColor: [
-                        'rgba(59, 130, 246, 0.5)',
-                        'rgba(34, 197, 94, 0.5)',
-                        'rgba(234, 179, 8, 0.5)',
-                        'rgba(239, 68, 68, 0.5)'
-                    ],
-                    borderColor: [
-                        'rgba(59, 130, 246, 1)',
-                        'rgba(34, 197, 94, 1)',
-                        'rgba(234, 179, 8, 1)',
-                        'rgba(239, 68, 68, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        precision: 0
-                    }
-                }
-            }
-        });
-    });
-</script> --}}
-<canvas id="projectsStageChart" width="400" height="200"></canvas>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-    const ctx = document.getElementById('projectsStageChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Measurement', 'Design', 'Production', 'Installation'],
-            datasets: [{
-                label: 'Project Stages',
-                data: [
-                    // {{ $statusCounts['Measurement'] }},
-                    // {{ $statusCounts['Design'] }},
-                    // {{ $statusCounts['Production'] }},
-                    // {{ $statusCounts['Installation'] }}
-              
-                ],
-                backgroundColor: [
-                    '#6B1E72',
-                    '#FF7300',
-                    '#9151FF',
-                    '#2DD4BF'
-                ],
-                borderColor: '#fff',
-                borderWidth: 1,
-                borderRadius: 6,
-                barPercentage: 0.6,
-                categoryPercentage: 0.7,
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        stepSize: 1
-                    }
-                }
-            }
-        }
-    });
-</script>
-
-  </div>
-           </div>
-    </div>
 </main>
 </x-tech-layout>
