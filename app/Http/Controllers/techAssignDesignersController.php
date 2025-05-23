@@ -10,6 +10,8 @@ use App\Models\Measurement;
 use App\Models\Design;
 use App\Models\Installation;
 use App\Models\Comment;
+use Illuminate\Support\Facades\Auth;
+
 use App\Models\Client;
 
 class techAssignDesignersController extends Controller
@@ -23,16 +25,32 @@ class techAssignDesignersController extends Controller
 
 
 
+
+
+// public function showDesignerAssignment()
+// {
+//     $projects = Project::with(['client', 'designer'])
+//                 ->where('current_stage', 'measurement')->orderBy('created_at', 'desc')->paginate(10);
+
+//     $designers = User::where('role', 'designer')->get(); // adjust this to match your setup
+
+//     return view('tech.AssignDesigners', compact('projects', 'designers'));
+// }
+
+
+
 public function showDesignerAssignment()
 {
     $projects = Project::with(['client', 'designer'])
-                ->where('current_stage', 'measurement')->orderBy('created_at', 'desc')->paginate(10);
+                ->where('current_stage', 'measurement')
+                ->where('tech_supervisor_id', Auth::id()) // Only projects for the logged-in supervisor
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
 
-    $designers = User::where('role', 'designer')->get(); // adjust this to match your setup
+    $designers = User::where('role', 'designer')->get();
 
     return view('tech.AssignDesigners', compact('projects', 'designers'));
 }
-
 
 
 public function assignDesigner(Request $request)
@@ -49,19 +67,7 @@ public function assignDesigner(Request $request)
     return redirect()->back()->with('success', 'Designer assigned successfully!');
 }
 
-// public function assignDesignerNEW(Request $request)
-// {
-//     $request->validate([
-//         'project_id' => 'required|exists:projects,id',
-//         'designer_id' => 'required|exists:designers,id',
-//     ]);
 
-//     $project = Project::findOrFail($request->project_id);
-//     $project->designer_id = $request->designer_id;
-//     $project->save();
-
-//     return back()->with('success', 'Designer assigned successfully!');
-// }
 
 
 }

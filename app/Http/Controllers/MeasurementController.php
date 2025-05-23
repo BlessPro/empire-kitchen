@@ -61,6 +61,9 @@ public function StoreCreateMeasurement(Project $project){
 
 public function store(Request $request)
 {
+
+    // dd($request->all());
+
     $validated = $request->validate([
         'project_id' => 'required|exists:projects,id',
         'length' => 'required|numeric',
@@ -86,7 +89,6 @@ public function store(Request $request)
         'start_time' => now(),
         'end_time' => now(),
         'notes' => $validated['notes'] ?? null,
-        'location' => $request->location,
         'width' => $validated['width'],
         'obstacles' => $validated['obstacles'] ?? null,
         'created_at' => now(),

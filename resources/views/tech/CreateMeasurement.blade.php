@@ -62,11 +62,26 @@
               <button type="submit">Save Measurement</button>
             </form> --}}
 {{-- action="{{ route('measurements.store') }}" method="POST" enctype="multipart/form-data" --}}
-    <form action="{{ route('tech.measurements.store') }}" method="POST" enctype="multipart/form-data">
+
+{{-- @if ($errors->any())
+    <div class="text-red-500 bg-red-100 p-2 mb-4 rounded">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>• {{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif --}}
+
+
+<form action="{{ route('tech.measurements.store') }}" method="POST" enctype="multipart/form-data">
    @csrf
+               {{-- <input type="hidden" name="project_id" value="36"> --}}
+               {{-- <input type="hidden" name="project_id" value="{{ $project->id }}"> --}}
+    <input type="hidden" name="project_id" value="{{ request('project') }}">
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
-            <input type="hidden" name="project_id" value="{{ $project->id }}">
 
         <label  class="block text-sm font-medium text-gray-700 mb-1">Length (in meters/feet)</label>
         <input type="text" name="length" class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
