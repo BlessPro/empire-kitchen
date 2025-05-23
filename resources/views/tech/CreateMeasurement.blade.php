@@ -112,20 +112,6 @@
           </div>
   </div>
 
-  <!-- Obstruction Question -->
-  {{-- <div>
-    <label class="block text-sm font-medium text-gray-700 mb-2">Are there any other obstructions or challenges?</label>
-    <div class="flex items-center gap-6">
-      <label class="inline-flex items-center">
-        <input type="radio" name="has_obstruction" value="yes" name="obstructions" class="form-radio text-purple-600" />
-        <span class="ml-2">Yes (Please specify below)</span>
-      </label>
-      <label class="inline-flex items-center">
-        <input type="radio" name="has_obstruction" value="no" class="form-radio text-purple-600" />
-        <span class="ml-2">No</span>
-      </label>
-    </div>
-  </div> --}}
 
   <!-- Obstruction Description -->
   <div>

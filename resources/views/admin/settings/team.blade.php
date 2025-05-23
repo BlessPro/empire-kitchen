@@ -215,7 +215,7 @@
 <div id="editUserModal" tabindex="-1"class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
     <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
         <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
-        <h2 class="mb-4 text-xl font-semibold">Add New User</h2>
+        <h2 class="mb-4 text-xl font-semibold">Edit  User</h2>
         <button type="button" id="closeModalBtn" class="px-4 py-2 text-black "> <i data-feather="x"
     class="mr-3 feather-icon group"></i></button>
         </div>
@@ -322,72 +322,6 @@
 
 {{-- another modal for user edit --}}
 
-<!-- Edit User Modal -->
-{{-- <div id="editUserModal" tabindex="-1" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
-    <div class="relative w-full max-w-md p-6 bg-white rounded-md shadow-lg">
-        <form id="editUserForm" enctype="multipart/form-data">
-            @csrf
-            <input type="hidden" id="edit_user_id">
-
-            <!---group 1b begins-->
-
-            <div class="flex flex-col gap-4 sm:flex-row">
-
-            <div class="text-center">
-                <img id="edit_profile_preview" src="" alt="Profile Preview" class="object-cover w-20 h-20 mx-auto rounded-full" />
-                <input type="file" name="profile_pic" id="edit_profile_pic" class="w-full px-3 py-2 mt-2 border rounded">
-            </div>
-            <div class="mt-4">
-                <input type="text" name="name" id="edit_name" placeholder="Name" class="w-full px-3 py-2 border rounded">
-            </div>
-            </div>
-            <!---group 1b ends-->
-
-            <!---group 2b begins-->
-            <div class="mt-4">
-                <input type="email" name="email" id="edit_email" placeholder="Email" class="w-full px-3 py-2 border rounded">
-            </div>
-            <div class="mt-4">
-                <input type="text" name="phone_number" id="edit_phone_number" placeholder="Phone Number" class="w-full px-3 py-2 border rounded">
-            </div>
-            <div class="mt-4">
-                <select name="role" id="edit_role" class="w-full px-3 py-2 border rounded">
-                    <option value="admin">Admin</option>
-                    <option value="tech_supervisor">Tech Supervisor</option>
-                    <option value="designer">Designer</option>
-                    <option value="sales_accountant">Sales Accountant</option>
-                    <option value="accountant">Accountant</option>
-                </select>
-
-            </div>
-             <!---group 2b ends-->
-
-             <!---group 3b begins-->
-            <div class="mt-4">
-                <input type="password" name="password" id="edit_password" placeholder="New Password (Optional)" class="w-full px-3 py-2 border rounded">
-            </div>
-            <div class="flex justify-between mt-6">
-                <button type="submit" class="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">Update User</button>
-                <button type="button" id="closeModalBtn" class="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-700">Cancel</button>
-            </div>
-          <!---group 3b ends-->
-
-        </form>
-    </div>
-</div> --}}
-
-<!-- Success Modal -->
-{{-- <div id="successModal" tabindex="-1" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
-    <div class="p-6 text-center bg-white rounded-md shadow-lg w-72">
-        <p class="mb-4">User updated successfully!</p>
-        <button id="successOkBtn" class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">OK</button>
-    </div>
-</div> --}}
-
-
-
-{{-- another modal for user edit --}}
-
 <script>
     // Edit User Modal
     // Show the modal
@@ -443,87 +377,7 @@ document.getElementById('successOkBtn').addEventListener('click', function () {
     location.reload();
 });
 
-    //user edit ends here
 
-    // Add User Modal
-
-    // document.getElementById('openAddUserModal').addEventListener('click', function () {
-    //     document.getElementById('addUserModal').classList.remove('hidden');
-    // });
-
-          // for the close (X) button
-        //   document.getElementById('cancelAddUser').addEventListener('click', function () {
-        //     document.getElementById('addUserModal').classList.add('hidden');
-        // });
-
-
-
-
-
-    // const password = document.getElementById('password').value;
-    // const confirmPassword = document.getElementById('password_confirmation').value;
-    // const passwordError = document.getElementById('passwordError');
-
-    // Clear previous error
-    // passwordError.textContent = '';
-
-    // if (password !== confirmPassword) {
-    //     passwordError.textContent = 'Passwords do not match.';
-    //     return;
-    // }
-
-//      document.getElementById('addUserForm').addEventListener('submit', function (e) {
-//         e.preventDefault();
-//         const form = e.target;
-//         const formData = new FormData(form);
-
-//         fetch("{{ route('users.store') }}", {
-//             method: 'POST',
-//             headers: {
-//                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
-//                 'Accept': 'application/json'  // Tell Laravel you want JSON
-//             },
-//             body: formData,
-//         })
-//         .then(async response => {
-//             if (!response.ok) {
-//                 const errorData = await response.json();
-//                 throw new Error(errorData.message || 'Validation failed');
-//             }
-//             return response.json();
-//         })
-//         .then(data => {
-//             document.getElementById('addUserModal').classList.add('hidden');
-//             // alert('Project created successfully!');
-
-//             document.getElementById('AddsuccessModal').classList.remove('hidden');
-//             // Optionally refresh data here
-//         })
-//         .catch(error => {
-//             // alert('Error: ' + error.message);
-//         });
-//     });
-
-
-//     //reloading the page
-//     document.getElementById('closeSuccessModal').addEventListener('click', function () {
-//             document.getElementById('successModal').classList.add('hidden');
-//             location.reload(); // refresh to update the table
-//         });
-
-
-//         //editing logged user's details
-//         document.getElementById('account_profile_pic').addEventListener('change', function (e) {
-//     const file = e.target.files[0];
-//     if (file) {
-//         document.getElementById('account_profile_preview').src = URL.createObjectURL(file);
-//     }
-// });
-
-
-
-    // document.getElementById('openAddProjectModal').addEventListener('click', function () {
-    //     document.getElementById('addProjectModal').classList.remove('hidden');
     // });
     document.getElementById('openAddUserModal').addEventListener('click', function () {
             document.getElementById('addUserModal').classList.remove('hidden');
@@ -534,24 +388,11 @@ document.getElementById('successOkBtn').addEventListener('click', function () {
         });
 
 
-    //      const password = document.getElementById('password').value;
-    // const confirmPassword = document.getElementById('password_confirmation').value;
-    // const passwordError = document.getElementById('passwordError');
 
-    // Clear previous error
-    // passwordError.textContent = '';
-
-    // if (password !== confirmPassword) {
-    //     passwordError.textContent = 'Passwords do not match.';
-    //     return;
-    // }
     document.getElementById('addUserForm').addEventListener('submit', function (e) {
         e.preventDefault();
 
-
-
-
-
+        // Validate password
         const form = e.target;
         const formData = new FormData(form);
 
@@ -571,8 +412,7 @@ document.getElementById('successOkBtn').addEventListener('click', function () {
             return response.json();
         })
         .then(data => {
-            // document.getElementById('addProjectModal').classList.add('hidden');
-            // // alert('Project created successfully!');
+       
             // document.getElementById('successModal').classList.remove('hidden');
             // // Optionally refresh data here
             if (data)

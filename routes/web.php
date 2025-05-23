@@ -86,7 +86,7 @@ Route::get('/dashboard', function () {
     Route::post('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
 
     //for rditing logged user
-    Route::post('/admin/settings/update', [settings::class, 'update'])->name('admin.settings.update');
+    Route::post('/admin/ScheduleInstallation/{id}', [ScheduleInstallationController::class, 'update'])->name('admin.ScheduleInstallation.update');
 
 
     //delete user
@@ -148,7 +148,7 @@ Route::get('/dashboard', function () {
     // for saving the measurement
     // Route::post('/measurements', [MeasurementController::class, 'store'])->name('measurements.store');
 
-    Route::post('tech/measurements', [MeasurementController::class, 'store'])->name('tech.measurements.store');
+    Route::post('/tech/measurements/store', [MeasurementController::class, 'store'])->name('tech.measurements.store');
    // Route::get('/tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'showMeasurementProjects'])->name('tech.ReportsandAnalytics');
     Route::get('tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'reportsAndAnalytics'])->name('tech.ReportsandAnalytics');
     //for assigning a Designer// Show the assignment page
@@ -156,12 +156,13 @@ Route::get('/dashboard', function () {
 
     // Assign designer to project
     Route::post('tech/AssignDesigners', [techAssignDesignersController::class, 'assignDesigner'])->name('assign.designer');
+    Route::get('/tech/ScheduleMeasurement/events', [techScheduleMeasurementController::class, 'calendarEvents'])->name('tech.ScheduleInstallations.events');
 
     // Route::post('/tech/assign-designer', [ProjectController::class, 'assignDesigner'])->name('assign.designer');
 
-Route::middleware(['auth', 'verified'])->prefix('tech')->group(function () {
+    Route::middleware(['auth', 'verified'])->prefix('tech')->group(function () {
     Route::get('/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard');
-});
+    });
 
 // Route::get('/measurements/create', [MeasurementController::class, 'create'])->name('measurements.create');
 
@@ -217,9 +218,12 @@ Route::get('/api/projects/by-client/{client}', function ($clientId) {
         ->where('current_stage', '<>', 'installation') // only those not yet installed
         ->get(['id', 'name']);
 });
-Route::prefix('admin')->group(function () {
-    Route::delete('/installations/{id}', [InstallationController::class, 'destroy']);
-});
+// Route::prefix('admin')->group(function () {
+//     Route::delete('/installations/{id}', [InstallationController::class, 'destroy']);
+// });
+
+    Route::delete('/admin/ScheduleInstallation/{id}', [InstallationController::class, 'destroy']);
+
 
 Route::put('/installations/{id}', [InstallationController::class, 'update']);
 // Route::delete('/installations/{id}', [InstallationController::class, 'destroy']);

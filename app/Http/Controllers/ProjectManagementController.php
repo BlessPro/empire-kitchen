@@ -17,6 +17,7 @@ class ProjectManagementController extends Controller
         $measurements = Project::with('measurement')->where('current_stage', 'measurement')->get();
         $designs = Project::with('design')->where('current_stage', 'design')->get();
         $installations = Project::with('installation')->where('current_stage', 'installation')->get();
+        $productions = Project::with('production')->where('current_stage', 'production')->get();
 
 
 
@@ -24,7 +25,7 @@ class ProjectManagementController extends Controller
     $techSupervisors = User::where('role', 'tech_supervisor')->get();
 
 
-    return view('admin.ProjectManagement', compact('measurements', 'designs', 'installations','clients', 'techSupervisors'));
+    return view('admin.ProjectManagement', compact('measurements', 'designs', 'installations','productions','clients', 'techSupervisors'));
 
     // return view('admin.ProjectManagement', compact('clients', 'techSupervisors'));
     }

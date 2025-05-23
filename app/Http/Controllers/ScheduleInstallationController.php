@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Installation;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleInstallationController extends Controller
 {
@@ -24,21 +27,51 @@ class ScheduleInstallationController extends Controller
     {
         return view('admin.ScheduleInstallation.show', compact('id'));
     }
-    public function destroy($id)
-    {
-        // Logic to delete the project
-        return redirect()->route('admin.ScheduleInstallation.index')->with('success', 'Project deleted successfully.');
-    }
+    // public function destroy($id)
+    // {
+    //     // Logic to delete the project
+    //     return redirect()->route('admin.ScheduleInstallation.index')->with('success', 'Project deleted successfully.');
+    // }
     public function store(Request $request)
     {
         // Logic to store the project
         return redirect()->route('admin.ScheduleInstallation.index')->with('success', 'Project created successfully.');
     }
-    public function update(Request $request, $id)
-    {
-        // Logic to update the project
-        return redirect()->route('admin.ScheduleInstallation.index')->with('success', 'Project updated successfully.');
+
+
+public function update(Request $request, $id)
+{
+    $installation = Installation::find($id);
+
+    if (!$installation) {
+        return response()->json(['success' => false, 'message' => 'Installation not found'], 404);
     }
+
+    // Validate request data (you can adjust rules as needed)
+    $request->validate([
+        'project_id' => 'required|exists:projects,id',
+        'client_id' => 'required|exists:clients,id',
+        'start_time' => 'required|date',
+        'end_time' => 'required|date|after_or_equal:start_time',
+        'notes' => 'nullable|string',
+
+
+
+
+    ]);
+
+    $installation->start_time = $request->input('start_time');
+    $installation->end_time = $request->input('end_time');
+    $installation->notes = $request->input('notes');
+    $installation->project_id = $request->input('project_id');
+    $installation->client_id = $request->input('client_id');
+    $installation->user_id = Auth::id(); // Assuming you want to set the user ID to the currently authenticated user
+    $installation->updated_at = now(); // Update the timestamp
+    $installation->save();
+
+    return response()->json(['success' => true, 'message' => 'Installation updated successfully']);
+}
+
     public function schedule(Request $request)
     {
         // Logic to schedule the installation
@@ -219,4 +252,30 @@ class ScheduleInstallationController extends Controller
         // Logic to block the sender of the notification
         return redirect()->route('admin.ScheduleInstallation.index')->with('success', 'Sender blocked successfully.');
     }
+
+// public function destroy($id)
+// {
+//     $installation = Installation::find($id);
+
+//     if (!$installation) {
+//         return response()->json(['success' => false, 'message' => 'Installation not found'], 404);
+//     }
+
+//     $installation->delete();
+//     Log::info("Installation deleted: $id");
+
+//     return response()->json(['success' => true, 'message' => 'Installation deleted successfully']);
+// }
+
+
+public function destroy($id)
+{
+    Installation::findOrFail($id)->delete();
+    return response()->json(['success' => true]);
+}
+
+
+
+
+
 }

@@ -75,6 +75,10 @@ protected $fillable = [
     {
         return $this->hasMany(Measurement::class);
     }
+     public function measurement()
+    {
+        return $this->hasMany(Measurement::class);
+    }
 
     public function design()
     {

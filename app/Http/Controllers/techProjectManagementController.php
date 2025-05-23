@@ -8,26 +8,40 @@ use App\Models\Client;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use Illuminate\Support\Facades\Auth;
 
 class techProjectManagementController extends Controller
 {
     //
-    public function index()
-    {
-        $measurements = Project::with('measurement')->where('current_stage', 'measurement')->orderBy('created_at', 'desc')->get();
-        $designs = Project::with('design')->where('current_stage', 'design')->get();
-        $installations = Project::with('installation')->where('current_stage', 'installation')->get();
+ public function index()
+{
+    $techSupervisorId = Auth::id(); // Get current logged-in user's ID
 
+    $measurements = Project::with('measurement')
+        ->where('current_stage', 'measurement')
+        ->where('tech_supervisor_id', $techSupervisorId)
+        ->orderBy('created_at', 'desc')
+        ->get();
 
+    $designs = Project::with('design')
+        ->where('current_stage', 'design')
+        ->where('tech_supervisor_id', $techSupervisorId)
+        ->get();
 
-    $clients = Client::all();
+    $installations = Project::with('installation')
+        ->where('current_stage', 'installation')
+        ->where('tech_supervisor_id', $techSupervisorId)
+        ->get();
+
+    $clients = Client::whereHas('projects', function ($query) use ($techSupervisorId) {
+        $query->where('tech_supervisor_id', $techSupervisorId);
+    })->get();
+
     $techSupervisors = User::where('role', 'tech_supervisor')->get();
 
+    return view('tech.ProjectManagement', compact('measurements', 'designs', 'installations', 'clients', 'techSupervisors'));
+}
 
-    return view('tech.ProjectManagement', compact('measurements', 'designs', 'installations','clients', 'techSupervisors'));
-
-    // return view('admin.ProjectManagement', compact('clients', 'techSupervisors'));
-    }
 
 
     // public function getFormData()
@@ -52,21 +66,6 @@ class techProjectManagementController extends Controller
         return view('admin.ProjectManagement.edit', compact('id'));
     }
 
-//storing the project
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'client_id' => 'required|exists:clients,id',
-    //         'tech_supervisor_id' => 'required|exists:users,id',
-    //     ]);
-
-    //     Project::create([
-    //         'client_id' => $request->client_id,
-    //         'tech_supervisor_id' => $request->tech_supervisor_id,
-    //     ]);
-
-    //     return response()->json(['message' => 'Project created']);
-    // }
 
     public function store(Request $request)
 {

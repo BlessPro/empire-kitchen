@@ -79,6 +79,8 @@ public function update(Request $request, $id)
 
     // Validate request data (you can adjust rules as needed)
     $request->validate([
+        'project_id' => 'required|exists:projects,id',
+        'client_id' => 'required|exists:clients,id',
         'start_time' => 'required|date',
         'end_time' => 'required|date|after_or_equal:start_time',
         'notes' => 'nullable|string',
@@ -91,6 +93,10 @@ public function update(Request $request, $id)
     $installation->start_time = $request->input('start_time');
     $installation->end_time = $request->input('end_time');
     $installation->notes = $request->input('notes');
+    $installation->project_id = $request->input('project_id');
+    $installation->client_id = $request->input('client_id');
+    $installation->user_id = Auth::id(); // Assuming you want to set the user ID to the currently authenticated user
+    $installation->updated_at = now(); // Update the timestamp
     $installation->save();
 
     return response()->json(['success' => true, 'message' => 'Installation updated successfully']);

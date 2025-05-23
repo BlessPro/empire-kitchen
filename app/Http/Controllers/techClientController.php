@@ -15,20 +15,18 @@ use Illuminate\Support\Facades\Validator;
 
 class techClientController extends Controller
 {
-    //
-//     public function index(){
-//     $projects = Project::paginate(15); // fetch paginated projects
-
-//     return view('tech/ClientManagement', compact('projects'));
-// }
 
 public function clientProjects()
 {
-    $clients = Client::whereHas('projects', function ($query) {
-        $query->where('current_stage', 'Measurement');
-    })
-    ->with(['projects' => function ($query) {
+    $techSupervisorId = Auth::id(); // Get logged-in user's ID
+
+    $clients = Client::whereHas('projects', function ($query) use ($techSupervisorId) {
         $query->where('current_stage', 'Measurement')
+              ->where('tech_supervisor_id', $techSupervisorId); // filter by supervisor
+    })
+    ->with(['projects' => function ($query) use ($techSupervisorId) {
+        $query->where('current_stage', 'Measurement')
+              ->where('tech_supervisor_id', $techSupervisorId)
               ->with('measurement');
     }])
     ->orderBy('created_at', 'desc')
@@ -36,6 +34,7 @@ public function clientProjects()
 
     return view('tech.ClientManagement', compact('clients'));
 }
+
 
 public function showProjectInfo(Project $project)
 {
