@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controller\DashboardController as ControllerDashboardController;
+use App\Http\Controllers\deisgnerNavigation;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TechController;
 use App\Http\Controllers\DesignerController;
 use App\Http\Controllers\AccountantController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\DesignerNavigationController;
 use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController; // Ensure this class exists in the specified namespace
@@ -22,6 +24,8 @@ use App\Http\Controllers\Inbox;
 use App\Http\Controllers\ReportsandAnalytics;
 use App\Http\Controllers\ScheduleInstallationController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DesignerInboxController;
+use App\Http\Controllers\DesignerUserController;
 use App\Http\Controllers\InboxController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MessageController;
@@ -199,16 +203,24 @@ Route::get('/dashboard', function () {
     Route::get('/admin/ReportandAnalytics',   [ProjectManagementController::class, 'index'])->name('admin.ReportandAnalytics');
 
     // for scheduling the installation on admin level
-//     // API route for FullCalendar events
-// Route::get('/api/calendar/events', [InstallationController::class, 'calendarEvents']);
+    Route::get('/designer/AssignedProjects', [DesignerNavigationController::class, 'AssignedProjects'])->name('designer.AssignedProjects')->middleware('auth');
+    Route::get('/designer/ProjectDesign', [DesignerNavigationController::class, 'ProjectDesign'])->name('designer.ProjectDesign')->middleware('auth');
+    Route::get('/designer/TimeManagement', [DesignerNavigationController::class, 'TimelineManagement'])->name('designer.TimeManagement')->middleware('auth');
+    Route::get('/designer/Settings', [DesignerNavigationController::class, 'Settings'])->name('designer.Settings')->middleware('auth');
+    // Route::get('/designer/Inbox', [DesignerNavigationController::class, 'Inbox'])->name('designer.Inbox')->middleware('auth');
+    Route::get('/designer/inbox', [DesignerInboxController::class, 'index'])->name('designer.inbox');
 
-// // Web route to store a new installation
-// Route::post('/installation', [InstallationController::class, 'store'])->name('installation.store');
 
-// Route::prefix('admin')->group(function () {
-// });
+    // For the MessageSending
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/designer/Inbox/{userId?}', [DesignerInboxController::class, 'index'])->name('designer.inbox');
+    Route::post('/designer/Inbox/send', [DesignerInboxController::class, 'sendMessage'])->name('designer.inbox.send');
+    Route::get('/designer/Inbox/fetch/{userId}', [DesignerInboxController::class, 'fetchMessages'])->name('designer.inbox.fetch');
+});
 
-// Route::post('/admin/ScheduleInstallation/store', [InstallationController::class, 'store'])->name('admin.ScheduleInstallation.store');
+    Route::post('/desginer/settings/profile-pic', [DesignerUserController::class, 'updateProfilePic'])->name('designer.settings.profile_pic');
+
+    // Route::post('/admin/ScheduleInstallation/store', [InstallationController::class, 'store'])->name('admin.ScheduleInstallation.store');
 
     Route::post('installations/store', [InstallationController::class, 'store'])->name('installation.store');
 

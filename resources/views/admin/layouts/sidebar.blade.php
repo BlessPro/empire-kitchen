@@ -173,15 +173,5 @@ class="group relative flex items-center p-5 transition
         </form>
       </div>
 
-{{--
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-      <div class="px-4 py-6">
-        <a  :href="route('logout')"onclick="event.preventDefault();this.closest('form').submit();" hover{cursor:pointer;} class="flex items-center text-sm hover:text-purple-300">
-          <i data-feather="log-out" class="mr-2"></i> {{ __('Log Out') }}
 
-        </a>
-
-      </div>
-        </form> --}}
     </aside>

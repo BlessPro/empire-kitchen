@@ -143,13 +143,23 @@ class="group relative flex items-center p-5 transition
       <!--Logout-->
 
 
-      <div class="px-4 py-6">
+      {{-- <div class="px-4 py-6">
         <form method="POST" action="{{ route('logout') }}">
           @csrf
           <a :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();" cursor:pointer; class="flex items-center text-sm hover:text-purple-300">
             <i data-feather="log-out" class="mr-2"></i> {{ __('Log Out') }}
           </a>
         </form>
-      </div>
+      </div> --}}
 
+      <div class="px-4 py-6">
+        <form method="POST" action="{{ route('logout') }}">
+          @csrf
+          <a href="{{ route('logout') }}"
+             onclick="event.preventDefault(); this.closest('form').submit();"
+             class="flex items-center text-sm hover:text-purple-300 cursor-pointer">
+            <i data-feather="log-out" class="mr-2"></i> {{ __('Log Out') }}
+          </a>
+        </form>
+      </div>
     </aside>
