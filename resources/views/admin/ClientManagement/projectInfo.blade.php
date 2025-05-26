@@ -188,22 +188,27 @@
                           <div>
                             <h3 class="mb-4 text-lg font-semibold text-gray-800">Comments</h3>
                             <ul class="space-y-4" id="commentsList">
-                                @forelse ($project->comments as $comment)
-                                <li class="flex items-start gap-3">
-                                  <img
-                                  src="{{ auth()->user()->profile_pic ? asset('storage/' . auth()->user()->profile_pic) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
-                                  alt="Profile Photo"
-                                  class="w-10 h-10 border-2 border-yellow-300 rounded-[10px]">
-                              <div>
-                                    <p class="text-sm font-semibold text-gray-800">{{ $comment->user->name }} <span class="text-xs font-normal text-gray-400">{{ $comment->user->created_at ->diffForHumans() }}</span></p>
-                                    <p class="text-sm text-gray-600">{{ $comment->comment }}</p>
-                                  </div>
-                                </li>
-                                @empty
-                                    <p>No comments yet.</p>
-                                @endforelse
-                              <!-- Repeat for other users -->
-                            </ul>
+    @forelse ($project->comments as $comment)
+    <li class="flex items-start gap-3">
+        <img
+            src="{{ $comment->user->profile_pic ? asset('storage/' . $comment->user->profile_pic) : 'https://ui-avatars.com/api/?name=' . urlencode($comment->user->name) }}"
+            alt="Profile Photo"
+            class="w-10 h-10 border-2 border-yellow-300 rounded-[10px]">
+        <div>
+            <p class="text-sm font-semibold text-gray-800">
+                {{ $comment->user->name }}
+                <span class="text-xs font-normal text-gray-400">
+                    {{ $comment->created_at->diffForHumans() }}
+                </span>
+            </p>
+            <p class="text-sm text-gray-600">{{ $comment->comment }}</p>
+        </div>
+    </li>
+    @empty
+    <p>No comments yet.</p>
+    @endforelse
+</ul>
+
                           </div>
                           {{-- My test code for comment --}}
 

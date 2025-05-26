@@ -6,7 +6,7 @@
 
     </div>
 
-    <form id="accountForm" action="{{ route('tech.settings.update') }}" method="POST" enctype="multipart/form-data">
+<<form action="{{ route('tech.settings.profile_pic') }}" method="POST" enctype="multipart/form-data">
         @csrf
 <!-- Form Card -->
      <div class="p-8 bg-white shadow rounded-2xl">
@@ -26,16 +26,18 @@
           </div>
 
           <!-- Upload Area -->
-           <div onclick="document.getElementById('account_profile_input').click()" class="flex items-center justify-center flex-1 h-32 text-center text-gray-500 border-2 border-dashed cursor-pointer rounded-xl hover:bg-gray-50">
+           <div onclick="document.getElementById('profile_pic').click()" class="flex items-center justify-center flex-1 h-32 text-center text-gray-500 border-2 border-dashed cursor-pointer rounded-xl hover:bg-gray-50">
             <div>
               <svg class="w-8 h-8 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="..."/></svg>
               <p><span class="font-medium text-purple-600">Click here</span> to upload your file or drag.</p>
               <p class="mt-1 text-xs text-gray-400">Supported format: SVG, JPG, PNG (10MB each)</p>
             </div>
-            <input type="file" name="profile_pic" id="account_profile_input" class="hidden" onchange="previewProfile(event)">
+            {{-- <input type="file" name="profile_pic" id="account_profile_input" class="hidden" onchange="previewProfile(event)"> --}}
+        <input type="file" name="profile_pic" id="profile_pic" class="hidden mt-1 block w-full text-sm text-gray-500 file:py-2 file:px-4 file:border file:rounded-lg file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
 
           </div>
         </div>
+
 
         <!-- Form -->
 
@@ -87,10 +89,21 @@
         </div>
 
         <div class="flex justify-end mt-8 space-x-4">
-          <button class="px-6 py-2 text-gray-600 border rounded-lg">Save Changes</button>
+    <button type="submit" class="px-4 py-2 text-fuchsia-900 bg-purple-200 border-2 rounded-[20px] hover:text-white   hover:bg-fuchsia-900">Upload</button>
           {{-- <button class="px-6 py-2 text-white bg-purple-700 rounded-lg">Edit Profile</button> --}}
         </div>
       </div>
     </div>
 </form>
+{{-- <<form action="{{ route('tech.settings.profile_pic') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+
+    <div class="mb-4">
+        <label for="profile_pic" class="block text-sm font-medium text-gray-700">Update Profile Picture</label>
+        <input type="file" name="profile_pic" id="profile_pic" class="mt-1 block w-full text-sm text-gray-500 file:py-2 file:px-4 file:border file:rounded-lg file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+    </div>
+
+    <button type="submit" class="px-4 py-2 text-white bg-purple-700 rounded hover:bg-purple-800">Upload</button>
+</form> --}}
+
 

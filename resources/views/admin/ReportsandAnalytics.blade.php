@@ -189,7 +189,7 @@
                         @else
                             <!-- Button to Open Modal -->
                             <button onclick="openModal('{{ $project->id }}', '{{ $project->name }}')" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#assignModal" data-project-id="{{ $project->id }}">
-                                Assign
+                                Not Assigned
                             </button>
                         @endif
                                     </td>

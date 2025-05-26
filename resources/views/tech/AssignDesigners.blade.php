@@ -48,24 +48,9 @@
 
 
 
-                {{-- <tr class="cursor-pointer hover:bg-gray-100"> --}}
-                    {{-- <td class="p-4 font-normal text-[15px] items-center">Berla Mundi</td> --}}
-
-                    {{-- <td class="p-4 font-normal text-[15px] items-center">0247419436</td> --}}
-                    {{-- <td class="p-4 font-normal text-[15px] items-center">hgjhjk</td> --}}
-                    {{-- <td class="p-4 font-normal text-[15px] items-center">January 11, 2025</td> --}}
-                    {{-- <td class="p-4 font-normal text-[15px] items-center">Pending</td> --}}
-                    {{-- <td class="p-4 font-normal text-[15px] items-center"><i data-feather="eye"></i></td> --}}
-                    {{-- <td class="p-4 font-normal text-[15px]  flex items-center py-3 space-x-2"> --}}
-
-                         {{-- <img src="https://i.pravatar.cc/30?img=1" class="w-8 h-8 rounded-full">
-                    <img src="https://i.pravatar.cc/30" class="object-cover w-8 h-8 rounded-full">
- --}}
 
 
-                    {{-- <span>Bless</span></td>
 
-                  </tr> --}}
 
                      @foreach($projects as $project)
                       <tr class="cursor-pointer hover:bg-gray-100">
@@ -99,8 +84,12 @@
                             </div>
                         @else
                             <!-- Button to Open Modal -->
-                            <button onclick="openModal('{{ $project->id }}', '{{ $project->name }}')" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#assignModal" data-project-id="{{ $project->id }}">
-                                Assign
+                            <button
+                            class  ="flex px-3 py-1 text-sm font-medium text-purple-800
+                             bg-purple-100 border border-purple-800 rounded-full
+                             hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                             onclick="openModal('{{ $project->id }}', '{{ $project->name }}')" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#assignModal" data-project-id="{{ $project->id }}">
+                               <span>  <i data-feather="plus" class="w-4 h-5 m"> </i> </span> Assign
                             </button>
                         @endif
                     {{-- <button id="openAddUserModal" class="flex px-3 py-1 text-sm font-medium text-purple-800 bg-purple-100 border border-purple-800 rounded-full hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">

@@ -68,7 +68,8 @@ Route::get('/dashboard', function () {
 
     //for the project info
 
-    Route::get('/admin/projects/{project}/info', [ClientManagementController::class, 'showProjectname'])->name('admin.projects.info');
+    Route::get('/admin/projects/{project}/info2', [ClientManagementController::class, 'showProjectname'])->name('admin.projects.info');
+    Route::get('/admin/projects/{project}/info', [ClientManagementController::class, 'showProjectname'])->name('admin.clients.projects');
 
     //deleting project from the dashboard
     Route::delete('admin/dashboard/projects/{id}', [ProjectManagementController::class, 'destroy'])->name('projects.destroy');
@@ -82,9 +83,9 @@ Route::get('/dashboard', function () {
 
    //for the edit pop up
 
-    Route::get('/admin/users/{id}', [UserController::class, 'edit'])->name('admin.users.edit');
+    Route::get('/admin/update/{id}', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::post('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
-
+    Route::post('/admin/settings/', [UserController::class, 'UpdateLoggedUser'])->name('admin.settings.update');
     //for rditing logged user
     Route::post('/admin/ScheduleInstallation/{id}', [ScheduleInstallationController::class, 'update'])->name('admin.ScheduleInstallation.update');
 
@@ -126,6 +127,8 @@ Route::get('/dashboard', function () {
     Route::get('/tech/Settings', [techSettingsController::class, 'index'])->name('tech.Settings');
     Route::get('/tech/Inbox', [techInboxController::class, 'index'])->name('tech.Inbox');
     Route::get('/tech/AssignDesigners', [techAssignDesignersController::class, 'index'])->name('tech.AssignDesigners');
+    // updating the users profile pic only
+    Route::post('/tech/settings/profile-pic', [UserController::class, 'updateProfilePic'])->name('tech.settings.profile_pic');
 
      // For the MessageSending
     Route::middleware(['auth'])->group(function () {

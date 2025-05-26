@@ -87,7 +87,7 @@
         </div>
 
         <div class="flex justify-end mt-8 space-x-4">
-          <button class="px-6 py-2 text-gray-600 border rounded-lg">Save Changes</button>
+          <button type="submit" class="px-6 py-2 text-gray-600 border rounded-lg">Save Changes</button>
           {{-- <button class="px-6 py-2 text-white bg-purple-700 rounded-lg">Edit Profile</button> --}}
         </div>
       </div>
@@ -96,43 +96,3 @@
 
 
 
-{{--
-      <div id="accountTab" class="w-full mt-6">
-        <form id="accountForm" action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" class="max-w-xl p-6 mx-auto bg-white rounded-lg shadow">
-            @csrf
-            <div class="flex flex-col items-center mb-4">
-                <img src="{{ asset('storage/' . auth()->user()->profile_pic) }}" id="account_profile_preview" class="object-cover w-20 h-20 mb-2 rounded-full" />
-                <input type="file" name="profile_pic" id="account_profile_pic" class="w-full px-3 py-2 mt-2 border rounded" accept="image/*">
-            </div>
-            <div class="mb-4">
-                <label for="name" class="block mb-1 text-sm font-medium">Name</label>
-                <input type="text" name="name" id="name" value="{{ auth()->user()->name }}" class="w-full px-3 py-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label for="email" class="block mb-1 text-sm font-medium">Email</label>
-                <input type="email" name="email" id="email" value="{{ auth()->user()->email }}" class="w-full px-3 py-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label for="phone_number" class="block mb-1 text-sm font-medium">Phone Number</label>
-                <input type="text" name="phone_number" id="phone_number" value="{{ auth()->user()->phone_number }}" class="w-full px-3 py-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label for="password" class="block mb-1 text-sm font-medium">New Password (optional)</label>
-                <input type="password" name="password" id="password" placeholder="Leave blank to keep current password" class="w-full px-3 py-2 border rounded">
-            </div>
-            <div class="flex justify-end">
-                <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">Save Changes</button>
-            </div>
-        </form>
-    </div>
-    <div>
-        <label class="block mb-2.5 text-sm font-medium text-gray-700">Role</label>
-        <select disabled class="w-[270px] px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-600">
-            <option value="admin" {{ auth()->user()->role == 'admin' ? 'selected' : '' }}>Admin</option>
-            <option value="tech_supervisor" {{ auth()->user()->role == 'tech_supervisor' ? 'selected' : '' }}>Tech Supervisor</option>
-            <option value="designer" {{ auth()->user()->role == 'designer' ? 'selected' : '' }}>Designer</option>
-            <option value="sales_accountant" {{ auth()->user()->role == 'sales_accountant' ? 'selected' : '' }}>Sales Accountant</option>
-            <option value="accountant" {{ auth()->user()->role == 'accountant' ? 'selected' : '' }}>Accountant</option>
-        </select>
-        <input type="hidden" name="role" value="{{ auth()->user()->role }}">
-    </div> --}}

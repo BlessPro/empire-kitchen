@@ -99,4 +99,53 @@ class UserController extends Controller
     }
 
 
+     public function UpdateLoggedUser(Request $request)
+    {
+    $user = User::findOrFail(Auth::id());
+
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+        'phone_number' => 'required|string|max:20',
+        'password' => 'nullable|string|min:8',
+        'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
+
+    if ($request->hasFile('profile_pic')) {
+        $path = $request->file('profile_pic')->store('profile_pics', 'public');
+        $validated['profile_pic'] = $path;
+    }
+
+    if ($validated['password'] ?? false) {
+        $validated['password'] = Hash::make($validated['password']);
+    } else {
+        unset($validated['password']); // Keep current password
+    }
+
+    $user->update($validated);
+
+    return redirect()->back()->with('success', 'Account updated successfully.');
+   }
+
+
+
+   public function updateProfilePic(Request $request)
+{
+    $user = User::findOrFail(Auth::id());
+
+    $request->validate([
+        'profile_pic' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
+
+    if ($request->hasFile('profile_pic')) {
+        $path = $request->file('profile_pic')->store('profile_pics', 'public');
+        $user->profile_pic = $path;
+        $user->save();
+    }
+
+    return redirect()->back()->with('success', 'Profile picture updated successfully.');
+}
+
+
+
 }

@@ -53,6 +53,81 @@
 </div>
 
 
+{{-- installationmodal --}}
+
+<div id="installationModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-800 bg-opacity-50">
+    <div class="w-full max-w-2xl p-6 bg-white shadow-lg rounded-xl">
+        <h2 class="mb-4 text-xl font-bold">Create Installation</h2>
+
+     {{-- //   <form id="installationForm"> --}}
+            <form id="installationForm" method="POST" enctype="multipart/form-data">
+
+            @csrf
+            <!-- Client -->
+            <div class="mb-4">
+                <label class="block font-medium">Client</label>
+                <select id="client_id" name="client_id" class="w-full p-2 border rounded" required>
+                    <option value="">Select a client</option>
+                    @foreach(\App\Models\Client::all() as $client)
+                        <option value="{{ $client->id }}"
+                            data-phone="{{ $client->phone_number }}"
+                            data-location="{{ $client->location }}">
+                            {{ $client->firstname }} {{ $client->lastname }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Client Info -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <input type="text" id="client_phone" class="p-2 border rounded" placeholder="Phone Number" readonly>
+            <input type="text" id="client_location" class="p-2 border rounded" placeholder="Location" readonly>
+            </div>
+
+            <!-- Project -->
+            <div class="mb-4">
+                <label class="block font-medium">Project</label>
+                <select id="project_id" name="project_id" class="w-full p-2 border rounded" required>
+                    <option value="">Select a project</option>
+                    <!-- JS will populate based on selected client -->
+                </select>
+            </div>
+
+            <!-- Start/End Time -->
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="block font-medium">Start Time</label>
+                    <input type="datetime-local" id="start_time" name="start_time" class="w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label class="block font-medium">End Time</label>
+                    <input type="datetime-local" id="end_time" name="end_time" class="w-full p-2 border rounded" required>
+                </div>
+            </div>
+
+            <!-- Duration -->
+            <div class="mb-4">
+                <input type="text" id="duration" class="w-full p-2 border rounded" placeholder="Duration (auto)" readonly>
+            </div>
+
+            <!-- Notes -->
+            <div class="mb-4">
+                <textarea name="notes" rows="3" class="w-full p-2 border rounded" placeholder="Additional Notes (optional)"></textarea>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-end space-x-4">
+                <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+                <button type="submit" class="px-4 py-2 text-white bg-purple-700 rounded hover:bg-purple-800">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- installationmodal --}}
+
+
+
 
 
 <div id="editModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-30">
