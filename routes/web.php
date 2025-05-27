@@ -188,7 +188,7 @@ Route::get('/dashboard', function () {
     Route::get('/admin/ReportandAnalytics',   [ProjectManagementController::class, 'index'])->name('admin.ReportandAnalytics');
     // for scheduling the installation on admin level
     Route::get('/designer/AssignedProjects', [DesignerNavigationController::class, 'AssignedProjects'])->name('designer.AssignedProjects')->middleware('auth');
-    Route::get('/designer/ProjectDesign', [DesignerNavigationController::class, 'ProjectDesign'])->name('designer.ProjectDesign')->middleware('auth');
+    // Route::get('/designer/ProjectDesign', [DesignerNavigationController::class, 'ProjectDesign'])->name('designer.ProjectDesign')->middleware('auth');
     Route::get('/designer/TimeManagement', [DesignerNavigationController::class, 'TimelineManagement'])->name('designer.TimeManagement')->middleware('auth');
     Route::get('/designer/Settings', [DesignerNavigationController::class, 'Settings'])->name('designer.Settings')->middleware('auth');
     // Route::get('/designer/Inbox', [DesignerNavigationController::class, 'Inbox'])->name('designer.Inbox')->middleware('auth');
@@ -205,7 +205,7 @@ Route::get('/dashboard', function () {
     Route::get('/designer/projects/{project}/info', [designerAssignDesigners::class, 'showProjectname'])->name('designer.projects.info');
     // for project design page
     // Show form
-Route::get('/designer/ProjectDesign', [designerProjectDesignController::class, 'showUploadForm'])->name('design.uploadForm');
+Route::get('/designer/ProjectDesign', [designerProjectDesignController::class, 'showUploadForm'])->name('designer.ProjectDesign');
 
 // Handle submission
 Route::post('/designer/ProjectDesign', [designerProjectDesignController::class, 'store'])->name('design.store');

@@ -55,25 +55,40 @@ class designerAssignDesigners extends Controller
 
 //     return view('designer.AssignedProjects', compact('clients'));
 // }
+// public function clientProjects()
+// {
+//     $designerId = Auth::id(); // Get logged-in user's ID
+
+//     $clients = Client::whereHas('projects', function ($query) use ($designerId) {
+//         $query->where('current_stage', 'design') // filter by design stage
+//               ->where('designer_id', $designerId); // filter by supervisor
+//     })
+//     ->with(['projects' => function ($query) use ($designerId) {
+//         $query->where('current_stage', 'design') // filter by design stage
+//               ->where('designer_id', $designerId)
+//               ->with('design'); // filter by design stage
+//     }])
+//     ->orderBy('created_at', 'desc')
+//     ->paginate(5); // Paginate the results
+
+//     return view('designer.AssignedProjects', compact('clients'));
+// }
+
 public function clientProjects()
 {
-    $designerId = Auth::id(); // Get logged-in user's ID
+    $designerId = Auth::id(); // Get the logged-in designer's ID
 
     $clients = Client::whereHas('projects', function ($query) use ($designerId) {
-        $query->where('current_stage', 'design') // filter by design stage
-              ->where('designer_id', $designerId); // filter by supervisor
+        $query->where('designer_id', $designerId); // Only projects assigned to designer
     })
     ->with(['projects' => function ($query) use ($designerId) {
-        $query->where('current_stage', 'design') // filter by design stage
-              ->where('designer_id', $designerId)
-              ->with('design'); // filter by design stage
+        $query->where('designer_id', $designerId); // Eager-load only those projects
     }])
     ->orderBy('created_at', 'desc')
-    ->paginate(5); // Paginate the results
+    ->paginate(5);
 
     return view('designer.AssignedProjects', compact('clients'));
 }
-
 
 public function showProjectInfo(Project $project)
 {
