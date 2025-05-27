@@ -20,7 +20,7 @@ class techAssignDesignersController extends Controller
           public function index(){
     $projects = Project::paginate(15); // fetch paginated projects
 
-    return view('tech/AssignDesigners', compact('projects'));
+    return view('tech.AssignDesigners', compact('projects'));
 }
 
 
@@ -39,10 +39,23 @@ class techAssignDesignersController extends Controller
 
 
 
+// public function showDesignerAssignment()
+// {
+//     $projects = Project::with(['client', 'designer'])
+//                 ->where('current_stage', 'measurement')
+//                 ->where('tech_supervisor_id', Auth::id()) // Only projects for the logged-in supervisor
+//                 ->orderBy('created_at', 'desc')
+//                 ->paginate(10);
+
+//     $designers = User::where('role', 'designer')->get();
+
+//     return view('tech.AssignDesigners', compact('projects', 'designers'));
+// }
+
+
 public function showDesignerAssignment()
 {
     $projects = Project::with(['client', 'designer'])
-                ->where('current_stage', 'measurement')
                 ->where('tech_supervisor_id', Auth::id()) // Only projects for the logged-in supervisor
                 ->orderBy('created_at', 'desc')
                 ->paginate(10);
@@ -53,6 +66,7 @@ public function showDesignerAssignment()
 }
 
 
+
 public function assignDesigner(Request $request)
 {
     $request->validate([
@@ -60,8 +74,10 @@ public function assignDesigner(Request $request)
         'designer_id' => 'required|exists:users,id',
     ]);
 
+    //
     $project = Project::find($request->project_id);
     $project->designer_id = $request->designer_id;
+    $project->current_stage = 'design';
     $project->save();
 
     return redirect()->back()->with('success', 'Designer assigned successfully!');

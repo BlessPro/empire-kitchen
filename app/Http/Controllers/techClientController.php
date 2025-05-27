@@ -16,18 +16,35 @@ use Illuminate\Support\Facades\Validator;
 class techClientController extends Controller
 {
 
+// public function clientProjects()
+// {
+//     $techSupervisorId = Auth::id(); // Get logged-in user's ID
+
+//     $clients = Client::whereHas('projects', function ($query) use ($techSupervisorId) {
+//         $query->where('current_stage', 'Measurement')
+//               ->where('tech_supervisor_id', $techSupervisorId); // filter by supervisor
+//     })
+//     ->with(['projects' => function ($query) use ($techSupervisorId) {
+//         $query->where('current_stage', 'Measurement')
+//               ->where('tech_supervisor_id', $techSupervisorId)
+//               ->with('measurement');
+//     }])
+//     ->orderBy('created_at', 'desc')
+//     ->paginate(5); // Paginate the results
+
+//     return view('tech.ClientManagement', compact('clients'));
+// }
+
 public function clientProjects()
 {
     $techSupervisorId = Auth::id(); // Get logged-in user's ID
 
     $clients = Client::whereHas('projects', function ($query) use ($techSupervisorId) {
-        $query->where('current_stage', 'Measurement')
-              ->where('tech_supervisor_id', $techSupervisorId); // filter by supervisor
+        $query->where('tech_supervisor_id', $techSupervisorId); // only filter by supervisor
     })
     ->with(['projects' => function ($query) use ($techSupervisorId) {
-        $query->where('current_stage', 'Measurement')
-              ->where('tech_supervisor_id', $techSupervisorId)
-              ->with('measurement');
+        $query->where('tech_supervisor_id', $techSupervisorId)
+              ->with('measurement'); // include measurement relationship
     }])
     ->orderBy('created_at', 'desc')
     ->paginate(5); // Paginate the results

@@ -24,6 +24,7 @@ use App\Http\Controllers\Inbox;
 use App\Http\Controllers\ReportsandAnalytics;
 use App\Http\Controllers\ScheduleInstallationController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\designerAssignDesigners;
 use App\Http\Controllers\DesignerInboxController;
 use App\Http\Controllers\DesignerUserController;
 use App\Http\Controllers\InboxController;
@@ -39,6 +40,7 @@ use App\Http\Controllers\TechAssignDesignersController;
 use App\Http\Controllers\MeasurementController;
 use App\Http\Controllers\InstallationController;
 use App\Http\Controllers\TechDashboardController;
+use App\Http\Controllers\designerProjectDesignController;
 
 use App\Http\Controllers\RoleMiddleware;
 
@@ -139,7 +141,7 @@ Route::get('/dashboard', function () {
     Route::get('/tech/inbox/{userId?}', [techInboxController::class, 'index'])->name('tech.inbox');
     Route::post('/tech/inbox/send', [techInboxController::class, 'sendMessage'])->name('tech.inbox.send');
     Route::get('/tech/inbox/fetch/{userId}', [techInboxController::class, 'fetchMessages'])->name('tech.inbox.fetch');
-});
+    });
 
     //for the viewing the client projects
     Route::get('/tech/projects/{project}/info', [techClientController::class, 'showProjectname'])->name('tech.projects.info');
@@ -171,37 +173,19 @@ Route::get('/dashboard', function () {
     Route::get('/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard');
     });
 
-// Route::get('/measurements/create', [MeasurementController::class, 'create'])->name('measurements.create');
-
-
-
+    // Route::get('/measurements/create', [MeasurementController::class, 'create'])->name('measurements.create');
     //navigating with Designer user login
-
-
     Route::get('/designer/dashboard', [DesignerController::class, 'index'])->middleware('role:designer');
-       //navigating with tech accountant login
-
+    //navigating with tech accountant login
     Route::get('/accountant/dashboard', [AccountantController::class, 'index'])->middleware('role:accountant');
-        //navigating with sales accountant  user login
-
+    //navigating with sales accountant  user login
     Route::get('/sales/dashboard', [SalesController::class, 'index'])->middleware(middleware: 'RoleMiddleware:sales_accountant');
-
-    // Route::get('/admin/bick', [DashboardController::class, 'dashboard']);
     //displayinig the users on the settings page
-
-    // Route::get('/admin/ProjectManagement',   [ProjectManagementController::class, 'index'])->name('admin.ProjectManagement');
     Route::get('/admin/ProjectManagement', [ProjectManagementController::class, 'index'])->name('admin.ProjectManagement');
-
     //for the looping card on the project management page
-
     Route::post('/projects', [ProjectManagementController::class, 'store'])->name('projects.store');
-
-    //using ajax to load the the client and tech supervisor into the pop up
-    // Route::get('/admin/ProjectManagement/form-data', [ProjectManagementController::class, 'getFormData']);
-
     //For the report and analytics page
     Route::get('/admin/ReportandAnalytics',   [ProjectManagementController::class, 'index'])->name('admin.ReportandAnalytics');
-
     // for scheduling the installation on admin level
     Route::get('/designer/AssignedProjects', [DesignerNavigationController::class, 'AssignedProjects'])->name('designer.AssignedProjects')->middleware('auth');
     Route::get('/designer/ProjectDesign', [DesignerNavigationController::class, 'ProjectDesign'])->name('designer.ProjectDesign')->middleware('auth');
@@ -209,30 +193,35 @@ Route::get('/dashboard', function () {
     Route::get('/designer/Settings', [DesignerNavigationController::class, 'Settings'])->name('designer.Settings')->middleware('auth');
     // Route::get('/designer/Inbox', [DesignerNavigationController::class, 'Inbox'])->name('designer.Inbox')->middleware('auth');
     Route::get('/designer/inbox', [DesignerInboxController::class, 'index'])->name('designer.inbox');
-
-
     // For the MessageSending
     Route::middleware(['auth'])->group(function () {
     Route::get('/designer/Inbox/{userId?}', [DesignerInboxController::class, 'index'])->name('designer.inbox');
     Route::post('/designer/Inbox/send', [DesignerInboxController::class, 'sendMessage'])->name('designer.inbox.send');
     Route::get('/designer/Inbox/fetch/{userId}', [DesignerInboxController::class, 'fetchMessages'])->name('designer.inbox.fetch');
-});
-
+    });
     Route::post('/desginer/settings/profile-pic', [DesignerUserController::class, 'updateProfilePic'])->name('designer.settings.profile_pic');
+    // Route::get('/designer/AssignedProjects', [designerAssignDesigners::class, 'index'])->name('designer.AssignedProjects');
+    //for the viewing the client projects
+    Route::get('/designer/projects/{project}/info', [designerAssignDesigners::class, 'showProjectname'])->name('designer.projects.info');
+    // for project design page
+    // Show form
+Route::get('/designer/ProjectDesign', [designerProjectDesignController::class, 'showUploadForm'])->name('design.uploadForm');
 
-    // Route::post('/admin/ScheduleInstallation/store', [InstallationController::class, 'store'])->name('admin.ScheduleInstallation.store');
+// Handle submission
+Route::post('/designer/ProjectDesign', [designerProjectDesignController::class, 'store'])->name('design.store');
 
+
+    // comments
+    Route::post('/designer/projects/{project}/comments', [CommentController::class, 'store'])->name('designer.project.comment.store');
+    Route::get('/designer/AssignedProjects', [designerAssignDesigners::class, 'clientProjects'])->name('designer.AssignedProjects');
     Route::post('installations/store', [InstallationController::class, 'store'])->name('installation.store');
+    Route::get('/installations/events', [InstallationController::class, 'calendarEvents'])->name('installation.events');
 
-
-// Route::post('admin/installations/store', [InstallationController::class, 'store'])->name('admin.installation.store');
-Route::get('/installations/events', [InstallationController::class, 'calendarEvents'])->name('installation.events');
-
-Route::get('/api/projects/by-client/{client}', function ($clientId) {
+    Route::get('/api/projects/by-client/{client}', function ($clientId) {
     return \App\Models\Project::where('client_id', $clientId)
         ->where('current_stage', '<>', 'installation') // only those not yet installed
         ->get(['id', 'name']);
-});
+    });
 // Route::prefix('admin')->group(function () {
 //     Route::delete('/installations/{id}', [InstallationController::class, 'destroy']);
 // });

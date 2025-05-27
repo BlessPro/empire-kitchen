@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Client;
+use App\Models\Project;
 
 class designerAssignDesigners extends Controller
 {
@@ -32,4 +35,57 @@ class designerAssignDesigners extends Controller
     {
         return view('designer.inbox');
     }
+
+
+// public function clientProjects()
+// {
+//     $designer_id = Auth::id(); // Get logged-in user's ID
+
+//     $clients = Client::whereHas('projects', function ($query) use ($designer_id) {
+//         $query->where('current_stage', 'design')
+//               ->where('designer_id', $designer_id); // filter by designer
+//     })
+//     ->with(['projects' => function ($query) use ($designer_id) {
+//         $query->where('current_stage', 'design')
+//               ->where('designer_id', $designer_id)
+//               ->with('design');
+//     }])
+//     ->orderBy('created_at', 'desc')
+//     ->paginate(5); // Paginate the results
+
+//     return view('designer.AssignedProjects', compact('clients'));
+// }
+public function clientProjects()
+{
+    $designerId = Auth::id(); // Get logged-in user's ID
+
+    $clients = Client::whereHas('projects', function ($query) use ($designerId) {
+        $query->where('current_stage', 'design') // filter by design stage
+              ->where('designer_id', $designerId); // filter by supervisor
+    })
+    ->with(['projects' => function ($query) use ($designerId) {
+        $query->where('current_stage', 'design') // filter by design stage
+              ->where('designer_id', $designerId)
+              ->with('design'); // filter by design stage
+    }])
+    ->orderBy('created_at', 'desc')
+    ->paginate(5); // Paginate the results
+
+    return view('designer.AssignedProjects', compact('clients'));
+}
+
+
+public function showProjectInfo(Project $project)
+{
+    $project->load(['client', 'measurement', 'installation', 'design','comments.user']);
+
+    return view('tech.ClientManagement.projectInfo', compact('project'));
+}
+
+public function showProjectname(Project $project)
+{
+    $project->load(['client', 'measurement', 'installation', 'design','comments.user']);
+
+    return view('tech.ClientManagement.projectInfo', compact('project'));
+}
 }
