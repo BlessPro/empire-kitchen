@@ -23,28 +23,21 @@
    {{-- navigation bar --}}
    <div class="flex items-center justify-between mb-6">
     <div class="flex items-center justify-between mb-6">
+             <a href="{{ route('designer.dashboard') }}">
      <span><i data-feather="home" class="w-[5] h-[5] text-fuchsia-900 ml-[3px]"></i></span>
+             </a>
      <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>
-     <a href="{{ route('admin.ClientManagement') }}">
-        <h3 class="font-sans font-normal text-black cursor-pointer hover:underline">Clients Management</h3>
+     <a href="{{ route('designer.AssignedProjects') }}">
+        <h3 class="font-sans font-normal text-black cursor-pointer hover:underline">Assigned Projects</h3>
     </a>
 
-         <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>
         </h3>
 
-        <span><span class="mr-[12px] font-normal text-black-900">{{$project->client->title . ' '.$project->client->firstname . ' '.$project->client->lastname }}</span> </span>
         <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>
         <h3 class="font-semibold text-fuchsia-900">{{ $project->name}}</h3>
 
     </div>
 
-
-
-    {{-- <button class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">+ Add Project</button> --}}
-     <!-- ADD CLIENT BUTTON -->
-     <button id="openAddClientModal" class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
-         + Add Client
-     </button>
 
      </div>
                     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">

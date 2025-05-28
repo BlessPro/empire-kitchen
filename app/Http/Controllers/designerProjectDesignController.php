@@ -40,7 +40,6 @@ public function store(Request $request)
 
     Design::create([
         'project_id' => $request->project_id,
-        'user_id' => Auth::id(),
         'images' => json_encode($imagePaths),
         'notes' => $request->notes,
     ]);

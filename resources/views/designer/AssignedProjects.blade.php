@@ -33,9 +33,9 @@
                       <tr >
 
                         <th class="p-4 font-mediumt text-[15px] items-center">Client Name</th>
-                        <th class="p-4 font-mediumt text-[15px] items-center">Phone Number</th>
                         <th class="p-4 font-mediumt text-[15px] items-center">Location</th>
-                        <th class="p-4 font-mediumt text-[15px] items-center">Measurement Date</th>
+                        <th class="p-4 font-mediumt text-[15px] items-center">Duedate</th>
+                        {{-- <th class="p-4 font-mediumt text-[15px] items-center">Measurement Date</th> --}}
                         <th class="p-4 font-mediumt text-[15px] items-center">Project</th>
                         <th class="p-4 font-mediumt text-[15px] items-center">Status</th>
                         <th class="p-4 font-mediumt text-[15px] items-center">Action</th>
@@ -50,15 +50,16 @@
 
                         <tr  class="border-b hover:bg-gray-50">
                             <td class="px-4 py-2">{{ $client->firstname }} {{ $client->lastname }}</td>
-                            <td class="px-4 py-2">{{ $client->phone_number }}</td>
                             <td class="px-4 py-2">{{ $client->location }}</td>
-                            <td class="px-4 py-2">
+                            <td class="px-4 py-2">{{ $project->due_date->format('d M Y') }}</td>
+
+                            {{-- <td class="px-4 py-2">
                                 @if ($project->measurement->first())
                                     {{ \Carbon\Carbon::parse($project->measurement->first()->measured_at)->format('d M Y') }}
                                 @else
                                     <span class="italic text-gray-400">Not measured</span>
                                 @endif
-                            </td>
+                            </td> --}}
                               <td class="px-4 py-2">
                               <span class="text-sm ">{{ $project->name }}</span>
                             </td>

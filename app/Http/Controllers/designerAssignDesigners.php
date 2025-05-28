@@ -94,13 +94,13 @@ public function showProjectInfo(Project $project)
 {
     $project->load(['client', 'measurement', 'installation', 'design','comments.user']);
 
-    return view('tech.ClientManagement.projectInfo', compact('project'));
+    return view('designer.ClientManagement.projectInfo', compact('project'));
 }
 
 public function showProjectname(Project $project)
 {
     $project->load(['client', 'measurement', 'installation', 'design','comments.user']);
 
-    return view('tech.ClientManagement.projectInfo', compact('project'));
+    return view('designer.ClientManagement.projectInfo', compact('project'));
 }
 }
