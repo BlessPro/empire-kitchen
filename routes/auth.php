@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TechDashboardController;
+use App\Http\Controllers\DesignerDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -87,10 +88,20 @@ Route::middleware(['auth', 'role:tech_supervisor'])->group(function () {
 
 
 // Designer
+// Route::middleware(['auth', 'role:designer'])->group(function () {
+//     Route::get('/designer/dashboard', function () {
+//         return view('designer.dashboard');
+//     })->name('designer.dashboard');
+// });
+
+
+// Route::middleware(['auth', 'role:designer'])->group(function () {
+//     Route::get('/designer/dashboard', [DesignerDashboardController::class, 'index'])
+//         ->name('designer.dashboard');
+// });
 Route::middleware(['auth', 'role:designer'])->group(function () {
-    Route::get('/designer/dashboard', function () {
-        return view('designer.dashboard');
-    })->name('designer.dashboard');
+    Route::get('/designer/dashboard', [DesignerDashboardController::class, 'RecentDesignerDashboard'])
+        ->name('designer.dashboard');
 });
 
 // Accountant

@@ -45,20 +45,6 @@
                         <div class="p-6 bg-white shadow lg:col-span-2 rounded-xl">
                           <!-- Breadcrumbs -->
 
-
-                          <!-- Project Header -->
-                          {{-- <div class="flex items-start justify-between">
-                            <div>
-
-                              <h2 class="text-2xl font-semibold text-gray-800">Wardrobe</h2>
-                              <span class="inline-block mt-1 px-3 py-0.5 text-xs bg-green-100 text-green-600 rounded-full">Completed</span>
-                            </div>
-                            <div class="flex text-sm text-right text-gray-600">
-                              <span><i data-feather="home" class="text-fuchsia-900 mr-[12px] ml-[3px]"></i></span>       </span><span class="mr-[12px] font-semibold text-fuchsia-900">{{ $client->title . ' '.$client->firstname . ' '.$client->lastname }}</span> </span>
-                            </div>
-                          </div> --}}
-
-
                           <div class="flex items-center justify-between mb-6">
                             <div class="flex items-center justify-between mb-6">
                                 <h2 class="text-2xl font-semibold text-gray-800 mr-[12px] ">{{ $project->name}}</h2>
@@ -125,56 +111,77 @@
                             </div>
                           </div>
 
-{{--
-                          <h2>Measurements</h2>
-                          <ul>
-                              @foreach ($project->measurements as $measurement)
-                                  <li>{{ $measurement->measurement_detail }}</li>
-                              @endforeach
-                          </ul>
 
-                          <h2>Installations</h2>
-                          <ul>
-                              @foreach ($project->installations as $installation)
-                                  <li>{{ $installation->installation_detail }}</li>
-                              @endforeach
-                          </ul>
+<div class="mt-6">
+    <h3 class="mb-2 text-sm font-semibold text-gray-800">Design Attachments</h3>
+    <ul class="space-y-4">
+        @foreach ($project->design as $design)
+            <li class="flex items-center justify-between p-4 rounded-lg">
 
-                          <h2>Designs</h2>
-                          <ul>
-                              @foreach ($project->designs as $design)
-                                  <li>{{ $design->design_detail }}</li>
-                              @endforeach
-                          </ul> --}}
+@if (!empty($design->images) && is_array($design->images))
+    {{-- <div class="grid grid-cols-2 gap-4 md:grid-cols-3"> --}}
 
-                          <!-- Attachments -->
-                          <div class="mt-6">
-                            <h3 class="mb-2 text-sm font-semibold text-gray-800">Design attachment</h3>
-                            <ul class="space-y-2">
-                                @foreach ($project->design as $design)
+        <div class="w-full mx-auto ">
 
-                              <li class="flex items-center justify-between p-3 bg-gray-100 rounded">
-                                <div>
-                                  <img src="{{$project->design_image_path}}">
-                                  <p class="text-xs text-gray-500">Uploaded on {{ $design->uploaded_at }}</p>
-                                </div>
-                                {{-- <div class="flex gap-3 text-purple-600">
-                                  👁️ 📥
-                                </div> --}}
-                              </li>
-                              @endforeach
+        @foreach ($design->images as $image)
+  {{-- <div class="flex items-center gap-3">
+                <img src="{{ asset('storage/' . $image) }}"
+                     alt="Design Image"
+                     class="object-cover rounded-md w-14 h-14">
+                     <div>
+                        <p class="font-medium text-gray-800">MapleStreet1.png</p>
+                        <p class="text-xs text-gray-500">Uploaded on 8/10/25</p>
+                        <p class="text-xs text-gray-400">11MB</p>
+                    </div>
+            </div> --}}
+  <!-- Designs -->
+        <div class="pt-4 mt-6 border-t">
+        <h3 class="mb-2 text-sm font-semibold text-gray-900">Designs</h3>
+        <ul class="">
+            <li class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+  <img src="{{ asset('storage/' . $image) }}"
+                     alt="Design Image"
+                     class="object-cover rounded-md w-14 h-14">
+                        <div>
+                        <p class="font-medium text-gray-800">MapleStreet1.png</p>
+                        <p class="text-xs text-gray-500">Uploaded on 8/10/25</p>
+                        <p class="text-xs text-gray-400">11MB</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 text-purple-600">
+                    <button onclick="{{ route('designer.ProjectDesign') }}">
 
-                              {{-- <li class="flex items-center justify-between p-3 bg-gray-100 rounded">
-                                <div>
-                                  <p class="text-sm font-medium">Image9077.png</p>
-                                  <p class="text-xs text-gray-500">Uploaded on 8/10/25 · 11MB</p>
-                                </div>
-                                <div class="flex gap-3 text-purple-600">
-                                  👁️ 📥
-                                </div>
-                              </li> --}}
-                            </ul>
-                          </div>
+                      <i data-feather="eye" class="w-5 h-5 text-fuchsia-900"></i>
+                    </button>
+                    <button onclick="{{ route('designer.ProjectDesign') }}">
+
+                      <i data-feather="upload" class="w-5 h-5 text-fuchsia-900"></i>
+
+                    </button>
+                </div>
+            </li>
+        </ul>
+        </div>
+
+            @endforeach
+        </div>
+    @else
+        <p class="italic text-gray-500">No images available.</p>
+    @endif
+        @endforeach
+
+
+
+
+
+
+    </ul>
+</div>
+
+
+
+
                         </div>
 
                         <!-- Right Section: Comments -->
@@ -204,7 +211,7 @@
 </ul>
 
                           </div>
-                          {{-- My test code for comment --}}
+                          {{--My code for comment --}}
 
                           <div class="mt-6">
 
@@ -213,18 +220,10 @@
                                 <textarea name="comment" placeholder="Start typing" class="w-full px-4 py-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
                                 <button type="submit" class="px-4 py-2 mt-2 text-white rounded bg-fuchsia-900">Post Comment</button>
                             </form>
-{{--
-                            <input type="text" placeholder="Start typing" class="w-full px-4 py-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-purple-500" />
-                            <button class="px-4 py-2 mt-2 text-sm text-white bg-purple-600 rounded hover:bg-purple-700">Comment</button> --}}
                           </div>
                         </div>
 
-                        {{-- <form method="POST" action="{{ route('project.comment.store', $project->id) }}">
-                            @csrf
-                            <textarea name="comment" class="w-full p-2 border rounded" rows="3" placeholder="Write a comment..."></textarea>
-                            <button type="submit" class="px-4 py-2 mt-2 text-white rounded bg-fuchsia-900">Post Comment</button>
-                        </form>
-                         --}}
+
                       </div>
 
 <!-- ADD CLIENT MODAL -->

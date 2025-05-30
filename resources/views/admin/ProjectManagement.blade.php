@@ -65,12 +65,12 @@
     <div>
         <div class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
             <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#4F46E5]">
-                <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $measurements->count() }}</h5></span> Design
+                <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $designs->count() }}</h5></span> Design
             </div>
             <div class="pt-5 space-y-5 ">
 
                 <!-- Card Item -->
-                @forelse($measurements as $project)
+                @forelse($designs as $project)
                 <a href="{{ route('admin.projects.info', $project->id) }}">
 
                 <div class="p-5 mb-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
@@ -107,7 +107,7 @@
             <div class="pt-5 space-y-5 ">
 
                 <!-- Card Item -->
-                @forelse($measurements as $project)
+                @forelse($productions as $project)
                 <a href="{{ route('admin.projects.info', $project->id) }}">
 
                 <div class="p-5 mb-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
@@ -128,8 +128,12 @@
                 </div>
             </a>
                 @empty
-                <p>No projects currently in the Measurement stage.</p>
-            @endforelse  <!-- Another Card -->
+      <div class="p-5 mb-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
+                    <h3 class="font-semibold text-gray-800">No project is currently under installation</h3>
+                   
+                  
+                </div>
+                           @endforelse  <!-- Another Card -->
                                     <!-- Card Item -->
 
 
@@ -141,12 +145,14 @@
      <div>
         <div class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
             <div class="flex items-center py-2 pl-2 pr-5 text-white rounded-full bg-fuchsia-500">
-                <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $measurements->count() }}</h5></span> Installation
+                <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px]
+                 items-center"><h5 class="items-center rounded-full px-[10px] py-[10px]
+                  text-black">{{ $installations->count() }}</h5></span> Installation
             </div>
             <div class="pt-5 space-y-5 ">
 
                 <!-- Card Item -->
-                @forelse($measurements as $project)
+                @forelse($installations as $project)
                 <a href="{{ route('admin.projects.info', $project->id) }}">
 
                 <div class="p-5 mb-5 bg-white rounded-[20px] shadow hover:bg-gray-100">

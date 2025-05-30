@@ -16,7 +16,7 @@ return new class extends Migration
         $table->id();
         $table->unsignedBigInteger('project_id');
         $table->unsignedBigInteger('user_id')->nullable();
-        $table->json('images'); // Stores an array of image paths
+        $table->json(column: 'images'); // Stores an array of image paths
         $table->text('notes')->nullable();
         $table->timestamps();
 

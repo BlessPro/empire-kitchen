@@ -205,10 +205,11 @@ Route::get('/dashboard', function () {
     Route::get('/designer/projects/{project}/info', [designerAssignDesigners::class, 'showProjectname'])->name('designer.projects.info');
     // for project design page
     // Show form
-Route::get('/designer/ProjectDesign', [designerProjectDesignController::class, 'showUploadForm'])->name('designer.ProjectDesign');
+    Route::get('/designer/ProjectDesign', [designerProjectDesignController::class, 'showUploadForm'])->name('designer.ProjectDesign');
 
-// Handle submission
-Route::post('/designer/ProjectDesign', [designerProjectDesignController::class, 'store'])->name('design.store');
+    // Handle submission
+    Route::post('/designer/ProjectDesign', [designerProjectDesignController::class, 'store'])->name('design.store');
+    Route::get('/designer/dashboard', [DashboardController::class, 'index'])->name('designer.dashboard');
 
 
     // comments

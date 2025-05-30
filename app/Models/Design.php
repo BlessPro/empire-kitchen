@@ -27,9 +27,11 @@ class Design extends Model
     'uploaded_at'
 ];
 
-    protected $casts = [
+protected $casts = [
     'images' => 'array',
 ];
+
+
 
     protected $dates = [
         'uploaded_at',

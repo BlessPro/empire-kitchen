@@ -71,15 +71,14 @@ protected $fillable = [
         return $this->belongsTo(Client::class);
     }
 
-    public function measurements()
-    {
-        return $this->hasMany(Measurement::class);
-    }
-     public function measurement()
-    {
-        return $this->hasMany(Measurement::class);
-    }
-
+public function measurements()
+{
+    return $this->hasMany(Measurement::class);
+}
+public function measurement()
+{
+    return $this->hasMany(Measurement::class);
+}
     public function design()
     {
         return $this->hasMany(Design::class);
@@ -119,7 +118,29 @@ public function accountant()
 }
 
 
+// 3. Project model - Add latestDesign relationship
 
+// In App\Models\Project.php
+public function latestDesign()
+{
+    return $this->hasOne(Design::class)->latestOfMany();
+}
+
+// 4. Comment model - Add viewers relationship
+
+// In App\Models\Comment.php
+public function viewers()
+{
+    return $this->belongsToMany(User::class, 'comment_views')->withTimestamps();
+}
+
+// 5. User model - Add viewedComments relationship
+
+// In App\Models\User.php
+public function viewedComments()
+{
+    return $this->belongsToMany(Comment::class, 'comment_views')->withTimestamps();
+}
 
 
 }

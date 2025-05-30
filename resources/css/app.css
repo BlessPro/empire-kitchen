@@ -7,9 +7,9 @@
     fill: none;
     transition: all 0.3s;
   }
-  .group:hover .feather {
+  /* .group:hover .feather {
     fill: currentColor;
-  }
+  } */
   .group:active .feather {
     fill: currentColor;
   }

@@ -62,7 +62,7 @@ public function StoreCreateMeasurement(Project $project){
 public function store(Request $request)
 {
 
-    // dd($request->all());
+//    dd($request->all());
 
     $validated = $request->validate([
         'project_id' => 'required|exists:projects,id',
@@ -71,7 +71,7 @@ public function store(Request $request)
         'width' => 'required|numeric',
         'notes' => 'nullable|string',
         'obstacles' => 'nullable|string',
-        'images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:10240', // 10MB
+        // 'images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:10240', // 10MB
     ]);
 
     $imagePaths = [];
@@ -92,10 +92,11 @@ public function store(Request $request)
         'width' => $validated['width'],
         'obstacles' => $validated['obstacles'] ?? null,
         'created_at' => now(),
-        'images' => $imagePaths,
+        // 'images' => $imagePaths,
     ]);
 
-    return back()->with('success', 'Measurement saved successfully.');
+    return redirect()->route('tech.dashboard')->with('success', 'Measurement saved successfully.');
+    // return redirect()->route('designer.uploads')->with('success', 'Designs uploaded successfully!');
 
  }
 
