@@ -236,6 +236,11 @@
                 <input type="text" id="projectNameInput" disabled readonly class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
             </div>
 
+          <div class="mb-4">
+      <label for="design_date" class="block mb-3 text-sm font-medium text-gray-700">Due Date</label>
+      <input type="date" name="design_date" id="design_date" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+    </div>
+
             <div class="mb-4">
                 <label class="block mb-1 text-sm font-medium">Select Designer</label>
                 <select name="designer_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
@@ -279,6 +284,7 @@ function openModal(projectId, projectName) {
 function closeModal() {
     document.getElementById('assignModal').classList.add('hidden');
     document.getElementById('assignModal').classList.remove('flex');
+    alert("Assignement Created successfully")
 }
 </script>
 

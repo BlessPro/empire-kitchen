@@ -78,5 +78,11 @@ public function techSupervisedProjects() {
 
 }
 
+public function viewedComments()
+{
+    return $this->belongsToMany(Comment::class, 'comment_views')
+                ->withTimestamps();
+}
+
 }
 

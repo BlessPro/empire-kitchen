@@ -79,20 +79,23 @@ public function measurement()
 {
     return $this->hasMany(Measurement::class);
 }
-    public function design()
-    {
-        return $this->hasMany(Design::class);
-    }
-
-    public function installation()
-    {
-        return $this->hasMany(Installation::class);
-    }
-    public function Comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
-    public function admin()
+public function design()
+{
+    return $this->hasMany(Design::class);
+}
+ public function designs()
+{
+    return $this->hasMany(Design::class);
+}
+ public function installation()
+{
+    return $this->hasMany(Installation::class);
+}
+public function Comments()
+{
+return $this->hasMany(Comment::class);
+}
+public function admin()
 {
     return $this->belongsTo(User::class, 'admin_id');
 }
@@ -141,6 +144,7 @@ public function viewedComments()
 {
     return $this->belongsToMany(Comment::class, 'comment_views')->withTimestamps();
 }
+
 
 
 }

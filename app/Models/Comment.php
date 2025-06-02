@@ -27,4 +27,15 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+//     public function viewers()
+// {
+//     return $this->belongsToMany(User::class, 'comment_user_view')->withTimestamps();
+// }
+public function viewers()
+{
+    return $this->belongsToMany(User::class, 'comment_views')
+                ->withTimestamps();
+}
+
 }

@@ -25,6 +25,7 @@ use App\Http\Controllers\ReportsandAnalytics;
 use App\Http\Controllers\ScheduleInstallationController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\designerAssignDesigners;
+use App\Http\Controllers\DesignerDashboardController;
 use App\Http\Controllers\DesignerInboxController;
 use App\Http\Controllers\DesignerUserController;
 use App\Http\Controllers\InboxController;
@@ -210,7 +211,8 @@ Route::get('/dashboard', function () {
     // Handle submission
     Route::post('/designer/ProjectDesign', [designerProjectDesignController::class, 'store'])->name('design.store');
     Route::get('/designer/dashboard', [DashboardController::class, 'index'])->name('designer.dashboard');
-
+    //handle the viewed commetn
+    Route::post('/comments/{comment}/mark-as-viewed', [DesignerDashboardController::class, 'markAsViewed']);
 
     // comments
     Route::post('/designer/projects/{project}/comments', [CommentController::class, 'store'])->name('designer.project.comment.store');

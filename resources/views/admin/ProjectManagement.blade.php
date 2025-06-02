@@ -130,8 +130,8 @@
                 @empty
       <div class="p-5 mb-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
                     <h3 class="font-semibold text-gray-800">No project is currently under installation</h3>
-                   
-                  
+
+
                 </div>
                            @endforelse  <!-- Another Card -->
                                     <!-- Card Item -->
@@ -301,9 +301,9 @@
       <label for="tech_supervisor_id" class="block mb-3 text-sm font-medium text-gray-700">Tech Supervisor</label>
       <select name="tech_supervisor_id" id="tech_supervisor_id" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
         <option disabled selected>Select a supervisor</option>
-        @foreach ($techSupervisors as $supervisor)
+        {{-- @foreach ($techSupervisors as $supervisor)
           <option value="{{ $supervisor->id }}">{{ $supervisor->name }}</option>
-        @endforeach
+        @endforeach --}}
          @foreach ($techSupervisors as $techSupervisor)
                         <option value="{{ $techSupervisor->id }}">
                             <img src="{{ asset('storage/'

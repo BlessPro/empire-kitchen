@@ -150,7 +150,9 @@ onclick="window.location='{{ route('tech.CreateMeasurement',['project' => $proje
                                   <img
                                   src="{{ auth()->user()->profile_pic ? asset('storage/' . auth()->user()->profile_pic) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) }}"
                                   alt="Profile Photo"
-                                  class="w-10 h-10 border-2 border-yellow-300 rounded-[10px]">
+                                  class="w-10 h-10 border-2
+                                   border-yellow-300 rounded-[10px]">
+
                               <div>
                                     <p class="text-sm font-semibold text-gray-800">{{ $comment->user->name }} <span class="text-xs font-normal text-gray-400">{{ $comment->user->created_at ->diffForHumans() }}</span></p>
                                     <p class="text-sm text-gray-600">{{ $comment->comment }}</p>

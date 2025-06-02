@@ -29,6 +29,7 @@ class Design extends Model
 
 protected $casts = [
     'images' => 'array',
+     'design_date' => 'datetime',
 ];
 
 
@@ -45,4 +46,5 @@ protected $casts = [
     {
         return $this->belongsTo(User::class, 'designer_id');
     }
+
 }

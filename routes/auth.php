@@ -95,14 +95,14 @@ Route::middleware(['auth', 'role:tech_supervisor'])->group(function () {
 // });
 
 
-// Route::middleware(['auth', 'role:designer'])->group(function () {
-//     Route::get('/designer/dashboard', [DesignerDashboardController::class, 'index'])
-//         ->name('designer.dashboard');
-// });
 Route::middleware(['auth', 'role:designer'])->group(function () {
-    Route::get('/designer/dashboard', [DesignerDashboardController::class, 'RecentDesignerDashboard'])
+    Route::get('/designer/dashboard', [DesignerDashboardController::class, 'index'])
         ->name('designer.dashboard');
 });
+// Route::middleware(['auth', 'role:designer'])->group(function () {
+//     Route::get('/designer/dashboard', [DesignerDashboardController::class, 'RecentDesignerDashboard'])
+//         ->name('designer.dashboard');
+// });
 
 // Accountant
 Route::middleware(['auth', 'role:accountant'])->group(function () {

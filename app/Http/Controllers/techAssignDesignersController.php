@@ -67,23 +67,46 @@ public function showDesignerAssignment()
 
 
 
+// public function assignDesigner(Request $request)
+// {
+//     $request->validate([
+//         'project_id' => 'required|exists:projects,id',
+//         'designer_id' => 'required|exists:users,id',
+//     ]);
+
+//     //
+//     $project = Project::find($request->project_id);
+//     $project->designer_id = $request->designer_id;
+//     $project->design_date=$request->design_date;
+//     $project->current_stage = 'design';
+//     $project->save();
+
+//     return redirect()->back()->with('success', 'Designer assigned successfully!');
+// }
+
+
 public function assignDesigner(Request $request)
 {
     $request->validate([
         'project_id' => 'required|exists:projects,id',
         'designer_id' => 'required|exists:users,id',
+        'design_date' => 'required|date'
     ]);
 
-    //
+    // Save to the Project table
     $project = Project::find($request->project_id);
     $project->designer_id = $request->designer_id;
     $project->current_stage = 'design';
     $project->save();
 
-    return redirect()->back()->with('success', 'Designer assigned successfully!');
+    // Save to the Design table
+    $design = new Design();
+    $design->project_id = $request->project_id;
+    $design->design_date = $request->design_date;
+    $design->save();
+
+    return redirect()->back()->with('success', 'Designer and design date assigned successfully!');
 }
-
-
 
 
 }
