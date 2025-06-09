@@ -10,26 +10,19 @@
 
 <main class="ml-64 flex-1 bg-[#F9F7F7] min-h-screen  items-center">
 
-    <div class=" p-[24px] bg-[#F9F7F7]">
+    <div class=" pb-[24px] pr-[24px] pl-[24px] bg-[#F9F7F7]">
      <div class="">
 
-                <h1 class="font-semibold text-[40px] mb-3"> Overview </h1>
+                <h1 class="font-semibold text-[30px] mb-3"> Overview </h1>
 
 
       <!-- Overview Cards -->
       <div class="grid grid-cols-3 gap-6 mb-6">
-        {{-- <div class="p-4 bg-white rounded-lg shadow ">
-          <div class="pb-10 text-sm text-gray-500">Assigned Projects</div>
-          <div class="text-2xl font-bold">12</div>
-        </div>
-        <div class="p-4 bg-white rounded-lg shadow">
-          <div class="pb-10 text-sm text-gray-500">Completed</div>
-          <div class="text-2xl font-bold text-green-500">10</div>
-        </div> --}}
+
 
           {{--new 1--}}
 
-           <div class="bg-white p-4 rounded-[30px] shadow items-center">
+           <div class="bg-white p-4 rounded-[25px] shadow items-center">
             <div class="flex items-center justify-between mt-2">
               <h2 class=" font-semibold text-[25px] ml-5 text-gray-900">Assigned Projects</h2>
             </div>
@@ -54,12 +47,9 @@
 
          {{-- New 1--}}
 
-
-
-
           {{--new 2--}}
 
-           <div class="bg-white p-4 rounded-[30px] shadow items-center">
+           <div class="bg-white p-4 rounded-[25px] shadow items-center">
             <div class="flex items-center justify-between mt-6">
               <h2 class=" font-semibold text-[25px] ml-5 text-gray-900">Completed</h2>
             </div>
@@ -87,7 +77,7 @@
 
           {{--new3 --}}
 
-           <div class="bg-white p-4 rounded-[30px] shadow items-center">
+           <div class="bg-white p-4 rounded-[25px] shadow items-center">
             <div class="flex items-center justify-between mt-6">
               <h2 class=" font-semibold text-[25px] ml-5 text-gray-900">Due soon</h2>
             </div>
@@ -140,7 +130,7 @@
             @endforeach
 
        {{-- Upcoming Deadlines --}}
-    
+
     </div>
   </div>
 
@@ -218,32 +208,11 @@
        </tbody>
       </table>
 
+      <div class="mt-4 mb-5 ml-5 mr-5">
+        {{ $projects->links('pagination::tailwind') }}
+      </div>
 
-{{--
-<table class="min-w-full text-left text-sm">
-    <thead class="bg-gray-100 font-bold">
-        <tr>
-            <th class="px-4 py-2">Project Name</th>
-            <th class="px-4 py-2">Location</th>
-            <th class="px-4 py-2">Design Date</th>
-            <th class="px-4 py-2">Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($projects as $project)
-            <tr class="border-b">
-                <td class="px-4 py-2">{{ $project->name }}</td>
-                <td class="px-4 py-2">{{ $project->location }}</td>
-                <td class="px-4 py-2">
-                    {{ optional($project->designs->first())->design_date ? \Carbon\Carbon::parse($project->designs->first()->design_date)->format('M d, Y') : 'N/A' }}
-                </td>
-                <td class="px-4 py-2">{{ ucfirst($project->status) }}</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
-
- --}}
+</div>
 
       </div>
 </div>

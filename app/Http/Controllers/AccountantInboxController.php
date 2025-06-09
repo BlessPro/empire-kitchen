@@ -17,7 +17,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class InboxController extends Controller
+class AccountantInboxController extends Controller
 {
     public function index(Request $request, $userId = null)
     {
@@ -32,7 +32,7 @@ class InboxController extends Controller
             })->orderBy('created_at', 'asc')->get();
         }
 
-        return view('admin.inbox', compact('users', 'messages', 'userId'));
+        return view('accountant.Inbox', compact('users', 'messages', 'userId'));
     }
 
     public function sendMessage(Request $request)

@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TechDashboardController;
 use App\Http\Controllers\DesignerDashboardController;
+use App\Http\Controllers\accountantDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -109,6 +110,10 @@ Route::middleware(['auth', 'role:accountant'])->group(function () {
     Route::get('/accountant/dashboard', function () {
         return view('accountant.dashboard');
     })->name('accountant.dashboard');
+});
+Route::middleware(['auth', 'role:accountant'])->group(function () {
+    Route::get('/accountant/dashboard', [accountantDashboardController::class, 'index'])
+        ->name('accountant.dashboard');
 });
 
 // Sales Accountant

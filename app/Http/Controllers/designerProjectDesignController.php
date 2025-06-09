@@ -50,6 +50,7 @@ public function showUploadForm()
 
 public function store(Request $request)
 {
+
     $request->validate([
         'project_id' => 'required|exists:projects,id',
         'images.*' => 'required|image|mimes:jpg,jpeg,png|max:10240',

@@ -32,8 +32,6 @@ protected $casts = [
      'design_date' => 'datetime',
 ];
 
-
-
     protected $dates = [
         'uploaded_at',
     ];
@@ -46,5 +44,6 @@ protected $casts = [
     {
         return $this->belongsTo(User::class, 'designer_id');
     }
+
 
 }

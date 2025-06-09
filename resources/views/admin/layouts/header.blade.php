@@ -18,6 +18,8 @@
 
       {{-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> --}}
       @vite(['resources/css/app.css', 'resources/js/app.js'])
+      <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
       <script src="https://unpkg.com/feather-icons"></script>
 
       <script src="https://cdn.tailwindcss.com"></script>

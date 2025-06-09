@@ -32,6 +32,8 @@
                       </button>
 
                     </div>
+
+                    <!-- main body -->
                     <div class="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2 ">
 
                          {{-- Doughnut Chart --}}
@@ -125,6 +127,8 @@
 
 
                       </div>
+
+
 
                       <div class="bg-white rounded-[20px] pb-2 shadow">
 

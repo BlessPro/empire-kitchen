@@ -83,6 +83,10 @@ public function viewedComments()
     return $this->belongsToMany(Comment::class, 'comment_views')
                 ->withTimestamps();
 }
+public function expenses()
+{
+    return $this->hasMany(Expense::class, 'accountant_id');
+}
 
 }
 

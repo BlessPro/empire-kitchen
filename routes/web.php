@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controller\DashboardController as ControllerDashboardController;
+use App\Http\Controllers\accountantCategoryController;
 use App\Http\Controllers\deisgnerNavigation;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TechController;
 use App\Http\Controllers\DesignerController;
 use App\Http\Controllers\AccountantController;
+use App\Http\Controllers\accountantDashboardController;
+use App\Http\Controllers\AccountantInboxController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\DesignerNavigationController;
 use Illuminate\Mail\Events\MessageSending;
@@ -30,7 +33,6 @@ use App\Http\Controllers\DesignerInboxController;
 use App\Http\Controllers\DesignerUserController;
 use App\Http\Controllers\InboxController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\MessageController;
 use App\Http\Controllers\techClientController;
 use App\Http\Controllers\techProjectManagementController;
 use App\Http\Controllers\techReportsandAnalyticsController;
@@ -42,8 +44,12 @@ use App\Http\Controllers\MeasurementController;
 use App\Http\Controllers\InstallationController;
 use App\Http\Controllers\TechDashboardController;
 use App\Http\Controllers\designerProjectDesignController;
-
-use App\Http\Controllers\RoleMiddleware;
+use App\Http\Controllers\DesignerTimeManagementController;
+use App\Http\Controllers\DesignerUploadController;
+use App\Http\Controllers\AccountantInvoiceController;
+use App\Http\Controllers\accountantSettingsController;
+use App\Http\Controllers\accountantExpensesController;
+use App\Http\Controllers\accountantProjectFinancialController;
 
 Route::get('/', function () {
     return view('main');
@@ -118,14 +124,6 @@ Route::get('/dashboard', function () {
     Route::get('/admin/ScheduleInstallation', [ScheduleInstallationController::class, 'index'])->name('admin.ScheduleInstallation')->middleware('auth');
 
     //navigating with tech user login
-    // Route::get('/tech/dashboard', [TechController::class, 'index'])->middleware('role:tech_supervisor');
-    // Route::get('/tech/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard');
-    // Route::get('/tech/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard')->middleware('auth');
-
-//     Route::middleware(['auth', 'verified'])->prefix('tech')->group(function () {
-//     Route::get('/tech/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard');
-// });
-
     //navigate tech tabs page
     Route::get('/tech/ClientManagement', [techClientController::class, 'index'])->name('tech.ClientManagement');
     Route::get('/tech/ProjectManagement', [techProjectManagementController::class, 'index'])->name('tech.ProjectManagement');
@@ -167,18 +165,11 @@ Route::get('/dashboard', function () {
     // Assign designer to project
     Route::post('tech/AssignDesigners', [techAssignDesignersController::class, 'assignDesigner'])->name('assign.designer');
     Route::get('/tech/ScheduleMeasurement/events', [techScheduleMeasurementController::class, 'calendarEvents'])->name('tech.ScheduleInstallations.events');
-
-    // Route::post('/tech/assign-designer', [ProjectController::class, 'assignDesigner'])->name('assign.designer');
-
     Route::middleware(['auth', 'verified'])->prefix('tech')->group(function () {
     Route::get('/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard');
     });
 
-    // Route::get('/measurements/create', [MeasurementController::class, 'create'])->name('measurements.create');
-    //navigating with Designer user login
-    Route::get('/designer/dashboard', [DesignerController::class, 'index'])->middleware('role:designer');
-    //navigating with tech accountant login
-    Route::get('/accountant/dashboard', [AccountantController::class, 'index'])->middleware('role:accountant');
+
     //navigating with sales accountant  user login
     Route::get('/sales/dashboard', [SalesController::class, 'index'])->middleware(middleware: 'RoleMiddleware:sales_accountant');
     //displayinig the users on the settings page
@@ -211,8 +202,18 @@ Route::get('/dashboard', function () {
     // Handle submission
     Route::post('/designer/ProjectDesign', [designerProjectDesignController::class, 'store'])->name('design.store');
     Route::get('/designer/dashboard', [DashboardController::class, 'index'])->name('designer.dashboard');
-    //handle the viewed commetn
+    //handle the viewed comment
     Route::post('/comments/{comment}/mark-as-viewed', [DesignerDashboardController::class, 'markAsViewed']);
+
+    Route::get('/designer/TimeManagement/events', [DesignerTimeManagementController::class, 'calendarEvents'])->name('designer.TimeManagement.events');
+    // Route::get('/TimeManagement/events', [DesignerTimeManagementController::class, 'calendarEvents'])->name('TimeManagement.events');
+
+
+Route::middleware(['auth'])->prefix('designer')->name('designer.')->group(function () {
+    Route::get('/designs/viewuploads', [DesignerUploadController::class, 'index'])->name('designs.viewuploads');
+    Route::get('/designs/Upload/{design}', [DesignerUploadController::class, 'show'])->name('designs.Upload');
+});
+
 
     // comments
     Route::post('/designer/projects/{project}/comments', [CommentController::class, 'store'])->name('designer.project.comment.store');
@@ -239,7 +240,29 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
 // to filter
 });
 
-// Route::get('/admin/projects/filter', [AdminController::class, 'filter'])->name('projects.filter');
+
+//navigating the accountant user role
+    Route::get('/accountant/Payments', [AccountantController::class, 'index'])->name('accountant.Payments');
+    Route::get('/accountant/Reports&Analytics', [ReportsAndAnalyticsController::class, 'index'])->name('accountant.Reports&Analytics');
+    Route::get('/accountant/Settings', [accountantSettingsController    ::class, 'index'])->name('accountant.Settings');
+    Route::get('/accountant/Inbox', [AccountantInboxController::class, 'index'])->name('accountant.Inbox');
+    Route::get('/accountant/Invoice', [AccountantInvoiceController::class, 'index'])->name('accountant.Invoice');
+    Route::post('/accountant/Invoice/store', [MeasurementController::class, 'store'])->name('accountant.Invoice.store');
+    // For the MessageSending
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/accountant/Inbox/{userId?}', [AccountantInboxController::class, 'index'])->name('accountant.inbox');
+    Route::post('/accountant/Inbox/send', [AccountantInboxController::class, 'sendMessage'])->name('accountant.inbox.send');
+    Route::get('/accountant/Inbox/fetch/{userId}', [AccountantInboxController::class, 'fetchMessages'])->name('accountant.inbox.fetch');
+    });
+    Route::post('/accountant/settings/profile-pic', [accountantSettingsController::class, 'updateProfilePic'])->name('accountant.settings.profile_pic');
+    Route::get('/accountant/Expenses/Category', [accountantCategoryController::class, 'index'])->name('accountant.Expenses.Category');
+    Route::post('/categories', [accountantCategoryController::class, 'store'])->name('categories.store');
+    Route::get('/accountant/Project-Financials', [accountantProjectFinancialController    ::class, 'index'])->name('accountant.Project-Financials');
+    //storing th expense
+    Route::post('/expenses', [accountantExpensesController::class, 'store'])->name('expenses.store');
+    Route::get('/accountant/Expenses', [accountantExpensesController::class, 'index'])->name('accountant.Expenses');
+
+    // Route::get('/admin/projects/filter', [AdminController::class, 'filter'])->name('projects.filter');
 
 
 require __DIR__.'/auth.php';

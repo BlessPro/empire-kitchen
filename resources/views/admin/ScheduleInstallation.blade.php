@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,listWeek'
         },
-        events: '/installations/events',
+        events: '/TimeManagement/events',
 
         eventColor: '#0036BF',
         height: 'auto',

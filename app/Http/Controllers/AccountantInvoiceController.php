@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class AccountantController extends Controller
+class AccountantInvoiceController extends Controller
 {
     //
+
     public function index(){
-        return view('accountant.Payments');
+
+        return view('accountant.Invoice');
     }
+
 }

@@ -51,6 +51,7 @@ class DesignerDashboardController extends Controller
             });
 
         // 5. Recent Comments (Not Yet Viewed)
+
         $recentComments = Comment::whereHas('project', function ($query) use ($designerId) {
             $query->where('designer_id', $designerId);
         })
@@ -67,10 +68,8 @@ class DesignerDashboardController extends Controller
     $projects = Project::with(['designs' => function ($query) {
         $query->latest();
     }])
-    ->where('designer_id', $designerId)
-    ->get();
+    ->where('designer_id', $designerId)->paginate(5);
 
-    // return view('designer.dashboard', compact('projects'));
 
         return view('designer.dashboard', compact('totalAssigned', 'completed', 'dueSoon', 'designs', 'recentComments','projects'));
     }

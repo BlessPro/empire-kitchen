@@ -46,12 +46,6 @@
 
                 <tbody class="text-gray-700 divide-y divide-gray-100">
 
-
-
-
-
-
-
                      @foreach($projects as $project)
                       <tr class="cursor-pointer hover:bg-gray-100">
                     <td class="p-4 font-normal text-[15px] items-center">{{ $project->client->title.' '. $project->client->firstname. ' '.$project->client->lastname }}</td>
@@ -257,7 +251,6 @@
             </div>
 
             <div class="flex justify-end space-x-2">
-                {{-- <button type="button" onclick="closeModal()" class="px-4 py-2 mt-2 rounded text-fuchsia-900 bg-fuchsia-400">Cancel</button> --}}
                 <button type="submit" class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 mt-5 rounded">Assign</button>
             </div>
         </form>
@@ -288,4 +281,4 @@ function closeModal() {
 }
 </script>
 
-        </x-tech-layout>
+</x-tech-layout>

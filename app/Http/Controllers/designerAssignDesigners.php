@@ -102,5 +102,6 @@ public function showProjectname(Project $project)
     $project->load(['client', 'measurement', 'installation', 'design','comments.user']);
 
     return view('designer.ClientManagement.projectInfo', compact('project'));
+
 }
 }

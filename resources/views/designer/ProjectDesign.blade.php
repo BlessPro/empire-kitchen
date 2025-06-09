@@ -6,7 +6,7 @@
             {{ __('Designer Dashboard') }}
         </h2>
 
-@include('designer.layouts.header')
+@include('admin.layouts.header')
 
     </x-slot>
         <main class="ml-64 mt-[50px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
@@ -22,9 +22,11 @@
       <h1 class="mb-6 text-xl font-semibold">Upload Designs</h1>
     </div>
      <!-- ADD CLIENT BUTTON -->
+     <a href="{{ route('designer.designs.viewuploads') }}">
      <button id="" class="px-6 py-2 text-semibold text-[15px] text-white rounded-[10px] bg-fuchsia-900 hover:bg-[#F59E0B]">
          View Upload
      </button>
+    </a>
      </div>
 
 

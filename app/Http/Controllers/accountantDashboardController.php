@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Project;
+
+class accountantDashboardController extends Controller
+{
+    //
+
+      public function index()
+{
+    $projects = Project::paginate(10); // fetch paginated projects
+    return view('accountant/Dashboard', compact('projects'));
+}
+}
