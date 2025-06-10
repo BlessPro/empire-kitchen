@@ -163,16 +163,10 @@
                      <label class="block mb-4 text-sm font-medium text-gray-700">Profile Picture</label>
 
                 <input type="file" name="profile_pic" accept="image/*" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                     </div>s
+                     </div>
               <!---group 3 ends-->
 
-          <!---group 4 begins-->
 
-            {{-- <div>
-                <label class="block mb-4 text-sm font-medium text-gray-700">Profile Picture</label>
-                <input type="file" name="profile_pic" accept="image/*" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div> --}}
-             <!---group 4 ends-->
 
              <button type="submit" class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 rounded">Save Client</button>
     </form>
@@ -300,6 +294,8 @@
 
 </div>
 </div>
+
+
 <!-- Success Modal -->
 
 <div id="successModal" tabindex="-1" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
@@ -412,7 +408,7 @@ document.getElementById('successOkBtn').addEventListener('click', function () {
             return response.json();
         })
         .then(data => {
-       
+
             // document.getElementById('successModal').classList.remove('hidden');
             // // Optionally refresh data here
             if (data)

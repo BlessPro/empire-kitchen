@@ -16,11 +16,20 @@
                     <!-- Top Navbar -->
             <h1 class="text-2xl font-bold">Reports and Analytics</h1>
 
+            <div class="flex items-center space-x-4">
+              <a href="{{ route('accountant.Payment.Pay') }}">
+                      <button class="flex items-center gap-2 px-4 py-2 text-sm font-semibold border rounded-full text-fuchsia-800 border-fuchsia-800">
+                        <i data-feather="list"> </i>
+                        Payment
+                      </button>
+                        </a>
             <button onclick="window.location='{{ route('accountant.Invoice')}}'"
-     id="openMeasurementModal"  class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-fuchsia-900 border border-purple-800 rounded-full">
+     id="openMeasurementModal"  class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white border border-purple-800 rounded-full bg-fuchsia-900">
                 <i data-feather="plus" class="text-white"> </i>
                     New Invoice
             </button>
+
+            </div>
              {{-- <button
     onclick="window.location='{{ route('tech.CreateMeasurement',['project' => $project->id]) }}'"
      id="openMeasurementModal" class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
@@ -53,7 +62,7 @@
        </thead>
        <tbody>
 
-        <tr class="border-t hover:bg-gray-50 items-center p-2">
+        <tr class="items-center p-2 border-t hover:bg-gray-50">
              <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
              <td class="p-4 font-normal text-[15px]">0010 </td>
              <td class="p-4 font-normal text-[15px]">78989 </td>
@@ -62,7 +71,7 @@
              <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
             </tr>
 
-              <tr class="border-t hover:bg-gray-50 items-center p-2">
+              <tr class="items-center p-2 border-t hover:bg-gray-50">
              <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
              <td class="p-4 font-normal text-[15px]">0011 </td>
              <td class="p-4 font-normal text-[15px]">8989 </td>
@@ -71,7 +80,7 @@
              <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
             </tr>
 
-              <tr class="border-t hover:bg-gray-50 items-center p-2">
+              <tr class="items-center p-2 border-t hover:bg-gray-50">
              <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
              <td class="p-4 font-normal text-[15px]">0010 </td>
              <td class="p-4 font-normal text-[15px]">78989 </td>
@@ -80,7 +89,7 @@
              <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
             </tr>
 
-              <tr class="border-t hover:bg-gray-50 items-center p-2">
+              <tr class="items-center p-2 border-t hover:bg-gray-50">
              <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
              <td class="p-4 font-normal text-[15px]">0010 </td>
              <td class="p-4 font-normal text-[15px]">78989 </td>
@@ -89,7 +98,7 @@
              <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
             </tr>
 
-             <tr class="border-t hover:bg-gray-50 items-center p-2">
+             <tr class="items-center p-2 border-t hover:bg-gray-50">
              <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
              <td class="p-4 font-normal text-[15px]">0011 </td>
              <td class="p-4 font-normal text-[15px]">8989 </td>
@@ -98,7 +107,7 @@
              <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
             </tr>
 
-            <tr class="border-t hover:bg-gray-50 items-center p-2">
+            <tr class="items-center p-2 border-t hover:bg-gray-50">
              <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
              <td class="p-4 font-normal text-[15px]">0010 </td>
              <td class="p-4 font-normal text-[15px]">78989 </td>
@@ -107,7 +116,7 @@
              <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
             </tr>
 
-             <tr class="border-t hover:bg-gray-50 items-center p-2">
+             <tr class="items-center p-2 border-t hover:bg-gray-50">
              <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
              <td class="p-4 font-normal text-[15px]">0010 </td>
              <td class="p-4 font-normal text-[15px]">78989 </td>
@@ -116,7 +125,7 @@
              <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
             </tr>
 
-              <tr class="border-t hover:bg-gray-50 items-center p-2">
+              <tr class="items-center p-2 border-t hover:bg-gray-50">
              <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
              <td class="p-4 font-normal text-[15px]">0011 </td>
              <td class="p-4 font-normal text-[15px]">8989 </td>
@@ -125,7 +134,7 @@
              <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
             </tr>
 
-              <tr class="border-t hover:bg-gray-50 items-center p-2">
+              <tr class="items-center p-2 border-t hover:bg-gray-50">
              <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
              <td class="p-4 font-normal text-[15px]">0010 </td>
              <td class="p-4 font-normal text-[15px]">78989 </td>
@@ -134,7 +143,7 @@
              <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
             </tr>
 
-            <tr class="border-t hover:bg-gray-50 items-center p-2">
+            <tr class="items-center p-2 border-t hover:bg-gray-50">
              <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
              <td class="p-4 font-normal text-[15px]">0010 </td>
              <td class="p-4 font-normal text-[15px]">78989 </td>
@@ -143,7 +152,7 @@
              <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
             </tr>
 
-              <tr class="border-t hover:bg-gray-50 items-center p-2">
+              <tr class="items-center p-2 border-t hover:bg-gray-50">
              <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
              <td class="p-4 font-normal text-[15px]">0011 </td>
              <td class="p-4 font-normal text-[15px]">8989 </td>
@@ -153,7 +162,7 @@
             </tr>
 
 
-                      <tr class="border-t hover:bg-gray-50 items-center p-2">
+                      <tr class="items-center p-2 border-t hover:bg-gray-50">
              <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
              <td class="p-4 font-normal text-[15px]">0010 </td>
              <td class="p-4 font-normal text-[15px]">78989 </td>

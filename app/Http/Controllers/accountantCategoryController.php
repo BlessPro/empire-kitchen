@@ -27,5 +27,12 @@ public function index()
     return view('accountant.Expenses.Category', compact('categories'));
 }
 
+ public function destroy($id)
+    {
+        $Category = Category::findOrFail($id);
+        $Category->delete();
+
+        return redirect()->back()->with('success', 'Expense successfully! deleted ');
+    }
 }
 

@@ -49,6 +49,7 @@ use App\Http\Controllers\DesignerUploadController;
 use App\Http\Controllers\AccountantInvoiceController;
 use App\Http\Controllers\accountantSettingsController;
 use App\Http\Controllers\accountantExpensesController;
+use App\Http\Controllers\accountantPayController;
 use App\Http\Controllers\accountantProjectFinancialController;
 
 Route::get('/', function () {
@@ -257,12 +258,29 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
     Route::post('/accountant/settings/profile-pic', [accountantSettingsController::class, 'updateProfilePic'])->name('accountant.settings.profile_pic');
     Route::get('/accountant/Expenses/Category', [accountantCategoryController::class, 'index'])->name('accountant.Expenses.Category');
     Route::post('/categories', [accountantCategoryController::class, 'store'])->name('categories.store');
+    Route::delete('accountant/Category/{id}', [accountantCategoryController::class, 'destroy'])->name('category.destroy');
+
     Route::get('/accountant/Project-Financials', [accountantProjectFinancialController    ::class, 'index'])->name('accountant.Project-Financials');
     //storing th expense
     Route::post('/expenses', [accountantExpensesController::class, 'store'])->name('expenses.store');
     Route::get('/accountant/Expenses', [accountantExpensesController::class, 'index'])->name('accountant.Expenses');
+    //for deleting the expense
+    Route::delete('accountant/Expenses/{id}', [accountantExpensesController::class, 'destroy'])->name('expenses.destroy');
+
+    //     Route::get('/accountant/update/{id}', [accountantExpensesController::class, 'edit'])->name('accountant.Expenses.edit');
+    // Route::post('/accountant/Expenses/{id}', [UserController::class, 'update'])->name('accountant.Expenses.update');
+
+    Route::get('/expenses/{expense}/edit', [accountantExpensesController::class, 'edit'])->name('expenses.edit');
+    Route::put('/expenses/{expense}', [accountantExpensesController::class, 'update'])->name('expenses.update');
+    // Route::delete('admin/dashboard/user/{id}', [settings::class, 'destroy'])->name('settings.destroy');
+    Route::get('/accountant/expenses/chart-data', [accountantExpensesController::class, 'getMonthlyChartData']);
+    Route::get('/accountant/Payment/Pay', [accountantPayController::class, 'index'])->name('accountant.Payment.Pay');
+    //for the client drop down in the project
+    Route::get('/projects/by-client/{clientId}', [accountantPayController::class, 'getByClient']);
+    // Route::get('/projects/by-client/{id}', [accountantPayController::class, 'getByClient']);
 
     // Route::get('/admin/projects/filter', [AdminController::class, 'filter'])->name('projects.filter');
+    Route::post('/income/store', [accountantPayController::class, 'store'])->name('income.store');
 
 
 require __DIR__.'/auth.php';

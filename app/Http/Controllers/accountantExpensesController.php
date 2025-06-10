@@ -8,6 +8,8 @@ use App\Models\Project;
 use App\Models\Category;
 use App\Models\Expense;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 class accountantExpensesController extends Controller
 {
@@ -46,7 +48,7 @@ public function showExpenses()
 //     return view('accountant.Expenses', compact('expenses'));
 // }
 
-
+//for showing the expenses
 public function index()
 {
     $expenses = Expense::with(['category', 'project'])->latest()->get();
@@ -57,7 +59,9 @@ public function index()
     return view('accountant.Expenses', compact('projects', 'categories','expenses'));
     // return view('accountant.Expenses', compact('expenses'));
 }
+//for deleting the expense
 
+//for storing the expense
 public function store(Request $request)
 {
     $validated = $request->validate([
@@ -77,9 +81,62 @@ public function store(Request $request)
     return redirect()->back()->with('success', 'Expense added successfully!');
 }
 
-
+    //showing the category page
     public function ShowCategory()
     {
         return view('accountant.Expenses.Category');
     }
+
+
+    // new updates
+    //  public function edit($id)
+    // {
+    //     $expense = Expense::findOrFail($id);
+    //     return response()->json($expense);
+    // }
+
+    public function edit(Expense $expense)
+{
+    return response()->json($expense);
+}
+
+public function update(Request $request, Expense $expense)
+{
+    $validated = $request->validate([
+        'expense_name' => 'required|string|max:255',
+        'amount' => 'required|numeric',
+        'date' => 'required|date',
+        'project_id' => 'required|exists:projects,id',
+        'category_id' => 'required|exists:categories,id',
+        'notes' => 'nullable|string',
+        'accountant_id' => 'required|exists:users,id',
+    ]);
+
+    $expense->update($validated);
+
+    return redirect()->back()->with('success', 'Expense updated successfully!');
+}
+
+
+// ExpenseController.php
+
+public function getMonthlyChartData()
+{
+    $expenses = DB::table('expenses')
+        ->select(DB::raw('MONTH(date) as month'), DB::raw('SUM(amount) as total'))
+        ->groupBy(DB::raw('MONTH(date)'))
+        ->orderBy(DB::raw('MONTH(date)'))
+        ->get();
+
+    // Format: [0, 0, 500, 1000, ...] (January = index 0)
+    $monthlyData = array_fill(0, 12, 0);
+
+    foreach ($expenses as $expense) {
+        $index = $expense->month - 1; // 0-based index for Chart.js
+        $monthlyData[$index] = $expense->total;
+    }
+
+    return response()->json($monthlyData);
+}
+
 }
