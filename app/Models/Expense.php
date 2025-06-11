@@ -33,4 +33,10 @@ class Expense extends Model
     {
         return $this->belongsTo(User::class, 'accountant_id');
     }
+    public function client()
+{
+    return $this->belongsTo(Client::class);
+}
+
+
 }

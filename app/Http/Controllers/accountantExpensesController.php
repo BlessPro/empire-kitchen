@@ -61,6 +61,15 @@ public function index()
 }
 //for deleting the expense
 
+ public function destroy($id)
+
+ {
+        $expense = Expense::findOrFail($id);
+        $expense->delete();
+
+        return redirect()->back()->with('success', 'Expense successfully! deleted ');
+    }
+
 //for storing the expense
 public function store(Request $request)
 {

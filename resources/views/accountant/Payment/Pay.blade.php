@@ -22,100 +22,36 @@
         <h3 class="font-sans font-normal text-black cursor-pointer hover:underline">Expenses</h3>
     </a>
 
-<button id="openIncomeModal" class="px-4 py-2 text-white rounded bg-fuchsia-800">Add Income</button>
 
 
         <span><i data-feather="chevron-right" class="w-[20px] h-[18px] text-fuchsia-900 ml-[3px]"></i></span>
         <h3 class="font-semibold text-fuchsia-900">Pay</h3>
 
     </div>
-
-
-<!-- Category Modal Trigger & Alpine Wrapper -->
-<div x-data="{ open: false }">
-
-    <!-- Trigger Button -->
-     <!-- Button to open modal -->
-    <button @click="open = true"
+  <button id="openIncomeModal"
         class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white border rounded-full hover:bg-blue-700flex bg-fuchsia-900 border-fuchsia-800">
   <i data-feather="plus"> </i>
         New Payment   </button>
-
-    <!-- Modal -->
-    <div
-        x-show="open"
-        x-transition
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
-    >
-        <div class="relative w-full max-w-md p-6 bg-white rounded-xl">
-
-            <!-- Close Button -->
-            <button @click="open = false"
-                class="absolute text-2xl font-bold text-gray-700 top-4 right-4 hover:text-black">&times;
-            </button>
-
-            <!-- Title -->
-            <h2 class="mb-6 text-2xl font-semibold text-gray-900">Add Expense Category</h2>
-
-            <!-- Form -->
-            <form method="POST" action="{{ route('categories.store') }}">
-                @csrf
-
-                <!-- Category Name -->
-                <div class="mb-4">
-                    <label class="block mb-1 text-sm font-medium text-gray-800" for="category">Category Name</label>
-                    <input
-                        type="text"
-                        id="category"
-                        name="name"
-                        required
-                        placeholder="Enter category name"
-                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
-                    />
-                </div>
-
-                <!-- Description -->
-                <div class="mb-6">
-                    <label class="block mb-1 text-sm font-medium text-gray-800" for="description">Description</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        rows="4"
-                        placeholder="Start typing"
-                        class="w-full px-4 py-2 text-sm border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-purple-600"
-                    ></textarea>
-                </div>
-
-                <!-- Save Button -->
-                <button
-                    type="submit"
-                    class="w-full py-2 text-white transition bg-fuchsia-900 rounded-xl hover:bg-purple-900"
-                >
-                    Save
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-
-
-
    </div>
+<!-- Category Modal Trigger & Alpine Wrapper -->
+
 
    {{-- end of navigation bar --}}
 
-<div class="shadow-md rounded-[15px] ">
+{{-- <div class="shadow-md rounded-[15px] ">
 
   <table class=" min-w-full mt-6 pl-6 text-left bg-white rounded-[20px]">
     <thead class="text-sm text-gray-600 bg-gray-100">
       <tr>
+        <th class="p-4 font-medium text-[15px] w-1/2">Client Name</th>
+        <th class="p-4 font-medium text-[15px] w-1/2">Project</th>
         <th class="p-4 font-medium text-[15px] w-1/2">Category</th>
-        <th class="p-4 font-medium text-[15px] w-1/2">Description</th>
+        <th class="p-4 font-medium text-[15px] w-1/2">Amount</th>
+        <th class="p-4 font-medium text-[15px] w-1/2">Project Stage</th>
+
       </tr>
     </thead>
-    <tbody class="text-sm text-gray-600">
+    <tbody class="text-sm text-gray-600"> --}}
 
          {{-- @forelse($categories as $category)
             <tr class="border-t hover:bg-gray-50">
@@ -137,19 +73,72 @@
                 <td colspan="2" class="p-4 text-center text-gray-500">No categories found.</td>
             </tr>
         @endforelse --}}
-    </tbody>
+    {{-- </tbody>
   </table>
+</div> --}}
+
+
+
+
+{{--table--}}
+
+<div class="shadow-md rounded-[15px]">
+
+      <table class="min-w-full mt-6 text-left bg-white rounded-[20px]">
+       <thead class="text-sm text-gray-600 bg-gray-100">
+         <tr>
+
+           <th class="p-4 font-mediumt text-[15px]">Client Name</th>
+           <th class="p-4 font-mediumt text-[15px]">Project Name</th>
+           <th class="p-4 font-mediumt text-[15px]">Category</th>
+           <th class="p-4 font-mediumt text-[15px]">Project stage</th>
+            <th class="p-4 font-mediumt text-[15px]">Amount</th>
+
+         </tr>
+       </thead>
+       <tbody>
+
+
+ @foreach ($incomes as $income)
+            <tr class="border-t">
+                <td class="p-4 font-normal text-[15px]">{{ $income->client->title. ' '.$income->client->firstname.' '.$income->client->lastname ?? '-' }}</td>
+                <td class="p-4 font-normal text-[15px]">{{ $income->project->name ?? '-' }}</td>
+                <td class="p-4 font-normal text-[15px]">{{ $income->category->name ?? '-' }}</td>
+                <td class="p-4 font-normal text-[15px]">{{ $income->project_stage }}</td>
+                <td class="p-4 font-normal text-[15px]">₵{{ number_format($income->amount, 2) }}</td>
+            </tr>
+        @endforeach
+
+       </tbody>
+      </table>
+
+      <div class="mt-4 mb-5 ml-5 mr-5">
+        {{-- {{ $projects->links('pagination::tailwind') }} --}}
+      </div>
+
 </div>
 
+
+
+
+
 <!-- Income Entry Modal -->
-<div id="incomeModal" class="fixed inset-0 z-50 items-center justify-center hidden bg-black bg-opacity-50">
-    <div class="bg-white p-6 rounded-md w-[600px]">
+<div id="incomeModal" class="
+fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50
+">
+    <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
+ <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
         <h2 class="mb-4 text-xl font-semibold">Add New Income</h2>
-        <form id="incomeForm">
+        <button type="button" id="closeEditModal" class="px-4 py-2 text-black "> <i data-feather="x"
+    class="mr-3 feather-icon group"></i></button>
+        </div>  
+                <form id="incomeForm">
             @csrf
+
+              <div class="flex flex-col gap-4 mb-4 sm:flex-row">
             <div class="mb-4">
-                <label>Client</label>
-                <select id="clientSelect" name="client_id" class="w-full p-2 border rounded">
+                <label class="block mb-4 text-sm font-medium text-gray-700">Client</label>
+                <select id="clientSelect" name="client_id" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">-- Select Client --</option>
                     @foreach($clients as $client)
                         <option value="{{ $client->id }}">{{ $client->title.' ' .$client->firstname. ' '. $client->lastname }}</option>
@@ -158,37 +147,51 @@
             </div>
 
             <div class="mb-4">
-                <label>Project</label>
-                <select id="projectSelect" name="project_id" class="w-full p-2 border rounded">
+                <label class="block mb-4 text-sm font-medium text-gray-700">Project</label>
+                <select id="projectSelect" name="project_id" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">-- Select Project --</option>
                 </select>
             </div>
+              </div>
 
+
+  <div class="flex flex-col gap-4 mb-4 sm:flex-row">
             <div class="mb-4">
-                <label>Category</label>
-                <select name="category_id" class="w-full p-2 border rounded">
+                <label class="block mb-4 text-sm font-medium text-gray-700">Category</label>
+                <select name="category_id" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     @foreach($categories as $category)
                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach
                 </select>
             </div>
-
             <div class="mb-4">
-                <label>Amount</label>
-                <input type="number" step="0.01" name="amount" class="w-full p-2 border rounded">
+                <label class="block mb-4 text-sm font-medium text-gray-700">Project Stage</label>
+                    <select name="project_stage" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- What are you paying for --</option>
+                        <option value="Measurement">Measurement</option>
+                        <option value="Design">Design</option>
+                        <option value="Production">Production</option>
+                        <option value="Installation">Installation</option>
+                    </select>
+            </div>
+        </div>
+
+
+          <div class="flex flex-col gap-4 mb-4 sm:flex-row">
+            <div class="mb-4">
+                
+                <label class="block mb-4 text-sm font-medium text-gray-700">Amount</label>
+                <input type="number" step="0.01" name="amount" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
             <div class="mb-4">
-                <label>Date</label>
-                <input type="date" name="date" class="w-full p-2 border rounded">
+                <label class="block mb-4 text-sm font-medium text-gray-700">Date</label>
+                <input type="date" name="date" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
+        </div>
+          
 
-            <div class="mb-4">
-                <label>Material</label>
-                <input type="text" name="material" class="w-full p-2 border rounded">
-            </div>
-
-            <button type="submit" class="px-4 py-2 text-white bg-purple-700 rounded">Save Income</button>
+            <button type="submit" class="w-full py-2 text-white bg-fuchsia-900 rounded-xl hover:bg-fuchsia-800">Save Income</button>
         </form>
     </div>
 </div>

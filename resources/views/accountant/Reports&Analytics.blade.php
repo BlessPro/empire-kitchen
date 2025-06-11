@@ -31,22 +31,17 @@
 
 <!-- Tab Contents -->
 
-<div id="tab-project-budget" class="active tab-content">
-    @include('accountant.Reports&Analytics.Revenue')
+<div id="tab-Revenue" class="active tab-content">
+    @include('accountant.Reports&Analytic.Revenue')
 </div>
 
-<div id="tab-Profit-Loss" class="hidden tab-content">
-    @include('accountant.Reports&Analytics.Expense')
+<div id="tab-Expense" class="hidden tab-content">
+    @include('accountant.Reports&Analytic.Expense')
 </div>
 
-<div id="tab-Cost-Tracking" class="hidden tab-content">
-    @include('accountant.Reports&Analytics.Profit&Loss')
+<div id="tab-Profit&Loss" class="hidden tab-content">
+    @include('accountant.Reports&Analytic.Profit&Loss')
 </div>
-
-
-
-
-
 
 
 
@@ -81,3 +76,5 @@
 
 
     </x-accountant-layout>
+
+

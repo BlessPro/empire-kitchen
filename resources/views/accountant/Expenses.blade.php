@@ -130,7 +130,8 @@
         <h2 class="mb-4 text-xl font-semibold">Edit  Expense</h2>
         <button type="button" id="closeEditModal" class="px-4 py-2 text-black "> <i data-feather="x"
     class="mr-3 feather-icon group"></i></button>
-        </div>            <form id="editExpenseForm" method="POST" action="">
+        </div>    
+                <form id="editExpenseForm" method="POST" action="">
                 @csrf
                 @method('PUT') <!-- Add this for update requests -->
 
@@ -187,12 +188,7 @@
                 <input type="hidden" name="accountant_id" value="{{ Auth::id() }}">
 
                 <div class="flex justify-end gap-3 mt-4">
-                    {{-- <button type="button" id="closeEditModal" class="px-4 py-2 text-gray-700 bg-gray-300 rounded-md hover:bg-gray-400">
-                        Cancel
-                    </button>
-                    <button type="submit" class="px-4 py-2 text-white rounded-md bg-fuchsia-900 hover:bg-fuchsia-800">
-                        Update Expense
-                    </button> --}}
+
                         <button type="submit" class="w-full py-2 text-white bg-fuchsia-900 rounded-xl hover:bg-fuchsia-800">
                  Update Expense
                  </button>
@@ -237,15 +233,15 @@
                             <ul class="items-center space-y-3">
                               <li class="flex items-center">
                                 <span class="w-10 h-5 mr-3 bg-purple-900 rounded-full"></span>
-                                <span class="text-gray-800 font-normal text-[15px]">Pending Projects </span>
+                                <span class="text-gray-800 font-normal text-[15px]">Materials </span>
                               </li>
                               <li class="flex items-center">
                                 <span class="w-10 h-5 rounded-[15px] bg-orange-500  mr-3"></span>
-                                <span class="text-gray-800 font-normal text-[15px]">Ongoing Projects </span>
+                                <span class="text-gray-800 font-normal text-[15px]">Logistics </span>
                               </li>
                               <li class="flex items-center">
                                 <span class="w-10 h-5 rounded-[15px] bg-violet-500 mr-3"></span>
-                                <span class="text-gray-800 font-normal text-[15px]">Completed Projects </span>
+                                <span class="text-gray-800 font-normal text-[15px]">Labor </span>
                               </li>
 
                             </ul>
@@ -507,34 +503,6 @@ monthSelect2.appendChild(option);
 
 
 
-{{-- <script>
-        const ctx = document.getElementById('revenueChart1').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Revenue',
-                    data: [12000, 15000, 10000, 18000, 22000, 25000, 27000, 20000, 23000, 21000, 19000, 24000],
-                    borderColor: '#6D28D9',
-                    tension: 0.4,
-                    fill: true,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script> --}}
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

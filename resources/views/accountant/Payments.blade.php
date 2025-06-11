@@ -14,7 +14,7 @@
      <div class="flex items-center justify-between mb-6">
 
                     <!-- Top Navbar -->
-            <h1 class="text-2xl font-bold">Reports and Analytics</h1>
+            <h1 class="text-2xl font-bold">Payments & Invoice</h1>
 
             <div class="flex items-center space-x-4">
               <a href="{{ route('accountant.Payment.Pay') }}">

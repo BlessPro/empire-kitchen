@@ -51,6 +51,7 @@ use App\Http\Controllers\accountantSettingsController;
 use App\Http\Controllers\accountantExpensesController;
 use App\Http\Controllers\accountantPayController;
 use App\Http\Controllers\accountantProjectFinancialController;
+use App\Http\Controllers\accountantReportsController;
 
 Route::get('/', function () {
     return view('main');
@@ -244,7 +245,7 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
 
 //navigating the accountant user role
     Route::get('/accountant/Payments', [AccountantController::class, 'index'])->name('accountant.Payments');
-    Route::get('/accountant/Reports&Analytics', [ReportsAndAnalyticsController::class, 'index'])->name('accountant.Reports&Analytics');
+    Route::get('/accountant/Reports&Analytics', [accountantReportsController::class, 'index'])->name('accountant.Reports&Analytics');
     Route::get('/accountant/Settings', [accountantSettingsController    ::class, 'index'])->name('accountant.Settings');
     Route::get('/accountant/Inbox', [AccountantInboxController::class, 'index'])->name('accountant.Inbox');
     Route::get('/accountant/Invoice', [AccountantInvoiceController::class, 'index'])->name('accountant.Invoice');
@@ -260,7 +261,7 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
     Route::post('/categories', [accountantCategoryController::class, 'store'])->name('categories.store');
     Route::delete('accountant/Category/{id}', [accountantCategoryController::class, 'destroy'])->name('category.destroy');
 
-    Route::get('/accountant/Project-Financials', [accountantProjectFinancialController    ::class, 'index'])->name('accountant.Project-Financials');
+    Route::get('/accountant/Project-Financials', [accountantProjectFinancialController    ::class, 'projectFinancials'])->name('accountant.Project-Financials');
     //storing th expense
     Route::post('/expenses', [accountantExpensesController::class, 'store'])->name('expenses.store');
     Route::get('/accountant/Expenses', [accountantExpensesController::class, 'index'])->name('accountant.Expenses');

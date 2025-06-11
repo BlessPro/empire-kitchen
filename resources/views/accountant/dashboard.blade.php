@@ -51,17 +51,7 @@
            </div>
          </div>
 
-            {{--new card--}}
-            {{-- <div class="p-4 bg-white rounded shadow">
-                <p>Debtors</p>
-                <div>
-                <h2 class="text-2xl font-bold">$2,110</h2>
-                <p class="text-green-600"><i data-feather="arrow-up"> </i> 100% vs last month</p>
-
-                </div>
-
-
-                </div> --}}
+           
 
 <div class="bg-white p-4 rounded-[15px] shadow items-center pt-6 pr-6 pb-5 pl-6">
               <li class="flex items-left">

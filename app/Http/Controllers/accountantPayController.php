@@ -16,15 +16,19 @@ class accountantPayController extends Controller
     public function index()
 {
      $clients = Client::all(); // Add this line
+    $incomes = Income::with(['client', 'project', 'category'])->latest()->get();
+    // return view('accountant.Payment.Pay', compact('incomes'));
 
      $projects = Project::all();
      $categories = Category::all();
     // $Income = Income::orderBy('name')->get();
     // return view('accountant.Expenses.Category', compact('categories'));
 
-    return view('accountant.Payment.Pay', compact('clients','projects', 'categories'));
+    return view('accountant.Payment.Pay', compact('clients','projects', 'categories','incomes'));
 
 }
+
+
 
 public function store(Request $request)
 {
@@ -34,7 +38,7 @@ public function store(Request $request)
         'category_id' => 'required|exists:categories,id',
         'amount' => 'required|numeric',
         'date' => 'required|date',
-        'material' => 'nullable|string',
+        'project_stage' => 'required|string|in:Measurement,Design,Production,Installation',
     ]);
 
     Income::create($validated);

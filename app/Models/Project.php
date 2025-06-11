@@ -145,6 +145,15 @@ public function viewedComments()
     return $this->belongsToMany(Comment::class, 'comment_views')->withTimestamps();
 }
 
+public function incomes()
+{
+    return $this->hasMany(Income::class);
+}
+
+public function expenses()
+{
+    return $this->hasMany(Expense::class);
+}
 
 
 }

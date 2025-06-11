@@ -227,6 +227,8 @@
       <tr>
         <th class="p-4 font-medium text-[15px] w-1/2">Category</th>
         <th class="p-4 font-medium text-[15px] w-1/2">Description</th>
+        <th class="p-4 font-medium text-[15px] w-1/2">Delete</th>
+
       </tr>
     </thead>
     <tbody class="text-sm text-gray-600">
