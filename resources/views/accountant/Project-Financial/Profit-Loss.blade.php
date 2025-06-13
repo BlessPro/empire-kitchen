@@ -1,6 +1,6 @@
 {{--table--}}
 
-<div class="shadow-md rounded-[15px] bg-white rounded-[20px]">
+<div class="shadow-md  bg-white rounded-[20px]">
 
       <table class="min-w-full mt-6 text-left bg-white rounded-[20px]">
        <thead class="text-sm text-gray-600 bg-gray-100">
@@ -23,7 +23,7 @@
             </tr>
         @endforeach
 
-        
+
     </tbody>
         </table>
       <div class="mt-4 mb-5 ml-5 mr-5">

@@ -54,7 +54,6 @@
            <th class="p-4 font-mediumt text-[15px]">Client Name</th>
            <th class="p-4 font-mediumt text-[15px]">Invoice ID</th>
            <th class="p-4 font-mediumt text-[15px]">Amount</th>
-           <th class="p-4 font-mediumt text-[15px]">Payment Method</th>
            <th class="p-4 font-mediumt text-[15px]">Due Date</th>
            <th class="p-4 font-mediumt text-[15px]">Actions</th>
 

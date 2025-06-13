@@ -8,7 +8,14 @@ class Income extends Model
 {
     //
     protected $fillable = [
-    'client_id', 'project_id', 'category_id', 'amount', 'date', 'material', 'material', 'project_stage'
+    'client_id',
+    'project_id',
+    'category_id',
+    'amount',
+    'date',
+    'project_stage',
+    'payment_method',
+     'notes'
 ];
     protected $casts = [
         'date' => 'datetime',

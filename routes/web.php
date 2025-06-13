@@ -282,6 +282,8 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
 
     // Route::get('/admin/projects/filter', [AdminController::class, 'filter'])->name('projects.filter');
     Route::post('/income/store', [accountantPayController::class, 'store'])->name('income.store');
+    Route::get('/accountant/Report&Analytics/expenses-data', [accountantReportsController::class, 'getMonthlyChartData']);
+    Route::get('/accountant/Report&Analytics/incomes-data', [accountantReportsController::class, 'getMonthlyIncomeChartData']);
 
 
 require __DIR__.'/auth.php';

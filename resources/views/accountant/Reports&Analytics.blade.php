@@ -14,15 +14,19 @@
                 <!-- Tabs -->
 <div class="flex mb-6 border-b">
 
-     <button class="px-4 py-2 text-[19px] font-medium text-gray-600 border-b-2 border-transparent tab-btn focus:outline-none hover:text-fuchsia-900 hover:border-fuchsia-900 flex" data-tab="Revenue">
+     <button class="px-4 py-2 text-[19px] font-medium text-gray-600 border-b-2 border-transparent tab-btn
+     focus:outline-none hover:text-fuchsia-900 hover:border-fuchsia-900 flex" data-tab="Revenue">
         <i data-feather="user"
         class="w-[17.7px] h-[17.7px] mt-[5px] mr-[7px] text-black hover:text-fuchsia-900 feather-icon group "></i>Revenue</button>
-    <button class="px-4 py-2 text-[19px] font-medium text-gray-600 border-b-2 border-transparent tab-btn focus:outline-none hover:border-fuchsia-900 flex hover:text-fuchsia-900" data-tab="Expense"> <i data-feather="bell"
+    <button class="px-4 py-2 text-[19px] font-medium text-gray-600 border-b-2 border-transparent tab-btn
+    focus:outline-none hover:border-fuchsia-900 flex hover:text-fuchsia-900" data-tab="Expense"> <i data-feather="bell"
         class="w-[17.7px] h-[17.7px] mt-[7px] mr-[7px] text-black hover:text-fuchsia-900 feather-icon group ">
     </i>Expense
     </button>
 
-      <button class="px-4 py-2 text-[19px] font-medium text-gray-600 border-b-2 border-transparent tab-btn focus:outline-none hover:border-fuchsia-900 flex hover:text-fuchsia-900" data-tab="Profit&Loss"> <i data-feather="bell"
+      <button class="px-4 py-2 text-[19px] font-medium text-gray-600 border-b-2 border-transparent tab-btn focus:outline-none
+       hover:border-fuchsia-900 flex hover:text-fuchsia-900"
+       data-tab="Profit&Loss"> <i data-feather="bell"
         class="w-[17.7px] h-[17.7px] mt-[7px] mr-[7px] text-black hover:text-fuchsia-900 feather-icon group ">
     </i>Profit & Loss
     </button>

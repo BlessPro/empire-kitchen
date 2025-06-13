@@ -30,21 +30,44 @@ class accountantPayController extends Controller
 
 
 
+// public function store(Request $request)
+// {
+//     $validated = $request->validate([
+//         'client_id' => 'required|exists:clients,id',
+//       
+//         'amount' => 'required|numeric',
+//         'date' => 'required|date',
+//         'project_stage' => 'required|string|in:Measurement,Design,Production,Installation',
+//         'payment_method' => 'required|string|in:Cash,Cheque,Online',
+//     ]);
+
+//     Income::create($validated);
+
+//     return response()->json(['message' => 'Income recorded successfully']);
+// }
+
+
 public function store(Request $request)
 {
     $validated = $request->validate([
-        'client_id' => 'required|exists:clients,id',
+        'client_id' => 'required|exists:clients,id',     
         'project_id' => 'required|exists:projects,id',
         'category_id' => 'required|exists:categories,id',
         'amount' => 'required|numeric',
         'date' => 'required|date',
         'project_stage' => 'required|string|in:Measurement,Design,Production,Installation',
+        'payment_method' => 'required|string|in:Cash,Mobile Money,Bank Transfer',
     ]);
 
     Income::create($validated);
 
-    return response()->json(['message' => 'Income recorded successfully']);
+if ($request->ajax()) {
+    return response()->json(['message' => 'Income saved!']);
 }
+
+return redirect()->back()->with('success', 'Income added successfully!');
+}
+
 
 // IncomeController.php
 public function getProjectsByClient($client_id)

@@ -106,11 +106,11 @@ Route::middleware(['auth', 'role:designer'])->group(function () {
 // });
 
 // Accountant
-Route::middleware(['auth', 'role:accountant'])->group(function () {
-    Route::get('/accountant/dashboard', function () {
-        return view('accountant.dashboard');
-    })->name('accountant.dashboard');
-});
+// Route::middleware(['auth', 'role:accountant'])->group(function () {
+//     Route::get('/accountant/dashboard', function () {
+//         return view('accountant.dashboard');
+//     })->name('accountant.dashboard');
+// });
 Route::middleware(['auth', 'role:accountant'])->group(function () {
     Route::get('/accountant/dashboard', [accountantDashboardController::class, 'index'])
         ->name('accountant.dashboard');

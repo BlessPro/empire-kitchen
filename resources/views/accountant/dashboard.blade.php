@@ -35,7 +35,7 @@
             <div class="grid grid-cols-1 gap-8 md:grid-cols-2 ">
               <!-- Chart -->
               <div class="flex mt-2 ml-1 justify-left items-left">
-              <h2 class=" font-bold text-[35px]  text-gray-900"> $5,587</h2>
+              <h2 class=" font-bold text-[35px]  text-gray-900"> GH₵{{$totalExpense}}</h2>
             </div>
 
              <span class="flex flex-col items-center justify-center">
@@ -51,7 +51,7 @@
            </div>
          </div>
 
-           
+
 
 <div class="bg-white p-4 rounded-[15px] shadow items-center pt-6 pr-6 pb-5 pl-6">
               <li class="flex items-left">
@@ -62,12 +62,57 @@
                     </span>
                 </li>
             <div class="flex items-left justify-between mt-8">
-              <h2 class=" font-semibold text-[14px] ml-1 mb-[-10px] text-gray-500">Total Expense</h2>
+              <h2 class=" font-semibold text-[14px] ml-1 mb-[-10px] text-gray-500">Debt</h2>
             </div>
             <div class="grid grid-cols-1 gap-8 md:grid-cols-2 ">
               <!-- Chart -->
               <div class="flex mt-2 ml-1 justify-left items-left">
-              <h2 class=" font-bold text-[35px]  text-gray-900"> $5,587</h2>
+              <h2 class=" font-bold text-[35px]  text-gray-900"> 
+
+@php
+    $debt = $totalIncome - $totalExpense;
+@endphp
+
+@if ($debt < 0)
+    <p><strong>Debt:</strong> GH₵ {{ number_format(abs($debt), 2) }}</p>
+@else
+    <p> GH₵ 00.00</p>
+@endif
+
+              </h2>
+
+
+
+
+
+
+@php
+    $arrowUp = '<span style="color:green;">&#9650;</span>';   // ▲
+    $arrowDown = '<span style="color:red;">&#9660;</span>';   // ▼
+@endphp
+
+<p><strong>Current Month Income:</strong> GHS {{ number_format($currentMonthIncome, 2) }}</p>
+<p><strong>Previous Month Income:</strong> GHS {{ number_format($previousMonthIncome, 2) }}</p>
+
+@if ($percentageChange > 0)
+    <p>
+        <strong>Growth:</strong>
+        <span style="color: green;">
+            {{ number_format($percentageChange, 2) }}% {!! $arrowUp !!}
+        </span>
+    </p>
+@elseif ($percentageChange < 0)
+    <p>
+        <strong>Drop:</strong>
+        <span style="color: red;">
+            {{ number_format(abs($percentageChange), 2) }}% {!! $arrowDown !!}
+        </span>
+    </p>
+@else
+    <p><strong>No Change in Income</strong></p>
+@endif
+                
+
             </div>
 
              <span class="flex flex-col items-center justify-center">
@@ -91,13 +136,13 @@
     {{--the chart--}}
 
 <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-    
+
 <div class="col-span-2 p-4 bg-white rounded-[15px]  shadow">
  <div class="flex justify-between items-center bg-white  rounded-2xl pb-6 w-full max-w-4xl">
   <div>
     <p class="text-gray-700 font-semibold text-lg">Total Revenue</p>
     <div class="flex items-center space-x-4 mt-1">
-      <h1 class="text-3xl font-bold text-gray-900">$201,221.05</h1>
+      {{-- <h1 class="text-3xl font-bold text-gray-900">$201,221.05</h1> --}}
       <span class="flex items-center px-3 py-1 bg-green-100 text-green-600 text-sm font-semibold rounded-full">
         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
@@ -107,12 +152,12 @@
     </div>
   </div>
 
-  <div>
+  {{-- <div>
      <select class="p-2 text-sm border rounded-[10px] w-20 h-fit">
                 <option>Month</option>
                 <option>Week</option>
             </select>
-  </div>
+  </div> --}}
 </div>
 
 
@@ -257,33 +302,41 @@
 </main>
 
 <script>
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Revenue',
-                    data: [12000, 15000, 10000, 18000, 22000, 25000, 27000, 20000, 23000, 21000, 19000, 24000],
-                    borderColor: '#6D28D9',
-                    tension: 0.4,
-                    fill: true,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/accountant/Report&Analytics/incomes-data')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('revenueChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                        datasets: [{
+                            label: 'Incomes',
+                            data: data, // fetched array
+                            borderColor: '#6D28D9',
+                            tension: 0.4,
+                            fill: true,
+                            backgroundColor: 'rgba(109, 40, 217, 0.1)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
                     }
-                }
-            }
-        });
-    </script>
+                });
+            })
+            .catch(error => console.error('Error fetching chart data:', error));
+    });
+</script>
 
 
 </x-accountant-layout>

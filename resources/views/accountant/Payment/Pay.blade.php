@@ -19,7 +19,7 @@
      <span><i data-feather="home" class="w-[20px] h-[20px] text-fuchsia-900 ml-[3px]"></i></span>
      <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>
      <a href="{{ route('accountant.Payments') }}">
-        <h3 class="font-sans font-normal text-black cursor-pointer hover:underline">Expenses</h3>
+        <h3 class="font-sans font-normal text-black cursor-pointer hover:underline">Payments</h3>
     </a>
 
 
@@ -91,6 +91,7 @@
            <th class="p-4 font-mediumt text-[15px]">Client Name</th>
            <th class="p-4 font-mediumt text-[15px]">Project Name</th>
            <th class="p-4 font-mediumt text-[15px]">Category</th>
+           <th class="p-4 font-mediumt text-[15px]">Payment Method</th>
            <th class="p-4 font-mediumt text-[15px]">Project stage</th>
             <th class="p-4 font-mediumt text-[15px]">Amount</th>
 
@@ -104,6 +105,7 @@
                 <td class="p-4 font-normal text-[15px]">{{ $income->client->title. ' '.$income->client->firstname.' '.$income->client->lastname ?? '-' }}</td>
                 <td class="p-4 font-normal text-[15px]">{{ $income->project->name ?? '-' }}</td>
                 <td class="p-4 font-normal text-[15px]">{{ $income->category->name ?? '-' }}</td>
+                <td class="p-4 font-normal text-[15px]">{{ $income->payment_method }}</td>
                 <td class="p-4 font-normal text-[15px]">{{ $income->project_stage }}</td>
                 <td class="p-4 font-normal text-[15px]">₵{{ number_format($income->amount, 2) }}</td>
             </tr>
@@ -123,16 +125,14 @@
 
 
 <!-- Income Entry Modal -->
-<div id="incomeModal" class="
-fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50
-">
+<div id="incomeModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50 ">
     <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
  <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
         <h2 class="mb-4 text-xl font-semibold">Add New Income</h2>
         <button type="button" id="closeEditModal" class="px-4 py-2 text-black "> <i data-feather="x"
     class="mr-3 feather-icon group"></i></button>
-        </div>  
-                <form id="incomeForm">
+        </div>
+                <form id="incomeForm" method="POST" >
             @csrf
 
               <div class="flex flex-col gap-4 mb-4 sm:flex-row">
@@ -175,11 +175,19 @@ fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-5
                     </select>
             </div>
         </div>
-
+            <div class="mb-4">
+            <label class="block mb-4 text-sm font-medium text-gray-700" for="payment_method">Payment Method</label>
+            <select name="payment_method" class="w-full px-3 py-2 border border-gray-300 rounded-md form-input focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">-- Select Payment Method --</option>
+                <option value="Cash">Cash</option>
+                <option value="Bank Transfer">Bank Transfer</option>
+                <option value="Mobile Money">Mobile Money</option>
+            </select>
+            </div>
 
           <div class="flex flex-col gap-4 mb-4 sm:flex-row">
             <div class="mb-4">
-                
+
                 <label class="block mb-4 text-sm font-medium text-gray-700">Amount</label>
                 <input type="number" step="0.01" name="amount" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
@@ -189,7 +197,7 @@ fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-5
                 <input type="date" name="date" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
         </div>
-          
+
 
             <button type="submit" class="w-full py-2 text-white bg-fuchsia-900 rounded-xl hover:bg-fuchsia-800">Save Income</button>
         </form>
@@ -203,6 +211,9 @@ fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-5
     </main>
 
 <script>
+    document.getElementById('closeEditModal').addEventListener('click', function () {
+    document.getElementById('incomeModal').classList.add('hidden');
+});
 document.getElementById('clientSelect').addEventListener('change', function () {
     const clientId = this.value;
     fetch(`/projects/by-client/${clientId}`)
@@ -233,9 +244,14 @@ document.getElementById('incomeForm').addEventListener('submit', function (e) {
     .then(res => res.json())
     .then(data => {
         alert("Income saved!");
-        location.reload(); // or close modal and refresh data table
+       // location.reload(); // or close modal and refresh data table
     })
-    .catch(err => console.error(err));
+    // .catch(err => console.error(err));
+    .catch(async err => {
+    const errorData = await err.response.json();
+    alert('Validation failed: ' + JSON.stringify(errorData.errors));
+});
+
 });
 document.getElementById('openIncomeModal').addEventListener('click', function () {
     document.getElementById('incomeModal').classList.remove('hidden');
