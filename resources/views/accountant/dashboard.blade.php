@@ -146,19 +146,17 @@
               <ul class="items-center space-y-3">
                 <li class="flex items-center">
                     @if ($percentageChangeD > 0)
-    <p>
-        {{-- <strong>Growth:</strong> --}}
-        <span style="color: green;">
-            {{ number_format($percentageChangeD, 2) }}% {!! $arrowUp !!}
-        </span>
-    </p>
+
+ <span class="flex items-center w-full h-full mt-[20px] ">
+                <p class="text-gray-500 flex">  {!! $arrowUp !!}<span class="text-green-600">
+                    {{ number_format($percentageChangeD, 2) }}%  </span>&nbsp; vs last month</p>
+       </span>
+
 @elseif ($percentageChangeD < 0)
-    <p class="flex items-center w-full h-full mt-[20px] ">
-        {{-- <strong>Drop:</strong> --}}
-        <span style="color: red;">
-            {{ number_format(abs($percentageChangeD), 2) }}% {!! $arrowDown !!}
-        </span>
-    </p>
+   <span class="flex items-center w-full h-full mt-[20px] ">
+                <p class="text-gray-500 flex">  {!! $arrowUp !!}<span class="text-red-600">
+                    {{ number_format($percentageChangeD, 2) }}%  </span>&nbsp; vs last month</p>
+       </span>
 @else
     <p><strong>No Change in Income</strong></p>
 @endif

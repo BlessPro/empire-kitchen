@@ -52,6 +52,7 @@ use App\Http\Controllers\accountantExpensesController;
 use App\Http\Controllers\accountantPayController;
 use App\Http\Controllers\accountantProjectFinancialController;
 use App\Http\Controllers\accountantReportsController;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return view('main');
@@ -247,9 +248,35 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
     Route::get('/accountant/Payments', [AccountantController::class, 'index'])->name('accountant.Payments');
     Route::get('/accountant/Reports&Analytics', [accountantReportsController::class, 'index'])->name('accountant.Reports&Analytics');
     Route::get('/accountant/Settings', [accountantSettingsController    ::class, 'index'])->name('accountant.Settings');
-    Route::get('/accountant/Inbox', [AccountantInboxController::class, 'index'])->name('accountant.Inbox');
+    Route::get('/accountant/Inbox', [accountantInboxController::class, 'index'])->name('accountant.Inbox');
     Route::get('/accountant/Invoice', [AccountantInvoiceController::class, 'index'])->name('accountant.Invoice');
     Route::post('/accountant/Invoice/store', [MeasurementController::class, 'store'])->name('accountant.Invoice.store');
+
+
+// Route::get('/projects', function (Request $request) {
+//     if (!$request->client_id) { return response()->json([]);    }
+//     return Project::where('client_id', $request->client_id)
+//         ->get(['id', 'name']);
+// });
+
+// Route::get('/projects', function (Request $request) {
+//     if (!$request->client_id) {
+//         return response()->json([]);
+//     }
+    
+//     $projects = \App\Models\Project::where('client_id', $request->client_id)
+//         ->get(['id', 'name']);
+        
+//     return response()->json($projects);
+// });/invoices/by-client/${clientId}
+
+// Fix: Ensure your API route is properly defined in routes/api.php
+// Route::get('/projects', function (Request $request) {
+//     return Project::where('client_id', $request->client_id)->get();
+// });   
+//  Route::get('/invoices/by-client/${clientId}', [accountantInvoiceController::class, 'getByClient']);
+    Route::get('/accountant/client/{id}/projects', [accountantInvoiceController::class, 'getClientProjects']);
+
     // For the MessageSending
     Route::middleware(['auth'])->group(function () {
     Route::get('/accountant/Inbox/{userId?}', [AccountantInboxController::class, 'index'])->name('accountant.inbox');
