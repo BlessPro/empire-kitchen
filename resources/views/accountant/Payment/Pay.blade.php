@@ -241,16 +241,18 @@ document.getElementById('incomeForm').addEventListener('submit', function (e) {
         },
         body: formData
     })
-    .then(res => res.json())
+    // .then(res => res.json())
     .then(data => {
         alert("Income saved!");
-       // location.reload(); // or close modal and refresh data table
+       location.reload(); // or close modal and refresh data table
     })
-    // .catch(err => console.error(err));
     .catch(async err => {
     const errorData = await err.response.json();
     alert('Validation failed: ' + JSON.stringify(errorData.errors));
+        // .catch(err => console.error(err));
+
 });
+
 
 });
 document.getElementById('openIncomeModal').addEventListener('click', function () {
