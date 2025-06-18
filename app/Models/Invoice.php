@@ -8,13 +8,18 @@ use App\Models\InvoiceItem;
 class Invoice extends Model
 {
     // protected $fillable = [
-    //     'item_name', 
-    //     'description', 
-    //     'quantity', 
-    //     'unit_price', 
+    //     'item_name',
+    //     'description',
+    //     'quantity',
+    //     'unit_price',
     //     'tax_rate',
     // ];
         protected $fillable = ['invoice_code', 'due_date', 'client_id', 'project_id', 'send_email'];
+// app/Models/Invoice.php
+
+protected $casts = [
+    'send_email' => 'boolean',
+];
 
 
     // Accessors (computed properties)
@@ -50,6 +55,16 @@ public function project() {
 public function summary() {
     return $this->hasOne(InvoiceSummary::class);
 }
+
+
+public function invoiceItems() {
+    return $this->hasMany(InvoiceItem::class);
+}
+
+public function invoiceSummary() {
+    return $this->hasOne(InvoiceSummary::class);
+}
+
 
 
 

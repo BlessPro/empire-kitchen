@@ -60,115 +60,18 @@
          </tr>
        </thead>
        <tbody>
-
-        <tr class="items-center p-2 border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
-             <td class="p-4 font-normal text-[15px]">0010 </td>
-             <td class="p-4 font-normal text-[15px]">78989 </td>
-             <td class="p-4 font-normal text-[15px] items-center">Cash </td>
-             <td class="p-4 font-normal text-[15px]"> 5th October,2025</td>
-             <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
+@foreach ($invoices as $invoice)
+    <tr onclick="window.location.href='{{ route('accountant.Invoice.Invoiceview', $invoice->id) }}'"
+         class="items-center p-2 border-t hover:bg-gray-50">
+             <td class="p-4 font-normal text-[15px]">{{$invoice->client->title.' '.$invoice->client->firstname.' '.$invoice->client->lastname}} </td>
+             <td class="p-4 font-normal text-[15px]"> {{ $invoice->invoice_code }}</td>
+             <td class="p-4 font-normal text-[15px]">GHS {{ number_format($invoice->summary->total_amount, 2) }} </td>
+             <td class="p-4 font-normal text-[15px]"> {{ \Carbon\Carbon::parse($invoice->date)->format('d M Y') }}</td>
+             <td class=" cursor-pointer p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> <i data-feather="eye" class="text-fuchsia-800 w-[25px] h-[25px] items-center justify-center"></i> </td>
             </tr>
 
-              <tr class="items-center p-2 border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
-             <td class="p-4 font-normal text-[15px]">0011 </td>
-             <td class="p-4 font-normal text-[15px]">8989 </td>
-             <td class="p-4 font-normal text-[15px] items-center">Credit Card </td>
-             <td class="p-4 font-normal text-[15px]"> 5th June,2025</td>
-             <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
-            </tr>
+@endforeach
 
-              <tr class="items-center p-2 border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
-             <td class="p-4 font-normal text-[15px]">0010 </td>
-             <td class="p-4 font-normal text-[15px]">78989 </td>
-             <td class="p-4 font-normal text-[15px] items-center">Bank Transfer </td>
-             <td class="p-4 font-normal text-[15px]"> 11th Apil,2025</td>
-             <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
-            </tr>
-
-              <tr class="items-center p-2 border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
-             <td class="p-4 font-normal text-[15px]">0010 </td>
-             <td class="p-4 font-normal text-[15px]">78989 </td>
-             <td class="p-4 font-normal text-[15px] items-center">Cash </td>
-             <td class="p-4 font-normal text-[15px]"> 5th October,2025</td>
-             <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
-            </tr>
-
-             <tr class="items-center p-2 border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
-             <td class="p-4 font-normal text-[15px]">0011 </td>
-             <td class="p-4 font-normal text-[15px]">8989 </td>
-             <td class="p-4 font-normal text-[15px] items-center">Credit Card </td>
-             <td class="p-4 font-normal text-[15px]"> 5th June,2025</td>
-             <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
-            </tr>
-
-            <tr class="items-center p-2 border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
-             <td class="p-4 font-normal text-[15px]">0010 </td>
-             <td class="p-4 font-normal text-[15px]">78989 </td>
-             <td class="p-4 font-normal text-[15px] items-center">Cash </td>
-             <td class="p-4 font-normal text-[15px]"> 5th October,2025</td>
-             <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
-            </tr>
-
-             <tr class="items-center p-2 border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
-             <td class="p-4 font-normal text-[15px]">0010 </td>
-             <td class="p-4 font-normal text-[15px]">78989 </td>
-             <td class="p-4 font-normal text-[15px] items-center">Cash </td>
-             <td class="p-4 font-normal text-[15px]"> 5th October,2025</td>
-             <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
-            </tr>
-
-              <tr class="items-center p-2 border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
-             <td class="p-4 font-normal text-[15px]">0011 </td>
-             <td class="p-4 font-normal text-[15px]">8989 </td>
-             <td class="p-4 font-normal text-[15px] items-center">Credit Card </td>
-             <td class="p-4 font-normal text-[15px]"> 5th June,2025</td>
-             <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
-            </tr>
-
-              <tr class="items-center p-2 border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
-             <td class="p-4 font-normal text-[15px]">0010 </td>
-             <td class="p-4 font-normal text-[15px]">78989 </td>
-             <td class="p-4 font-normal text-[15px] items-center">Cash </td>
-             <td class="p-4 font-normal text-[15px]"> 5th October,2025</td>
-             <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
-            </tr>
-
-            <tr class="items-center p-2 border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
-             <td class="p-4 font-normal text-[15px]">0010 </td>
-             <td class="p-4 font-normal text-[15px]">78989 </td>
-             <td class="p-4 font-normal text-[15px] items-center">Cash </td>
-             <td class="p-4 font-normal text-[15px]"> 5th October,2025</td>
-             <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
-            </tr>
-
-              <tr class="items-center p-2 border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
-             <td class="p-4 font-normal text-[15px]">0011 </td>
-             <td class="p-4 font-normal text-[15px]">8989 </td>
-             <td class="p-4 font-normal text-[15px] items-center">Credit Card </td>
-             <td class="p-4 font-normal text-[15px]"> 5th June,2025</td>
-             <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
-            </tr>
-
-
-                      <tr class="items-center p-2 border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">Samuel Amankwah </td>
-             <td class="p-4 font-normal text-[15px]">0010 </td>
-             <td class="p-4 font-normal text-[15px]">78989 </td>
-             <td class="p-4 font-normal text-[15px] items-center">Cash </td>
-             <td class="p-4 font-normal text-[15px]"> 5th October,2025</td>
-             <td class="p-4 font-normal text-[15px] flex items-center py-3 space-x-2"> </td>
-            </tr>
        </tbody>
 
       </table>

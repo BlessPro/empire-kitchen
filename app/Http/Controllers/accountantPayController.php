@@ -8,7 +8,6 @@ use App\Models\Income;
 use App\Models\Project;
 use App\Models\Client;
 use App\Models\Category;
-use App\Models\Expense;
 
 class accountantPayController extends Controller
 {
@@ -68,13 +67,7 @@ if ($request->ajax()) {
 return redirect()->back()->with('success', 'Income added successfully!');
 }
 
-
 // IncomeController.php
-public function getProjectsByClient($client_id)
-{
-    $projects = Project::where('client_id', $client_id)->get();
-    return response()->json($projects); // return projects as JSON
-}
 
 
 public function getProjectsByClient1($client_id)
