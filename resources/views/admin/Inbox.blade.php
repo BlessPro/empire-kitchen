@@ -4,7 +4,7 @@
         @include('admin.layouts.header')
             </x-slot>
 
-        <main class="ml-64 mt-[70px] ml-4  flex-1 bg-gray-100   items-center">
+        <main class="ml-64 mt-[70px]  flex-1 bg-gray-100   items-center">
         <!--head begins-->
 
 <div class="flex h-screen">

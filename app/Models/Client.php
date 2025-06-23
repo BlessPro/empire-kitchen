@@ -29,7 +29,7 @@ class Client extends Model
 
 public function invoices() {
     return $this->hasMany(Invoice::class);
-    
+
 }
 
 

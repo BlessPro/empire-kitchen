@@ -1,17 +1,17 @@
-<x-designer-layout>
+<x-sales-layout>
     <x-slot name="header">
 <!--written on 26.04.2025-->
         @include('admin.layouts.header')
             </x-slot>
 
-        <main class="ml-64 mt-[70px] ml-4  flex-1 bg-gray-100   items-center">
+        <main class="ml-64 mt-[70px]   flex-1 bg-gray-100   items-center">
         <!--head begins-->
 
 <div class="flex h-screen">
 
     <!-- User List -->
     <div class="w-1/3 pt-4 overflow-y-auto bg-[#FCFDFF]">
-        <div class="flex items-center justify-between p-4 border-b top-5">
+        <div class="flex items-center justify-between p-4 border-b top">
           <h2 class="text-lg font-semibold">Inbox</h2>
           <button class="font-medium text-purple-700">+ Create</button>
         </div>
@@ -20,7 +20,7 @@
           <input type="text" placeholder="Search messages" class="items-center w-full px-3 py-2 border-b border-gray-200 rounded-[10px]" />
         </div>
                @foreach($users as $user)
-            <a href="{{ route('designer.inbox', $user->id) }}"
+            <a href="{{ route('sales.Inbox', $user->id) }}"
                class="block   rounded {{ $userId == $user->id ? 'bg-yellow-50' : 'bg-white' }}">
           <ul>
                <li class="flex items-center px-4 py-3 space-x-3 border-b cursor-pointer hover:bg-yellow-50 ">
@@ -43,7 +43,7 @@
     <div class="flex  flex-col justify-between w-3/4 bg-[#F9F7F7]">
   <div id="chat" class="sticky top-[100px] left-0 z-30 flex items-center justify-between px-6 py-4 bg-white border-b">
     <div>
-      <div class="font-bold">{{ $user->name }}</div>
+      <div class="font-bold">Kwesi Boadu</div>
       <div class="text-sm text-green-600">Online</div>
     </div>
     <div class="flex space-x-3">
@@ -59,7 +59,7 @@
 
                 <div class="mb-2 ml-4 mt-4 text-sm rounded-[9px]  {{ $message->sender_id == auth()->id() ? 'text-right' : 'text-left' }}">
                         <div class="inline-block p-2 rounded-lg
-                            {{ $message->sender_id == auth()->id() ? 'bg-fuchsia-900 text-white ml-[200px]' : 'bg-[#fff] text-black mr-[300px] pr-[300px]' }}">
+                            {{ $message->sender_id == auth()->id() ? 'bg-fuchsia-900 text-white ml-50' : 'bg-[#fff] text-black' }}">
                             {{ $message->message }}
                             <span class="text-[11px] ml-[5px] text-gray-500">  {{ $message->created_at->format('H:i') }} </span>
 
@@ -81,7 +81,9 @@
         </form>
         @endif
     </div>
-</div>
+{{-- </div>
+   </div>
+        </div> --}}
         </main>
 
 
@@ -94,7 +96,7 @@
     if (receiverId) {
         // Polling every 3 seconds
         setInterval(() => {
-            fetch(`designer/inbox/fetch/${receiverId}`)
+            fetch(`/sales/Inbox/fetch/${receiverId}`)
                 .then(res => res.json())
                 .then(data => {
                     chatBox.innerHTML = '';
@@ -103,7 +105,7 @@
                         div.classList.add('mb-2', 'flex', 'text-sm', 'ml-4', 'mt-4' , msg.sender_id == {{ auth()->id() }} ? 'justify-end' : 'justify-start');
 
                         div.innerHTML = `
-                            <div class="inline-block p-2 shadow rounded-lg ${msg.sender_id == {{ auth()->id() }} ? 'bg-[#5A0562] text-white ml-[300px]' : 'bg-[#ffff] text-black ml-[300px]'}">
+                            <div class="inline-block p-2 shadow rounded-lg ${msg.sender_id == {{ auth()->id() }} ? 'bg-[#5A0562] text-white ml-50' : 'bg-[#fff] text-black'}">
                                 ${msg.message}
                             <span class="text-[11px] ml-[5px] text-gray-300"> ${new Date(msg.created_at).toLocaleTimeString()}</span>
 
@@ -121,7 +123,7 @@
             const messageInput = document.getElementById('message');
             const message = messageInput.value;
 
-            fetch("{{ route('designer.inbox.send') }}", {
+            fetch("{{ route('sales.Inbox.send') }}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -138,4 +140,4 @@
     }
 </script>
 
-</x-designer-layout>
+</x-sales-layout>

@@ -28,123 +28,6 @@
 
      </div>
 
-
-
-
-
-
-{{--
-     <div class="max-w-5xl mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 text-sm">
-  <!-- Invoice + Client Info -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div>
-      <label class="block text-gray-700 mb-1">Invoice Number</label>
-      <input type="text" class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" value="INV450">
-    </div>
-    <div>
-      <label class="block text-gray-700 mb-1">Due Date</label>
-      <div class="relative">
-        <input type="date" class="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-purple-500">
-        <span class="absolute right-3 top-2.5 text-gray-400">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V7H3v10a2 2 0 002 2z" />
-          </svg>
-        </span>
-      </div>
-    </div>
-    <div>
-      <label class="block text-gray-700 mb-1">Client Name</label>
-      <input type="text" class="w-full rounded-md border border-gray-300 px-3 py-2" value="Yaw Boateng">
-    </div>
-    <div>
-      <label class="block text-gray-700 mb-1">Location</label>
-      <input type="text" class="w-full rounded-md border border-gray-300 px-3 py-2" value="Spintex, Baatsona">
-    </div>
-    <div>
-      <label class="block text-gray-700 mb-1">Phone Number</label>
-      <input type="text" class="w-full rounded-md border border-gray-300 px-3 py-2" value="0546782345">
-    </div>
-    <div>
-      <label class="block text-gray-700 mb-1">Email</label>
-      <input type="text" class="w-full rounded-md border border-gray-300 px-3 py-2" value="yawbboat@hotmail.com">
-    </div>
-  </div>
-
-  <!-- Forward Email Option -->
-  <div class="mt-2">
-    <label class="block text-gray-700 mb-1">Forward Invoice to Client Email?</label>
-    <div class="flex items-center gap-6">
-      <label class="inline-flex items-center">
-        <input type="radio" name="send_email" value="yes" class="text-purple-600 border-gray-300 focus:ring-purple-500">
-        <span class="ml-2">Yes</span>
-      </label>
-      <label class="inline-flex items-center">
-        <input type="radio" name="send_email" value="no" class="text-purple-600 border-gray-300 focus:ring-purple-500">
-        <span class="ml-2">No</span>
-      </label>
-    </div>
-  </div>
-
-  <!-- Item List -->
-  <div class="space-y-4">
-    <div class="grid grid-cols-12 gap-3 font-medium text-gray-600">
-      <div class="col-span-5">Item Description</div>
-      <div class="col-span-2">Quantity</div>
-      <div class="col-span-2">Unit Price</div>
-      <div class="col-span-2">Total</div>
-      <div class="col-span-1"></div>
-    </div>
-
-    <!-- Item Row -->
-    <div class="grid grid-cols-12 gap-3 items-center">
-      <input type="text" class="col-span-5 border border-gray-300 rounded-md px-3 py-2" value="Countertops (Granite, Quartz, Marble)">
-      <input type="number" class="col-span-2 border border-gray-300 rounded-md px-3 py-2" value="2">
-      <input type="number" class="col-span-2 border border-gray-300 rounded-md px-3 py-2" value="20000">
-      <div class="col-span-2 text-gray-700 font-medium">$20,000</div>
-      <button class="col-span-1 text-red-500 hover:text-red-700">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-
-    <!-- Item Row -->
-    <div class="grid grid-cols-12 gap-3 items-center">
-      <input type="text" class="col-span-5 border border-gray-300 rounded-md px-3 py-2" value="Under Cabinet Lightning">
-      <input type="number" class="col-span-2 border border-gray-300 rounded-md px-3 py-2" value="2">
-      <input type="number" class="col-span-2 border border-gray-300 rounded-md px-3 py-2" value="20000">
-      <div class="col-span-2 text-gray-700 font-medium">$20,000</div>
-      <button class="col-span-1 text-red-500 hover:text-red-700">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-
-    <!-- Add Item -->
-    <button class="flex items-center text-purple-600 hover:text-purple-800 text-sm font-medium mt-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg>
-      Add New Item
-    </button>
-  </div>
-
-  <!-- Totals -->
-  <div class="text-right space-y-1 text-gray-700 font-medium">
-    <p>Sub Total: <span class="ml-2">$40,000</span></p>
-    <p>VAT: <span class="ml-2">$5,000</span></p>
-    <p class="text-lg">Total Amount: <span class="ml-2 font-semibold">$45,000</span></p>
-  </div>
-
-  <!-- Actions -->
-  <div class="flex justify-end space-x-3 pt-4">
-    <button class="px-4 py-2 border border-purple-600 text-purple-700 rounded-full hover:bg-purple-50">Cancel</button>
-    <button class="px-6 py-2 bg-purple-700 text-white rounded-full hover:bg-purple-800">Create Invoice</button>
-  </div>
-</div> --}}
-
-
         {{--body--}}
             <div class="max-w-7xl mx-auto bg-white p-6 rounded-2xl shadow-lg space-y-6 text-sm">
               <!-- Space Dimensions -->
@@ -260,11 +143,7 @@
     <br><br>
     </div>
 
-   {{-- <button type="submit"
-     class="px-6 py-2 text-semibold text-[15px]
-      text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
-     Save Measurement
- </button> --}}
+ 
    <!-- Totals -->
   <div class="text-right space-y-1 text-gray-700 font-medium">
     <p>Sub Total: <span id="subtotal" class="ml-2">00.00</span></p>
@@ -283,69 +162,6 @@
 
 
   </form>
-
-{{--
-@if ($errors->any())
-    <div style="color: red">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif --}}
-
-{{-- <form action="{{ route('accountant.Invoice.store') }}" method="POST" id="invoice-form">
-    @csrf
-
-    <label>Invoice Code</label>
-    <input type="text" name="invoice_code" id="invoice-code" readonly> --}}
-{{--
-    <label>Select Client</label>
-    <select name="client_id" id="client-select" required>
-        <option value="">--Select Client--</option>
-        @foreach($clients as $client)
-            <option value="{{ $client->id }}"
-                data-phone="{{ $client->phone_number }}"
-                data-email="{{ $client->email }}"
-                data-location="{{ $client->location }}">
-                {{ $client->firstname }} {{ $client->lastname }} ({{ $client->company_name }})
-            </option>
-        @endforeach
-    </select> --}}
-
-    {{-- <input type="text" id="client-phone" placeholder="Phone" readonly>
-    <input type="text" id="client-email" placeholder="Email" readonly>
-    <input type="text" id="client-location" placeholder="Location" readonly>
-
-    <label>Select Project</label>
-    <select name="project_id" id="project-select" required>
-        <option value="">--Select Project--</option>
-    </select>
-
-    <label>Due Date</label>
-    <input type="date" name="due_date" required>
-
-    <label>
-        <input type="checkbox" name="send_email"> Send Email
-    </label> --}}
-
-    {{-- <h4>Items</h4>
-    <div id="items-container"></div>
-    <button type="button" id="add-item-btn">Add New Item</button>
-
-    <br><br> --}}
-
-    <!-- Subtotal, VAT, Total -->
-    {{-- <div>
-        <p>Subtotal: GHS <span id="subtotal">0.00</span></p>
-        <p>VAT (12%): GHS <span id="vat">0.00</span></p>
-        <p><strong>Total: GHS <span id="total">0.00</span></strong></p>
-    </div> --}}
-
-    {{-- <button type="submit">Save Invoice</button>
-</form> --}}
-
 
 </div>
 

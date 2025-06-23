@@ -40,7 +40,35 @@ class DashboardController extends Controller
     public function index()
 {
     $projects = Project::paginate(10); // fetch paginated projects
-    return view('admin/Dashboard', compact('projects'));
+    return view('admin.Dashboard', compact('projects'));
 }
+
+
+public function filter(Request $request)
+{
+    $status = $request->query('status');
+    $projects = Project::query();
+
+    switch ($status) {
+        case 'pending':
+            $projects->where('status', 'pending');
+            break;
+        case 'ongoing':
+            $projects->where('status', 'ongoing');
+            break;
+        case 'completed':
+            $projects->where('status', 'completed');
+            break;
+        case 'all':
+        default:
+            // no filter
+            break;
+    }
+
+    $projects = $projects->latest()->get();
+
+    return view('partials.projects-table', compact('projects'))->render();
+}
+
 
 }

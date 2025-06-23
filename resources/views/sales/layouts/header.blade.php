@@ -1,10 +1,4 @@
-{{-- <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Admin | {{ $title ?? 'Dashboard' }}</title>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head> --}}
+
 
     <!DOCTYPE html>
     <html lang="en">
@@ -20,6 +14,7 @@
       <script src="https://cdn.tailwindcss.com"></script>
 
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="//unpkg.com/alpinejs" defer></script>
 
       <!--written on 14.04.2025-->
       <!--Modified on 15.04.1015-->

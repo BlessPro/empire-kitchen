@@ -237,7 +237,7 @@ function downloadInvoice() {
     const element = document.getElementById('invoice-section');
 
     const opt = {
-        margin:       0.3,
+        // margin:       0.3,
         filename:     'invoice.pdf',
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2 },

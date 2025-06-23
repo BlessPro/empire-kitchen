@@ -15,7 +15,9 @@ class Income extends Model
     'date',
     'project_stage',
     'payment_method',
-     'notes'
+     'notes',
+     'status'
+
 ];
     protected $casts = [
         'date' => 'datetime',

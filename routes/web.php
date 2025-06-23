@@ -53,7 +53,15 @@ use App\Http\Controllers\accountantPayController;
 use App\Http\Controllers\accountantPaymentController;
 use App\Http\Controllers\accountantProjectFinancialController;
 use App\Http\Controllers\accountantReportsController;
+use App\Http\Controllers\SalesNavigationController;
+use App\Http\Controllers\salesInboxController;
+use App\Http\Controllers\SalesSettingsController;
+use App\Http\Controllers\SalesTrackPaymentController;
+use App\Http\Controllers\SalesFollowUpController;
+use App\Http\Controllers\SalesClientController;
+use App\Http\Controllers\salesReportsAndAnalyticsController;
 use Illuminate\Http\Request;
+
 
 Route::get('/', function () {
     return view('main');
@@ -241,7 +249,7 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
 // Route::delete('/installations/{id}', [InstallationController::class, 'destroy']);
 
     Route::get('/admin/Dashboard2',  [ProjectController::class, 'index'])->name('admin.Dashboard2');
-// to filter
+    Route::get('/admin/projects/filter', [DashboardController::class, 'filter'])->name('admin.projects.filter');
 });
 
 
@@ -253,35 +261,10 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
     Route::get('/accountant/Invoice', [AccountantInvoiceController::class, 'index'])->name('accountant.Invoice');
     Route::post('/accountant/Invoice/store', [MeasurementController::class, 'store'])->name('accountant.Invoice.store');
 
-
-// Route::get('/projects', function (Request $request) {
-//     if (!$request->client_id) { return response()->json([]);    }
-//     return Project::where('client_id', $request->client_id)
-//         ->get(['id', 'name']);
-// });
-
-// Route::get('/projects', function (Request $request) {
-//     if (!$request->client_id) {
-//         return response()->json([]);
-//     }
-
-//     $projects = \App\Models\Project::where('client_id', $request->client_id)
-//         ->get(['id', 'name']);
-
-//     return response()->json($projects);
-// });/invoices/by-client/${clientId}
-
-// Fix: Ensure your API route is properly defined in routes/api.php
-// Route::get('/projects', function (Request $request) {
-//     return Project::where('client_id', $request->client_id)->get();
-// });
-//  Route::get('/invoices/by-client/${clientId}', [accountantInvoiceController::class, 'getByClient']);
     Route::get('/accountant/Invoice/{id}/projects', [accountantInvoiceController::class, 'getClientProjects']);
     Route::get('/accountant/Invoice', [accountantInvoiceController::class, 'index'])->name('accountant.Invoice');
     Route::post('/accountant/Invoice', [accountantInvoiceController::class, 'store'])->name('accountant.Invoice.store');
     Route::get('/accountant/Invoice/Invoiceview/{id}', [accountantInvoiceController::class, 'invoiceview'])->name('accountant.Invoice.Invoiceview');
-    // Route::get('/accountant/invoice/{id}', [InvoiceController::class, 'showInvoice'])->name('accountant.invoice.show');
-
 
     // For the MessageSending
     Route::middleware(['auth'])->group(function () {
@@ -301,9 +284,7 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
     //for deleting the expense
     Route::delete('accountant/Expenses/{id}', [accountantExpensesController::class, 'destroy'])->name('expenses.destroy');
 
-    //     Route::get('/accountant/update/{id}', [accountantExpensesController::class, 'edit'])->name('accountant.Expenses.edit');
-    // Route::post('/accountant/Expenses/{id}', [UserController::class, 'update'])->name('accountant.Expenses.update');
-
+    //for editing the expense
     Route::get('/expenses/{expense}/edit', [accountantExpensesController::class, 'edit'])->name('expenses.edit');
     Route::put('/expenses/{expense}', [accountantExpensesController::class, 'update'])->name('expenses.update');
     // Route::delete('admin/dashboard/user/{id}', [settings::class, 'destroy'])->name('settings.destroy');
@@ -317,6 +298,24 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
     Route::post('/income/store', [accountantPayController::class, 'store'])->name('income.store');
     Route::get('/accountant/Report&Analytics/expenses-data', [accountantReportsController::class, 'getMonthlyChartData']);
     Route::get('/accountant/Report&Analytics/incomes-data', [accountantReportsController::class, 'getMonthlyIncomeChartData']);
-
+    Route::get('/sales/ClientManagement', [salesNavigationController::class, 'ClientManagement'])->name('sales.ClientManagement');
+    Route::get('/sales/TrackPayment', [salesNavigationController::class, 'TrackPayment'])->name('sales.TrackPayment');
+    Route::get('/sales/ReportsandAnalytics', [salesNavigationController::class, 'ReportsandAnalytics'])->name('sales.ReportsandAnalytics');
+    // For the MessageSending
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/sales/Inbox/{userId?}', [salesInboxController::class, 'index'])->name('sales.Inbox');
+    Route::post('/sales/Inbox/send', [salesInboxController::class, 'sendMessage'])->name('sales.Inbox.send');
+    Route::get('/sales/Inbox/fetch/{userId}', [salesInboxController::class, 'fetchMessages'])->name('sales.Inbox.fetch');
+    });
+    Route::get('/sales/Settings', [salesSettingsController    ::class, 'index'])->name('sales.Settings');
+    Route::get('/sales/TrackPayment', [salesTrackPaymentController::class, 'index'])->name('sales.TrackPayment');
+    Route::get('/sales/FollowupManagement', [salesFollowUpController::class, 'index'])->name('sales.FollowupManagement');
+    Route::post('/sales/FollowupManagement', [salesFollowUpController::class, 'store'])->name('sales.followup.store');
+    Route::get('/sales/followups/filter', [SalesFollowUpController::class, 'filter'])->name('sales.followups.filter');
+    Route::get('/sales/client/{id}/projects', [salesFollowUpController::class, 'getClientProjects']);
+    Route::get('/sales/ClientManagement', [salesClientController::class, 'index'])->name('sales.ClientManagement');
+    Route::get('/sales/ClientManagement/filter', [salesClientController::class, 'filter'])->name('sales.ClientManagement.filter');
+    Route::get('/sales/ReportsandAnalytics', [salesReportsAndAnalyticsController::class, 'index'])->name('sales.ReportsandAnalytics');
+    Route::get('/sales/income/chart-data', [accountantExpensesController::class, 'getMonthlyChartData']);
 
 require __DIR__.'/auth.php';
