@@ -4,7 +4,7 @@
   <!--Modified on 15.04.1015-->
   <!--Modified for laravel/blade on 15.04.2025 -->
 {{-- modified in laravel with controllers - 16.04.2025 --}}
-@include('admin.layouts.header')
+@include('accountant.layouts.header')
 
     {{-- <style>
         /* Custom styles for the admin layout */

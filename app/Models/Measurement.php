@@ -53,4 +53,10 @@ protected $fillable = [
     {
         return $this->belongsTo(User::class, 'tech_supervisor_id');
     }
+    // app/Models/Measurement.php
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
+
 }

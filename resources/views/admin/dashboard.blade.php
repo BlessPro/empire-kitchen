@@ -63,10 +63,10 @@
                      <span class="text-gray-800 font-normal text-[15px]">Pending Designs (7)</span>
                    </li>
 
-                   <li class="flex items-center">
+                   {{-- <li class="flex items-center">
                      <span class="w-10 h-5 rounded-[15px] bg-yellow-400 mr-3"></span>
                      <span class="text-gray-800 font-normal text-[15px]">Quotes (9)</span>
-                   </li>
+                   </li> --}}
 
                    <li class="flex items-center">
                      <span class="w-10 h-5 rounded-[15px] bg-blue-500 mr-3"></span>
@@ -118,12 +118,12 @@
              <div class="flex items-center justify-between pt-4 pb-5 pl-6 pr-6">
                <p class="text-gray-600 text-[15px] font-normal">Easily manage your projects here</p>
                <div class="flex gap-3">
-                <div class="flex gap-3 mb-4">
+                {{-- <div class="flex gap-3 mb-4">
                     <button class="px-4 py-2 text-white bg-blue-600 rounded filter-btn" data-status="all">All</button>
                     <button class="px-4 py-2 text-white bg-yellow-500 rounded filter-btn" data-status="pending">Pending</button>
                     <button class="px-4 py-2 text-white bg-green-600 rounded filter-btn" data-status="ongoing">Ongoing</button>
                     <button class="px-4 py-2 text-white bg-purple-700 rounded filter-btn" data-status="completed">Completed</button>
-                </div>
+                </div> --}}
 
 
 

@@ -31,14 +31,15 @@
                  <table class="min-w-full text-left">
                     <thead class="items-center text-sm text-gray-600 bg-gray-100">
                       <tr >
-
-                        <th class="p-4 font-mediumt text-[15px] items-center">Client Name</th>
-                        <th class="p-4 font-mediumt text-[15px] items-center">Phone Number</th>
-                        <th class="p-4 font-mediumt text-[15px] items-center">Location</th>
-                        <th class="p-4 font-mediumt text-[15px] items-center">Measurement Date</th>
-                        <th class="p-4 font-mediumt text-[15px] items-center">Project</th>
-                        <th class="p-4 font-mediumt text-[15px] items-center">Status</th>
-                        <th class="p-4 font-mediumt text-[15px] items-center">Action</th>
+                        <th class="p-4 font-mediumt text-[15px] items-center">
+                            <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600"></th>
+                        <th class="p-4 font-medium text-[15px] items-center">Client Name</th>
+                        <th class="p-4 font-medium text-[15px] items-center">Phone Number</th>
+                        <th class="p-4 font-medium text-[15px] items-center">Location</th>
+                        <th class="p-4 font-medium text-[15px] items-center">Measurement Date</th>
+                        <th class="p-4 font-medium text-[15px] items-center">Project</th>
+                        <th class="p-4 font-medium text-[15px] items-center">Status</th>
+                        <th class="p-4 font-medium text-[15px] items-center">Action</th>
 
 
                       </tr>
@@ -48,27 +49,30 @@
                     @foreach ($client->projects as $project)
 
 
-                        <tr  class="border-b hover:bg-gray-50">
-                            <td class="px-4 py-2">{{ $client->firstname }} {{ $client->lastname }}</td>
-                            <td class="px-4 py-2">{{ $client->phone_number }}</td>
-                            <td class="px-4 py-2">{{ $client->location }}</td>
-                            <td class="px-4 py-2">
+                        <tr  class=" p-4 border-b hover:bg-gray-50">
+                            <td class="p-4 font-normal text-[15px] items-center ">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-600" >
+                            </td>
+                            <td class="p-4 font-normal text-[15px] text-sm  items-center">{{ $client->firstname }} {{ $client->lastname }}</td>
+                            <td class="p-4 font-normal text-[15px] text-sm  items-center">{{ $client->phone_number }}</td>
+                            <td class="p-4 font-normal text-[15px] text-sm  items-center">{{ $client->location }}</td>
+                            <td class="p-4 font-normal text-[15px] text-sm  items-center">
                                 @if ($project->measurement->first())
                                     {{ \Carbon\Carbon::parse($project->measurement->first()->measured_at)->format('d M Y') }}
                                 @else
                                     <span class="italic text-gray-400">Not measured</span>
                                 @endif
                             </td>
-                              <td class="px-4 py-2">
+                              <td class="p-4 font-normal text-[15px] text-sm  items-center">
                               <span class="text-sm ">{{ $project->name }}</span>
                             </td>
-                            <td class="px-4 py-2">
+                            <td class="p-4 font-normal text-[15px] text-sm  items-center">
                               <span class="px-3 py-1 text-sm {{ $statusClasses[$project->status] ?? $defaultClass }}">{{ $project->status }}</span>
                             </td>
-                        <td  class="px-4 py-2">
+                        <td  class="p-4 font-normal text-[15px] text-sm  items-center">
                               <a cursor:pointer; href="{{ route('tech.projects.info', $project->id) }}">
 
-                            <i data-feather="eye" class="text-gray-600"></i> </td>
+                            <i data-feather="eye" class="text-gray-600 w-5 h-5 "></i> </td>
                                 </a>
 
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Client;
 use App\Models\Expense;
 use Illuminate\Http\Request;
 use App\Models\Project;
@@ -19,13 +20,9 @@ class accountantDashboardController extends Controller
       public function index()
 {
 
+    $clients=Client::all();
 //debt percentage
-
-
-
-
 //debt percentage ends here
-
     // Fetch the current month and previous month income
         $now = Carbon::now();
     $currentMonth = $now->month;
@@ -102,7 +99,8 @@ class accountantDashboardController extends Controller
      'percentageChangeI',
      'percentageChangeD',
      'RecentIncomes',
-     'DashboardIncomeTables'
+     'DashboardIncomeTables',
+     'clients'
      ));
 }
 

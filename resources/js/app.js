@@ -1,3 +1,6 @@
+import Iconify from '@iconify/iconify';
+
+
 // This file contains the JavaScript code for the admin dashboard page.
 // It includes functionality for charts, table pagination, and a month filter.
 // It uses Chart.js for charting and Feather Icons for icon rendering.

@@ -36,15 +36,15 @@
 <!-- Tab Contents -->
 
 <div id="tab-Revenue" class="active tab-content">
-    @include('accountant.Reports&Analytic.Revenue')
+    @include('accountant.partials.Revenue')
 </div>
 
 <div id="tab-Expense" class="hidden tab-content">
-    @include('accountant.Reports&Analytic.Expense')
+    @include('accountant.partials.Expense')
 </div>
 
 <div id="tab-Profit&Loss" class="hidden tab-content">
-    @include('accountant.Reports&Analytic.Profit&Loss')
+    @include('accountant.partials.Profit&Loss')
 </div>
 
 

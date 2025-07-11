@@ -139,6 +139,8 @@
 
      {{-- <button type="button"  class="text-gray-600">Cancel</button> --}}
     </button>
+<input type="hidden" id="editClientId" name="client_id">
+<input type="hidden" id="editProjectId" name="project_id">
 
         </div>
            <form id="editForm" enctype="multipart/form-data">
@@ -303,15 +305,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
 //for the edit pop up
 
+// function openEditModal(event) {
+//     document.getElementById('editEventId').value = event.id;
+//     document.getElementById('editProjectName').value = event.title;
+//     document.getElementById('editStartTime').value = new Date(event.start).toISOString().slice(0,16);
+//     document.getElementById('editEndTime').value = new Date(event.end).toISOString().slice(0,16);
+//     document.getElementById('editNotes').value = event.extendedProps.notes ?? '';
+
+//     document.getElementById('editModal').classList.remove('hidden');
+// }
+
+
 function openEditModal(event) {
     document.getElementById('editEventId').value = event.id;
     document.getElementById('editProjectName').value = event.title;
     document.getElementById('editStartTime').value = new Date(event.start).toISOString().slice(0,16);
-    document.getElementById('editEndTime').value = new Date(event.end).toISOString().slice(0,16);
+    document.getElementById('editEndTime').value = event.end ? new Date(event.end).toISOString().slice(0,16) : '';
     document.getElementById('editNotes').value = event.extendedProps.notes ?? '';
+
+    // Add these if available in extendedProps
+    document.getElementById('editClientId').value = event.extendedProps.client_id ?? '';
+    document.getElementById('editProjectId').value = event.extendedProps.project_id ?? '';
 
     document.getElementById('editModal').classList.remove('hidden');
 }
+
+
+
+
 
 function closeEditModal() {
     document.getElementById('editModal').classList.add('hidden');
@@ -324,7 +345,7 @@ document.getElementById('editForm').addEventListener('submit', function(e) {
     const formData = new FormData(this);
 
     // const formData = new FormData();
-       fetch(`/admin/ScheduleInstallation/${Id}`, {
+       fetch(`/admin/ScheduleInstallation/${id}`, {
         method: 'POST',
         body: formData,
     })
@@ -418,7 +439,13 @@ fetch('/installations/store', {
             alert('Error saving installation');
         }
     })
-    .catch(() => alert('Something went wrong.'));
+    .catch(async (err) => {
+    const text = await err.text();
+    console.error('Update error:', text);
+    alert('Something went wrong: ' + text);
+});
+
+    // .catch(() => alert('Something went wrong.'));
 });
 
 

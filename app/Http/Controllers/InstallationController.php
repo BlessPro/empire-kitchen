@@ -66,6 +66,16 @@ class InstallationController extends Controller
         return response()->json($events);
     }
 
+// public function update(Request $request, $id)
+// {
+//     $installation = Installation::findOrFail($id);
+//     $installation->start_time = $request->start_time;
+//     $installation->end_time = $request->end_time;
+//     $installation->notes = $request->notes;
+//     $installation->save();
+
+//     return response()->json(['success' => true]);
+// }
 
 
 
@@ -97,6 +107,9 @@ public function update(Request $request, $id)
     $installation->client_id = $request->input('client_id');
     $installation->user_id = Auth::id(); // Assuming you want to set the user ID to the currently authenticated user
     $installation->updated_at = now(); // Update the timestamp
+    $installation->client_id = $request->input('client_id');
+    $installation->project_id = $request->input('project_id');
+
     $installation->save();
 
     return response()->json(['success' => true, 'message' => 'Installation updated successfully']);

@@ -1,382 +1,234 @@
-   <x-tech-layout>
+<x-tech-layout>
     <x-slot name="header">
-<!--written on 19.05.2025 @ 9:45-->
-    <!-- Main Content -->
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
-<style>
-    .fc .fc-button {
-        background-color: #5A0562; /* Tailwind's blue-600 */
-        color: white;
-        font-size: 1rem; /* text-sm */
-        padding: 0.25rem 0.75rem; /* py-1 px-3 */
-        border-radius: 0.375rem; /* rounded-md */
-        border: none;
-        margin: 0 0.25rem;
-        transition: all 0.2s ease-in-out;
-    }
-
-    .fc .fc-button:hover {
-        background-color: #ff7300; /* Tailwind's blue-700 */
-    }
-
-    .fc .fc-button.fc-button-active {
-        background-color: #ff7300; /* Tailwind's blue-900 */
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-    }
-
-    .fc .fc-toolbar-title {
-        font-weight: 600;
-        color: #5A0562; /* text-gray-800 */
-        font-size: 1.125rem; /* text-lg */
-    }
-</style>
-
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
     </x-slot>
+
     @include('admin.layouts.header')
-    <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
-        <!--head begins-->
 
-            <div class="p-6 bg-[#F9F7F7]">
-             <div class="mb-[20px]">
+    <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">Measurement Calendar</h1>
+                <button onclick="openCreateModal()" class="px-4 py-2 text-white bg-fuchsia-900 hover:bg-fuchsia-700 rounded">+ Schedule Measurement</button>
+            </div>
 
-            <!-- FullCalendar Styles -->
-
-
-<!-- Tailwind Styles already included in your layout -->
-<!-- Create Installation Button -->
-
-<div class="p-6 bg-white shadow-md rounded-xl">
-    <div id="calendar"></div>
-</div>
-
-<div id="editModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-30">
-    <div class="w-full max-w-md p-6 bg-white rounded shadow-md">
-<div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
-        <h2 class="mb-4 text-xl font-semibold">Edit Installation</h2>
-        <button onclick="closeEditModal()" type="button" id="closeModalBtn" class="px-4 py-2 text-black "> <i data-feather="x"
-    class="mr-3 feather-icon group"></i>
-
-     {{-- <button type="button"  class="text-gray-600">Cancel</button> --}}
-
-</button>
+            <div class="bg-white p-4 rounded-xl shadow">
+                <div id="calendar"></div>
+            </div>
         </div>
-           <form id="editForm" enctype="multipart/form-data">
-            @csrf
+    </main>
 
-            <input type="hidden" id="editEventId">
-            <div class="mb-2">
-                <label>Project Name:</label>
-                <input type="text" id="editProjectName" readonly class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div class="mb-2">
-                <label>Start Time:</label>
-                <input type="datetime-local" id="editStartTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div class="mb-2">
-                <label>End Time:</label>
-                <input type="datetime-local" id="editEndTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div class="mb-4">
-                <label>Notes:</label>
-                <textarea id="editNotes" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-            </div>
-            <div class="flex justify-end space-x-2">
-                <button type="submit" class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 rounded">Update</button>
-            </div>
-        </form>
+    {{-- Success Toast --}}
+    <div id="successToast" class="fixed bottom-5 right-5 hidden bg-green-600 text-white px-4 py-2 rounded shadow">
+        <span id="successMessage"></span>
     </div>
-</div>
 
+    {{-- Create Modal --}}
+    <div id="createModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl">
 
-</div>
-</div>
-</main>
-<!-- FullCalendar Script -->
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+            <h2 class="text-xl font-semibold mb-4">Schedule Measurement</h2>
 
-<script>
+            <form id="createForm">
+                @csrf
+                <div class="mb-4">
+                    <label>Client</label>
+                    <select id="client_id" name="client_id" class="w-full p-2 border rounded" required>
+                        <option value="">Select a client</option>
+                        @foreach($clients as $client)
+                            <option value="{{ $client->id }}"
+                                data-phone="{{ $client->phone_number }}"
+                                data-email="{{ $client->email }}"
+                                data-location="{{ $client->location }}">
+                                {{ $client->firstname }} {{ $client->lastname }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <input type="text" id="client_phone" placeholder="Phone" readonly class="p-2 border rounded">
+                    <input type="text" id="client_location" placeholder="Location" readonly class="p-2 border rounded">
+                </div>
 
+                <div class="mb-4">
+                    <label>Project</label>
+                    <select id="project_id" name="project_id" class="w-full p-2 border rounded" required>
+                        <option value="">Select a project</option>
+                    </select>
+                </div>
 
-function openEventModal(project, start, notes) {
-    document.getElementById('eventProject').innerText = project;
-    document.getElementById('eventStart').innerText = new Date(start).toLocaleString();
-    document.getElementById('eventNotes').innerText = notes;
-    document.getElementById('eventDetailsModal').classList.remove('hidden');
-}
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label>Start Time</label>
+                        <input type="datetime-local" name="start_time" id="start_time" class="w-full p-2 border rounded" required>
+                    </div>
+                    <div>
+                        <label>End Time</label>
+                        <input type="datetime-local" name="end_time" id="end_time" class="w-full p-2 border rounded" required>
+                    </div>
+                </div>
 
-function closeEventModal() {
-    document.getElementById('eventDetailsModal').classList.add('hidden');
-}
+                <div class="mb-4">
+                    <input type="text" id="duration" placeholder="Duration" readonly class="w-full p-2 border rounded">
+                </div>
 
+                <div class="mb-4">
+                    <label>Notes</label>
+                    <textarea name="notes" class="w-full p-2 border rounded"></textarea>
+                </div>
 
+                <div class="flex justify-end gap-2">
+                    <button type="button" onclick="closeCreateModal()" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-fuchsia-900 text-white rounded">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
+    {{-- JS --}}
+    <script>
+        const showToast = (msg) => {
+            const toast = document.getElementById('successToast');
+            document.getElementById('successMessage').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 2500);
+        };
 
+        const openCreateModal = () => {
+            document.getElementById('createModal').classList.remove('hidden');
+        };
+        const closeCreateModal = () => {
+            document.getElementById('createForm').reset();
+            document.getElementById('project_id').innerHTML = '<option value="">Select a project</option>';
+            document.getElementById('duration').value = '';
+            document.getElementById('client_phone').value = '';
+            document.getElementById('client_location').value = '';
+            document.getElementById('createModal').classList.add('hidden');
+        };
+
+        document.getElementById('client_id').addEventListener('change', function () {
+            const selected = this.options[this.selectedIndex];
+            document.getElementById('client_phone').value = selected.getAttribute('data-phone') || '';
+            document.getElementById('client_location').value = selected.getAttribute('data-location') || '';
+
+            const clientId = this.value;
+            fetch(`/api/projects/by-client/${clientId}`)
+                .then(res => res.json())
+                .then(data => {
+                    const projectSelect = document.getElementById('project_id');
+                    projectSelect.innerHTML = '<option value="">Select a project</option>';
+                    data.forEach(project => {
+                        projectSelect.innerHTML += `<option value="${project.id}">${project.name}</option>`;
+                    });
+                });
+        });
+
+        const updateDuration = () => {
+            const start = new Date(document.getElementById('start_time').value);
+            const end = new Date(document.getElementById('end_time').value);
+            const diff = end - start;
+            if (diff > 0) {
+                const mins = Math.floor(diff / 60000);
+                const hours = Math.floor(mins / 60);
+                const remaining = mins % 60;
+                document.getElementById('duration').value = `${hours} hr(s) ${remaining} min(s)`;
+            } else {
+                document.getElementById('duration').value = '';
+            }
+        };
+
+        document.getElementById('start_time').addEventListener('change', updateDuration);
+        document.getElementById('end_time').addEventListener('change', updateDuration);
+
+        document.getElementById('createForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/tech/ScheduleMeasurement/store', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    closeCreateModal();
+                    calendar.refetchEvents();
+                    showToast('Measurement scheduled!');
+                }
+            });
+        });
+let calendar;
 document.addEventListener('DOMContentLoaded', function () {
-    var calendarEl = document.getElementById('calendar');
-
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+    calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
         initialView: 'dayGridMonth',
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,listWeek'
         },
-        events: '/tech/ScheduleMeasurement/events',
-
-        eventColor: '#0036BF',
-        height: 'auto',
+        events: function (fetchInfo, successCallback, failureCallback) {
+            fetch('/tech/ScheduleMeasurement/events')
+                .then(res => res.json())
+                .then(data => {
+                    console.log('Events fetched:', data); // ✅ This helps debug
+                    successCallback(data);
+                })
+                .catch(err => {
+                    console.error('Event fetch error', err);
+                    failureCallback(err);
+                });
+        },
         eventClick: function (info) {
-    const event = info.event;
+            const e = info.event;
+            const popup = document.createElement('div');
+            popup.className = 'absolute z-50 bg-white border p-4 rounded shadow w-[260px]';
+            popup.style.top = `${info.jsEvent.clientY}px`;
+            popup.style.left = `${info.jsEvent.clientX}px`;
+            popup.innerHTML = `
+                <div class="font-semibold mb-2">${e.title}</div>
+                <div class="text-sm mb-1"><strong>From:</strong> ${new Date(e.start).toLocaleString()}</div>
+                <div class="text-sm mb-2"><strong>To:</strong> ${new Date(e.end).toLocaleString()}</div>
+                <div class="flex justify-end gap-2 mt-3">
+                    <button onclick="deleteEvent(${e.id})" class="text-red-600">🗑 Delete</button>
+                </div>
+            `;
+            document.body.appendChild(popup);
 
-    const popup = document.createElement('div');
-    popup.className = 'bg-white shadow-md rounded p-4 border border-gray-200 fixed z-50';
-    popup.style.position = 'fixed'; // ensure it's fixed to the viewport
-
-    // Set default popup dimensions
-    const popupWidth = 250;
-    const popupHeight = 150;
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-
-    // Initial top/left based on cursor position
-    let top = info.jsEvent.clientY + 10;
-    let left = info.jsEvent.clientX;
-
-    // Adjust if popup would go off-screen
-    if (left + popupWidth > viewportWidth) {
-        left = viewportWidth - popupWidth - 10;
-    }
-    if (top + popupHeight > viewportHeight) {
-        top = viewportHeight - popupHeight - 10;
-    }
-
-    popup.style.top = `${top}px`;
-    popup.style.left = `${left}px`;
-    popup.style.width = `${popupWidth}px`; // optional fixed width
-
-    popup.innerHTML = `
-        <div class="mb-2 font-semibold text-gray-800">${event.title}</div>
-        <div class="mb-1 text-sm"><strong>Start:</strong> ${new Date(event.start).toLocaleString()}</div>
-        <div class="mb-2 text-sm"><strong>Notes:</strong> ${event.extendedProps.notes ?? 'N/A'}</div>
-
-        <div class="flex justify-end mt-2">
-            <button id="editEventBtn" class="text-sm text-blue-500 hover:text-blue-700"><i data-feather="edit-3" class="mr-3"></i> Edit</button>
-            <button id="deleteEventBtn" class="text-sm text-red-500 hover:text-red-700">🗑️ Delete</button>
-        </div>
-    `;
-
-    document.body.appendChild(popup);
-
-    function removePopup() {
-        popup.remove();
-        document.removeEventListener('click', outsideClickListener);
-    }
-
-    function outsideClickListener(e) {
-        if (!popup.contains(e.target)) {
-            removePopup();
+            const removePopup = () => {
+                popup.remove();
+                document.removeEventListener('click', outsideClick);
+            };
+            const outsideClick = (ev) => {
+                if (!popup.contains(ev.target)) removePopup();
+            };
+            setTimeout(() => document.addEventListener('click', outsideClick), 50);
         }
-    }
-
-    setTimeout(() => {
-        document.addEventListener('click', outsideClickListener);
-    }, 0);
-
-    // Delete Handler
-    popup.querySelector('#deleteEventBtn').addEventListener('click', function () {
-        if (confirm('Are you sure you want to delete this installation?')) {
-            fetch(`/tech/Installation/${event.id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Accept': 'application/json'
-                }
-            }).then(res => res.json())
-              .then(data => {
-                  if (data.success) {
-                      calendar.refetchEvents();
-                      alert('Deleted successfully');
-                      removePopup();
-                  } else {
-                      alert('Failed to delete.');
-                  }
-              });
-        }
-    });
-
-
-
-
-            // Edit Handler
-            popup.querySelector('#editEventBtn').addEventListener('click', function () {
-                removePopup();
-                openEditModal(event); // Call a function to open a modal with prefilled form
-            });
-        }
-
     });
 
     calendar.render();
 });
 
 
-
-//for the edit pop up
-
-function openEditModal(event) {
-    document.getElementById('editEventId').value = event.id;
-    document.getElementById('editProjectName').value = event.title;
-    document.getElementById('editStartTime').value = new Date(event.start).toISOString().slice(0,16);
-    document.getElementById('editEndTime').value = new Date(event.end).toISOString().slice(0,16);
-    document.getElementById('editNotes').value = event.extendedProps.notes ?? '';
-
-    document.getElementById('editModal').classList.remove('hidden');
-}
-
-function closeEditModal() {
-    document.getElementById('editModal').classList.add('hidden');
-}
-
-document.getElementById('editForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const id = document.getElementById('editEventId').value;
-    const formData = new FormData(this);
-
-    // const formData = new FormData();
-       fetch(`/admin/ScheduleInstallation/${Id}`, {
-        method: 'POST',
-        body: formData,
-    })
-    .then(res => res.json())
-    .then(res => {
-        if (res.message) {
-            document.getElementById('editUserModal').classList.add('hidden');
-            document.getElementById('editUserModal').classList.remove('flex');
-
-            document.getElementById('successModal').classList.remove('hidden');
-        }
-    });
-});
-
-
-    // fetch(`/admin/ScheduleInstallation/${id}`, {
-
-    //      method: 'POST',
-    //     body: formData,
-    // })
-    //     method: 'PUT',
-    //     headers: {
-    //         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-    //         'Accept': 'application/json',
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //         start_time: document.getElementById('editStartTime').value,
-    //         end_time: document.getElementById('editEndTime').value,
-    //         notes: document.getElementById('editNotes').value
-    //     })
-//     })
-//     .then(res => res.json())
-//     .then(data => {
-//         if (data.success) {
-//             closeEditModal();
-//             calendar.refetchEvents();
-//             alert('Installation updated!');
-//         } else {
-//             alert('Failed to update.');
-//         }
-//     })
-//     .catch(() => alert('Something went wrong'));
-// });
-
-
-
-
-function openModal() {
-    document.getElementById('installationModal').classList.remove('hidden');
-}
-
-function closeModal() {
-    document.getElementById('installationModal').classList.add('hidden');
-    document.getElementById('installationForm').reset();
-    document.getElementById('project_id').innerHTML = '<option value="">Select a project</option>';
-    document.getElementById('duration').value = '';
-}
-
-document.getElementById('client_id').addEventListener('change', function () {
-    const selected = this.options[this.selectedIndex];
-    document.getElementById('client_phone').value = selected.getAttribute('data-phone') || '';
-    document.getElementById('client_location').value = selected.getAttribute('data-location') || '';
-
-    const clientId = this.value;
-    fetch(`/api/projects/by-client/${clientId}`)
-        .then(res => res.json())
-        .then(data => {
-            const projectSelect = document.getElementById('project_id');
-            projectSelect.innerHTML = '<option value="">Select a project</option>';
-            data.forEach(project => {
-                projectSelect.innerHTML += `<option value="${project.id}">${project.name}</option>`;
+        const deleteEvent = (id) => {
+            fetch(`/tech/ScheduleMeasurement/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    calendar.refetchEvents();
+                    showToast('Deleted successfully');
+                }
             });
-        });
-});
-
-// Shared function to calculate and update duration
-function updateDuration() {
-    const start = new Date(document.getElementById('start_time').value);
-    const end = new Date(document.getElementById('end_time').value);
-    const diffMs = end - start;
-
-    if (diffMs > 0) {
-        const minutes = Math.floor(diffMs / 60000);
-        const hours = Math.floor(minutes / 60);
-        const remainingMinutes = minutes % 60;
-        document.getElementById('duration').value = `${hours} hr(s) ${remainingMinutes} min(s)`;
-    } else {
-        document.getElementById('duration').value = '';
-    }
-}
-
-// Call updateDuration on end_time change
-document.getElementById('end_time').addEventListener('change', updateDuration);
-
-// NEW: Call updateDuration on start_time change as well
-document.getElementById('start_time').addEventListener('change', updateDuration);
-
-document.getElementById('installationForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-
-
-
-fetch('/installations/store', {
-    method: 'POST',
-    headers: {
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        'Accept': 'application/json'
-    },
-    body: formData
-})
-
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            closeModal();
-            calendar.refetchEvents();
-            alert('Installation created successfully!');
-        } else {
-            alert('Error saving installation');
-        }
-    })
-    .catch(() => alert('Something went wrong.'));
-});
-
-
-</script>
-
+        };
+    </script>
 </x-tech-layout>
-
-

@@ -1,17 +1,13 @@
 <!-- Example for sales -->
 <x-sales-layout>
 <x-slot name="header">
-   @include('admin.layouts.header')
+   @include('sales.layouts.header')
 </x-slot>
      {{-- {{ dd($projects) }} --}}
-        {{-- @php
-        $statusClasses = [
-            'in progress' => 'bg-yellow-100 text-yellow-700 px-2 py-1 border border-yellow-500 rounded-full text-xs',
-            'completed' => 'bg-green-100 text-green-700 px-2 py-1 border border-green-500 rounded-full text-xs',
-            'pending' => 'bg-blue-100 text-blue-700 px-2 py-1 border border-blue-500 rounded-full text-xs',
-        ];
-              $defaultClass = 'bg-gray-100 text-gray-800';
-    @endphp --}}
+   
+        
+
+     
 
   <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
         <!--head begins-->
@@ -37,20 +33,17 @@
       </div>
 
 
-      <div class="flex gap-2 mb-4">
+<div class="filter-controls flex gap-2 mb-4" data-filter-target="#my-table-id">
     <button data-status="all" class="filter-btn px-3 py-1 bg-gray-300 rounded">All</button>
-    <button data-status="Pending" class="filter-btn px-3 py-1 bg-blue-300 rounded">Pending</button>
+    <button data-status="Pending" class="filter-btn px-3 py-1 bg-yellow-300 rounded">Pending</button>
     <button data-status="Completed" class="filter-btn px-3 py-1 bg-green-300 rounded">Completed</button>
-    <button data-status="Rescheduled" class="filter-btn px-3 py-1 bg-yellow-300 rounded">Rescheduled</button>
+    <button data-status="Rescheduled" class="filter-btn px-3 py-1 bg-blue-300 rounded">Rescheduled</button>
 </div>
+
 <div class="bg-white shadow-md rounded-[15px] pb-1">
  <div class="pt-6 pb-5 pl-6 border-b">
             <h2 class="text-sm text-gray-600 ">Upcoming followups</h2>
             </div>
-
-
-
-
 
             {{-- Table Section --}}
 <div id="followup-table-container">
@@ -134,12 +127,11 @@
         </form>
     </div>
 </div>
-
-
-
             </div>
     </div>
 </main>
+
+{{--selecting client and project--}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const clientSelect = document.getElementById('client-select');
@@ -170,6 +162,7 @@
     });
 </script>
 
+{{--follow up modal--}}
 <script>
 function openFollowUpModal() {
     document.getElementById('followUpModal').classList.remove('hidden');
@@ -206,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 </script>
-
+{{--pagination--}}
 <script>
     function loadFollowUps(url) {
         fetch(url)
@@ -261,5 +254,136 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script> --}}
+
+{{-- <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.filter-btn');
+    const rows = document.querySelectorAll('#followups-table-wrapper tr[data-status]');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+            const status = this.getAttribute('data-status');
+
+            rows.forEach(row => {
+                if (status === 'all' || row.getAttribute('data-status') === status) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Optional: style the active button
+            buttons.forEach(btn => btn.classList.remove('ring', 'ring-offset-2', 'ring-gray-800'));
+            this.classList.add('ring', 'ring-offset-2', 'ring-gray-800');
+        });
+    });
+});
+</script> --}}
+
+
+{{--for filtering--}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.filter-controls').forEach(controlGroup => {
+        const tableSelector = controlGroup.getAttribute('data-filter-target');
+        const rows = document.querySelectorAll(`${tableSelector} tr[data-status]`);
+        const buttons = controlGroup.querySelectorAll('.filter-btn');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                const status = this.getAttribute('data-status');
+
+                rows.forEach(row => {
+                    if (status === 'all' || row.getAttribute('data-status') === status) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Optional: highlight active button
+                buttons.forEach(btn => btn.classList.remove('ring', 'ring-offset-2', 'ring-gray-800'));
+                this.classList.add('ring', 'ring-offset-2', 'ring-gray-800');
+            });
+        });
+    });
+});
+</script>
+
+{{-- Modal for follow-up details --}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('followup-modal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const saveBtn = document.getElementById('saveFollowup');
+    let currentId = null;
+
+    document.querySelectorAll('.followup-row').forEach(row => {
+        row.addEventListener('click', function () {
+            currentId = this.dataset.id;
+            document.getElementById('modal-client').innerText = this.dataset.client;
+            document.getElementById('modal-project').innerText = this.dataset.project;
+            document.getElementById('modal-date').innerText = this.dataset.date;
+            document.getElementById('modal-time').innerText = this.dataset.time;
+            document.getElementById('modal-notes').innerText = this.dataset.notes;
+            document.getElementById('modal-status').value = this.dataset.status;
+
+            modal.classList.remove('hidden');
+        });
+    });
+
+    closeModalBtn.addEventListener('click', function () {
+        modal.classList.add('hidden');
+    });
+
+  saveBtn.addEventListener('click', function () {
+    const newStatus = document.getElementById('modal-status').value;
+
+    fetch(`/sales/followups/${currentId}/update-status`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ status: newStatus })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // Update status in the table row
+            const row = document.querySelector(`tr[data-id="${currentId}"]`);
+            const statusCell = row.querySelector('td:nth-child(7) span');
+
+            // Optional: Update the row's dataset too
+            row.dataset.status = newStatus;
+
+            // Update status label text
+            statusCell.innerText = newStatus;
+
+            // Update status badge class (re-apply colors)
+            const statusClasses = {
+                'Pending': 'bg-blue-100 text-blue-700 border border-blue-500 rounded-full ',
+                'Completed': 'bg-green-100 text-green-700 border border-green-500 rounded-full',
+                'Rescheduled': 'bg-yellow-100 text-yellow-700 border border-yellow-500 rounded-full'
+            };
+            const defaultClass = 'bg-gray-100 text-gray-800';
+
+            // Remove all old classes and apply new
+            statusCell.className = `px-3 py-1 text-sm ${statusClasses[newStatus] || defaultClass}`;
+
+            // Close modal
+            modal.classList.add('hidden');
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('Failed to update status.');
+        console.error(error);
+    });
+});
+
+});
+</script>
 
      </x-sales-layout>

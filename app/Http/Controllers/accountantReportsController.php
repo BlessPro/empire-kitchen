@@ -75,6 +75,8 @@ public function index(Request $request)
             'total_income' => $incomes22->sum('amount'),
             'from_date' => $incomes22->first()->date->format('Y-m-d'),
             'to_date' => $incomes22->last()->date->format('Y-m-d'),
+            'status' => $incomes22->last()->status ?? 'Unknown', // get status from last income
+
         ];
     })->filter();
 

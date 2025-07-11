@@ -329,130 +329,132 @@
         </div>
         </main>
 
-        <script>
-            document.getElementById("selectAll").addEventListener("change", function () {
-               const isChecked = this.checked;
-               const checkboxes = document.querySelectorAll(".child-checkbox");
-               checkboxes.forEach(cb => cb.checked = isChecked);
-               });
-               // When 'selectAll' is unchecked
+        
 
-               const allCheckboxes = document.querySelectorAll(".child-checkbox");
-               allCheckboxes.forEach(cb => {
-               cb.addEventListener("change", () => {
-               const allChecked = Array.from(allCheckboxes).every(c => c.checked);
-               document.getElementById("selectAll").checked = allChecked;
-               });
-               });
+        <script>
+            // document.getElementById("selectAll").addEventListener("change", function () {
+            //    const isChecked = this.checked;
+            //    const checkboxes = document.querySelectorAll(".child-checkbox");
+            //    checkboxes.forEach(cb => cb.checked = isChecked);
+            //    });
+            //    // When 'selectAll' is unchecked
+
+            //    const allCheckboxes = document.querySelectorAll(".child-checkbox");
+            //    allCheckboxes.forEach(cb => {
+            //    cb.addEventListener("change", () => {
+            //    const allChecked = Array.from(allCheckboxes).every(c => c.checked);
+            //    document.getElementById("selectAll").checked = allChecked;
+            //    });
+            //    });
 
 
             // Initializing the doughnut chart for the Project status
-            const ctx1 = document.getElementById('clientsChart1').getContext('2d');
-            new Chart(ctx1, {
-              type: 'doughnut',
-              data: {
-                labels: ['Pending', 'Ongoing', 'Completed'],
-                datasets: [{
-                  data: [10, 20, 30], // Replace with your actual data
-                  backgroundColor: ['#6B1E72', '#FF7300', '#9151FF'],
-                  borderWidth: 1,
-                  borderColor: '#fff',
-                  hoverOffset: 8,
-                  borderRadius: 7,
-                  spacing: 4,
-                }]
-              },
-              options: {
-                cutout: '70%',
-                plugins: {
-                  legend: {
-                    display: false,
-                    position: 'right',
-                    borderRadius: 5,
-                  },
-                }
-              }
-            });
+            // const ctx1 = document.getElementById('clientsChart1').getContext('2d');
+            // new Chart(ctx1, {
+            //   type: 'doughnut',
+            //   data: {
+            //     labels: ['Pending', 'Ongoing', 'Completed'],
+            //     datasets: [{
+            //       data: [10, 20, 30], // Replace with your actual data
+            //       backgroundColor: ['#6B1E72', '#FF7300', '#9151FF'],
+            //       borderWidth: 1,
+            //       borderColor: '#fff',
+            //       hoverOffset: 8,
+            //       borderRadius: 7,
+            //       spacing: 4,
+            //     }]
+            //   },
+            //   options: {
+            //     cutout: '70%',
+            //     plugins: {
+            //       legend: {
+            //         display: false,
+            //         position: 'right',
+            //         borderRadius: 5,
+            //       },
+            //     }
+            //   }
+            // });
 
 
 //adding month filter to the Project status - completed, pending and closed section
 // Get the select element and month names
 
-const monthSelect = document.getElementById('month1');
-const monthNames = [
-"January", "February", "March", "April", "May", "June",
-"July", "August", "September", "October", "November", "December"
-];
+// const monthSelect = document.getElementById('month1');
+// const monthNames = [
+// "January", "February", "March", "April", "May", "June",
+// "July", "August", "September", "October", "November", "December"
+// ];
 
-const currentMonthIndex = new Date().getMonth(); // 0 = Jan, 11 = Dec
+// const currentMonthIndex = new Date().getMonth(); // 0 = Jan, 11 = Dec
 
-// Add all months as options
-monthNames.forEach((name, index) => {
-const option = document.createElement("option");
-option.value = String(index + 1).padStart(2, '0'); // Format as 01, 02, ...
-option.textContent = name;
+// // Add all months as options
+// monthNames.forEach((name, index) => {
+// const option = document.createElement("option");
+// option.value = String(index + 1).padStart(2, '0'); // Format as 01, 02, ...
+// option.textContent = name;
 
-// Automatically select current month
-if (index === currentMonthIndex) {
-option.selected = true;
-}
+// // Automatically select current month
+// if (index === currentMonthIndex) {
+// option.selected = true;
+// }
 
-monthSelect.appendChild(option);
-});
+// monthSelect.appendChild(option);
+// });
 
 
        //initializing the doughnut chart for the  Finance summary section
-       const ctx2 = document.getElementById('clientsChart2').getContext('2d');
-new Chart(ctx2, {
-type: 'doughnut',
-data: {
-  labels: ['Incoming Payments', 'Outgoing Payments'],
-  datasets: [{
-    data: [5, 25],
-    backgroundColor: ['#EAB308','#9151FF'],
-    borderWidth: 1,
-      borderColor: '#fff',
-      hoverOffset: 8,
-      borderRadius: 7,
-      spacing: 4,
-  }]
-},
-options: {
-  cutout: '70%',
-  plugins: {
-    legend: {
-      display: false,
-      position: 'right',
-      borderRadius: 5,
-    },
+//        const ctx2 = document.getElementById('clientsChart2').getContext('2d');
+// new Chart(ctx2, {
+// type: 'doughnut',
+// data: {
+//   labels: ['Incoming Payments', 'Outgoing Payments'],
+//   datasets: [{
+//     data: [5, 25],
+//     backgroundColor: ['#EAB308','#9151FF'],
+//     borderWidth: 1,
+//       borderColor: '#fff',
+//       hoverOffset: 8,
+//       borderRadius: 7,
+//       spacing: 4,
+//   }]
+// },
+// options: {
+//   cutout: '70%',
+//   plugins: {
+//     legend: {
+//       display: false,
+//       position: 'right',
+//       borderRadius: 5,
+//     },
 
-  }
-}
-});
+//   }
+// }
+// });
 //adding month filter to the Finance summary section
 // Get the select element and month names
 
-const monthSelect2 = document.getElementById('month2');
-const monthNames2 = [
-"January", "February", "March", "April", "May", "June",
-"July", "August", "September", "October", "November", "December"
-];
+// const monthSelect2 = document.getElementById('month2');
+// const monthNames2 = [
+// "January", "February", "March", "April", "May", "June",
+// "July", "August", "September", "October", "November", "December"
+// ];
 
-const currentMonthIndex2 = new Date().getMonth(); // 0 = Jan, 11 = Dec
+// const currentMonthIndex2 = new Date().getMonth(); // 0 = Jan, 11 = Dec
 
 // Add all months as options
-monthNames2.forEach((name, index) => {
-const option = document.createElement("option");
-option.value = String(index + 1).padStart(2, '0'); // Format as 01, 02, ...
-option.textContent = name;
+// monthNames2.forEach((name, index) => {
+// const option = document.createElement("option");
+// option.value = String(index + 1).padStart(2, '0'); // Format as 01, 02, ...
+// option.textContent = name;
 
-// Automatically select current month
-if (index === currentMonthIndex2) {
-option.selected = true;
-}
+// // Automatically select current month
+// if (index === currentMonthIndex2) {
+// option.selected = true;
+// }
 
-monthSelect2.appendChild(option);
-});
+// monthSelect2.appendChild(option);
+// });
 
 
 // for the Revenue Chart
@@ -460,6 +462,69 @@ monthSelect2.appendChild(option);
 </script>
 
             @vite(['resources/js/app.js'])
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Select All Checkbox
+    document.getElementById("selectAll")?.addEventListener("change", function () {
+        const isChecked = this.checked;
+        const checkboxes = document.querySelectorAll(".child-checkbox");
+        checkboxes.forEach(cb => cb.checked = isChecked);
+    });
+
+    const allCheckboxes = document.querySelectorAll(".child-checkbox");
+    allCheckboxes.forEach(cb => {
+        cb.addEventListener("change", () => {
+            const allChecked = Array.from(allCheckboxes).every(c => c.checked);
+            document.getElementById("selectAll").checked = allChecked;
+        });
+    });
+
+    // Chart
+    const ctx1 = document.getElementById('clientsChart1');
+    if (ctx1) {
+        new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pending', 'Ongoing', 'Completed'],
+                datasets: [{
+                    data: [10, 20, 30],
+                    backgroundColor: ['#6B1E72', '#FF7300', '#9151FF'],
+                    borderWidth: 1,
+                    borderColor: '#fff',
+                    hoverOffset: 8,
+                    borderRadius: 7,
+                    spacing: 4,
+                }]
+            },
+            options: {
+                cutout: '70%',
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+
+    // Month dropdown
+    const monthSelect = document.getElementById('month1');
+    if (monthSelect) {
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        const currentMonthIndex = new Date().getMonth();
+        monthNames.forEach((name, index) => {
+            const option = document.createElement("option");
+            option.value = String(index + 1).padStart(2, '0');
+            option.textContent = name;
+            if (index === currentMonthIndex) option.selected = true;
+            monthSelect.appendChild(option);
+        });
+    }
+});
+</script>
 
 
 

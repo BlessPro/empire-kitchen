@@ -38,4 +38,10 @@ class Income extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    
+    public function followUp()
+    {
+        return $this->hasOne(FollowUp::class, 'client_id', 'client_id');
+    }
+
 }

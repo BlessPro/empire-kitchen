@@ -5,7 +5,7 @@
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Admin | {{ $title ?? 'Dashboard' }}</title>
+      <title>Sales Accountant | {{ $title ?? 'Dashboard' }}</title>
 
       {{-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> --}}
       @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -15,6 +15,8 @@
 
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="//unpkg.com/alpinejs" defer></script>
+<!-- Add this to layouts/app.blade.php -->
+<script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
 
       <!--written on 14.04.2025-->
       <!--Modified on 15.04.1015-->

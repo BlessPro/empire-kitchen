@@ -167,11 +167,9 @@
                 @foreach ( $clients as $client )
                 <tr onclick="window.location='{{ route('admin.clients.projects', $client->id) }}'" class="cursor-pointer hover:bg-gray-100">
                     <td class="p-4 font-normal text-[15px] items-center">{{$client->title. ' '.$client->firstname . ' '.$client->lastname }}</td>
-
                     <td class="p-4 font-normal text-[15px] items-center">{{$client->phone_number}}</td>
                     <td class="p-4 font-normal text-[15px] items-center">{{$client->projects_count}}</td>
                     <td class="p-4 font-normal text-[15px] items-center">{{$client->location}}</td>
-
                   </tr>
                 @endforeach
 

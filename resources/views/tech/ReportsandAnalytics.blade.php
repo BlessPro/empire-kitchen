@@ -11,8 +11,23 @@
 
 
 
+    <div class="flex items-center justify-between mb-6">
 
-                <h2 class="font-semibold text-[30px] mb-6">Reports </h2>
+    <!-- Top Navbar -->
+    <div><h1 class="text-[30px] font-bold">Reports</h1></div>
+    {{-- <div>
+     <button class="flex items-center gap-2 px-4 py-2 text-sm font-semibold border rounded-full text-fuchsia-800 border-fuchsia-800">
+                        Download
+                      </button></div> --}}
+
+                      <a href="{{ route('admin.export-csv') }}">
+      <button class="flex items-center gap-2 px-4 py-2 text-sm font-semibold border rounded-full text-fuchsia-800 border-fuchsia-800">
+Download
+ <!-- #region --></a>
+
+
+
+ </div>
         <div class="mb-20 bg-white shadow rounded-2xl">
             <div class="pt-6 pb-5 pl-6 ">
             <h2 class="text-sm text-gray-600 ">Manage all your Clients here</h2>

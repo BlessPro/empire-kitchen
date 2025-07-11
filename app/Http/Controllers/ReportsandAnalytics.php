@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
+use Illuminate\Http\Response;
 
 class ReportsandAnalytics extends Controller
 {
     //
     public function index()
-    {     
+    {
          $statusCounts = [
         'Pending' => Project::where('status', 'pending')->count(),
         'Ongoing' => Project::where('status', 'in progress')->count(),
@@ -24,7 +25,7 @@ class ReportsandAnalytics extends Controller
         return view('admin.ReportsandAnalytics', compact('projects','statusCounts'));
     }
 
-    
+
     public function create()
     {
         return view('admin.ReportsandAnalytics.create');
@@ -101,7 +102,44 @@ class ReportsandAnalytics extends Controller
     //         'Ongoing' => Project::where('status', 'ongoing')->count(),
     //         'Completed' => Project::where('status', 'completed')->count(),
     //     ];
-    
+
     //     return redirect()->route('admin.ReportsandAnalytics')->with('success', 'Report sent successfully.');
     // }
+    // app/Http/Controllers/ReportController.php
+
+
+
+ public function exportCSV()
+    {
+        $projects = Project::with('measurement')->get();
+
+        $csvHeader = ['Projects', 'Location', 'Measurement Date', 'Width(m/ft)', 'Height(m/ft)', 'Length(m/ft)'];
+
+        $callback = function () use ($projects, $csvHeader) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $csvHeader);
+
+            foreach ($projects as $project) {
+                foreach ($project->measurement as $m) {
+                    fputcsv($file, [
+                        $project->name,
+                        $project->location,
+                        'January 11, 2025', // or $m->created_at->format('F j, Y')
+                        $m->width,
+                        $m->height,
+                        $m->length
+                    ]);
+                }
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, [
+            "Content-Type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=project_measurements.csv",
+        ]);
+    }
+
+
 }

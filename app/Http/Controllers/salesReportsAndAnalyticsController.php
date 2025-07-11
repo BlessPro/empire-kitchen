@@ -12,6 +12,8 @@ class salesReportsAndAnalyticsController extends Controller
 {
     public function index(Request $request)
     {
+
+
         $projects = Project::with(['client', 'techSupervisor'])
             ->latest()
             ->paginate(5);
@@ -20,7 +22,7 @@ class salesReportsAndAnalyticsController extends Controller
             return view('sales.partials.reports-table', compact('projects'))->render();
         }
 
-            // 1. Count of completed projects
+    // 1. Count of completed projects
     $closedDeals = Project::where('status', 'Completed')->count();
 
     // 2. Sum of income amounts
@@ -32,4 +34,17 @@ class salesReportsAndAnalyticsController extends Controller
     return view('sales.ReportsandAnalytics', compact('closedDeals', 'totalRevenue', 'completedFollowUps', 'projects'));
         // return view('sales.ReportsandAnalytics', compact('projects'));
     }
+
+    public function updateStatus(Request $request, $id)
+{
+    $request->validate(['status' => 'required|string']);
+
+    $followUp = FollowUp::findOrFail($id);
+    $followUp->status = $request->status;
+    $followUp->save();
+
+return response()->json(['success' => true, 'message' => 'Status updated']);
+}
+
+
 }

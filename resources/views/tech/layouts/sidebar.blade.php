@@ -4,15 +4,12 @@
 
             {{-- <aside class="flex flex-col justify-between text-white bg-fuchsia-950"> --}}
 
-      <div>
+      <div class="pl-20px">
         <div class="flex items-center justify-center h-20 pt-8 pb-8 pl-8 pr-8 border-purple-700 mt-7 mb-7">
             <img src="/empire-kitchengold-icon.png" alt="Logo" class="w-[190px] h-[160px]" />
           </div>
 
           <!--dashboard-->
-
-
-          <!--testing active dashboard?-->
           <a href="{{ route('tech.dashboard') }}"
    class="group relative flex items-center p-5 transition
           {{ request()->routeIs('tech.dashboard') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
@@ -42,8 +39,6 @@ class="group relative flex items-center p-5 transition
            Client Management
 </a>
 
-
-
                     <!--testing active ProjectManagement?-->
                     <a href="{{ route('tech.ProjectManagement') }}"
                     class="group relative flex items-center p-5 transition
@@ -68,9 +63,7 @@ class="group relative flex items-center p-5 transition
                                          {{ request()->routeIs('tech.AssignDesigners') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
                                          Assign Designers
                            </a>
-                           <!--testing active ProjectManagement?-->
-          <!--Schedule Installation-->
-
+                         <!--Schedule Installation-->
 
                     <!--testing active ScheduleMeasurement?-->
                     <a href="{{ route('tech.ScheduleMeasurement') }}"
@@ -84,12 +77,6 @@ class="group relative flex items-center p-5 transition
                                {{ request()->routeIs('tech.ScheduleMeasurement') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
                                Schedule Measurement
                  </a>
-                           <!--testing active ScheduleMeasurement?-->
-
-          <!--Reports and Analytics-->
-
-
-                              <!--testing active ReportsandAnalytics?-->
                               <a href="{{ route('tech.ReportsandAnalytics') }}"
                               class="group relative flex items-center p-5 transition
                                      {{ request()->routeIs('tech.ReportsandAnalytics') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
@@ -101,13 +88,6 @@ class="group relative flex items-center p-5 transition
                                          {{ request()->routeIs('tech.ReportsandAnalytics') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
                                          Reports and Analytics
                            </a>
-
-
-                                     <!--testing active ReportsandAnalytics?-->
-
-        <!--Project Management-->
-
-                              <!--testing active Settings?-->
                               <a href="{{ route('tech.Settings') }}"
                               class="group relative flex items-center p-5 transition
                                      {{ request()->routeIs('tech.Settings') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
@@ -123,7 +103,6 @@ class="group relative flex items-center p-5 transition
 
            <!--Inbox-->
 
-              <!--testing active Settings?-->
               <a href="{{ route('tech.Inbox') }}"
               class="group relative flex items-center p-5 transition
                      {{ request()->routeIs('tech.Inbox') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
@@ -136,21 +115,11 @@ class="group relative flex items-center p-5 transition
                          Inbox
            </a>
                      <!--testing active Inbox?-->
-
         </nav>
       </div>
 
       <!--Logout-->
 
-
-      {{-- <div class="px-4 py-6">
-        <form method="POST" action="{{ route('logout') }}">
-          @csrf
-          <a :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();" cursor:pointer; class="flex items-center text-sm hover:text-purple-300">
-            <i data-feather="log-out" class="mr-2"></i> {{ __('Log Out') }}
-          </a>
-        </form>
-      </div> --}}
 
       <div class="px-4 py-6">
         <form method="POST" action="{{ route('logout') }}">

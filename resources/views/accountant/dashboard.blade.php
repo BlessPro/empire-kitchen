@@ -23,13 +23,13 @@
 
              <div class="bg-white p-4 rounded-[15px] shadow items-center pt-6 pr-6 pb-5 pl-6">
               <li class="flex items-left">
-                    <span class="ml-1 flex items-center w-10 h-10 bg-fuchsia-900 rounded-full ">
+                    <span class="flex items-center w-10 h-10 ml-1 rounded-full bg-fuchsia-900 ">
                         <i class="fa fa-money" aria-hidden="true"></i>
 
                  <i data-feather="dollar-sign" class="flex items-center mx-auto text-white"></i>
                     </span>
                 </li>
-            <div class="flex items-left justify-between mt-8">
+            <div class="flex justify-between mt-8 items-left">
               <h2 class=" font-semibold text-[14px] ml-1 mb-[-10px] text-gray-500">Total Expense</h2>
             </div>
             @php
@@ -57,7 +57,7 @@
     </p> --}}
 
       <span class="flex items-center w-full h-full mt-[20px] ">
-                <p class="text-gray-500 flex">  {!! $arrowUp1 !!}<span class="text-green-600">
+                <p class="flex text-gray-500">  {!! $arrowUp1 !!}<span class="text-green-600">
                     {{ number_format($percentageChangeE, 2) }}%  </span>&nbsp; vs last month</p>
        </span>
 @elseif ($percentageChangeE < 0)
@@ -71,7 +71,7 @@
     </p> --}}
 
     <span class="flex items-center w-full h-full mt-[20px] ">
-                <p class="text-gray-500 flex">  {!! $arrowDown1 !!}<span class="text-red-600">
+                <p class="flex text-gray-500">  {!! $arrowDown1 !!}<span class="text-red-600">
                     {{ number_format(abs($percentageChangeE), 2) }}%  </span>&nbsp; vs last month</p>
        </span>
 
@@ -82,7 +82,7 @@
 @endif
 {{--
                     <span class="flex items-center w-full h-full mt-[20px] ">
-                <p class="text-gray-500 flex"> <i data-feather="arrow-up" class="text-green-600"> </i> <span class="text-green-600"> 100% </span>&nbsp; vs last month</p>
+                <p class="flex text-gray-500"> <i data-feather="arrow-up" class="text-green-600"> </i> <span class="text-green-600"> 100% </span>&nbsp; vs last month</p>
                     </span> --}}
                 </li>
              </ul>
@@ -94,29 +94,29 @@
 
 <div class="bg-white p-4 rounded-[15px] shadow items-center pt-6 pr-6 pb-5 pl-6">
               <li class="flex items-left">
-                    <span class="ml-1 flex items-center w-10 h-10 bg-red-600 rounded-full ">
+                    <span class="flex items-center w-10 h-10 ml-1 bg-red-600 rounded-full ">
                         <i class="fa fa-money" aria-hidden="true"></i>
 
                  <i data-feather="dollar-sign" class="flex items-center mx-auto text-white"></i>
                     </span>
                 </li>
-            <div class="flex items-left justify-between mt-8">
+            <div class="flex justify-between mt-8 items-left">
               <h2 class=" font-semibold text-[14px] ml-1 mb-[-10px] text-gray-500">Debt</h2>
             </div>
             <div class="grid grid-cols-1 gap-8 md:grid-cols-2 ">
               <!-- Chart -->
               <div class="flex mt-2 ml-1 justify-left items-left">
-              <h2 class=" font-bold text-[35px]  text-gray-900">
+              <h2 class=" font-semibold text-[30px]  text-gray-900">
 
-@php
-    $debt = $totalIncome - $totalExpense;
-@endphp
-
-@if ($debt < 0)
-    <p><strong>Debt:</strong> GH₵ {{ number_format(abs($debt), 2) }}</p>
-@else
-    <p> GH₵ 00.00</p>
-@endif
+        @php
+            $debt = $totalIncome - $totalExpense;
+        @endphp
+                    
+        @if ($debt < 0)
+            <p class="font-bold text-[35px]  text-gray-900">GH₵ {{ number_format(abs($debt), 2) }}</p>
+        @else
+            <p> GH₵ 00.00</p>
+        @endif
 
               </h2>
 
@@ -148,20 +148,20 @@
                     @if ($percentageChangeD > 0)
 
  <span class="flex items-center w-full h-full mt-[20px] ">
-                <p class="text-gray-500 flex">  {!! $arrowUp !!}<span class="text-green-600">
+                <p class="flex text-gray-500">  {!! $arrowUp !!}<span class="text-green-600">
                     {{ number_format($percentageChangeD, 2) }}%  </span>&nbsp; vs last month</p>
        </span>
 
 @elseif ($percentageChangeD < 0)
    <span class="flex items-center w-full h-full mt-[20px] ">
-                <p class="text-gray-500 flex">  {!! $arrowUp !!}<span class="text-red-600">
+                <p class="flex text-gray-500">  {!! $arrowUp !!}<span class="text-red-600">
                     {{ number_format($percentageChangeD, 2) }}%  </span>&nbsp; vs last month</p>
        </span>
 @else
     <p><strong>No Change in Income</strong></p>
 @endif
                     {{-- <span class="flex items-center w-full h-full mt-[20px] ">
-                <p class="text-gray-500 flex"> <i data-feather="arrow-up" class="text-green-600"> </i> <span class="text-green-600"> 100% </span>&nbsp; vs last month</p>
+                <p class="flex text-gray-500"> <i data-feather="arrow-up" class="text-green-600"> </i> <span class="text-green-600"> 100% </span>&nbsp; vs last month</p>
                     </span> --}}
                 </li>
              </ul>
@@ -182,12 +182,12 @@
 <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
 
 <div class="col-span-2 p-4 bg-white rounded-[15px]  shadow">
- <div class="flex justify-between items-center bg-white  rounded-2xl pb-6 w-full max-w-4xl">
+ <div class="flex items-center justify-between w-full max-w-4xl pb-6 bg-white rounded-2xl">
   <div>
-    <p class="text-gray-700 font-semibold text-lg">Total Revenue</p>
-    {{-- <div class="flex items-center space-x-4 mt-1"> --}}
+    <p class="text-lg font-semibold text-gray-700">Total Revenue</p>
+    {{-- <div class="flex items-center mt-1 space-x-4"> --}}
       {{-- <h1 class="text-3xl font-bold text-gray-900">$201,221.05</h1> --}}
-      {{-- <span class="flex items-center px-3 py-1 bg-green-100 text-green-600 text-sm font-semibold rounded-full">
+      {{-- <span class="flex items-center px-3 py-1 text-sm font-semibold text-green-600 bg-green-100 rounded-full">
         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
         </svg>
@@ -200,13 +200,13 @@
 
 
       <span class="flex items-center w-full h-full mt-[20px] ">
-                <p class="text-gray-500 flex">  {!! $arrowUpI !!}<span class="text-green-600">
+                <p class="flex text-gray-500">  {!! $arrowUpI !!}<span class="text-green-600">
                     {{ number_format($percentageChangeI, 2) }}%  </span></p>
        </span>
 
- <div class="flex items-center space-x-4 mt-1">
+ <div class="flex items-center mt-1 space-x-4">
       {{-- <h1 class="text-3xl font-bold text-gray-900">$201,221.05</h1> --}}
-      <span class="flex items-center px-3 py-1 bg-green-100 text-green-600 text-sm font-semibold rounded-full">
+      <span class="flex items-center px-3 py-1 text-sm font-semibold text-green-600 bg-green-100 rounded-full">
         {!! $arrowUpI !!}
  {{ number_format($percentageChangeI, 2) }}%      </span>
     </div>
@@ -214,15 +214,15 @@
 
 
 @elseif ($percentageChangeI < 0)
- <div class="flex items-center space-x-4 mt-1">
+ <div class="flex items-center mt-1 space-x-4">
       {{-- <h1 class="text-3xl font-bold text-gray-900">$201,221.05</h1> --}}
-      <span class="flex items-center px-3 py-1 bg-red-100 text-red-600 text-sm font-semibold rounded-full">
+      <span class="flex items-center px-3 py-1 text-sm font-semibold text-red-600 bg-red-100 rounded-full">
         {!! $arrowDownI !!}
  {{ number_format(abs($percentageChangeI), 2) }}%      </span>
     </div>
 
     {{-- <span class="flex items-center w-full h-full mt-[20px] ">
-                <p class="text-gray-500 flex">  {!! $arrowDownI !!}<span class="text-red-600">
+                <p class="flex text-gray-500">  {!! $arrowDownI !!}<span class="text-red-600">
                     {{ number_format(abs($percentageChangeI), 2) }}%  </span>&nbsp; vs last month</p>
        </span> --}}
 
@@ -254,55 +254,29 @@
 
 </div>
 
-
-{{--testing code--}}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 {{--recent activities--}}
 
-<div class="bg-white rounded-3xl shadow-md p-6 w-full max-w-md">
-    <div class="flex justify-between items-center mb-4">
+<div class="w-full max-w-md p-6 bg-white shadow-md rounded-3xl">
+    <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold text-gray-800">Recent Transactions</h2>
-        <button class="text-gray-400 hover:text-gray-600 text-xl">⋮</button>
+        <button class="text-xl text-gray-400 hover:text-gray-600">⋮</button>
     </div>
 
     <!-- Transaction item -->
     <div class="space-y-4">
         @foreach ($RecentIncomes as $RecentIncome)
 <!-- Repeat this block for each transaction -->
-        <div class="flex justify-between items-center border-b pb-4">
+        <div class="flex items-center justify-between pb-4 border-b">
             <div class="flex items-center space-x-4">
-                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="w-12 h-12 rounded-full object-cover">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="object-cover w-12 h-12 rounded-full">
                 <div>
-                    <p class="text-gray-800 font-semibold">{{$RecentIncome->client->title. ' ' . $RecentIncome->client->firstname.' '. $RecentIncome->client->lastname}}</p>
+                    <p class="font-semibold text-gray-800">{{$RecentIncome->client->title. ' ' . $RecentIncome->client->firstname.' '. $RecentIncome->client->lastname}}</p>
                     <p class="text-sm text-gray-500">{{$RecentIncome->date}}</p>
                 </div>
             </div>
-            <p class="text-green-600 font-semibold">+ {{$RecentIncome->amount}}</p>
+            <p class="font-semibold text-green-600">+ {{$RecentIncome->amount}}</p>
         </div>
         @endforeach
-
-
-
-
-
-
 
     </div>
 </div>
@@ -312,43 +286,11 @@
 
 {{--table--}}
 
-<div class="shadow-md  min-w-full mt-6 pb-[3px] text-left bg-white rounded-[20px]">
-
-      <table class="min-w-full mt-6 text-left bg-white rounded-[20px]">
-       <thead class="text-sm text-gray-600 bg-gray-100">
-
-         <tr>
-
-           <th class="p-4 font-mediumt text-[15px]">Client Name</th>
-           <th class="p-4 font-mediumt text-[15px]">Amount</th>
-           <th class="p-4 font-mediumt text-[15px]">Due Date</th>
-           <th class="p-4 font-mediumt text-[15px]">Status</th>
-
-         </tr>
-       </thead>
-       <tbody>
-
-
-         @foreach ($DashboardIncomeTables as $DashboardIncomeTable)
-         <tr class="border-t hover:bg-gray-50">
-             <td class="p-4 font-normal text-[15px]">{{$DashboardIncomeTable->client->title.' '.$DashboardIncomeTable->client->firstname.' '.$DashboardIncomeTable->client->lastname}} </td>
-             <td class="p-4 font-normal text-[15px]">{{$DashboardIncomeTable->amount}}</td>
-             <td class="p-4 font-normal text-[15px]"> {{$DashboardIncomeTable->date}}</td>
-             <td class="inline-block text-[15px] bg-blue-100 text-blue-700 mt-3 px-4 py-[3px] border border-blue-500 rounded-full"> Pending payment </td>
-            </tr>
-        @endforeach
-
-       </tbody>
-      </table>
-
-      <div class="mt-4 mb-2 ml-5 mr-2">
-        {{$DashboardIncomeTables->links('pagination::tailwind') }}
-      </div>
+<div id="followup-table-container" class="shadow-md  min-w-full mt-6 pb-[3px] text-left bg-white rounded-[20px]">
+    @include('accountant.partials.dashboard-table')
+    {{-- @include('accountant.partials.dashboard-table', ['followUps' => $followUps]) --}}
 
 </div>
-
-
-
 
       </div>
 </div>

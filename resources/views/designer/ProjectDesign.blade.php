@@ -37,17 +37,7 @@
 @endif
 
 <form action="{{ route('design.store') }}" method="POST" enctype="multipart/form-data">
-        {{-- <div class="mb-4">
-        @csrf
-          <label class="block mb-3 text-sm font-medium">Select the project for your design upload</label>
-
-          <select class="w-full border-gray-200 rounded-[10px] px-4 py-2 mb-6" required>
-        <option value="">-- Choose Project --</option>
-        @foreach($projects as $project)
-            <option value="{{ $project->id }}">{{ $project->name }}</option>
-        @endforeach
-    </select> --}}
-        {{-- </div> --}}
+       
 
 
 {{--testing--}}

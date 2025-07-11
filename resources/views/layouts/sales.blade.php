@@ -5,12 +5,12 @@
   <!--Modified for laravel/blade on 26.05.2025 -->
 
 
- @include('admin.layouts.header')
+ @include('sales.layouts.header')
 
 <body class="bg-[#F9F7F7] ">
     <div class="flex min-h-screen">
 
-        {{-- Admin Sidebar --}}
+        {{-- sales Sidebar --}}
         @include('sales.layouts.sidebar')
 
         {{-- Sidebar --}}

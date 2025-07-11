@@ -15,93 +15,48 @@
 
                 <h1 class="font-semibold text-[30px] mb-3"> Overview </h1>
 
-
-      <!-- Overview Cards -->
-      <div class="grid grid-cols-3 gap-6 mb-6">
-
-
-          {{--new 1--}}
-
-           <div class="bg-white p-4 rounded-[25px] shadow items-center">
-            <div class="flex items-center justify-between mt-2">
-              <h2 class=" font-semibold text-[25px] ml-5 text-gray-900">Assigned Projects</h2>
-            </div>
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-              <!-- Chart -->
-              <div class="flex mt-5 ml-4 justify-left items-left">
-              <h2 class=" font-Normal text-[75px] text-gray-900">{{ $totalAssigned }}</h2>
-            </div>
-
-             <span class="flex flex-col items-center justify-center pt-10">
-              <!-- Legend -->
-              <ul class="items-center space-y-3 ">
-                <li class="flex items-center ">
-                    <span class="flex items-center w-[65px] h-[65px] bg-[#FF730033] rounded-full ">
-                 <i data-feather="user" class="flex items-center mx-auto text-[#FF7300] "></i>
-                    </span>
-                </li>
-             </ul>
-            </span>
-           </div>
-         </div>
-
-         {{-- New 1--}}
-
-          {{--new 2--}}
-
-           <div class="bg-white p-4 rounded-[25px] shadow items-center">
-            <div class="flex items-center justify-between mt-6">
-              <h2 class=" font-semibold text-[25px] ml-5 text-gray-900">Completed</h2>
-            </div>
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-2 ">
-              <!-- Chart -->
-              <div class="flex mt-5 ml-4 justify-left items-left">
-              <h2 class=" font-Normal text-[75px] text-gray-900">{{ $completed}}</h2>
-            </div>
-
-             <span class="flex flex-col items-center justify-center">
-              <!-- Legend -->
-              <ul class="items-center space-y-3">
-                <li class="flex items-center">
-                    <span class="flex items-center w-20 h-20 bg-green-100 rounded-full ">
-                 <i data-feather="check-circle" class="flex items-center mx-auto text-green-500 "></i>
-                    </span>
-                </li>
-             </ul>
-            </span>
-           </div>
-         </div>
-
-         {{-- New 2--}}
+<div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-3">
+  <!-- Closed Deals -->
+  <div class="flex justify-between items-center bg-white shadow rounded-[20px] p-6">
+    <div>
+      <p class="mb-6 text-[22px] font-semibold text-gray-700">Assigned Projects</p>
+      <h2 class="text-[50px] font-semibold ">{{ $totalAssigned }}</h2>
+    </div>
+    <div class="flex items-center justify-center w-[70px] h-[70px] bg-orange-100 rounded-full">
+           {{-- <i class=" text-orange-500 w-5 h-5" data-feather="dollar-sign"></i> --}}
+           <iconify-icon icon="iconamoon:profile-light" width="24" style="color: #ff9800;"></iconify-icon>
 
 
-          {{--new3 --}}
+    </div>
+  </div>
 
-           <div class="bg-white p-4 rounded-[25px] shadow items-center">
-            <div class="flex items-center justify-between mt-6">
-              <h2 class=" font-semibold text-[25px] ml-5 text-gray-900">Due soon</h2>
-            </div>
-            <div class="grid grid-cols-1 gap-8 md:grid-cols-2 ">
-              <!-- Chart -->
-              <div class="flex mt-5 ml-4 justify-left items-left">
-              <h2 class=" font-Normal text-[75px] text-gray-900">{{ $dueSoon }}</h2>
-            </div>
+  <!-- Revenue Generated -->
+  <div class="flex justify-between items-center bg-white shadow rounded-[20px] p-6">
+    <div>
+      <p class="mb-6 text-[22px] font-semibold text-gray-700">Completed</p>
+      <h2 class="text-[50px] font-semibold">{{ $completed}}</h2>
+    </div>
+    <div class="flex items-center justify-center w-[70px] h-[70px] bg-green-100 rounded-full">
+           {{-- <i class=" text-green-500 w-5 h-5" data-feather="dollar-sign"></i> --}}
+           <iconify-icon icon="lets-icons:check-ring-light" width="24"  class="text-green-500"></iconify-icon>
 
-             <span class="flex flex-col items-center justify-center">
-              <!-- Legend -->
-              <ul class="items-center space-y-3">
-                <li class="flex items-center">
-                    <span class="flex items-center w-20 h-20 bg-red-100 rounded-full ">
-                 <i data-feather="alert-triangle" class="flex items-center mx-auto text-red-500 "></i>
-                    </span>
-                </li>
-             </ul>
-            </span>
-           </div>
-         </div>
+    </div>
+  </div>
 
-         {{-- New 3--}}
-              </div>
+  <!-- Completed Follow-ups -->
+  <div class="flex justify-between items-center bg-white shadow rounded-[20px] p-6">
+    <div>
+      <p class="mb-6 text-[22px] font-semibold text-gray-700">Due Soon</p>
+      <h2 class="text-[50px] font-semibold">{{ $dueSoon }}</h2>
+    </div>
+    <div class="flex items-center justify-center w-[70px] h-[70px] bg-red-100 rounded-full">
+
+           <iconify-icon icon="mynaui:danger-triangle" width="24"  class="text-red-500"></iconify-icon>
+
+    </div>
+  </div>
+</div>
+   
 
 
 <div class="flex flex-col gap-6 font-sans text-black lg:flex-row ">

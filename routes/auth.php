@@ -13,6 +13,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TechDashboardController;
 use App\Http\Controllers\DesignerDashboardController;
 use App\Http\Controllers\accountantDashboardController;
+use App\Http\Controllers\salesDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -118,7 +119,7 @@ Route::middleware(['auth', 'role:accountant'])->group(function () {
 
 // Sales Accountant
 Route::middleware(['auth', 'role:sales_accountant'])->group(function () {
-    Route::get('/sales/dashboard', function () {
-        return view('sales.dashboard');
-    })->name('sales.dashboard');
+    Route::get('/sales/dashboard', [salesDashboardController::class, 'index'])
+        ->name('sales.dashboard');
 });
+

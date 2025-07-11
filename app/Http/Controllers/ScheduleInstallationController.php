@@ -253,6 +253,26 @@ public function update(Request $request, $id)
         return redirect()->route('admin.ScheduleInstallation.index')->with('success', 'Sender blocked successfully.');
     }
 
+
+    public function calendarEvents()
+    {
+        $installations = Installation::with(['client', 'project'])->get();
+
+        $events = $installations->map(function ($item) {
+            return [
+                'title' => $item->client->firstname . ' - ' . $item->project->name,
+                'start' => $item->start_time,
+                'end'   => $item->end_time,
+                'extendedProps' => [
+                    'client' => $item->client,
+                    'project' => $item->project,
+                    'notes' => $item->notes,
+                ]
+            ];
+        });
+
+        return response()->json($events);
+    }
 // public function destroy($id)
 // {
 //     $installation = Installation::find($id);
@@ -268,12 +288,25 @@ public function update(Request $request, $id)
 // }
 
 
+// public function destroy($id)
+// {
+//     Installation::findOrFail($id)->delete();
+//     return response()->json(['success' => true]);
+// }
+
 public function destroy($id)
 {
-    Installation::findOrFail($id)->delete();
-    return response()->json(['success' => true]);
-}
+    $installation = Installation::find($id);
 
+    if (!$installation) {
+        return response()->json(['success' => false, 'message' => 'Installation not found'], 404);
+    }
+
+    $installation->delete();
+    Log::info("Installation deleted: $id");
+
+    return response()->json(['success' => true, 'message' => 'Installation deleted successfully']);
+}
 
 
 

@@ -15,25 +15,18 @@ use Illuminate\Support\Facades\Validator;
 
 class techClientController extends Controller
 {
+public function updateStatus(Request $request, Project $project)
+{
+    $request->validate([
+        'status' => 'required|in:completed,pending,in progress,cancelled',
+    ]);
 
-// public function clientProjects()
-// {
-//     $techSupervisorId = Auth::id(); // Get logged-in user's ID
+    $project->status = $request->status;
+    $project->save();
 
-//     $clients = Client::whereHas('projects', function ($query) use ($techSupervisorId) {
-//         $query->where('current_stage', 'Measurement')
-//               ->where('tech_supervisor_id', $techSupervisorId); // filter by supervisor
-//     })
-//     ->with(['projects' => function ($query) use ($techSupervisorId) {
-//         $query->where('current_stage', 'Measurement')
-//               ->where('tech_supervisor_id', $techSupervisorId)
-//               ->with('measurement');
-//     }])
-//     ->orderBy('created_at', 'desc')
-//     ->paginate(5); // Paginate the results
+    return response()->json(['success' => true, 'message' => 'Status updated']);
+}
 
-//     return view('tech.ClientManagement', compact('clients'));
-// }
 
 public function clientProjects()
 {
@@ -65,6 +58,18 @@ public function showProjectname(Project $project)
     $project->load(['client', 'measurement', 'installation', 'design','comments.user']);
 
     return view('tech.ClientManagement.projectInfo', compact('project'));
+}
+
+public function updateDueDate(Request $request, Project $project)
+{
+    $request->validate([
+        'due_date' => 'required|date',
+    ]);
+
+    $project->due_date = $request->due_date;
+    $project->save();
+
+    return response()->json(['success' => true]);
 }
 
 

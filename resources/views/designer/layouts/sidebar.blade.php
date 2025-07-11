@@ -2,8 +2,6 @@
     <!-- Sidebar -->
     <aside class="fixed top-0 left-0 w-64 h-screen bg-fuchsia-950 text-white shadow-lg z-50 flex flex-col justify-between">
 
-            {{-- <aside class="bg-fuchsia-950 text-white flex flex-col justify-between"> --}}
-
       <div>
         <div class="flex items-center justify-center h-20 border-purple-700 pt-8 pr-8 pb-8 pl-8 mt-7 mb-7">
             <img src="/empire-kitchengold-icon.png" alt="Logo" class="w-[190px] h-[160px]" />
@@ -11,7 +9,7 @@
 
 
 
-          <!--testing active dashboard?-->
+          <!-- active dashboard?-->
           <a href="{{ route('designer.dashboard') }}"
    class="group relative flex items-center p-5 transition
           {{ request()->routeIs('designer.dashboard') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
@@ -23,10 +21,10 @@
               {{ request()->routeIs('designer.dashboard') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
     Dashboard
 </a>
-          <!--testing active dashboard?-->
+          <!-- active dashboard?-->
 
 
-<!--testing active dashboard?-->
+<!-- active dashboard?-->
 <a href="{{ route('designer.AssignedProjects') }}"
 class="group relative flex items-center p-5 transition
        {{ request()->routeIs('designer.AssignedProjects') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
@@ -39,7 +37,7 @@ class="group relative flex items-center p-5 transition
            Assigned Projects
 </a>
 
-                    <!--testing active ProjectManagement?-->
+                    <!-- active ProjectManagement?-->
                     <a href="{{ route('designer.ProjectDesign') }}"
                     class="group relative flex items-center p-5 transition
                            {{ request()->routeIs('designer.ProjectDesign') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
@@ -52,10 +50,10 @@ class="group relative flex items-center p-5 transition
                                Project Design
                  </a>
 
-                           <!--testing active ProjectDesign?-->
+                           <!-- active ProjectDesign?-->
 
 
-                    <!--testing active ScheduleInstallation?-->
+                    <!-- active ScheduleInstallation?-->
                     <a href="{{ route('designer.TimeManagement') }}"
                     class="group relative flex items-center p-5 transition
                            {{ request()->routeIs('designer.TimeManagement') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
@@ -67,24 +65,23 @@ class="group relative flex items-center p-5 transition
                                {{ request()->routeIs('designer.TimeManagement') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
                                Timeline Management
                  </a>
-                           <!--testing active TimelineInstallation?-->
 
 
-                              <!--testing active Settings?-->
-                              <a href="{{ route('designer.Settings') }}"
-                              class="group relative flex items-center p-5 transition
-                                     {{ request()->routeIs('designer.Settings') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
-                               <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
-                                            {{ request()->routeIs('designer.Settings') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
-                                            transition-transform origin-left"></span>
-                               <i data-feather="settings"
-                                  class="feather-icon mr-3 group
-                                         {{ request()->routeIs('designer.Settings') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
-                                         Settings
-                           </a>
-                                     <!--testing active Settings?-->
+              <!-- active Settings?-->
+              <a href="{{ route('designer.Settings') }}"
+              class="group relative flex items-center p-5 transition
+                     {{ request()->routeIs('designer.Settings') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
+               <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
+                            {{ request()->routeIs('designer.Settings') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
+                            transition-transform origin-left"></span>
+               <i data-feather="settings"
+                  class="feather-icon mr-3 group
+                         {{ request()->routeIs('designer.Settings') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
+                         Settings
+           </a>
+                     <!-- active Settings?-->
 
-              <!--testing active Settings?-->
+              <!-- active Settings?-->
               <a href="{{ route('designer.inbox') }}"
               class="group relative flex items-center p-5 transition
                      {{ request()->routeIs('designer.inbox') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
@@ -96,7 +93,7 @@ class="group relative flex items-center p-5 transition
                          {{ request()->routeIs('designer.inbox') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
                          Inbox
            </a>
-                     <!--testing active Inbox?-->
+                     <!-- active Inbox?-->
 
         </nav>
       </div>

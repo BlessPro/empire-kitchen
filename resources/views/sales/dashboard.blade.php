@@ -2,6 +2,17 @@
 <x-sales-layout>
 
 
+      @php
+        $statusClasses = [
+            'Medium' => 'bg-blue-100 text-blue-700 px-2 py-1 border border-blue-500 rounded-full text-xs',
+            'High' => 'bg-red-100 text-red-700 px-2 py-1 border border-red-500 rounded-full text-xs',
+            'Low' => 'bg-yellow-100 text-yellow-700 px-2 py-1 border border-yellow-500 rounded-full text-xs',
+        ];
+
+
+        $defaultClass = 'bg-gray-100 text-gray-800';
+    @endphp
+
  <main class="ml-64 mt-[100px] flex-1 bg-gray-100 min-h-screen  items-center">
             <div class=" bg-[#F9F7F7]">
              <div class="mb-[20px]">
@@ -34,19 +45,19 @@
                             <ul class="items-center space-y-3">
                                 <li class="flex items-center">
                                 <span class="w-10 h-5 mr-3 bg-[#FF7300] rounded-full"></span>
-                                <span class="text-gray-800 font-normal text-[15px]">New Clients </span>
+                                <span class="text-gray-800 font-normal text-[15px]">New Clients ({{$chartData['newClients']}}) </span>
                               </li>
                               <li class="flex items-center">
                                 <span class="w-10 h-5 mr-3 bg-[#6B1E72] rounded-full"></span>
-                                <span class="text-gray-800 font-normal text-[15px]">In progress </span>
+                                <span class="text-gray-800 font-normal text-[15px]">In progress ({{$chartData['inProgress']}}) </span>
                               </li>
                               <li class="flex items-center">
                                 <span class="w-10 h-5 mr-3 bg-[#EAB308] rounded-full"></span>
-                                <span class="text-gray-800 font-normal text-[15px]">Followups  </span>
+                                <span class="text-gray-800 font-normal text-[15px]">Followups ({{$chartData['followUps']}}) </span>
                               </li>
                               <li class="flex items-center">
                                 <span class="w-10 h-5 rounded-[15px] bg-[#5687F2]  mr-3"></span>
-                                <span class="text-gray-800 font-normal text-[15px]">Closed </span>
+                                <span class="text-gray-800 font-normal text-[15px]">Closed ({{$chartData['closed']}})</span>
                               </li>
 
 
@@ -76,46 +87,94 @@
     {{-- Doughnut ends --}}
 
 </div>
+
+
+  <div id="followups-table-wrapper">
+            @include('sales.partials.dashboard-table', ['followUps' => $followUps])
+
+        {{-- @include('sales.partials.dashboard-table', ['projects' => $projects]) --}}
+
+
+    </div>
+
 </div>
             </div>
  </main>
 
 
- 
+
 <!-- #region Chart Initialization   -->
 
  <script>
+//     document.addEventListener('DOMContentLoaded', function () {
+//         // Initialize the charts
+//         const ctx1 = document.getElementById('projectChart1').getContext('2d');
+//         const projectChart1 = new Chart(ctx1, {
+//            type: 'doughnut',
+// data: {
+//   labels: ['New Clients', 'In Progress', 'Follow-ups', 'Closed'],
+//   datasets: [{
+//     data: [5, 10, 7, 9],
+//     backgroundColor: ['#FF7300', '#6B1E72', '#EAB308', '#5687F2'],
+//     borderWidth: 1,
+//     borderColor: '#fff',
+//     hoverOffset: 8,
+//     borderRadius: 7,
+//     spacing: 4,
+//   }]
+// },
+// options: {
+//   cutout: '70%',
+//   plugins: {
+//     legend: {
+//       display: false,
+//       position: 'right',
+//       borderRadius: 5,
+//     },
+
+//   }
+// }
+// });
+
+//     });
+</script>
+<script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Initialize the charts
+        const chartData = @json($chartData);
+
         const ctx1 = document.getElementById('projectChart1').getContext('2d');
-        const projectChart1 = new Chart(ctx1, {
-           type: 'doughnut',
-data: {
-  labels: ['New Clients', 'In Progress', 'Follow-ups', 'Closed'],
-  datasets: [{
-    data: [5, 10, 7, 9],
-    backgroundColor: ['#FF7300', '#6B1E72', '#EAB308', '#5687F2'],
-    borderWidth: 1,
-    borderColor: '#fff',
-    hoverOffset: 8,
-    borderRadius: 7,
-    spacing: 4,
-  }]
-},
-options: {
-  cutout: '70%',
-  plugins: {
-    legend: {
-      display: false,
-      position: 'right',
-      borderRadius: 5,
-    },
-
-  }
-}
-});
-
+        new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['New Clients', 'In Progress', 'Follow-ups', 'Closed'],
+                datasets: [{
+                    data: [
+                        chartData.newClients,
+                        chartData.inProgress,
+                        chartData.followUps,
+                        chartData.closed
+                    ],
+                    backgroundColor: ['#FF7300', '#6B1E72', '#EAB308', '#5687F2'],
+                    borderWidth: 1,
+                    borderColor: '#fff',
+                    hoverOffset: 8,
+                    borderRadius: 7,
+                    spacing: 4,
+                }]
+            },
+            options: {
+                cutout: '70%',
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
     });
+</script>
+
+
+<script>
+
 
             // Initialize the revenue chart
    document.addEventListener('DOMContentLoaded', function () {
@@ -154,8 +213,36 @@ options: {
     });
 
 
-    
+
   </script>
 
-   
+{{-- Follow-up Pagination --}}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    loadFollowupPagination();
+
+    function loadFollowupPagination() {
+        document.querySelectorAll('#followups-table-wrapper .pagination a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const url = this.getAttribute('href');
+
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('followups-table-wrapper').innerHTML = html;
+                    loadFollowupPagination(); // re-bind after pagination reload
+                });
+            });
+        });
+    }
+});
+</script>
+
+
 </x-sales-layout>

@@ -61,6 +61,7 @@ use App\Http\Controllers\SalesFollowUpController;
 use App\Http\Controllers\SalesClientController;
 use App\Http\Controllers\salesReportsAndAnalyticsController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\MeasurementScheduleController;
 
 
 Route::get('/', function () {
@@ -94,36 +95,32 @@ Route::get('/dashboard', function () {
     //for the project info
 
     Route::get('/admin/projects/{project}/info2', [ClientManagementController::class, 'showProjectname'])->name('admin.projects.info');
-    Route::get('/admin/projects/{project}/info', [ClientManagementController::class, 'showProjectname'])->name('admin.clients.projects');
+    Route::get('/admin/projects/{project}/info', [ClientManagementController::class, 'showClientProjects'])->name('admin.clients.projects');
 
     //deleting project from the dashboard
     Route::delete('admin/dashboard/projects/{id}', [ProjectManagementController::class, 'destroy'])->name('projects.destroy');
     //storing comment
-
     Route::post('/admin/projects/{project}/comments', [CommentController::class, 'store'])->name('project.comment.store');
-
-
     // Route::post('/clients', [ClientManagementController::class, 'store'])->name('clients.store');
     Route::get('/admin/settings', [Settings::class, 'showUsers'])->name('admin.Settings')->middleware('auth');
-
    //for the edit pop up
-
     Route::get('/admin/update/{id}', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::post('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
     Route::post('/admin/settings/', [UserController::class, 'UpdateLoggedUser'])->name('admin.settings.update');
     //for rditing logged user
-    Route::post('/admin/ScheduleInstallation/{id}', [ScheduleInstallationController::class, 'update'])->name('admin.ScheduleInstallation.update');
+    Route::post('/admin/ScheduleInstallation/{id}', [InstallationController::class, 'update'])->name('admin.ScheduleInstallation.update');
+    Route::get('/TimeManagement/events', [InstallationController::class, 'calendarEvents']);
+Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destroy']);
 
+
+    // Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destroy']);
 
     //delete user
     Route::delete('admin/dashboard/user/{id}', [settings::class, 'destroy'])->name('settings.destroy');
-
     //storing the user
     Route::post('/users', [settings::class, 'store'])->name('users.store');
-
     //storing comment
     Route::get('/admin/Inbox', [InboxController::class, 'index'])->name('admin.Inbox')->middleware('auth');
-
     // For the MessageSending
     Route::middleware(['auth'])->group(function () {
     Route::get('/inbox/{userId?}', [InboxController::class, 'index'])->name('inbox');
@@ -133,6 +130,8 @@ Route::get('/dashboard', function () {
 
 
     Route::get('/admin/ReportsandAnalytics', [ReportsandAnalytics::class, 'index'])->name('admin.ReportsandAnalytics')->middleware('auth');
+    Route::get('/admin/export-csv', [ReportsandAnalytics::class, 'exportCSV'])->name('admin.export-csv');
+
     Route::get('/admin/ScheduleInstallation', [ScheduleInstallationController::class, 'index'])->name('admin.ScheduleInstallation')->middleware('auth');
 
     //navigating with tech user login
@@ -140,7 +139,15 @@ Route::get('/dashboard', function () {
     Route::get('/tech/ClientManagement', [techClientController::class, 'index'])->name('tech.ClientManagement');
     Route::get('/tech/ProjectManagement', [techProjectManagementController::class, 'index'])->name('tech.ProjectManagement');
     Route::get('/tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'index'])->name('tech.ReportsandAnalytics');
-    Route::get('/tech/ScheduleMeasurement', [techScheduleMeasurementController::class, 'index'])->name('tech.ScheduleMeasurement');
+    //Route::get('/tech/ScheduleMeasurement', [MeasurementScheduleController::class, 'index'])->name('tech.ScheduleMeasurement');
+    Route::prefix('tech/ScheduleMeasurement')->group(function () {
+    Route::get('/', [MeasurementScheduleController::class, 'index'])->name('tech.ScheduleMeasurement');
+    Route::get('/events', [MeasurementScheduleController::class, 'events'])->name('tech.ScheduleMeasurement.events');
+    Route::post('/store', [MeasurementScheduleController::class, 'store']);
+    Route::put('/{id}', [MeasurementScheduleController::class, 'update']);
+    Route::delete('/{id}', [MeasurementScheduleController::class, 'destroy']);
+});
+
     Route::get('/tech/Settings', [techSettingsController::class, 'index'])->name('tech.Settings');
     Route::get('/tech/Inbox', [techInboxController::class, 'index'])->name('tech.Inbox');
     Route::get('/tech/AssignDesigners', [techAssignDesignersController::class, 'index'])->name('tech.AssignDesigners');
@@ -156,6 +163,12 @@ Route::get('/dashboard', function () {
 
     //for the viewing the client projects
     Route::get('/tech/projects/{project}/info', [techClientController::class, 'showProjectname'])->name('tech.projects.info');
+    //updating the status
+    Route::put('/project/{project}/status', [techClientController::class, 'updateStatus'])->name('project.status.update');
+    //updating the date
+    Route::post('/tech/project/{project}/update-due-date', [techClientController::class, 'updateDueDate'])->name('tech.project.updateDueDate');
+    // Route::post('/tech/project/{id}/update-due-date', [ProjectController::class, 'updateDueDate']);
+
     // comments
     Route::post('/tech/projects/{project}/comments', [CommentController::class, 'store'])->name('techproject.comment.store');
 
@@ -221,10 +234,10 @@ Route::get('/dashboard', function () {
     // Route::get('/TimeManagement/events', [DesignerTimeManagementController::class, 'calendarEvents'])->name('TimeManagement.events');
 
 
-Route::middleware(['auth'])->prefix('designer')->name('designer.')->group(function () {
-    Route::get('/designs/viewuploads', [DesignerUploadController::class, 'index'])->name('designs.viewuploads');
-    Route::get('/designs/Upload/{design}', [DesignerUploadController::class, 'show'])->name('designs.Upload');
-});
+    Route::middleware(['auth'])->prefix('designer')->name('designer.')->group(function () {
+        Route::get('/designs/viewuploads', [DesignerUploadController::class, 'index'])->name('designs.viewuploads');
+        Route::get('/designs/Upload/{design}', [DesignerUploadController::class, 'show'])->name('designs.Upload');
+    });
 
 
     // comments
@@ -238,6 +251,9 @@ Route::middleware(['auth'])->prefix('designer')->name('designer.')->group(functi
         ->where('current_stage', '<>', 'installation') // only those not yet installed
         ->get(['id', 'name']);
     });
+    Route::middleware(['auth'])->prefix('designer')->name('designer.')->group(function () {
+      Route::get('/uploads', [DesignerUploadController::class, 'allUploads'])->name('uploads');
+        Route::get('/uploads/{project}', [DesignerUploadController::class, 'viewProjectUploads'])->name('upload.view');});
 // Route::prefix('admin')->group(function () {
 //     Route::delete('/installations/{id}', [InstallationController::class, 'destroy']);
 // });
@@ -317,5 +333,6 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
     Route::get('/sales/ClientManagement/filter', [salesClientController::class, 'filter'])->name('sales.ClientManagement.filter');
     Route::get('/sales/ReportsandAnalytics', [salesReportsAndAnalyticsController::class, 'index'])->name('sales.ReportsandAnalytics');
     Route::get('/sales/income/chart-data', [accountantExpensesController::class, 'getMonthlyChartData']);
+    Route::post('/sales/followups/{id}/update-status', [salesReportsAndAnalyticsController::class, 'updateStatus']);
 
 require __DIR__.'/auth.php';

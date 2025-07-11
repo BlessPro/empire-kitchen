@@ -33,5 +33,9 @@ public function invoices() {
 }
 
 
+public function followUps()
+{
+    return $this->hasMany(FollowUp::class);
+}
 
 }
