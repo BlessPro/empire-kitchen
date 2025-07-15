@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Models\User;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -57,17 +58,35 @@ private function redirectBasedOnRole(): string
 }
 
 
-    /**
-     * Destroy an authenticated session.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        Auth::guard('web')->logout();
+    // /**
+    //  * Destroy an authenticated session.
+    //  */
+    // public function destroy(Request $request): RedirectResponse
+    // {
+    //     Auth::guard('web')->logout();
 
-        $request->session()->invalidate();
+    //     $request->session()->invalidate();
 
-        $request->session()->regenerateToken();
+    //     $request->session()->regenerateToken();
 
-        return redirect('/');
+    //     return redirect('/');
+    // }
+
+public function destroy(Request $request): RedirectResponse
+{
+    if (Auth::check()) {
+        $user = Auth::user();
+        if ($user instanceof \App\Models\User) {
+            $user->last_seen_at = now();
+            $user->save();
+        }
     }
+
+    Auth::guard('web')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/');
+}
+
 }

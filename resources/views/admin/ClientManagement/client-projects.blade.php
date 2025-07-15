@@ -63,9 +63,13 @@
                                 <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->techSupervisor?->name ?? 'Not Assigned' }}</p>
                                 </span>
                             </div>
-                            <div class="flex items-center gap-1 text-sm text-gray-400">
-                                💬 0
-                            </div>
+                                                       @php
+    $unreadCount = $project->comments->filter(fn($c) => $c->unread_by_admin === 0)->count();
+@endphp
+
+<div class="text-sm text-gray-500">
+     💬 {{ $unreadCount }}
+</div>
                         </div>
                     </div>
                 </a>
@@ -106,9 +110,13 @@
                                     <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->techSupervisor?->name ?? 'Not Assigned' }}</p>
                                     </span>
                                 </div>
-                                <div class="flex items-center gap-1 text-sm text-gray-400">
-                                    💬 0
-                                </div>
+                                                         @php
+    $unreadCount = $project->comments->filter(fn($c) => $c->unread_by_admin === 0)->count();
+@endphp
+
+<div class="text-sm text-gray-500">
+     💬 {{ $unreadCount }}
+</div>
                             </div>
                         </div>
                         </a>
@@ -142,14 +150,18 @@
                             <div class="flex items-center justify-between mt-4">
                                 <div class="flex items-center gap-3">
                                     <img
-                                    
+
                                      alt="technical supervisor" class="w-8 h-8 rounded-full">
                                     <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->techSupervisor?->name ?? 'Not Assigned' }}</p>
                                     </span>
                                 </div>
-                                <div class="flex items-center gap-1 text-sm text-gray-400">
-                                    💬 0
-                                </div>
+                                                         @php
+    $unreadCount = $project->comments->filter(fn($c) => $c->unread_by_admin === 0)->count();
+@endphp
+
+<div class="text-sm text-gray-500">
+     💬 {{ $unreadCount }}
+</div>
                             </div>
                         </div>
                     </a>
@@ -293,7 +305,7 @@
     document.getElementById('cancelAddClient').addEventListener('click', function () {
         document.getElementById('addClientModal').classList.add('hidden');
     });
-    
+
 
     document.getElementById('addClientForm').addEventListener('submit', function (e) {
     e.preventDefault();

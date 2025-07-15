@@ -17,7 +17,10 @@ class Settings extends Controller
     //
     public function index()
     {
-        return view('admin.Settings');
+        $users = User::all();
+     return view('admin.settings', compact('users'));
+
+        // return view('admin.Settings');
     }
 
 
@@ -239,11 +242,19 @@ public function store(Request $request)
         // Logic to update the custom dashboards
         return redirect()->route('admin.Settings.index')->with('success', 'Custom dashboards updated successfully.');
     }
-    public function showUsers()
-    {
-        $users = User::orderBy('created_at', 'desc')->paginate(10);
-        return view('admin.settings', compact('users'));
-    }
+    // public function showUsers()
+    // {
+    //     $users = User::orderBy('created_at', 'desc')->paginate(10);
+    //     return view('admin.settings', compact('users'));
+    // }
+public function showUsers()
+{
+    $users = User::select('id', 'name', 'email', 'role', 'profile_pic', 'last_seen_at', 'created_at')
+        ->orderByDesc('created_at')
+        ->paginate(10);
+
+    return view('admin.settings', compact('users'));
+}
 
     public function update(Request $request)
  {

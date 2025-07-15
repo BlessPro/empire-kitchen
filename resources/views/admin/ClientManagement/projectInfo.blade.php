@@ -49,21 +49,7 @@
                     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
                         <!-- Left Section: Project Info -->
                         <div class="p-6 bg-white shadow lg:col-span-2 rounded-xl">
-                          <!-- Breadcrumbs -->
-
-
-                          <!-- Project Header -->
-                          {{-- <div class="flex items-start justify-between">
-                            <div>
-
-                              <h2 class="text-2xl font-semibold text-gray-800">Wardrobe</h2>
-                              <span class="inline-block mt-1 px-3 py-0.5 text-xs bg-green-100 text-green-600 rounded-full">Completed</span>
-                            </div>
-                            <div class="flex text-sm text-right text-gray-600">
-                              <span><i data-feather="home" class="text-fuchsia-900 mr-[12px] ml-[3px]"></i></span>       </span><span class="mr-[12px] font-semibold text-fuchsia-900">{{ $client->title . ' '.$client->firstname . ' '.$client->lastname }}</span> </span>
-                            </div>
-                          </div> --}}
-
+                
 
                           <div class="flex items-center justify-between mb-6">
                             <div class="flex items-center justify-between mb-6">

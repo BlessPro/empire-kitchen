@@ -70,10 +70,12 @@
                               <span class="px-3 py-1 text-sm {{ $statusClasses[$project->status] ?? $defaultClass }}">{{ $project->status }}</span>
                             </td>
                         <td  class="p-4 font-normal text-[15px] text-sm  items-center">
-                              <a cursor:pointer; href="{{ route('tech.projects.info', $project->id) }}">
+                              <a cursor:pointer; href="{{ route('tech.projects.info',
+                               $project->id) }}">
 
-                            <i data-feather="eye" class="text-gray-600 w-5 h-5 "></i> </td>
-                                </a>
+                            <i data-feather="eye" class="text-gray-600 w-5 h-5 "></i>  </a>
+                         </td>
+
 
 
                         </tr>

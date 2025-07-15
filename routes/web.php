@@ -64,6 +64,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\MeasurementScheduleController;
 
 
+
+
 Route::get('/', function () {
     return view('main');
 });
@@ -95,7 +97,7 @@ Route::get('/dashboard', function () {
     //for the project info
 
     Route::get('/admin/projects/{project}/info2', [ClientManagementController::class, 'showProjectname'])->name('admin.projects.info');
-    Route::get('/admin/projects/{project}/info', [ClientManagementController::class, 'showClientProjects'])->name('admin.clients.projects');
+    Route::get('/admin/projects/{client}/info', [ClientManagementController::class, 'showClientProjects'])->name('admin.clients.projects');
 
     //deleting project from the dashboard
     Route::delete('admin/dashboard/projects/{id}', [ProjectManagementController::class, 'destroy'])->name('projects.destroy');

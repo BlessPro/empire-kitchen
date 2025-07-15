@@ -43,6 +43,26 @@
                   </td>
                   <td><span class="px-2 py-1 text-xs text-green-600 bg-green-100 rounded-full">Online</span></td>
                   <td>June 25, 2026, 10:45PM</td>
+                  @php
+    $online = $user->last_seen_at && $user->last_seen_at->gt(now()->subMinutes(2));
+@endphp
+
+<td>
+    @if ($online)
+        <span class="px-2 py-1 text-xs text-green-600 bg-green-100 rounded-full">🟢 Online</span>
+    @else
+        <span class="px-2 py-1 text-xs text-gray-600 bg-gray-100 rounded-full">⚪ Offline</span>
+    @endif
+</td>
+
+<td class="text-sm text-gray-600">
+    @if ($user->last_seen_at)
+        {{ $user->last_seen_at->diffForHumans() }}
+    @else
+        Never active
+    @endif
+</td>
+
                   <td>{{$user->role}}</td>
                   <td class="flex space-x-2">
                     <form action="{{ route('settings.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
@@ -432,7 +452,4 @@ document.getElementById('successOkBtn').addEventListener('click', function () {
             document.getElementById('successModal1').classList.add('hidden');
             location.reload(); // refresh to update the table
         });
-
-
 </script>
-

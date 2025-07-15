@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf; // Import the Pdf facade
 use App\Exports\ProjectsExport; // Ensure this import exists after creating the export class
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator; // Import the Validator facade
+use Illuminate\Support\Facades\Auth; // Import the Auth facade
 
 
 class ClientManagementController extends Controller
@@ -172,15 +173,47 @@ public function store(Request $request)
 // public function showClientProjects(Client $client)
 //written on 30.04.2025, 12:54am
 
+// public function showClientProjects(Client $client)
+// {
+//     $projects = $client->projects;
+
+//     $pending = $projects->where('status', 'pending');
+//     $ongoing = $projects->where('status', 'in progress');
+//     $completed = $projects->where('status', 'completed');
+
+//     return view('admin.ClientManagement.client-projects', compact('client', 'pending', 'ongoing', 'completed'));
+// }
+
+
 public function showClientProjects(Client $client)
 {
-    $projects = $client->projects;
+        $adminId = Auth::id();
 
+    // Closure to count unread comments for each project
+    $withUnreadComments = function ($query) use ($adminId) {
+        $query->withCount([
+            'views as unread_by_admin' => function ($subQuery) use ($adminId) {
+                $subQuery->where('user_id', $adminId);
+            }
+        ]);
+    };
+
+    // Eager load comments and unread counts
+    $projects = $client->projects()
+        ->with(['comments' => $withUnreadComments])
+        ->get();
+
+    // Group by status
     $pending = $projects->where('status', 'pending');
     $ongoing = $projects->where('status', 'in progress');
     $completed = $projects->where('status', 'completed');
 
-    return view('admin.ClientManagement.client-projects', compact('client', 'pending', 'ongoing', 'completed'));
+    return view('admin.ClientManagement.client-projects', compact(
+        'client',
+        'pending',
+        'ongoing',
+        'completed'
+    ));
 }
 
 

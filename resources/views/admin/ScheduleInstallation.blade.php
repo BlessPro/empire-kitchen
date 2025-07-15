@@ -45,8 +45,9 @@
 
 <!-- Tailwind Styles already included in your layout -->
 <!-- Create Installation Button -->
-<button onclick="openModal()" class="px-4 py-2 mt-4 mb-4 text-white rounded bg-fuchsia-950 hover:bg-purple-800">
-    + Create Installation
+<button onclick="openModal()" class="px-4 py-2 mt-4 mb-4 text-white rounded-[20px] bg-fuchsia-950 hover:bg-purple-800">
+            <iconify-icon icon="majesticicons:plus-line" width="18" style="color: #fff;"></iconify-icon>
+ Create Installation
 </button>
 <div class="p-6 bg-white shadow-md rounded-xl">
     <div id="calendar"></div>
@@ -56,17 +57,26 @@
 {{-- installationmodal --}}
 
 <div id="installationModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-800 bg-opacity-50">
-    <div class="w-full max-w-2xl p-6 bg-white shadow-lg rounded-xl">
-        <h2 class="mb-4 text-xl font-bold">Create Installation</h2>
+    <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
+       <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
 
+        <h2 class="mb-4 text-xl font-bold  ">Create Installation</h2>
+
+        <button type="button" onclick="closeModal()"
+        class="px-4 py-2  ">
+        <iconify-icon icon="material-symbols:close-rounded" width="22" style="color: #5A0562;"></iconify-icon>
+    </button>
+       </div>
      {{-- //   <form id="installationForm"> --}}
             <form id="installationForm" method="POST" enctype="multipart/form-data">
 
             @csrf
             <!-- Client -->
             <div class="mb-4">
-                <label class="block font-medium">Client</label>
-                <select id="client_id" name="client_id" class="w-full p-2 border rounded" required>
+                <label class="block mb-2 text-sm font-medium text-gray-700">Client</label>
+                <select id="client_id" name="client_id" class="w-full px-3 py-2 border
+                border-gray-300 rounded-md focus:outline-none
+                focus:ring-2 focus:ring-blue-500" required>
                     <option value="">Select a client</option>
                     @foreach(\App\Models\Client::all() as $client)
                         <option value="{{ $client->id }}"
@@ -78,16 +88,28 @@
                 </select>
             </div>
 
-            <!-- Client Info -->
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <input type="text" id="client_phone" class="p-2 border rounded" placeholder="Phone Number" readonly>
-            <input type="text" id="client_location" class="p-2 border rounded" placeholder="Location" readonly>
+
+
+               <!---CLient info-->
+
+            <div class="flex flex-col gap-4 sm:flex-row">
+
+            <div>
+                <label class="block mb-2 text-sm font-medium text-gray-700">Name</label>
+                <input type="text" id="client_phone" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Phone Number" readonly>
             </div>
+
+            <div>
+                <label class="block mb-2 text-sm font-medium text-gray-700">Email</label>
+            <input type="text" id="client_location" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Location" readonly>
+            </div>
+
+        </div>
 
             <!-- Project -->
             <div class="mb-4">
-                <label class="block font-medium">Project</label>
-                <select id="project_id" name="project_id" class="w-full p-2 border rounded" required>
+                <label class="block mb-2 text-sm font-medium text-gray-700">Project</label>
+                <select id="project_id" name="project_id" class=" w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                     <option value="">Select a project</option>
                     <!-- JS will populate based on selected client -->
                 </select>
@@ -96,29 +118,30 @@
             <!-- Start/End Time -->
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                    <label class="block font-medium">Start Time</label>
-                    <input type="datetime-local" id="start_time" name="start_time" class="w-full p-2 border rounded" required>
+                    <label class="block mb-2 text-sm font-medium text-gray-700">Start Time</label>
+                    <input type="datetime-local" id="start_time" name="start_time" class=" w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
-                    <label class="block font-medium">End Time</label>
-                    <input type="datetime-local" id="end_time" name="end_time" class="w-full p-2 border rounded" required>
+                    <label class="block mb-2 text-sm font-medium text-gray-700">End Time</label>
+                    <input type="datetime-local" id="end_time" name="end_time" class=" w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
             </div>
 
             <!-- Duration -->
             <div class="mb-4">
-                <input type="text" id="duration" class="w-full p-2 border rounded" placeholder="Duration (auto)" readonly>
+                <label class="block mb-2 text-sm font-medium text-gray-700">Duration</label>
+                <input type="text" id="duration" class=" w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Duration (auto)" readonly>
             </div>
 
             <!-- Notes -->
             <div class="mb-4">
-                <textarea name="notes" rows="3" class="w-full p-2 border rounded" placeholder="Additional Notes (optional)"></textarea>
+                <label class="block mb-2 text-sm font-medium text-gray-700">Notes</label>
+                <textarea name="notes" rows="3" class=" w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Additional Notes (optional)"></textarea>
             </div>
 
             <!-- Buttons -->
             <div class="flex justify-end space-x-4">
-                <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
-                <button type="submit" class="px-4 py-2 text-white bg-purple-700 rounded hover:bg-purple-800">Save</button>
+                <button type="submit" class="w-full px-4 py-2 text-white bg-fuchsia-900 rounded hover:bg-purple-800">Save</button>
             </div>
         </form>
     </div>
