@@ -18,6 +18,8 @@ return new class extends Migration
 // Installations Table
 Schema::create('installations', function (Blueprint $table) {
     $table->id();
+     $table->unsignedBigInteger('client_id')->nullable(); // 👈 Add this line
+    $table->foreign('client_id')->references('id')->on('clients')->onDelete('set null');
     $table->unsignedBigInteger('project_id');
     $table->unsignedBigInteger('user_id')->nullable();
     $table->json('images'); // Stores an array of image paths

@@ -41,8 +41,8 @@
 
                     <span>{{ $user->name }}</span>
                   </td>
-                  <td><span class="px-2 py-1 text-xs text-green-600 bg-green-100 rounded-full">Online</span></td>
-                  <td>June 25, 2026, 10:45PM</td>
+                  {{-- <td><span class="px-2 py-1 text-xs text-green-600 bg-green-100 rounded-full">Online</span></td>
+                  <td>June 25, 2026, 10:45PM</td> --}}
                   @php
     $online = $user->last_seen_at && $user->last_seen_at->gt(now()->subMinutes(2));
 @endphp

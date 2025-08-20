@@ -12,115 +12,101 @@
             {{-- <button class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">+ Add Project</button> --}}
             <!-- ADD CLIENT BUTTON -->
             <button id="openAddClientModal" class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
-                + Add Client
+                + Add new Client
             </button>
 
 
             </div>
-
-
 <!-- ADD CLIENT MODAL -->
 <div id="addClientModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
     <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
         <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
-        <h2 class="mb-4 text-xl font-semibold">Add New Client</h2>
-        <button type="button" id="cancelAddClient" class="px-4 py-2 text-black "> <i data-feather="x"
-    class="mr-3 feather-icon group"></i></button>
+            <h2 class="mb-4 text-xl font-semibold">Add New Client</h2>
+            <button type="button" id="cancelAddClient" class="px-4 py-2 text-black">
+                <i data-feather="x" class="mr-3 feather-icon group"></i>
+            </button>
         </div>
+
         <form id="addClientForm" method="POST">
             @csrf
 
-<div class="flex flex-col gap-4 sm:flex-row">
-              <!-- First Name -->
-            <div class="mb-4">
-                <label for="firstName" class="block mb-3 text-sm font-medium text-gray-700">First Name</label>
-                <input
-                id="firstName" name="firstname"
-                  type="text"
-                  placeholder="Enter first name"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-              </div>
-
-              <!-- Last Name -->
-              <div class="mb-4">
-                <label for="lastName" class="block mb-3 text-sm font-medium text-gray-700">Last Name</label>
-                <input
-                id="lastName" name="lastname"  id="lastName"
-                  placeholder="Enter last name"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-              </div>
-            </div>
-
-
+            <!-- First & Last Name -->
             <div class="flex flex-col gap-4 sm:flex-row">
-              <!-- Other Names -->
-              <div class="mb-4">
-                <label for="otherNames" class="block mb-3 text-sm font-medium text-gray-700">Other Names</label>
-                <input
-                  type="text"
-                  id="otherNames" name="othernames"                  placeholder="Enter other name"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-              </div>
+                <div class="mb-4">
+                    <label for="firstName" class="block mb-3 text-sm font-medium text-gray-700">First Name</label>
+                    <input id="firstName" name="firstname" type="text"
+                        placeholder="Enter first name"
+                        class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
 
-              <!-- Title Dropdown -->
-              <div class="mb-4">
-                <label for="title" class="block mb-3 text-sm font-medium text-gray-700">Title</label>
-                <select name="title"
-                  id="title"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="" disabled selected>Select Title</option>
-                  <option value="Mr">Mr</option>
-                  <option value="Mrs">Mrs</option>
-                  <option value="Ms">Ms</option>
-                  <option value="Bro">Bro</option>
-                </select>
-              </div>
+                <div class="mb-4">
+                    <label for="lastName" class="block mb-3 text-sm font-medium text-gray-700">Last Name</label>
+                    <input id="lastName" name="lastname" type="text"
+                        placeholder="Enter last name"
+                        class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
             </div>
 
-              <!-- Phone Number -->
-              <div class="flex flex-col gap-4 sm:flex-row">
-              <div class="mb-4">
-                <label for="phone" class="block mb-3 text-sm font-medium">Phone Number</label>
-                <input
-                  type="tel"
-                  id="phone" name="phone_number" placeholder="Enter phone number"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none text-gray-200 focus:ring-2 focus:ring-blue-500"
-                >
-              </div>
+            <!-- Phone Numbers -->
+            <div class="flex flex-col gap-4 sm:flex-row">
+                <div class="mb-4">
+                    <label for="phone" class="block mb-3 text-sm font-medium">Phone Number</label>
+                    <input id="phone" name="phone_number" type="tel"
+                        placeholder="Enter phone number"
+                        class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
 
-              <!-- Location -->
-              <div class="mb-6">
+                <div class="mb-4">
+                    <label for="otherPhone" class="block mb-3 text-sm font-medium">Other Phone</label>
+                    <input id="otherPhone" name="other_phone" type="tel"
+                        placeholder="Enter other phone"
+                        class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <!-- Location & Email -->
+            <div class="mb-6">
                 <label for="location" class="block mb-3 text-sm font-medium text-gray-700">Location</label>
-                <input
-                  type="text"
-                  id="location" name="location"
-                  placeholder="Enter location"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-              </div>
-              </div>
-
-              <!-- Submit Button -->
-
-                <button type="submit" class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 rounded">Save Client</button>
+                <input id="location" name="location" type="text"
+                    placeholder="Enter location"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
+            <div class="mb-6">
+                <label for="email" class="block mb-3 text-sm font-medium text-gray-700">Email Address</label>
+                <input id="email" name="email" type="email"
+                    placeholder="Enter email"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <!-- Contact Person & Contact Phone -->
+            <div class="flex flex-col gap-4 sm:flex-row">
+                <div class="mb-4">
+                    <label for="contactPerson" class="block mb-3 text-sm font-medium">Contact Person</label>
+                    <input id="contactPerson" name="contact_person" type="text"
+                        placeholder="Enter contact person"
+                        class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="mb-4">
+                    <label for="contactPhone" class="block mb-3 text-sm font-medium">Contact Phone</label>
+                    <input id="contactPhone" name="contact_phone" type="tel"
+                        placeholder="Enter contact phone"
+                        class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit"
+                class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 rounded">
+                Save Client
+            </button>
         </form>
     </div>
+</div>
 
 
-<!-- SUCCESS MODAL -->
-{{-- <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
-    <div class="w-full max-w-sm p-6 text-center bg-white rounded-lg">
-        <div class="opacity-25 bg-fuchsia-900"><i data-feather="user" class="mr-3 feather-icon group"></i></div>
-        <h2 class="mb-4 text-lg font-semibold">Client successfully created</h2>
-        <div class="right-0"><button id="closeSuccessModal" class="px-4 py-2 text-white rounded-full bg-fuchsia-900">OK</button></div>
-    </div>
-</div> --}}
+
 
 <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
     <div class="w-full max-w-sm p-6 bg-white rounded-lg">
@@ -139,15 +125,27 @@
 </div>
 <!-- SUCCESS MODAL  ENDS-->
 
-          <!--test code-->
-
-        <!--head ends-->
-        <!--table begins-->
-
         <div class="mb-20 bg-white shadow rounded-2xl">
-            <div class="pt-6 pb-5 pl-6 border-b">
-            <h2 class="text-sm text-gray-600 ">Manage all your Clients here</h2>
-            </div>
+            <div class="pt-3 pb-1 pl-6 pr-2 border-b flex items-center justify-between">
+
+              <div>
+                  <h2 class="text-normal font-normal text-gray-900">Manage your clients here</h2>
+              </div>
+              <div>
+        <form id="filterForm" method="GET" action="{{ route('clients.index') }}" class="flex gap-3 mb-4">
+            <input type="text" name="search" id="searchInput" value="{{ request('search') }}" placeholder="Search clients..." class="border-gray-300 rounded-full  pl-5 pr-5 pt-2 pb-2">
+
+            <select name="location" id="locationSelect" class="border-gray-300 rounded-full pl-5 pr-5 pt-2 pb-2">
+                <option value="">All Locations</option>
+                @foreach($clients->pluck('location')->unique() as $location)
+                    <option value="{{ $location }}" {{ request('location') == $location ? 'selected' : '' }}>{{ $location }}</option>
+                @endforeach
+            </select>
+        </form>
+
+              </div>
+
+        </div>
             <div class="overflow-x-auto">
                  <table class="min-w-full text-left">
                     <thead class="items-center text-sm text-gray-600 bg-gray-100">
@@ -157,7 +155,9 @@
                         <th class="p-4 font-mediumt text-[15px] items-center">Phone Number</th>
                         <th class="p-4 font-mediumt text-[15px] items-center">Projects</th>
                         <th class="p-4 font-mediumt text-[15px] items-center">Location</th>
-                      </tr>
+                        <th class="p-4 font-mediumt text-[15px] items-center">Action</th>
+
+                    </tr>
                     </thead>
 
                 <tbody class="text-gray-700 divide-y divide-gray-100">
@@ -170,7 +170,10 @@
                     <td class="p-4 font-normal text-[15px] items-center">{{$client->phone_number}}</td>
                     <td class="p-4 font-normal text-[15px] items-center">{{$client->projects_count}}</td>
                     <td class="p-4 font-normal text-[15px] items-center">{{$client->location}}</td>
-                  </tr>
+                    <td class="p-4 font-normal text-[15px] items-center">
+                    <iconify-icon icon="mingcute--more-2-line" width="24" style="color: #5A0562;"></iconify-icon>
+                      </td>
+                </tr>
                 @endforeach
 
                 </tbody>
@@ -188,6 +191,27 @@
              </div>
     </div>
 </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let form = document.getElementById("filterForm");
+    let searchInput = document.getElementById("searchInput");
+    let locationSelect = document.getElementById("locationSelect");
+
+    // Auto-submit when typing (with a small delay)
+    let typingTimer;
+    searchInput.addEventListener("keyup", function() {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => form.submit(), 500); // waits 0.5s after typing
+    });
+
+    // Auto-submit when location changes
+    locationSelect.addEventListener("change", function() {
+        form.submit();
+    });
+});
+</script>
+
 <script>
 
     // //for the pop up and error handling

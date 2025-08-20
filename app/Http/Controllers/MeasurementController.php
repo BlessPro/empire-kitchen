@@ -71,6 +71,7 @@ public function store(Request $request)
         'width' => 'required|numeric',
         'notes' => 'nullable|string',
         'obstacles' => 'nullable|string',
+        
         // 'images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:10240', // 10MB
     ]);
 
@@ -92,7 +93,7 @@ public function store(Request $request)
         'width' => $validated['width'],
         'obstacles' => $validated['obstacles'] ?? null,
         'created_at' => now(),
-        // 'images' => $imagePaths,
+        'images' => $imagePaths,
     ]);
 
     return redirect()->route('tech.dashboard')->with('success', 'Measurement saved successfully.');

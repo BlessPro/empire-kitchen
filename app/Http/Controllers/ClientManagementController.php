@@ -15,51 +15,46 @@ use Illuminate\Support\Facades\Auth; // Import the Auth facade
 
 class ClientManagementController extends Controller
 {
-    //
-    // public function index()
-    // {
-    //     return view('admin.ClientManagement');
-    // }
+//     public function index()
+// {
+//     $clients = Client::withCount('projects')
+//                      ->orderBy('created_at', 'desc') // Order by newest
+//                      ->paginate(10);
 
-    // public function index()
-    // {
-    //     $Clients = Client::paginate(15); // fetch paginated projects
-    //     // dd($projects);
+//     return view('admin.ClientManagement', compact('clients'));
+// }
 
-    //     return view('admin/ClientManagement', compact('Clients'));
-    // }
 
-    // public function index()
-    // {
-    //     $clients = Client::withCount('projects')->paginate(10); // Fetch clients with projects count
-    //     return view('admin.ClientManagement', compact('clients'));
-    // }
-    public function index()
+public function index(Request $request)
 {
-    $clients = Client::withCount('projects')
-                     ->orderBy('created_at', 'desc') // Order by newest
-                     ->paginate(10);
+    $query = Client::withCount('projects');
 
-    return view('admin.ClientManagement', compact('clients'));
+    // Apply search filter if text is provided
+    if ($request->has('search') && !empty($request->search)) {
+        $search = $request->search;
+        $query->where(function ($q) use ($search) {
+            $q->where('firstname', 'like', "%{$search}%")
+              ->orWhere('lastname', 'like', "%{$search}%")
+              ->orWhere('phone_number', 'like', "%{$search}%")
+              ->orWhere('email', 'like', "%{$search}%");
+        });
+    }
+
+    // Apply location filter if location is selected
+    if ($request->has('location') && !empty($request->location)) {
+        $query->where('location', $request->location);
+    }
+
+    // Get paginated results
+    $clients = $query->orderBy('created_at', 'desc')->paginate(10);
+
+    // Also fetch all distinct locations for the dropdown
+    $locations = Client::select('location')->distinct()->pluck('location');
+
+    return view('admin.ClientManagement', compact('clients', 'locations'));
 }
 
 
-    // public function showprojectInfo(Client $client)
-    // {
-    //     $projects = $client->projects;
-
-
-    //     return view('admin.ClientManagement.projectInfo', compact('client', 'projects'));
-
-    // }
-
-//     public function showProjectname(Project $project)
-// {
-//     // Load the client relationship if needed
-//     $project->load('client');
-
-//     return view('admin.ClientManagement.projectinfo', compact('project'));
-// }
 
 public function showProjectname(Project $project)
 {
@@ -69,92 +64,21 @@ public function showProjectname(Project $project)
 }
 
 
-    // public function showprojectInfo(Client $clientId)
-    // {
-    //     // Fetch client
-    //     $client = Client::findOrFail($clientId);
-
-    //     // Fetch projects **with related measurement, installation, designs**
-    //     $projects = Project::with(['measurement', 'installation', 'designs'])
-    //                 ->where('client_id', $clientId)
-    //                 ->get();
-
-    //     return view('admin.ClientManagement.projectinfo', compact('client', 'projects'));
-    // }
-//     public function showprojectInfo(Client $client)
-// {
-//     // $client is already the Client model
-
-//     $projects = Project::with(['measurement', 'installation', 'design'])
-//                 ->where('client_id', $client->id)
-//                 ->get();
-
-//     return view('admin.ClientManagement.projectinfo', compact('client', 'projects'));
-// }
-
-// public function showprojectname(Client $clientId)
-// {
-//     // Get the first project related to the client
-//     $client = Client::with('projects')->findOrFail($clientId);
-
-//     // Make sure there's at least one project linked to the client
-//     $project = $client->projects->first(); // This gives the first project for the client
-
-//     return view('admin.ClientManagement.projectinfo', compact('client', 'project'));
-// }
-// public function showprojectname(Client $client)
-// {
-//     $projects = $client->projects->name;
-
-
-
-//     return view('admin.ClientManagement.client-projects', compact('project',  'pending', 'ongoing', 'completed'));
-// }
-
-//fofr storing clients
-
-// public function store(Request $request)
-// {
-//     $client = Client::create($request->only([
-
-
-// 'title', 'firstname', 'lastname', 'othernames', 'phone_number', 'location'
-
-
-
-//     ]));
-
-//     return response()->json(['message' => 'Client successfully created']);
-// }
-
-
-// public function store(Request $request)
-// {
-//     $request->validate([
-//         'title' => 'required|string|max:10',
-//         'firstname' => 'required|string|max:50',
-//         'lastname' => 'required|string|max:50',
-//         'othernames' => 'nullable|string|max:100',
-//         'phone_number' => 'required|string|max:20',
-//         'location' => 'required|string|max:100',
-//     ]);
-
-//     $client = Client::create($request->only([
-//         'title', 'firstname', 'lastname', 'othernames', 'phone_number', 'location'
-//     ]));
-
-//     return response()->json(['message' => 'Client successfully created']);
-// }
 
 public function store(Request $request)
 {
     $validator = Validator::make($request->all(), [
-        'title' => 'required|string|max:10',
-        'firstname' => 'required|string|max:50',
-        'lastname' => 'required|string|max:50',
-        'othernames' => 'nullable|string|max:100',
-        'phone_number' => 'required|numeric|digits_between:10,15',
-        'location' => 'required|string|max:100',
+        // 'title'          => 'required|string|max:10',
+        'firstname'      => 'required|string|max:50',
+        'lastname'       => 'required|string|max:50',
+        // 'othernames'     => 'nullable|string|max:100',
+        'phone_number'   => 'required|numeric|digits_between:10,15',
+        'other_phone'    => 'nullable|numeric|digits_between:10,15',
+        'contact_person' => 'nullable|string|max:100',
+        'contact_phone'  => 'nullable|numeric|digits_between:10,15',
+        'location'       => 'required|string|max:100',
+       'email' => 'nullable|email|max:255',
+
     ]);
 
     if ($validator->fails()) {
@@ -162,27 +86,21 @@ public function store(Request $request)
     }
 
     $client = Client::create($request->only([
-        'title', 'firstname', 'lastname', 'othernames', 'phone_number', 'location'
+        // 'title',
+        'firstname',
+        'lastname',
+        // 'othernames',
+        'phone_number',
+        'other_phone',
+        'contact_person',
+        'contact_phone',
+        'location',
+        'email',
     ]));
 
     return response()->json(['message' => 'Client successfully created']);
 }
 
-
-// redirecting to the client projects
-// public function showClientProjects(Client $client)
-//written on 30.04.2025, 12:54am
-
-// public function showClientProjects(Client $client)
-// {
-//     $projects = $client->projects;
-
-//     $pending = $projects->where('status', 'pending');
-//     $ongoing = $projects->where('status', 'in progress');
-//     $completed = $projects->where('status', 'completed');
-
-//     return view('admin.ClientManagement.client-projects', compact('client', 'pending', 'ongoing', 'completed'));
-// }
 
 
 public function showClientProjects(Client $client)

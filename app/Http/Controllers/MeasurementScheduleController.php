@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class MeasurementScheduleController extends Controller
 {
@@ -90,11 +91,12 @@ class MeasurementScheduleController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'project_id' => 'required|exists:projects,id',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-            'notes' => 'nullable|string',
+        'client_id' => 'required|exists:clients,id',
+        'project_id' => $request->project_id, // Add hidden field or set programmatically
+        'user_id' => optional(Auth::user())->id,    
+        'start_time' => 'required|date',
+        'end_time' => 'required|date|after:start_time',
+        'notes' => 'nullable|string',
         ]);
 
         MeasurementSchedule::create($validated);

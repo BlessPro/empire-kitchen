@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\MessageSent;
+
 
 //created by : Doe Bless
 //date : 24.04.2025
@@ -16,6 +18,7 @@ use App\Models\Inbox;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\MessageSent;
 
 class InboxController extends Controller
 {
@@ -37,18 +40,27 @@ class InboxController extends Controller
 
     public function sendMessage(Request $request)
     {
-        $request->validate([
-            'receiver_id' => 'required|exists:users,id',
-            'message' => 'required|string'
-        ]);
+        // $request->validate([
+        //     'receiver_id' => 'required|exists:users,id',
+        //     'message' => 'required|string'
+        // ]);
 
+        // $message = Inbox::create([
+        //     'sender_id' => Auth::id(),
+        //     'receiver_id' => $request->receiver_id,
+        //     'message' => $request->message,
+        // ]);
+
+        // return response()->json(['message' => $message]);
         $message = Inbox::create([
-            'sender_id' => Auth::id(),
-            'receiver_id' => $request->receiver_id,
-            'message' => $request->message,
+        'sender_id' => Auth::id(),
+        'receiver_id' => $request->receiver_id,
+        'message' => $request->message,
         ]);
 
-        return response()->json(['message' => $message]);
+        broadcast(new MessageSent($message))->toOthers();
+
+
     }
 
     public function fetchMessages($userId)
@@ -61,4 +73,9 @@ class InboxController extends Controller
 
         return response()->json($messages);
     }
+// ...
+// ...
+
+
+
 }

@@ -100,13 +100,20 @@ onclick="window.location='{{ route('tech.CreateMeasurement',['project' => $proje
     {{-- <span class="font-medium">Due Date:</span> --}}
 
     <!-- Clickable Text to Open -->
-    <div class="border-1 border-dotted">
+    {{-- <div class="border-1 border-dotted">
     <span @click="tempDate = selectedDate; showCalendar = true"
           class="cursor-pointer text-blue-800 underline"
           x-text="new Date(selectedDate).toLocaleDateString()">
           <input type="date" name="" id="">
     </span>
+</div> --}}
+<div class="border border-gray-300 rounded-md px-2 py-1 bg-white shadow-sm">
+    <span @click="tempDate = selectedDate; showCalendar = true"
+          class="cursor-pointer text-blue-800"
+          x-text="new Date(selectedDate).toLocaleDateString()">
+    </span>
 </div>
+
     <!-- Date Picker Dropdown -->
     <div x-show="showCalendar"
          x-transition
@@ -331,23 +338,23 @@ onclick="window.location='{{ route('tech.CreateMeasurement',['project' => $proje
     <h3 class="text-lg font-semibold mb-4">Set Status</h3>
     <form id="statusForm">
         <input type="hidden" name="project_id" id="statusProjectId">
-        <div class="space-y-3 mb-6">
-            @foreach (['completed', 'pending', 'in progress'] as $value)
-                @php
-                    $pillStyle = match($value) {
-                        'completed' => 'bg-green-100 text-green-700 px-2 py-1 border border-green-500 rounded-full text-xs',
-                        'pending' => 'bg-blue-100 text-blue-700 px-2 py-1 border border-blue-500 rounded-full text-xs',
-                        'in progress' => 'bg-yellow-100 text-yellow-700 px-2 py-1 border border-yellow-500 rounded-full text-xs',
-                        // 'cancelled' => 'bg-yellow-100 text-yellow-700 px-2 py-1 border border-yellow-500 rounded-full text-xs',
-                    };
-                @endphp
+       <div class="space-y-2 mb-6">
+    @foreach (['completed', 'pending', 'in progress'] as $value)
+        @php
+            $pillStyle = match($value) {
+                'completed' => 'bg-green-100 text-green-700 border border-green-500',
+                'pending' => 'bg-blue-100 text-blue-700 border border-blue-500',
+                'in progress' => 'bg-yellow-100 text-yellow-700 border border-yellow-500',
+            };
+        @endphp
 
-                <button type="button" onclick="selectStatus('{{ $value }}')"
-                    class="statusOption w-full py-2 rounded-full font-semibold {{ $pillStyle }}">
-                    {{ ucfirst($value) }}
-                </button>
-            @endforeach
-        </div>
+        <button type="button" onclick="selectStatus('{{ $value }}')"
+            class="statusOption block text-left text-xs px-3 py-1.5 rounded-full font-medium {{ $pillStyle }}">
+            {{ ucfirst($value) }}
+        </button>
+    @endforeach
+</div>
+
         <div class="flex justify-between">
             <button type="button" onclick="closeStatusModal()" class="text-gray-500 font-medium hover:underline">Cancel</button>
             <button type="submit" class="bg-fuchsia-900 text-white rounded-full px-5 py-1.5">Confirm</button>
@@ -437,7 +444,6 @@ document.getElementById('closeSuccessModal').addEventListener('click', function 
 
 let selectedStatus = null;
 
-/
 function openStatusModal(projectId, currentStatus, event = null) {
     const modal = document.getElementById('statusModal');
     document.getElementById('statusProjectId').value = projectId;

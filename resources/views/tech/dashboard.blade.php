@@ -46,34 +46,24 @@
           <button class="px-3 py-1 text-sm text-purple-700 border border-purple-700 rounded-full">View All</button>
         </div>
         <div class="space-y-4">
-                @forelse($projects as $project)
+    @forelse($projects as $project)
+        @php
+            $start = \Carbon\Carbon::parse($project['start_time']);
+            $end = \Carbon\Carbon::parse($project['end_time']);
+            $duration = $start->diffForHumans($end, true);
+        @endphp
 
-          <div class="py-2 pl-4 border-l-4 border-orange-500 rounded bg-gray-50">
+        <div class="py-2 pl-4 border-l-4 border-orange-500 rounded bg-gray-50">
             <h3 class="font-medium">{{ $project['project_name'] }}</h3>
-            <p class="text-sm text-gray-600"> {{ $project['start_time'] }} - {{ $project['end_time'] }}</p>
+            <p class="text-sm text-gray-600">{{ $project['start_time'] }} - {{ $project['end_time'] }}</p>
             <p class="text-sm text-gray-600">👤 {{ auth()->user()->name }}</p>
-            <p class="text-sm text-gray-500">{{ $project['duration'] }} - 📍 {{ $project['location'] }} </p>
-          </div>
-              @empty
+            <p class="text-sm text-gray-500">{{ $duration }} - 📍 {{ $project['location'] }}</p>
+        </div>
+    @empty
         <p class="text-gray-500">No measurement stage projects assigned yet.</p>
     @endforelse
-{{--
-          <div class="py-2 pl-4 border-l-4 border-green-500 rounded bg-gray-50">
-            <h3 class="font-medium">Smith Residence</h3>
-            <p class="text-sm text-gray-600">2:30 PM - 5:30 PM</p>
-            <p class="text-sm text-gray-600">📍 Maple Street, West Legon</p>
-            <p class="text-sm text-gray-500">3 hours 0 minutes</p>
-          </div> --}}
-          {{-- <div class="py-2 pl-4 border-l-4 border-blue-600 rounded bg-gray-50">
-            <h3 class="font-medium pt-1 pb-1">New Build</h3>
-            <p class="text-sm pt-1 pb-1 text-gray-600">{{ \Carbon\Carbon::parse($project['start_time'])
-            ->format('d M Y, h:i A') }} -
-                 {{ \Carbon\Carbon::parse($project['end_time'])
-                 ->format('d M Y, h:i A') }}</p>
-            <p class="text-sm pt-1 pb-1 text-gray-600">{{ auth()->user()->name }}</p>
-            <p class="text-sm pt-1 pb-1 text-gray-500">{{ $project['location'] }} {{ $project['duration'] }}</p>
-          </div> --}}
-        </div>
+</div>
+
       </div>
 
 {{--

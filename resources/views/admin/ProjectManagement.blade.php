@@ -254,7 +254,7 @@
 
             <div class="mb-4">
                 <label for="name" class="block text-sm font-medium text-gray-700">Project Name</label>
-                <input type="text" name="name" id="name" class="w-full px-3 py-2 border rounded" required>
+                <input type="text" name="name" id="name" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"" required>
             </div>
 
             <div class="mb-4">
@@ -299,7 +299,7 @@
 
 <!-- Modal -->
 <div id="addProjectModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
-    <div class="bg-white p-6 rounded shadow-lg w-[500px]">
+    <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold">Create New Project</h2>
             <button id="cancelAddProject" class="font-bold text-red-500">X</button>
@@ -308,24 +308,16 @@
         <form id="addProjectForm">
             @csrf
 
+            <div class="flex flex-col gap-4 sm:flex-row">
             <div class="mb-4">
                 <label for="name" class="block text-sm font-medium">Project Name</label>
-                <input type="text" name="name" id="name" class="w-full px-3 py-2 border rounded" required>
+                <input type="text" name="name" id="name" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"" required>
             </div>
 
-            <div class="mb-4">
-                <label for="description" class="block text-sm font-medium">Description</label>
-                <textarea name="description" id="description" class="w-full px-3 py-2 border rounded" required></textarea>
-            </div>
 
-            <div class="mb-4">
-                <label for="location" class="block text-sm font-medium">Location</label>
-                <input type="text" name="location" id="location" class="w-full px-3 py-2 border rounded" required>
-            </div>
-
-            <div class="mb-4">
+   <div class="mb-4">
                 <label for="client_id" class="block text-sm font-medium">Client</label>
-                <select name="client_id" id="client_id" class="w-full px-3 py-2 border rounded" required>
+                <select name="client_id" id="client_id" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"" required>
                     <option disabled selected>Select a client</option>
                     @foreach ($clients as $client)
                         <option value="{{ $client->id }}">{{ $client->title. ' '.$client->firstname.' '.$client->lastname }}</option>
@@ -333,9 +325,30 @@
                 </select>
             </div>
 
+        </div>
+
+
+        <div class="mb-4">
+                <label for="description" class="block text-sm font-medium">Description</label>
+                <textarea name="description" id="description" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"" required></textarea>
+            </div>
+
+
+        <div class="flex flex-col gap-4 sm:flex-row">
+            <div class="mb-4">
+                <label for="location" class="block text-sm font-medium">Location</label>
+                <input type="text" name="location" id="location" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"" required>
+            </div>
+            <div class="mb-4">
+                <label for="cost" class="block text-sm font-medium">Estimated Cost</label>
+                <input type="number" name="cost" id="cost" step="0.01" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"" required>
+            </div>
+
+        </div>
+
             <div class="mb-4">
                 <label for="tech_supervisor_id" class="block text-sm font-medium">Technical Supervisor</label>
-                <select name="tech_supervisor_id" id="tech_supervisor_id" class="w-full px-3 py-2 border rounded" required>
+                <select name="tech_supervisor_id" id="tech_supervisor_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"" required>
                     <option disabled selected>Select a supervisor</option>
                     @foreach ($techSupervisors as $techSupervisor)
                         <option value="{{ $techSupervisor->id }}">{{ $techSupervisor->name }}</option>
@@ -343,33 +356,32 @@
                 </select>
             </div>
 
-            <div class="mb-4">
-                <label for="start_date" class="block text-sm font-medium">Start Date</label>
-                <input type="date" name="start_date" id="start_date" class="w-full px-3 py-2 border rounded" required>
-            </div>
 
+
+        <div class="flex flex-col gap-4 sm:flex-row">
+              <div class="mb-4">
+                <label for="start_date" class="block text-sm font-medium">Start Date</label>
+                <input type="date" name="start_date" id="start_date" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"" required>
+            </div>
             <div class="mb-4">
                 <label for="due_date" class="block text-sm font-medium">Due Date</label>
-                <input type="date" name="due_date" id="due_date" class="w-full px-3 py-2 border rounded" required>
+                <input type="date" name="due_date" id="due_date" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"" required>
             </div>
 
-            <div class="mb-4">
-                <label for="cost" class="block text-sm font-medium">Estimated Cost</label>
-                <input type="number" name="cost" id="cost" step="0.01" class="w-full px-3 py-2 border rounded" required>
-            </div>
 
+        </div>
             <button type="submit" class="w-full px-4 py-2 text-white rounded bg-fuchsia-900">Save Project</button>
         </form>
     </div>
 </div>
 
 <!-- Success Modal -->
-<div id="successModal2" class="fixed inset-0 flex items-center justify-center hidden bg-black bg-opacity-50">
+{{-- <div id="successModal2" class="fixed inset-0 flex items-center justify-center hidden bg-black bg-opacity-50">
     <div class="p-6 bg-white rounded shadow-md">
         <p class="font-semibold text-green-700">Project created successfully!</p>
         <button id="closeSuccessModal" class="px-4 py-2 mt-4 text-white bg-green-600 rounded">Close</button>
     </div>
-</div>
+</div> --}}
 
 
 

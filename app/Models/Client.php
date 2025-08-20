@@ -16,7 +16,21 @@ class Client extends Model
 
     use HasFactory;
 
-    protected $fillable = ['title', 'firstname', 'lastname', 'othernames', 'phone_number', 'location'];
+protected $fillable = [
+    'title',
+    'firstname',
+    'lastname',
+    'othernames',
+    'phone_number',
+    'email',
+    'other_phone',
+    'contact_person',
+    'contact_phone',
+    'location',
+    'address',
+    'profile_pic',
+    'email',
+];
 
     public function projects()
     {

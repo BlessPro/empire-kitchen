@@ -51,7 +51,14 @@ private function redirectBasedOnRole(): string
         'designer' => route('designer.dashboard'),
         'accountant' => route('accountant.dashboard'),
         'sales_accountant' => route('sales.dashboard'),
-        default => '/dashboard',
+
+        // Add other roles as needed
+        // If no specific route is defined for the role, redirect to a default route
+        // 'default' => '/dashboard', // Default route for roles not explicitly handled
+        // You can also set a different default route if needed
+        'guest' => '/login', // Redirect guests to the login page
+        // 'user' => '/dashboard', // Redirect regular users to the dashboard
+        default => '/login',
 
 
     };

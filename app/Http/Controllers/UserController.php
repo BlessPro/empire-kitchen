@@ -21,7 +21,7 @@ class UserController extends Controller
             'designer' => redirect()->route('designer.dashboard'),
             'accountant' => redirect()->route('accountant.dashboard'),
             'sales_accountant' => redirect()->route('sales.dashboard'),
-            default => redirect()->route('dashboard'),
+            default => redirect()->route('login'),
         };
     }
 

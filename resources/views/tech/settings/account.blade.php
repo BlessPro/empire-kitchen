@@ -6,7 +6,7 @@
 
     </div>
 
-<<form action="{{ route('tech.settings.profile_pic') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('tech.settings.profile_pic') }}" method="POST" enctype="multipart/form-data">
         @csrf
 <!-- Form Card -->
      <div class="p-8 bg-white shadow rounded-2xl">

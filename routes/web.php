@@ -62,6 +62,7 @@ use App\Http\Controllers\SalesClientController;
 use App\Http\Controllers\salesReportsAndAnalyticsController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\MeasurementScheduleController;
+use App\Http\Middleware\UpdateLastSeen;
 
 
 
@@ -76,8 +77,11 @@ Route::get('/dashboard', function () {
 
 
     //profile route
-    Route::middleware('auth')->group(function () {
-
+    Route::middleware(['auth', UpdateLastSeen::class])->group(function () {
+// Route::middleware(['auth', 'role:designer', UpdateLastSeen::class])->group(function () {
+//     Route::get('/designer/dashboard', [DesignerDashboardController::class, 'index'])
+//         ->name('designer.dashboard');
+// });
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -114,6 +118,7 @@ Route::get('/dashboard', function () {
     Route::get('/TimeManagement/events', [InstallationController::class, 'calendarEvents']);
 Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destroy']);
 
+Route::get('/clients', [ClientManagementController::class, 'index'])->name('clients.index');
 
     // Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destroy']);
 
@@ -253,12 +258,10 @@ Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destr
         ->where('current_stage', '<>', 'installation') // only those not yet installed
         ->get(['id', 'name']);
     });
-    Route::middleware(['auth'])->prefix('designer')->name('designer.')->group(function () {
+    Route::middleware(['auth',UpdateLastSeen::class])->prefix('designer')->name('designer.')->group(function () {
       Route::get('/uploads', [DesignerUploadController::class, 'allUploads'])->name('uploads');
         Route::get('/uploads/{project}', [DesignerUploadController::class, 'viewProjectUploads'])->name('upload.view');});
-// Route::prefix('admin')->group(function () {
-//     Route::delete('/installations/{id}', [InstallationController::class, 'destroy']);
-// });
+
 
     Route::delete('/admin/ScheduleInstallation/{id}', [InstallationController::class, 'destroy']);
 
@@ -268,8 +271,10 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
 
     Route::get('/admin/Dashboard2',  [ProjectController::class, 'index'])->name('admin.Dashboard2');
     Route::get('/admin/projects/filter', [DashboardController::class, 'filter'])->name('admin.projects.filter');
-});
 
+
+
+    Route::middleware(['auth',UpdateLastSeen::class])->group(function () {
 
 //navigating the accountant user role
     Route::get('/accountant/Payments', [accountantPaymentController::class, 'index'])->name('accountant.Payments');
@@ -283,13 +288,12 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
     Route::get('/accountant/Invoice', [accountantInvoiceController::class, 'index'])->name('accountant.Invoice');
     Route::post('/accountant/Invoice', [accountantInvoiceController::class, 'store'])->name('accountant.Invoice.store');
     Route::get('/accountant/Invoice/Invoiceview/{id}', [accountantInvoiceController::class, 'invoiceview'])->name('accountant.Invoice.Invoiceview');
-
     // For the MessageSending
-    Route::middleware(['auth'])->group(function () {
     Route::get('/accountant/Inbox/{userId?}', [AccountantInboxController::class, 'index'])->name('accountant.inbox');
     Route::post('/accountant/Inbox/send', [AccountantInboxController::class, 'sendMessage'])->name('accountant.inbox.send');
     Route::get('/accountant/Inbox/fetch/{userId}', [AccountantInboxController::class, 'fetchMessages'])->name('accountant.inbox.fetch');
     });
+
     Route::post('/accountant/settings/profile-pic', [accountantSettingsController::class, 'updateProfilePic'])->name('accountant.settings.profile_pic');
     Route::get('/accountant/Expenses/Category', [accountantCategoryController::class, 'index'])->name('accountant.Expenses.Category');
     Route::post('/categories', [accountantCategoryController::class, 'store'])->name('categories.store');
@@ -301,7 +305,6 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
     Route::get('/accountant/Expenses', [accountantExpensesController::class, 'index'])->name('accountant.Expenses');
     //for deleting the expense
     Route::delete('accountant/Expenses/{id}', [accountantExpensesController::class, 'destroy'])->name('expenses.destroy');
-
     //for editing the expense
     Route::get('/expenses/{expense}/edit', [accountantExpensesController::class, 'edit'])->name('expenses.edit');
     Route::put('/expenses/{expense}', [accountantExpensesController::class, 'update'])->name('expenses.update');
@@ -311,7 +314,6 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
     //for the client drop down in the project
     Route::get('/projects/by-client/{clientId}', [accountantPayController::class, 'getByClient']);
     // Route::get('/projects/by-client/{id}', [accountantPayController::class, 'getByClient']);
-
     // Route::get('/admin/projects/filter', [AdminController::class, 'filter'])->name('projects.filter');
     Route::post('/income/store', [accountantPayController::class, 'store'])->name('income.store');
     Route::get('/accountant/Report&Analytics/expenses-data', [accountantReportsController::class, 'getMonthlyChartData']);
@@ -320,11 +322,14 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
     Route::get('/sales/TrackPayment', [salesNavigationController::class, 'TrackPayment'])->name('sales.TrackPayment');
     Route::get('/sales/ReportsandAnalytics', [salesNavigationController::class, 'ReportsandAnalytics'])->name('sales.ReportsandAnalytics');
     // For the MessageSending
-    Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth',UpdateLastSeen::class])->group(function () {
     Route::get('/sales/Inbox/{userId?}', [salesInboxController::class, 'index'])->name('sales.Inbox');
     Route::post('/sales/Inbox/send', [salesInboxController::class, 'sendMessage'])->name('sales.Inbox.send');
     Route::get('/sales/Inbox/fetch/{userId}', [salesInboxController::class, 'fetchMessages'])->name('sales.Inbox.fetch');
     });
+
+    Route::middleware(['auth',UpdateLastSeen::class])->group(function () {
+
     Route::get('/sales/Settings', [salesSettingsController    ::class, 'index'])->name('sales.Settings');
     Route::get('/sales/TrackPayment', [salesTrackPaymentController::class, 'index'])->name('sales.TrackPayment');
     Route::get('/sales/FollowupManagement', [salesFollowUpController::class, 'index'])->name('sales.FollowupManagement');
@@ -336,5 +341,8 @@ Route::put('/installations/{id}', [InstallationController::class, 'update']);
     Route::get('/sales/ReportsandAnalytics', [salesReportsAndAnalyticsController::class, 'index'])->name('sales.ReportsandAnalytics');
     Route::get('/sales/income/chart-data', [accountantExpensesController::class, 'getMonthlyChartData']);
     Route::post('/sales/followups/{id}/update-status', [salesReportsAndAnalyticsController::class, 'updateStatus']);
+    });
+
+});
 
 require __DIR__.'/auth.php';

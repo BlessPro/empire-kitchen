@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Empire Kitchens Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+      {{-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> --}}
+      @vite(['resources/css/app.css', 'resources/js/app.js'])
+      <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+
+      <script src="https://unpkg.com/feather-icons"></script>
+
+      <script src="https://cdn.tailwindcss.com"></script>
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="https://unpkg.com/alpinejs" defer></script>
+<script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
   </head>
   <body class="flex h-screen overflow-hidden bg-white">
         <!-- Session Status -->
@@ -35,10 +47,10 @@
             <div class="relative">
               <span class="absolute left-3 top-2.5 text-gray-400">
                 <!-- User Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M5.121 17.804A8.963 8.963 0 0112 15c2.21 0 4.215.805 5.879 2.136M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
+             
+             <iconify-icon icon="iconamoon--profile-thin" width="24" style="color: #5A0562;"></iconify-icon>
+
+              </span>
               </span>
               <x-text-input id="name" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a0562] focus:outline-none"
               type="name" name="name" :value="old('name')" required autofocus autocomplete="username" />
@@ -55,6 +67,8 @@
 
             <div class="relative">
               <span class="absolute left-3 top-2.5 text-gray-400">
+
+
                 <!-- Lock Icon -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -62,10 +76,36 @@
                 </svg>
               </span>
 
-              <x-text-input id="password"  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a0562] focus:outline-none"
+              {{-- <x-text-input id="password"  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a0562] focus:outline-none"
                             type="password"
                             name="password"
-                            required autocomplete="current-password" />
+                            required autocomplete="current-password" /> --}}
+<div x-data="{ show: false }" class="relative">
+    <x-text-input
+        id="password"
+        x-bind:type="show ? 'text' : 'password'"
+        class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a0562] focus:outline-none"
+        name="password"
+        required
+        autocomplete="current-password"
+    />
+
+    <!-- Toggle Button -->
+    <button type="button"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+            @click="show = !show">
+
+        <!-- Default: eye -->
+        <iconify-icon icon="ion:eye-outline"
+                      class="h-5 w-5"
+                      x-show="!show"></iconify-icon>
+
+        <!-- When visible: eye-off -->
+        <iconify-icon icon="mage:eye-off"
+                      class="h-5 w-5"
+                      x-show="show"></iconify-icon>
+    </button>
+</div>
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
 

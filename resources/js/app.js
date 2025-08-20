@@ -1,4 +1,5 @@
 import Iconify from '@iconify/iconify';
+import axios from 'axios';
 
 
 // This file contains the JavaScript code for the admin dashboard page.
