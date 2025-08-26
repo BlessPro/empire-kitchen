@@ -11,6 +11,8 @@ use App\Exports\ProjectsExport; // Ensure this import exists after creating the 
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator; // Import the Validator facade
 use Illuminate\Support\Facades\Auth; // Import the Auth facade
+// use illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB;
 
 
 class ClientManagementController extends Controller
@@ -54,6 +56,33 @@ public function index(Request $request)
     return view('admin.ClientManagement', compact('clients', 'locations'));
 }
 
+// GET /clients/{client}
+    public function show(Client $client)
+    {
+        // eager-load a small projects summary if helpful
+        $client->load(['projects' => function ($q) {
+            $q->select('id','project_id','name','status'); // adjust if your columns differ
+        }]);
+
+        return view('clients.show', compact('client'));
+    }
+
+    // DELETE /clients/{client}
+    public function destroy(Request $request, Client $client)
+    {
+        // Optional: guard with policies/permissions
+        // $this->authorize('delete', $client);
+
+        DB::transaction(function () use ($client) {
+            // If you use soft deletes, this will soft-delete.
+            // If not, this will hard-delete and cascade if FKs are set to cascade.
+            $client->delete();
+        });
+
+        return redirect()
+            ->back()
+            ->with('success', 'Client deleted successfully.');
+    }
 
 
 public function showProjectname(Project $project)

@@ -47,9 +47,12 @@
             <div class="relative">
               <span class="absolute left-3 top-2.5 text-gray-400">
                 <!-- User Icon -->
-             
-             <iconify-icon icon="iconamoon--profile-thin" width="24" style="color: #5A0562;"></iconify-icon>
 
+             <iconify-icon icon="iconamoon:profile-light" width="24" "></iconify-icon>
+ <!-- Default: eye -->
+        {{-- <iconify-icon icon="iconamoon--profile-thin"
+                      class="w-5 h-5"
+                      x-show="!show"></iconify-icon> --}}
               </span>
               </span>
               <x-text-input id="name" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a0562] focus:outline-none"
@@ -68,12 +71,14 @@
             <div class="relative">
               <span class="absolute left-3 top-2.5 text-gray-400">
 
-
+             {{-- <iconify-icon icon="
+material-symbols-light:lock-outline" width="24" "></iconify-icon> --}}
+<iconify-icon icon="material-symbols-light:lock-outline" width="24" "></iconify-icon>
                 <!-- Lock Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                {{-- <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M12 11c1.657 0 3-1.343 3-3V6a3 3 0 00-6 0v2c0 1.657 1.343 3 3 3zM5 11h14a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2z" />
-                </svg>
+                </svg> --}}
               </span>
 
               {{-- <x-text-input id="password"  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5a0562] focus:outline-none"
@@ -92,17 +97,17 @@
 
     <!-- Toggle Button -->
     <button type="button"
-            class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500"
             @click="show = !show">
 
         <!-- Default: eye -->
         <iconify-icon icon="ion:eye-outline"
-                      class="h-5 w-5"
+                      class="w-5 h-5"
                       x-show="!show"></iconify-icon>
 
         <!-- When visible: eye-off -->
         <iconify-icon icon="mage:eye-off"
-                      class="h-5 w-5"
+                      class="w-5 h-5"
                       x-show="show"></iconify-icon>
     </button>
 </div>

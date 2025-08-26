@@ -95,9 +95,30 @@ Route::get('/dashboard', function () {
     Route::get('/admin/ClientManagement', [ClientManagementController::class, 'index'])->name('admin.ClientManagement');
     //for saving the client
     Route::post('/clients/store', [ClientManagementController::class, 'store'])->name('clients.store');
+        Route::get('/clients', [ClientManagementController::class, 'index'])->name('clients.index'); // Ensure this route exists for listing clients
+
     //for handling client projects
 
 
+
+Route::middleware(['web','auth'])->group(function () {
+    // Clients
+    Route::get('/clients/{client}', [ClientManagementController::class, 'show'])
+        ->name('clients.show');            // View Client details
+
+    Route::delete('/clients/{client}', [ClientManagementController::class, 'destroy'])
+        ->name('clients.destroy');         // Delete client
+
+    // Projects (list, scoped to a client via ?client=ID)
+    Route::get('/projects', [ProjectController::class, 'index'])
+        ->name('projects.index');          // View Projects for a client (filter by ?client=ID)
+});
+Route::post('/projects/assign-supervisor', [ProjectManagementController::class, 'assignSupervisor'])->name('tech.assignSupervisor');
+    // Route::post('/admin/addproject', [ProjectManagementController::class, 'addproject'])->name('admin.addproject');
+
+
+    Route::get('/admin/addproject', [ProjectManagementController::class, 'addProject'])
+     ->name('admin.addproject');
     //for the project info
 
     Route::get('/admin/projects/{project}/info2', [ClientManagementController::class, 'showProjectname'])->name('admin.projects.info');
@@ -107,6 +128,7 @@ Route::get('/dashboard', function () {
     Route::delete('admin/dashboard/projects/{id}', [ProjectManagementController::class, 'destroy'])->name('projects.destroy');
     //storing comment
     Route::post('/admin/projects/{project}/comments', [CommentController::class, 'store'])->name('project.comment.store');
+    
     // Route::post('/clients', [ClientManagementController::class, 'store'])->name('clients.store');
     Route::get('/admin/settings', [Settings::class, 'showUsers'])->name('admin.Settings')->middleware('auth');
    //for the edit pop up
@@ -118,7 +140,6 @@ Route::get('/dashboard', function () {
     Route::get('/TimeManagement/events', [InstallationController::class, 'calendarEvents']);
 Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destroy']);
 
-Route::get('/clients', [ClientManagementController::class, 'index'])->name('clients.index');
 
     // Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destroy']);
 

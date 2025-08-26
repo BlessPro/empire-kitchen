@@ -32,7 +32,7 @@ protected $fillable = [
     'email',
 ];
 
-    public function projects()
+    public function project()
     {
         return $this->hasMany(Project::class);
 
@@ -52,4 +52,6 @@ public function followUps()
     return $this->hasMany(FollowUp::class);
 }
 
+// Client.php
+public function projects() { return $this->hasMany(Project::class); }
 }

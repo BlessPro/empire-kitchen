@@ -126,7 +126,7 @@
                 </div> --}}
 
 
-{{-- 
+{{--
                  <button class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-full">
                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h4M6 10h12M6 14h12M10 18h4" />
@@ -141,6 +141,7 @@
                  </button> --}}
                </div>
              </div>
+
 
 
              {{--Testing the table logic--}}
