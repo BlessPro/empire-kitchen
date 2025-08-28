@@ -58,48 +58,61 @@ public function StoreCreateMeasurement(Project $project){
 //     return view('measurements.create', compact('project'));
 // }
 
-
 public function store(Request $request)
 {
-
-//    dd($request->all());
-
     $validated = $request->validate([
+        'client_id' => 'required|exists:clients,id',
         'project_id' => 'required|exists:projects,id',
-        'length' => 'required|numeric',
-        'height' => 'required|numeric',
-        'width' => 'required|numeric',
-        'notes' => 'nullable|string',
-        'obstacles' => 'nullable|string',
-        
-        // 'images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:10240', // 10MB
+        'measurement_date' => 'required|date',
     ]);
 
-    $imagePaths = [];
-    if ($request->hasFile('images')) {
-        foreach ($request->file('images') as $image) {
-            $imagePaths[] = $image->store('measurements', 'public');
-        }
-    }
+    Measurement::create($validated);
 
-    Measurement::create([
-        'project_id' => $request->project_id, // Add hidden field or set programmatically
-        'user_id' => optional(Auth::user())->id,
-        'length' => $validated['length'],
-        'height' => $validated['height'],
-        'start_time' => now(),
-        'end_time' => now(),
-        'notes' => $validated['notes'] ?? null,
-        'width' => $validated['width'],
-        'obstacles' => $validated['obstacles'] ?? null,
-        'created_at' => now(),
-        'images' => $imagePaths,
-    ]);
+    return redirect()->back()->with('success', 'Measurement scheduled successfully!');
+}
 
-    return redirect()->route('tech.dashboard')->with('success', 'Measurement saved successfully.');
-    // return redirect()->route('designer.uploads')->with('success', 'Designs uploaded successfully!');
 
- }
+// public function store(Request $request)
+// {
+
+// //    dd($request->all());
+
+//     $validated = $request->validate([
+//         'project_id' => 'required|exists:projects,id',
+//         'length' => 'required|numeric',
+//         'height' => 'required|numeric',
+//         'width' => 'required|numeric',
+//         'notes' => 'nullable|string',
+//         'obstacles' => 'nullable|string',
+
+//         // 'images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:10240', // 10MB
+//     ]);
+
+//     $imagePaths = [];
+//     if ($request->hasFile('images')) {
+//         foreach ($request->file('images') as $image) {
+//             $imagePaths[] = $image->store('measurements', 'public');
+//         }
+//     }
+
+//     Measurement::create([
+//         'project_id' => $request->project_id, // Add hidden field or set programmatically
+//         'user_id' => optional(Auth::user())->id,
+//         'length' => $validated['length'],
+//         'height' => $validated['height'],
+//         'start_time' => now(),
+//         'end_time' => now(),
+//         'notes' => $validated['notes'] ?? null,
+//         'width' => $validated['width'],
+//         'obstacles' => $validated['obstacles'] ?? null,
+//         'created_at' => now(),
+//         'images' => $imagePaths,
+//     ]);
+
+//     return redirect()->route('tech.dashboard')->with('success', 'Measurement saved successfully.');
+//     // return redirect()->route('designer.uploads')->with('success', 'Designs uploaded successfully!');
+
+//  }
 
 
 }

@@ -63,9 +63,10 @@ use App\Http\Controllers\salesReportsAndAnalyticsController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\MeasurementScheduleController;
 use App\Http\Middleware\UpdateLastSeen;
-
-
-
+use App\Http\Controllers\ProjectWizardController;
+use App\Http\Controllers\BookingsController;
+use App\Http\Controllers\EmployeeController;
+use App\Models\Client;
 
 Route::get('/', function () {
     return view('main');
@@ -99,7 +100,7 @@ Route::get('/dashboard', function () {
 
     //for handling client projects
 
-
+Route::get('/admin/addemployee', [EmployeeController::class, 'addemployee'])->name('admin.addemployee');
 
 Route::middleware(['web','auth'])->group(function () {
     // Clients
@@ -117,6 +118,15 @@ Route::post('/projects/assign-supervisor', [ProjectManagementController::class, 
     // Route::post('/admin/addproject', [ProjectManagementController::class, 'addproject'])->name('admin.addproject');
 
 
+// Route::post('admin/projects', [ProjectWizardController::class, 'store'])
+//     ->name('admin.projects.store');
+
+// Route::get('/projects/create', [ProjectWizardController::class, 'create'])->name('projects.create');
+
+Route::post('/accessories/store', [ProjectManagementController::class, 'accstore'])
+    ->name('accessories.store');
+
+
     Route::get('/admin/addproject', [ProjectManagementController::class, 'addProject'])
      ->name('admin.addproject');
     //for the project info
@@ -128,7 +138,7 @@ Route::post('/projects/assign-supervisor', [ProjectManagementController::class, 
     Route::delete('admin/dashboard/projects/{id}', [ProjectManagementController::class, 'destroy'])->name('projects.destroy');
     //storing comment
     Route::post('/admin/projects/{project}/comments', [CommentController::class, 'store'])->name('project.comment.store');
-    
+
     // Route::post('/clients', [ClientManagementController::class, 'store'])->name('clients.store');
     Route::get('/admin/settings', [Settings::class, 'showUsers'])->name('admin.Settings')->middleware('auth');
    //for the edit pop up
@@ -162,7 +172,28 @@ Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destr
 
     Route::get('/admin/ScheduleInstallation', [ScheduleInstallationController::class, 'index'])->name('admin.ScheduleInstallation')->middleware('auth');
 
-    //navigating with tech user login
+    //navigating with bookings
+    Route::get('/admin/Bookings', [BookingsController::class, 'index'])->name('admin.Bookings')->middleware('auth');
+//    Route::get('/clients/{client}/projects', function(App\Models\Client $client) {
+//     return $client->projects()->select('id','name')->get();
+// });
+
+
+
+// routes/web.php
+
+Route::get('/clients/{client}/projects', function (Client $client) {
+    return $client->projects()
+        ->select('id','name')
+        ->orderByDesc('created_at')
+        ->get();
+})->name('clients.projects');
+
+
+
+Route::post('/measurements/store', [MeasurementController::class, 'store'])->name('measurements.store');
+    //employee
+    Route::get('/admin/Employee', [EmployeeController::class, 'index'])->name('admin.Employee')->middleware('auth');
     //navigate tech tabs page
     Route::get('/tech/ClientManagement', [techClientController::class, 'index'])->name('tech.ClientManagement');
     Route::get('/tech/ProjectManagement', [techProjectManagementController::class, 'index'])->name('tech.ProjectManagement');

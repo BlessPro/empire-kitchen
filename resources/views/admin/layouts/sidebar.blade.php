@@ -1,177 +1,171 @@
+<!-- Sidebar -->
+ @include('admin.layouts.header')
+<aside class="fixed top-0 left-0 z-50 flex flex-col justify-between h-screen text-white shadow-lg w-[280px] bg-fuchsia-950">
 
-    <!-- Sidebar -->
-    <aside class="fixed top-0 left-0 w-64 h-screen bg-fuchsia-950 text-white shadow-lg z-50 flex flex-col justify-between">
+    {{-- <aside class="flex flex-col justify-between text-white bg-fuchsia-950"> --}}
 
-            {{-- <aside class="bg-fuchsia-950 text-white flex flex-col justify-between"> --}}
-
-      <div>
-        <div class="flex items-center justify-center h-20 border-purple-700 pt-8 pr-8 pb-8 pl-8 mt-7 mb-7">
+    <div class="">
+        <div class="flex items-center justify-center h-20 pt-8 pb-8 pl-8 pr-8 border-purple-700 mt-7 mb-7">
             <img src="/empire-kitchengold-icon.png" alt="Logo" class="w-[190px] h-[160px]" />
-          </div>
+        </div>
 
-           <!--nav-items-->
-        {{-- <nav class="">
-          <!--dashboard-->
-          <a href="{{route('admin.dashboard')}}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
-            <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-            <!-- Feather Icon -->
-            <i data-feather="grid" class="feather-icon mr-3 stroke-white group-hover:stroke-yellow-300 transition-all duration-300"></i>
-            Dashboard
-          </a> --}}
 
-          <!--testing active dashboard?-->
-          <a href="{{ route('admin.dashboard') }}"
-   class="group relative flex items-center p-5 transition
-          {{ request()->routeIs('admin.dashboard') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
-    <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
+
+        <a href="{{ route('admin.dashboard') }}"
+            class=" justify  group relative flex items-center pt-3 pr-5 pb-3 pl-[40px] mb-[13px] mt-[10px] text-[16px] transition 
+          {{ request()->routeIs('admin.dashboard') ? 'bg-yellow-300/30 text-yellow-300' : 
+          'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
+            <span
+                class="absolute left-0 top-0 h-full w-1 bg-[#edc75a] rounded-r-full
                  {{ request()->routeIs('admin.dashboard') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
                  transition-transform origin-left"></span>
-    <i data-feather="grid"
-       class="feather-icon mr-3 group
-              {{ request()->routeIs('admin.dashboard') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
-    Dashboard
-</a>
-          <!--testing active dashboard?-->
+          <iconify-icon
+  icon="hugeicons:dashboard-square-01" width="22"
+                                class=" mr-6  {{ request()->routeIs('admin.Bookings') ?
+            'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></iconify-icon>
 
+            Dashboard
+        </a>
 
-             {{-- <!--Client Management-->
-          <a href="{{ route('admin.ClientManagement') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
-            <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-            <!-- Feather Icon -->
-            <i data-feather="users" class="mr-3"></i> Client Management
-          </a> --}}
-<!--testing active dashboard?-->
-<a href="{{ route('admin.ClientManagement') }}"
-class="group relative flex items-center p-5 transition
+        <a href="{{ route('admin.ClientManagement') }}"
+            class="  group relative flex items-center pt-3 pr-5 pb-3 pl-[40px] mb-[15px] mt-[10px] text-[16px] transition
        {{ request()->routeIs('admin.ClientManagement') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
- <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
+            <span
+                class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
               {{ request()->routeIs('admin.ClientManagement') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
               transition-transform origin-left"></span>
- <i data-feather="users"
-    class="feather-icon mr-3 group
-           {{ request()->routeIs('admin.ClientManagement') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
+   <iconify-icon
+  icon="fluent:people-32-light" width="22"
+                                class=" mr-6  {{ request()->routeIs('admin.ClientManagement') ?
+            'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}">
+            </iconify-icon>
+
            Client Management
-</a>
-       <!--testing active dashboard?-->
+        </a>
 
-
-             <!--Project Management-->
-          {{-- <a href="{{ route('admin.ProjectManagement') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
-            <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-            <i data-feather="layers" class="mr-3"></i> Project Management
-          </a> --}}
-
-                    <!--testing active ProjectManagement?-->
-                    <a href="{{ route('admin.ProjectManagement') }}"
-                    class="group relative flex items-center p-5 transition
+        <a href="{{ route('admin.ProjectManagement') }}"
+            class="group relative flex items-center p-5 transition pt-3 pr-5 pb-3 pl-[40px] mb-[15px] mt-[10px] text-[16px]
                            {{ request()->routeIs('admin.ProjectManagement') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
-                     <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
+            <span
+                class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
                                   {{ request()->routeIs('admin.ProjectManagement') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
                                   transition-transform origin-left"></span>
-                     <i data-feather="layers"
-                        class="feather-icon mr-3 group
-                               {{ request()->routeIs('admin.ProjectManagement') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
-                               Project Management
-                 </a>
+ <iconify-icon
+  icon="fluent:tasks-app-28-regular" width="22"
+                                class=" mr-6  {{ request()->routeIs('admin.ProjectManagement') ?
+            'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}">
+            </iconify-icon>
+            Project Management
+        </a>
+        <!-- Bookings-->
+        <a href="{{ route('admin.Bookings') }}"
+            class="group relative flex items-center p-5 transition pt-3 pr-5 pb-3 pl-[40px] mb-[15px] mt-[10px] text-[16px]
+                           {{ request()->routeIs('admin.Bookings') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
+            <span
+                class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
+                                  {{ request()->routeIs('admin.Bookings') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
+                                  transition-transform origin-left"></span>
 
-                           <!--testing active ProjectManagement?-->
-          <!--Schedule Installation-->
-          {{-- <a href="{{ route('admin.ScheduleInstallation') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
-            <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+                                  <iconify-icon icon="hugeicons:appointment-02" width="22"
+                                class=" mr-6  {{ request()->routeIs('admin.Bookings') ?
+            'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></iconify-icon>
+                               Bookings
+        </a>
 
-            <i data-feather="calendar" class="mr-3"></i> Schedule Installation
-          </a> --}}
 
-                    <!--testing active ScheduleInstallation?-->
-                    <a href="{{ route('admin.ScheduleInstallation') }}"
-                    class="group relative flex items-center p-5 transition
+
+
+         <a href="{{ route('admin.ScheduleInstallation') }}"
+            class="group relative flex items-center p-5 transition pt-3 pr-5 pb-3 pl-[40px] mb-[15px] mt-[10px] text-[16px]
                            {{ request()->routeIs('admin.ScheduleInstallation') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
-                     <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
+            <span
+                class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
                                   {{ request()->routeIs('admin.ScheduleInstallation') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
                                   transition-transform origin-left"></span>
-                     <i data-feather="calendar"
-                        class="feather-icon mr-3 group
+            <i data-feather="calendar"
+                class="feather-icon mr-6 group
                                {{ request()->routeIs('admin.ScheduleInstallation') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
-                               Schedule Installation
-                 </a>
-                           <!--testing active ScheduleInstallation?-->
+            Schedule Installation
+        </a>
 
-          {{-- <!--Reports and Analytics-->
-          <a href="{{ route('admin.ReportsandAnalytics') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
-            <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
 
-            <i data-feather="bar-chart-2" class="mr-3"></i> Reports and Analytics
-          </a> --}}
+          <a href="{{ route('admin.Employee') }}"
+            class="group relative flex items-center p-5 transition pt-3 pr-5 pb-3 pl-[40px] mb-[15px] mt-[10px] text-[16px]
+                           {{ request()->routeIs('admin.Employee') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
+            <span
+                class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
+                                  {{ request()->routeIs('admin.Employee') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
+                                  transition-transform origin-left"></span>
+            <i data-feather="calendar"
+                class="feather-icon mr-6 group
+                               {{ request()->routeIs('admin.Employee') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
+            Employee
+        </a>
 
-                              <!--testing active ReportsandAnalytics?-->
-                              <a href="{{ route('admin.ReportsandAnalytics') }}"
-                              class="group relative flex items-center p-5 transition
+
+        <a href="{{ route('admin.ReportsandAnalytics') }}"
+            class="group relative flex items-center p-5 transition pt-3 pr-5 pb-3 pl-[40px] mb-[15px] mt-[10px] text-[16px]
                                      {{ request()->routeIs('admin.ReportsandAnalytics') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
-                               <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
+            <span
+                class="absolute left-0 top-0 h-[48px] w-1 bg-[#edc75a] rounded-r-full
                                             {{ request()->routeIs('admin.ReportsandAnalytics') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
                                             transition-transform origin-left"></span>
-                               <i data-feather="bar-chart-2"
-                                  class="feather-icon mr-3 group
+            <i data-feather="bar-chart-2"
+                class="feather-icon mr-6 group
                                          {{ request()->routeIs('admin.ReportsandAnalytics') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
-                                         Reports and Analytics
-                           </a>
-                                     <!--testing active ReportsandAnalytics?-->
+            Reports and Analytics
+        </a>
 
-          {{-- <!--Project Management-->
-          <a href="{{ route('admin.Settings') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
-            <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-
-            <i data-feather="settings" class="mr-3"></i> Settings
-          </a> --}}
-                              <!--testing active Settings?-->
-                              <a href="{{ route('admin.Settings') }}"
-                              class="group relative flex items-center p-5 transition
+        <!--testing active Settings?-->
+        <a href="{{ route('admin.Settings') }}"
+            class="group relative flex items-center p-5 transition pt-3 pr-5 pb-3 pl-[40px] mb-[15px] mt-[10px] text-[16px]
                                      {{ request()->routeIs('admin.Settings') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
-                               <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
+            <span
+                class="absolute left-0 top-0 h-[48px] w-1 bg-[#edc75a] rounded-r-full
                                             {{ request()->routeIs('admin.Settings') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
                                             transition-transform origin-left"></span>
-                               <i data-feather="settings"
-                                  class="feather-icon mr-3 group
-                                         {{ request()->routeIs('admin.Settings') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
-                                         Settings
-                           </a>
-                                     <!--testing active Settings?-->
+                <iconify-icon
+  icon="hugeicons:dashboard-square-01" width="22"
+                                class=" mr-6  {{ request()->routeIs('admin.Bookings') ?
+            'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></iconify-icon>
+            Settings
+        </a>
+        <!--testing active Settings?-->
 
-          {{-- <!--Inbox-->
-          <a href="{{ route('admin.Inbox') }}" class="group relative flex items-center  p-5 hover:bg-yellow-300/30 hover:text-yellow-300 text-white transition">
-            <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-            <!-- Feather Icon -->
-            <i data-feather="mail" class="mr-3"></i> Inbox
-          </a> --}}
-              <!--testing active Settings?-->
-              <a href="{{ route('admin.Inbox') }}"
-              class="group relative flex items-center p-5 transition
+
+        <!--testing active Settings?-->
+        <a href="{{ route('admin.Inbox') }}"
+            class="group relative flex items-center p-5 transition pt-2 pr-5 pb-2 pl-[40px] mb-[100px] mt-4 text-[13px]
                      {{ request()->routeIs('admin.Inbox') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
-               <span class="absolute left-0 top-0 h-full w-2 bg-[#edc75a] rounded-r-full
+            <span
+                class="absolute left-0 top-0 h-[48px] w-1 bg-[#edc75a] rounded-r-full
                             {{ request()->routeIs('admin.Inbox') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
                             transition-transform origin-left"></span>
-               <i data-feather="mail"
-                  class="feather-icon mr-3 group
-                         {{ request()->routeIs('admin.Inbox') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
-                         Inbox
-           </a>
-                     <!--testing active Inbox?-->
+    <iconify-icon
+  icon="hugeicons:dashboard-square-01" width="22"
+                                class=" mr-6  {{ request()->routeIs('admin.Bookings') ?
+            'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></iconify-icon>
+            Inbox
+        </a>
+        <!--testing active Inbox?-->
 
         </nav>
-      </div>
 
-      <!--Logout-->
 
-      <div class="px-4 py-6">
+         <div class="px-4 py-6">
         <form method="POST" action="{{ route('logout') }}">
-          @csrf
-          <a href="{{ route('logout') }}"
-             onclick="event.preventDefault(); this.closest('form').submit();"
-             class="flex items-center text-sm hover:text-purple-300 cursor-pointer">
-            <i data-feather="log-out" class="mr-2"></i> {{ __('Log Out') }}
-          </a>
+            @csrf
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"
+                class="flex items-center text-sm cursor-pointer hover:text-purple-300">
+                <i data-feather="log-out" class="mr-2"></i> {{ __('Log Out') }}
+            </a>
         </form>
-      </div>
+    </div>
+    </div>
+
+    <!--Logout-->
+
+   
 
 
-    </aside>
+</aside>

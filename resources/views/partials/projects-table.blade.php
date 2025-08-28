@@ -19,7 +19,6 @@
    {{-- <td class="p-4 font-normal text-[15px]">{{ $project->name }}</td> --}}
       <td  class="px-3 py-1 text-sm ">{{ $project->client->firstname . ' ' . $project->client->lastname}}</td>
       <td  class="px-3 py-1 text-sm ">{{ $project->client->location}}</td>
-
       <td class="p-4">
        <span class="px-3 py-1 text-sm {{ $statusClasses[$project->status] ?? $defaultClass }}">{{ $project->status }}</span>
    </td>

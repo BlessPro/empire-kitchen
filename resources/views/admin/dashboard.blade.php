@@ -118,27 +118,7 @@
              <div class="flex items-center justify-between pt-4 pb-5 pl-6 pr-6">
                <p class="text-gray-600 text-[15px] font-normal">Easily manage your projects here</p>
                <div class="flex gap-3">
-                {{-- <div class="flex gap-3 mb-4">
-                    <button class="px-4 py-2 text-white bg-blue-600 rounded filter-btn" data-status="all">All</button>
-                    <button class="px-4 py-2 text-white bg-yellow-500 rounded filter-btn" data-status="pending">Pending</button>
-                    <button class="px-4 py-2 text-white bg-green-600 rounded filter-btn" data-status="ongoing">Ongoing</button>
-                    <button class="px-4 py-2 text-white bg-purple-700 rounded filter-btn" data-status="completed">Completed</button>
-                </div> --}}
-
-
-{{--
-                 <button class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-full">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h4M6 10h12M6 14h12M10 18h4" />
-                   </svg>
-                   Filter
-                 </button>
-                 <button class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-purple-800 bg-purple-100 border border-purple-800 rounded-full">
-                   Export
-                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16V4H4zm8 8v4m0-4l-2 2m2-2l2 2" />
-                   </svg>
-                 </button> --}}
+               
                </div>
              </div>
 

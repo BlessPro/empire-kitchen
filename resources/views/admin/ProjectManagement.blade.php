@@ -13,14 +13,33 @@
                     <!-- Top Navbar -->
                     <h1 class="text-2xl font-bold">Project Management</h1>
 
-                    <button id="openAddProjectModal"
-                        class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
+                    <a href="{{ route('admin.addproject') }}">
+                    <button  class="px-6 py-2 text-semibold text-[15px]
+                     text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
                         + Add Project
                     </button>
-
+                </a>
 
                 </div>
+    <div class="flex items-center justify-between mb-6">
+                                <form id="filterForm" method="GET" action="{{ route('clients.index') }}"
+                                    class="flex gap-3 mb-4">
+                                    <input type="text" name="search" id="searchInput"
+                                        value="{{ request('search') }}" placeholder="Search clients..."
+                                        class="pt-2 pb-2 pl-5 pr-5 border-gray-300 rounded-full">
 
+                                    <select name="location" id="locationSelect"
+                                        class="pt-2 pb-2 pl-5 pr-5 border-gray-300 rounded-full">
+                                        <option value="">All Locations</option>
+                                        @foreach ($clients->pluck('location')->unique() as $location)
+                                            <option value="{{ $location }}"
+                                                {{ request('location') == $location ? 'selected' : '' }}>
+                                                {{ $location }}</option>
+                                        @endforeach
+                                    </select>
+                                </form>
+
+                            </div>
 
                 <!-- Columns (Pending, Ongoing, Completed) -->
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
@@ -360,7 +379,7 @@
                         <div class="flex justify-end mt-6">
                             <button id="closeSuccessModalYes"
                                 class="px-4 py-2 mr-4 text-white rounded-full bg-fuchsia-900">
-                                <a href="{{ route('admin.addproject') }}">
+                                <a  ">
                                     Ok
                                 </a>
                             </button>
