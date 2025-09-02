@@ -10,7 +10,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\DB;
+use App\Models\Employee;
 
 class Settings extends Controller
 {
@@ -18,11 +21,10 @@ class Settings extends Controller
     public function index()
     {
         $users = User::all();
-     return view('admin.settings', compact('users'));
+        return view('admin.settings', compact('users'));
 
         // return view('admin.Settings');
     }
-
 
     // public function store(Request $request)
     // {
@@ -51,61 +53,112 @@ class Settings extends Controller
     //     return redirect()->back()->with('success', 'User added successfully!');
     // }
 
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'email' => 'required|email|unique:users',
+    //         'phone_number' => 'required|string',
+    //         'role' => 'required|string',
+    //         'password' => 'required|string|confirmed|min:6',
+    //         'profile_pic' => 'nullable|image|max:2048',
+    //     ]);
 
-// public function store(Request $request)
-// {
-//     $request->validate([
-//         'name' => 'required|string|max:255',
-//         'email' => 'required|email|unique:users',
-//         'phone_number' => 'required|string',
-//         'role' => 'required|string',
-//         'password' => 'required|string|confirmed|min:6',
-//         'profile_pic' => 'nullable|image|max:2048',
-//     ]);
+    //     $profilePicPath = null;
 
-//     $profilePicPath = null;
+    //     if ($request->hasFile('profile_pic')) {
+    //         $profilePicPath = $request->file('profile_pic')->store('users', 'public');
+    //     }
 
-//     if ($request->hasFile('profile_pic')) {
-//         $profilePicPath = $request->file('profile_pic')->store('users', 'public');
-//     }
+    //     User::create([
+    //         'name' => $request->name,
+    //         'email' => $request->email,
+    //         'phone_number' => $request->phone_number,
+    //         'role' => $request->role,
+    //         'password' => Hash::make($request->password),
+    //         'profile_pic' => $profilePicPath,
+    //     ]);
 
-//     User::create([
-//         'name' => $request->name,
-//         'email' => $request->email,
-//         'phone_number' => $request->phone_number,
-//         'role' => $request->role,
-//         'password' => Hash::make($request->password),
-//         'profile_pic' => $profilePicPath,
-//     ]);
+    //     return response()->json(['message' => 'User added successfully!']);
+    // }
 
-//     return response()->json(['message' => 'User added successfully!']);
-// }
+    // public function store(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'email' => 'required|string|email|max:255|unique:users',
+    //         'phone_number' => 'required|string',
+    //         'role' => 'required|string',
+    //         'password' => 'required|string|min:8|confirmed',
+    //         'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+    //     ]);
+
+    //     if ($request->hasFile('profile_pic')) {
+    //         $path = $request->file('profile_pic')->store('profile_pics', 'public');
+    //         $validated['profile_pic'] = $path;
+    //     }
+
+    //     $validated['password'] = Hash::make($validated['password']);
+
+    //     User::create($validated);
+
+    //     return response()->json(['message' => 'User created successfully.']);
+    // }
 
 
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'employee_id' => ['required','exists:employees,id','unique:users,employee_id'],
+            'role' => ['required', Rule::in([
+                'administrator',
+                'tech_supervisor',
+                'accountant',
+                'sales_account',
+                'production_officer',
+                'installation_officer',
+            ])],
+            'password' => ['required','string','min:8','confirmed'],
+        ]);
 
-public function store(Request $request)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users',
-        'phone_number' => 'required|string',
-        'role' => 'required|string',
-        'password' => 'required|string|min:8|confirmed',
-        'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
-    ]);
+        User::create([
+            'employee_id' => $data['employee_id'],      // <-- FK to employees.id
+            'role'        => $data['role'],
+            'password'    => Hash::make($data['password']),
+        ]);
 
-    if ($request->hasFile('profile_pic')) {
-        $path = $request->file('profile_pic')->store('profile_pics', 'public');
-        $validated['profile_pic'] = $path;
+        // If your form expects JSON (AJAX):
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'User created successfully.']);
+        }
+
+        // Or classic redirect with flash:
+        return back()->with('success','User created successfully.');
     }
 
-    $validated['password'] = Hash::make($validated['password']);
 
-    User::create($validated);
 
-    return response()->json(['message' => 'User created successfully.']);
-}
 
+    
+    // public function store(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         // 'staff_id' => ['required','exists:staff_id,','unique:users,staff_id'],
+    //         // 'staff_id' => 'required|string|max:50|unique:employees,staff_id',
+    //         'staff_id' => 'required|string|max:50|unique:employees,staff_id',
+
+    //         'role' => ['required', Rule::in(['administrator', 'tech_supervisor', 'accountant', 'sales_account', 'production_officer', 'installation_officer'])],
+    //         'password' => ['required', 'string', 'min:8', 'confirmed'],
+    //     ]);
+
+    //     User::create([
+    //         'staff_id' => $validated['employee_id'],
+    //         'role' => $validated['role'],
+    //         'password' => Hash::make($validated['password']),
+    //     ]);
+
+    //     return response()->json(['message' => 'User created successfully.']);
+    // }
 
     public function create()
     {
@@ -247,74 +300,85 @@ public function store(Request $request)
     //     $users = User::orderBy('created_at', 'desc')->paginate(10);
     //     return view('admin.settings', compact('users'));
     // }
-public function showUsers()
-{
-    $users = User::select('id', 'name', 'email', 'role', 'profile_pic', 'last_seen_at', 'created_at')
-        ->orderByDesc('created_at')
-        ->paginate(10);
+    // public function showUsers()
+    // {
+    //     $users = Employee::select('id', 'name', 'email', 'role', 'profile_pic', 'last_seen_at', 'created_at')
+    //         ->orderByDesc('created_at')
+    //         ->paginate(10);
 
-    return view('admin.settings', compact('users'));
-}
+    //     return view('admin.settings', compact('users'));
+    // }
+
+    // public function settings()
+    // {
+    //     $employees = Employee::select('id', 'name')->orderBy('name')->get();
+
+    //     // also fetch your current users list like before if needed
+    //     return view('admin.settings', compact('employees'));
+    // }
+    public function showUsers()
+    {
+        // $employees = Employee::select('staff_id','name')->orderBy('name')->get();
+        $employees = Employee::select('id', 'name', 'staff_id')->orderBy('name')->get();
+
+        $users = DB::table('users')->join('employees', 'employees.id', '=', 'users.employee_id')->select('users.id', 'employees.name', 'employees.email', DB::raw('employees.avatar_path as profile_pic'), 'users.role', 'users.last_seen_at', 'users.created_at')->orderByDesc('users.created_at')->paginate(10);
+
+        return view('admin.settings', compact('users', 'employees'));
+    }
 
     public function update(Request $request)
- {
+    {
+        $user = User::findOrFail(Auth::id());
 
-    $user = User::findOrFail(Auth::id());
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'phone_number' => 'required|string|max:20',
+            'password' => 'nullable|string|min:8',
+            'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
 
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-        'phone_number' => 'required|string|max:20',
-        'password' => 'nullable|string|min:8',
-        'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
+        if ($request->hasFile('profile_pic')) {
+            $path = $request->file('profile_pic')->store('profile_pics', 'public');
+            $validated['profile_pic'] = $path;
+        }
 
-    if ($request->hasFile('profile_pic')) {
-        $path = $request->file('profile_pic')->store('profile_pics', 'public');
-        $validated['profile_pic'] = $path;
+        if ($validated['password'] ?? false) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']); // Keep current password
+        }
+
+        $user->update($validated);
+
+        return redirect()->back()->with('success', 'Account updated successfully.');
     }
 
-    if ($validated['password'] ?? false) {
-        $validated['password'] = Hash::make($validated['password']);
-    } else {
-        unset($validated['password']); // Keep current password
+    public function UpdateLoggedUser(Request $request)
+    {
+        $user = User::findOrFail(Auth::id());
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'phone_number' => 'required|string|max:20',
+            'password' => 'nullable|string|min:8',
+            'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($request->hasFile('profile_pic')) {
+            $path = $request->file('profile_pic')->store('profile_pics', 'public');
+            $validated['profile_pic'] = $path;
+        }
+
+        if ($validated['password'] ?? false) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']); // Keep current password
+        }
+
+        $user->update($validated);
+
+        return redirect()->back()->with('success', 'Account updated successfully.');
     }
-
-    $user->update($validated);
-
-    return redirect()->back()->with('success', 'Account updated successfully.');
-}
-
-
-
-  public function UpdateLoggedUser(Request $request)
- {
-
-    $user = User::findOrFail(Auth::id());
-
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-        'phone_number' => 'required|string|max:20',
-        'password' => 'nullable|string|min:8',
-        'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
-
-    if ($request->hasFile('profile_pic')) {
-        $path = $request->file('profile_pic')->store('profile_pics', 'public');
-        $validated['profile_pic'] = $path;
-    }
-
-    if ($validated['password'] ?? false) {
-        $validated['password'] = Hash::make($validated['password']);
-    } else {
-        unset($validated['password']); // Keep current password
-    }
-
-    $user->update($validated);
-
-    return redirect()->back()->with('success', 'Account updated successfully.');
-}
-
-
 }

@@ -2,84 +2,51 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Employee;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-
-
- /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        User::updateOrCreate([
-            'email' => 'admin@example.com',
-            'name' => 'Admin User',
-            'phone_number' => '0550000001',
-            'password' => Hash::make('password123'),
-            'role' => 'admin',
-            'profile_pic' => 'profile_photos/admin-profile.jpg',
-        ]);
+        // Example 1: Ensure at least one admin account exists
+        $employee = Employee::first(); // just take the first employee
 
-        User::updateOrCreate([
-            'email' => 'tech@example.com',
-            'name' => 'Tech Supervisor',
-            'phone_number' => '0550000002',
-            'password' => Hash::make('password123'),
-            'role' => 'tech_supervisor',
-            'profile_pic' => 'profile_photos/default_tech_pic.jpg',
-        ]);
+        if ($employee && ! User::where('employee_id', $employee->id)->exists()) {
+            User::create([
+                'employee_id'   => $employee->id,
+                'password'      => Hash::make('password123'), // change in production!
+                'role'          => 'administrator',
+                'remember_token'=> Str::random(10),
+                'last_seen_at'  => now(),
+            ]);
+        }
 
-        User::updateOrCreate([
-            'email' => 'designer@example.com',
-            'name' => 'Designer',
-            'phone_number' => '0550000003',
-            'password' => Hash::make('password123'),
-            'role' => 'designer',
-            'profile_pic' => 'profile_photos/default_designer_pic.jpg',
-        ]);
+        // Example 2: Seed a few sample users from random employees
+        $roles = [
+            'administrator',
+            'tech_supervisor',
+            'accountant',
+            'sales_account',
+            'production_officer',
+            'installation_officer',
+        ];
 
-        User::updateOrCreate([
-            'email' => 'accountant@example.com',
-            'name' => 'Accountant',
-            'phone_number' => '0550000004',
-            'password' => Hash::make('password123'),
-            'role' => 'accountant',
-            'profile_pic' => 'profile_photos/default_accountant_pic.jpg',
-        ]);
+        $employees = Employee::inRandomOrder()->take(5)->get();
 
-        User::updateOrCreate([
-            'email' => 'sales@example.com',
-            'name' => 'Sales Accountant',
-            'phone_number' => '0550000005',
-            'password' => Hash::make('password'),
-            'role' => 'sales_accountant',
-            'profile_pic' => 'profile_photos/default_sales_accountant_pic.jpg',
-        ]);
-
-        User::updateOrCreate([
-            'email' => 'superadmin@example.com',
-            'name' => 'Super Admin',
-            'phone_number' => '0550000006',
-            'password' => Hash::make('superadminpassword'),
-            'role' => 'superadmin',
-            'profile_pic' => 'profile_photos/admin-profile.jpg',
-        ]);
-
-        User::updateOrCreate([
-            'email' => 'acesquare52@gmail.com',
-            'name' => 'Bless',
-            'phone_number' => '0550000007',
-            'password' => Hash::make('Bless@2024'),
-            'role' => 'admin',
-            'profile_pic' => 'profile_photos/admin-profile.jpg',
-        ]);
+        foreach ($employees as $index => $emp) {
+            if (! User::where('employee_id', $emp->id)->exists()) {
+                User::create([
+                    'employee_id'   => $emp->id,
+                    'password'      => Hash::make('secret123'), // demo password
+                    'role'          => $roles[$index % count($roles)],
+                    'remember_token'=> Str::random(10),
+                    'last_seen_at'  => now()->subDays(rand(0, 30)),
+                ]);
+            }
+        }
     }
 }
-

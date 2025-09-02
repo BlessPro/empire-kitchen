@@ -39,7 +39,7 @@
 
 
 
- 
+
         <form method="POST"
               action="{{ route('projects.store') }}"
               enctype="multipart/form-data"
@@ -73,7 +73,7 @@
                 <select name="project[client_id]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
                   <option value="">— choose client —</option>
                   @foreach($clients ?? [] as $c)
-                    <option value="{{ $c->id }}">{{ $c->name }}</option>
+                    <option value="{{ $c->id }}">{{ $c->firstname }}</option>
                   @endforeach
                 </select>
               </div>
@@ -229,11 +229,11 @@
               {{-- Notes --}}
             <label class="block text-[15px] mb-2 font-semibold text-gray-900">Deadline</label>
             <input type="date" name="product[deadline]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
-              
+
               <label class="block text-[15px] mb-2 font-semibold text-gray-900">Notes</label>
               <textarea name="product[notes]" class="w-full px-3 py-2 border rounded-lg min-h-[120px]"></textarea>
             </div>
-          
+
           </div>
 
           <!-- STEP 7: Summary / Preview -->

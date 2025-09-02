@@ -23,7 +23,7 @@
                             + Set Measurement
                         </button>
 
- 
+
                     </div>
             <div class="bg-white rounded-[20px] shadow">
 
@@ -71,26 +71,24 @@
                 </div>
             </div>
 
-
-
-
-
-
-            <!-- Measure / Booking Modal -->
-<div id="measureModal" class="fixed inset-0 z-50 flex items-center justify-center hidden
-fixed inset-0 z-[100] hidden items-center justify-center bg-black/40"
+<!-- Measure / Booking Modal -->
+<div id="measureModal"
+     class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/40"
      x-data="{
         clientId: '',
+        projectId: '',
         projects: [],
         loading: false,
         async loadProjects() {
-          if (!this.clientId) { this.projects = []; return; }
+          this.projects = [];
+          this.projectId = '';
+          if (!this.clientId) { return; }
           this.loading = true;
           try {
             const res = await fetch(`{{ url('/clients') }}/${this.clientId}/projects`, {
               headers: { 'Accept':'application/json' }
             });
-            if (!res.ok) { console.error('Fetch failed', res.status); this.projects = []; return; }
+            if (!res.ok) { console.error('Fetch failed', res.status); return; }
             this.projects = await res.json();
           } catch (e) {
             console.error(e);
@@ -99,46 +97,79 @@ fixed inset-0 z-[100] hidden items-center justify-center bg-black/40"
             this.loading = false;
           }
         }
-     }">
-  <div class="bg-white w-[520px] rounded-xl shadow-xl p-6" @click.stop>
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-lg font-semibold">Schedule Measurement</h2>
-      <button type="button" onclick="closeModal()" class="text-gray-500 hover:text-gray-700">✕</button>
-    </div>
+     }"
+     x-cloak>
 
-    {{-- Client select --}}
-    <label class="block mb-1 text-sm font-medium">Client</label>
-    <select class="w-full px-3 py-2 mb-4 border rounded-lg"
-            x-model="clientId"
-            @change="loadProjects()">
-      <option value="">— Select client —</option>
-      @foreach($clients as $c)
-        <option value="{{ $c->id }}">{{ $c->name ?? ($c->firstname.' '.$c->lastname) }}</option>
-      @endforeach
-    </select>
+  <form action="{{ route('measurements.store') }}" method="POST" enctype="multipart/form-data" class="w-full max-w-[520px]">
+    @csrf
 
-    {{-- Project select (populated via JSON) --}}
-    <label class="block mb-1 text-sm font-medium">Project</label>
-    <select class="w-full px-3 py-2 mb-2 border rounded-lg"
-            :disabled="!projects.length">
-      <option value="" x-show="!projects.length && !loading">— No projects —</option>
-      <option value="" x-show="loading">Loading…</option>
-      <template x-for="p in projects" :key="p.id">
-        <option :value="p.id" x-text="p.name"></option>
-      </template>
-    </select>
+    <div class="w-full p-6 bg-white shadow-xl rounded-xl" @click.stop>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold">Schedule Measurement</h2>
+        <button type="button" onclick="closeModal()" class="text-gray-500 hover:text-gray-700">✕</button>
+      </div>
 
-    <div>
+      {{-- Client select --}}
+      <label class="block mb-1 text-sm font-medium">Client</label>
+      <select class="w-full px-3 py-2 mb-4 border rounded-lg"
+              name="client_id"
+              x-model="clientId"
+              @change="loadProjects()"
+              required>
+        <option value="">— Select client —</option>
+        @foreach($clients as $c)
+          <option value="{{ $c->id }}">{{ $c->name ?? ($c->firstname.' '.$c->lastname) }}</option>
+        @endforeach
+      </select>
+
+      {{-- Project select (populated via JSON) --}}
+      <label class="block mb-1 text-sm font-medium">Project</label>
+      <select class="w-full px-3 py-2 mb-2 border rounded-lg"
+              name="project_id"
+              x-model="projectId"
+              :disabled="!projects.length"
+              required>
+        <option value="" x-show="!projects.length && !loading">— No projects —</option>
+        <option value="" x-show="loading">Loading…</option>
+        <template x-for="p in projects" :key="p.id">
+          <option :value="p.id" x-text="p.name"></option>
+        </template>
+      </select>
+
+      <div>
         <label class="block mb-1 text-sm font-medium">Measurement Date & Time</label>
-        <input type="date" class="w-full px-3 py-2 mb-4 border rounded-lg" />
+        {{-- if you only want date, change to type="date" and keep name="scheduled_at" --}}
+        <input type="datetime-local"
+               id="start_time"
+               name="scheduled_at"
+               class="w-full px-3 py-2 mb-4 border rounded-lg"
+               required />
+      </div>
 
-    <div class="flex justify-end gap-2 mt-6">
-      {{-- <button type="button" class="px-4 py-2 border rounded-lg" onclick="closeModal()">Cancel</button> --}}
-      <button type="button" class="w-full px-4 py-2 rounded-[10px] text-white bg-[#5A0562]"
-              :disabled="!clientId || !projects.length">Continue</button>
+      {{-- optional notes --}}
+      {{-- <textarea name="notes" class="w-full px-3 py-2 mb-2 border rounded-lg" placeholder="Notes (optional)"></textarea> --}}
+
+      <div class="flex justify-end gap-2 mt-6">
+        <button type="button" class="px-4 py-2 border rounded-lg" onclick="closeModal()">Cancel</button>
+        <button type="submit"
+                class="w-full px-4 py-2 rounded-[10px] text-white bg-[#5A0562] disabled:opacity-50"
+                :disabled="!clientId || !projectId">
+          Continue
+        </button>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
+
+{{-- <script>
+  function closeModal() {
+    document.getElementById('measureModal').classList.add('hidden');
+  }
+  // your openModal() should remove 'hidden' as you already do elsewhere
+</script> --}}
+
+
+            <!-- Measure / Booking Modal -->
 
 <script>
   function openModal(){ const m=document.getElementById('measureModal'); m.classList.remove('hidden'); m.classList.add('flex'); }

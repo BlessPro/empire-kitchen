@@ -45,10 +45,10 @@
 
 <!-- Tailwind Styles already included in your layout -->
 <!-- Create Installation Button -->
-<button onclick="openModal()" class="px-4 py-2 mt-4 mb-4 text-white rounded-[20px] bg-fuchsia-950 hover:bg-purple-800">
+{{-- <button onclick="openModal()" class="px-4 py-2 mt-4 mb-4 text-white rounded-[20px] bg-fuchsia-950 hover:bg-purple-800">
             <iconify-icon icon="majesticicons:plus-line" width="18" style="color: #fff;"></iconify-icon>
  Create Installation
-</button>
+</button> --}}
 <div class="p-6 bg-white shadow-md rounded-xl">
     <div id="calendar"></div>
 </div>
@@ -60,10 +60,10 @@
     <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
        <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
 
-        <h2 class="mb-4 text-xl font-bold  ">Create Installation</h2>
+        <h2 class="mb-4 text-xl font-bold ">Create Installation</h2>
 
         <button type="button" onclick="closeModal()"
-        class="px-4 py-2  ">
+        class="px-4 py-2 ">
         <iconify-icon icon="material-symbols:close-rounded" width="22" style="color: #5A0562;"></iconify-icon>
     </button>
        </div>
@@ -74,9 +74,7 @@
             <!-- Client -->
             <div class="mb-4">
                 <label class="block mb-2 text-sm font-medium text-gray-700">Client</label>
-                <select id="client_id" name="client_id" class="w-full px-3 py-2 border
-                border-gray-300 rounded-md focus:outline-none
-                focus:ring-2 focus:ring-blue-500" required>
+                <select id="client_id" name="client_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                     <option value="">Select a client</option>
                     @foreach(\App\Models\Client::all() as $client)
                         <option value="{{ $client->id }}"
@@ -109,7 +107,7 @@
             <!-- Project -->
             <div class="mb-4">
                 <label class="block mb-2 text-sm font-medium text-gray-700">Project</label>
-                <select id="project_id" name="project_id" class=" w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <select id="project_id" name="project_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                     <option value="">Select a project</option>
                     <!-- JS will populate based on selected client -->
                 </select>
@@ -119,29 +117,29 @@
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="block mb-2 text-sm font-medium text-gray-700">Start Time</label>
-                    <input type="datetime-local" id="start_time" name="start_time" class=" w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <input type="datetime-local" id="start_time" name="start_time" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
                     <label class="block mb-2 text-sm font-medium text-gray-700">End Time</label>
-                    <input type="datetime-local" id="end_time" name="end_time" class=" w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <input type="datetime-local" id="end_time" name="end_time" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
             </div>
 
             <!-- Duration -->
             <div class="mb-4">
                 <label class="block mb-2 text-sm font-medium text-gray-700">Duration</label>
-                <input type="text" id="duration" class=" w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Duration (auto)" readonly>
+                <input type="text" id="duration" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Duration (auto)" readonly>
             </div>
 
             <!-- Notes -->
             <div class="mb-4">
                 <label class="block mb-2 text-sm font-medium text-gray-700">Notes</label>
-                <textarea name="notes" rows="3" class=" w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Additional Notes (optional)"></textarea>
+                <textarea name="notes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Additional Notes (optional)"></textarea>
             </div>
 
             <!-- Buttons -->
             <div class="flex justify-end space-x-4">
-                <button type="submit" class="w-full px-4 py-2 text-white bg-fuchsia-900 rounded hover:bg-purple-800">Save</button>
+                <button type="submit" class="w-full px-4 py-2 text-white rounded bg-fuchsia-900 hover:bg-purple-800">Save</button>
             </div>
         </form>
     </div>
@@ -199,6 +197,79 @@
 </main>
 <!-- FullCalendar Script -->
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var calendarEl = document.getElementById('calendar');
+
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,timeGridWeek,listWeek'
+    },
+    events: '/TimeManagement/events', // pulls from controller
+    eventColor: '#0036BF',
+    height: 'auto',
+
+    eventClick: function (info) {
+      const event = info.event;
+
+      // Build a small info card near the click
+      const popup = document.createElement('div');
+      popup.className = 'bg-white shadow-lg rounded-lg p-4 border border-gray-200 fixed z-50';
+      const popupWidth = 280, popupHeight = 160;
+      const vw = window.innerWidth, vh = window.innerHeight;
+
+      let top = info.jsEvent.clientY + 10;
+      let left = info.jsEvent.clientX;
+
+      if (left + popupWidth > vw)  left = vw - popupWidth - 10;
+      if (top + popupHeight > vh) top = vh - popupHeight - 10;
+
+      popup.style.top = `${top}px`;
+      popup.style.left = `${left}px`;
+      popup.style.width = `${popupWidth}px`;
+
+      const startLabel = event.start ? new Date(event.start).toLocaleString() : '—';
+
+      popup.innerHTML = `
+        <div class="flex items-start justify-between mb-2">
+          <div class="font-semibold text-gray-800 pr-4">${event.title}</div>
+          <button type="button" aria-label="Close"
+                  class="ml-2 rounded p-1 hover:bg-gray-100" id="popupCloseBtn">✕</button>
+        </div>
+        <div class="mb-1 text-sm"><strong>Date:</strong> ${startLabel}</div>
+        <div class="mb-2 text-sm"><strong>Notes:</strong> ${event.extendedProps?.notes ?? 'N/A'}</div>
+      `;
+
+      document.body.appendChild(popup);
+
+      function removePopup() {
+        popup.remove();
+        document.removeEventListener('click', outsideClick);
+      }
+
+      function outsideClick(e) {
+        if (!popup.contains(e.target)) removePopup();
+      }
+
+      // Close button
+      popup.querySelector('#popupCloseBtn').addEventListener('click', removePopup);
+
+      // Close when clicking outside
+      setTimeout(() => document.addEventListener('click', outsideClick), 0);
+    }
+  });
+
+  calendar.render();
+});
+</script>
+
+
 
 <script>
 
@@ -377,7 +448,6 @@ document.getElementById('editForm').addEventListener('submit', function(e) {
         if (res.message) {
             document.getElementById('editUserModal').classList.add('hidden');
             document.getElementById('editUserModal').classList.remove('flex');
-
             document.getElementById('successModal').classList.remove('hidden');
         }
     });

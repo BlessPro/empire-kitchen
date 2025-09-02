@@ -99,8 +99,17 @@ Route::get('/dashboard', function () {
         Route::get('/clients', [ClientManagementController::class, 'index'])->name('clients.index'); // Ensure this route exists for listing clients
 
     //for handling client projects
-
+//handling the add employee
 Route::get('/admin/addemployee', [EmployeeController::class, 'addemployee'])->name('admin.addemployee');
+// Route::post('employees', EmployeeController::class, 'store')->name('employees.store');
+// Route::post('employee', [EmployeeController::class,'store'])->name('employees.store');
+// Route::resource('employees', EmployeeController::class)->only(['store']);
+
+Route::get('employee/create', [EmployeeController::class,'create'])
+    ->name('employees.create');
+
+Route::post('employee', [EmployeeController::class,'store'])
+    ->name('employees.store'); // you already have this
 
 Route::middleware(['web','auth'])->group(function () {
     // Clients
@@ -115,13 +124,6 @@ Route::middleware(['web','auth'])->group(function () {
         ->name('projects.index');          // View Projects for a client (filter by ?client=ID)
 });
 Route::post('/projects/assign-supervisor', [ProjectManagementController::class, 'assignSupervisor'])->name('tech.assignSupervisor');
-    // Route::post('/admin/addproject', [ProjectManagementController::class, 'addproject'])->name('admin.addproject');
-
-
-// Route::post('admin/projects', [ProjectWizardController::class, 'store'])
-//     ->name('admin.projects.store');
-
-// Route::get('/projects/create', [ProjectWizardController::class, 'create'])->name('projects.create');
 
 Route::post('/accessories/store', [ProjectManagementController::class, 'accstore'])
     ->name('accessories.store');
@@ -145,18 +147,21 @@ Route::post('/accessories/store', [ProjectManagementController::class, 'accstore
     Route::get('/admin/update/{id}', [UserController::class, 'edit'])->name('admin.users.edit');
     Route::post('/admin/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
     Route::post('/admin/settings/', [UserController::class, 'UpdateLoggedUser'])->name('admin.settings.update');
+    Route::post('/users', [settings::class, 'store'])->name('users.store');
+    // Route::post('/userss', [Settings::class, 'settings'])->name('');
     //for rditing logged user
     Route::post('/admin/ScheduleInstallation/{id}', [InstallationController::class, 'update'])->name('admin.ScheduleInstallation.update');
-    Route::get('/TimeManagement/events', [InstallationController::class, 'calendarEvents']);
+    // Route::get('/TimeManagement/events', [InstallationController::class, 'calendarEvents']);
 Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destroy']);
 
+Route::get('/TimeManagement/events', [MeasurementController::class, 'events'])
+    ->name('measurements.events');
 
     // Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destroy']);
 
     //delete user
     Route::delete('admin/dashboard/user/{id}', [settings::class, 'destroy'])->name('settings.destroy');
     //storing the user
-    Route::post('/users', [settings::class, 'store'])->name('users.store');
     //storing comment
     Route::get('/admin/Inbox', [InboxController::class, 'index'])->name('admin.Inbox')->middleware('auth');
     // For the MessageSending
@@ -177,7 +182,9 @@ Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destr
 //    Route::get('/clients/{client}/projects', function(App\Models\Client $client) {
 //     return $client->projects()->select('id','name')->get();
 // });
-
+// Store measurement
+Route::post('/measurements', [MeasurementController::class, 'store'])
+     ->name('measurements.store');
 
 
 // routes/web.php
@@ -191,7 +198,7 @@ Route::get('/clients/{client}/projects', function (Client $client) {
 
 
 
-Route::post('/measurements/store', [MeasurementController::class, 'store'])->name('measurements.store');
+// Route::post('/measurements/store', [MeasurementController::class, 'store'])->name('measurements.store');
     //employee
     Route::get('/admin/Employee', [EmployeeController::class, 'index'])->name('admin.Employee')->middleware('auth');
     //navigate tech tabs page

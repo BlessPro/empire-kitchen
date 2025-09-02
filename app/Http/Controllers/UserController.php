@@ -25,31 +25,27 @@ class UserController extends Controller
         };
     }
 
+    //     Route::get('/admin/dashboard', [AdminController::class, 'index'])
+    //     ->middleware('role:admin')
+    //     ->name('admin.dashboard');
 
-//     Route::get('/admin/dashboard', [AdminController::class, 'index'])
-//     ->middleware('role:admin')
-//     ->name('admin.dashboard');
+    // Route::get('/tech/dashboard', [TechController::class, 'index'])
+    //     ->middleware('role:tech_supervisor')
+    //     ->name('tech.dashboard');
 
-// Route::get('/tech/dashboard', [TechController::class, 'index'])
-//     ->middleware('role:tech_supervisor')
-//     ->name('tech.dashboard');
+    // Route::get('/designer/dashboard', [DesignerController::class, 'index'])
+    //     ->middleware('role:designer')
+    //     ->name('designer.dashboard');
 
-// Route::get('/designer/dashboard', [DesignerController::class, 'index'])
-//     ->middleware('role:designer')
-//     ->name('designer.dashboard');
+    // Route::get('/accountant/dashboard', [AccountantController::class, 'index'])
+    //     ->middleware('role:accountant')
+    //     ->name('accountant.dashboard');
 
-// Route::get('/accountant/dashboard', [AccountantController::class, 'index'])
-//     ->middleware('role:accountant')
-//     ->name('accountant.dashboard');
+    // Route::get('/sales/dashboard', [SalesController::class, 'index'])
+    //     ->middleware('role:sales_accountant')
+    //     ->name('sales.dashboard');
 
-// Route::get('/sales/dashboard', [SalesController::class, 'index'])
-//     ->middleware('role:sales_accountant')
-//     ->name('sales.dashboard');
-
-
-// }
-
-
+    // }
 
     // public function index()
     // {
@@ -68,12 +64,12 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'employee_id' => 'required|exists:employees,id',
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'phone_number' => 'required|string',
             'role' => 'required|string',
             'password' => 'nullable|string|min:8',
-            'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048'
+            'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($request->hasFile('profile_pic')) {
@@ -98,54 +94,48 @@ class UserController extends Controller
         return response()->json(['message' => 'User updated successfully.']);
     }
 
-
-     public function UpdateLoggedUser(Request $request)
+    public function UpdateLoggedUser(Request $request)
     {
-    $user = User::findOrFail(Auth::id());
+        $user = User::findOrFail(Auth::id());
 
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-        'phone_number' => 'required|string|max:20',
-        'password' => 'nullable|string|min:8',
-        'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'phone_number' => 'required|string|max:20',
+            'password' => 'nullable|string|min:8',
+            'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
 
-    if ($request->hasFile('profile_pic')) {
-        $path = $request->file('profile_pic')->store('profile_pics', 'public');
-        $validated['profile_pic'] = $path;
+        if ($request->hasFile('profile_pic')) {
+            $path = $request->file('profile_pic')->store('profile_pics', 'public');
+            $validated['profile_pic'] = $path;
+        }
+
+        if ($validated['password'] ?? false) {
+            $validated['password'] = Hash::make($validated['password']);
+        } else {
+            unset($validated['password']); // Keep current password
+        }
+
+        $user->update($validated);
+
+        return redirect()->back()->with('success', 'Account updated successfully.');
     }
 
-    if ($validated['password'] ?? false) {
-        $validated['password'] = Hash::make($validated['password']);
-    } else {
-        unset($validated['password']); // Keep current password
+    public function updateProfilePic(Request $request)
+    {
+        $user = User::findOrFail(Auth::id());
+
+        $request->validate([
+            'profile_pic' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($request->hasFile('profile_pic')) {
+            $path = $request->file('profile_pic')->store('profile_pics', 'public');
+            $user->profile_pic = $path;
+            $user->save();
+        }
+
+        return redirect()->back()->with('success', 'Profile picture updated successfully.');
     }
-
-    $user->update($validated);
-
-    return redirect()->back()->with('success', 'Account updated successfully.');
-   }
-
-
-
-   public function updateProfilePic(Request $request)
-{
-    $user = User::findOrFail(Auth::id());
-
-    $request->validate([
-        'profile_pic' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
-
-    if ($request->hasFile('profile_pic')) {
-        $path = $request->file('profile_pic')->store('profile_pics', 'public');
-        $user->profile_pic = $path;
-        $user->save();
-    }
-
-    return redirect()->back()->with('success', 'Profile picture updated successfully.');
-}
-
-
-
 }

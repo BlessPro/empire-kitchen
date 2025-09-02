@@ -100,8 +100,110 @@
       </div>
 
 
+
+{{-- Add User Modal --}}
+<div id="addUserModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/50">
+  <div class="bg-white rounded-lg p-6 w-[600px] relative">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-semibold">Create Account</h2>
+      <button type="button" id="cancelAddUser" class="p-2 rounded hover:bg-gray-100">
+        <i data-feather="x" class="feather-icon"></i>
+      </button>
+    </div>
+
+    <form id="addUserForm"
+          action="{{ route('users.store') }}"
+          method="POST"
+          class="space-y-4">
+      @csrf
+
+      {{-- Show validation errors --}}
+      @if ($errors->any())
+        <div class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          <ul class="list-disc pl-5">
+            @foreach ($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+      @endif
+
+      {{-- Employee select --}}
+      <div class="flex flex-col gap-4 sm:flex-row">
+        <div class="w-full">
+          <label class="block mb-2 text-sm font-medium text-gray-700">Employee</label>
+          <div class="relative">
+            <select name="employee_id"
+                    class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required>
+              <option value="" disabled selected>Select employee</option>
+              @foreach ($employees as $emp)
+                <option value="{{ $emp->id }}">
+                  {{ $emp->name }}{{ $emp->staff_id ? ' — '.$emp->staff_id : '' }}
+                </option>
+              @endforeach
+            </select>
+            <svg class="absolute w-5 h-5 text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.08 1.04l-4.25 4.25a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {{-- Role select --}}
+      <div class="flex flex-col gap-4 sm:flex-row">
+        <div class="w-full">
+          <label class="block mb-2 text-sm font-medium text-gray-700">Account Type</label>
+          <div class="relative">
+            <select name="role"
+                    class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required>
+              <option value="" disabled selected>Select account type</option>
+              <option value="administrator">Administrator</option>
+              <option value="tech_supervisor">Tech Supervisor</option>
+              <option value="accountant">Accountant</option>
+              <option value="sales_account">Sales Account</option>
+              <option value="production_officer">Production Officer</option>
+              <option value="installation_officer">Installation Officer</option>
+            </select>
+            <svg class="absolute w-5 h-5 text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.08 1.04l-4.25 4.25a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {{-- Passwords --}}
+      <div class="flex flex-col gap-4 sm:flex-row">
+        <div>
+          <label class="block mb-2 text-sm font-medium text-gray-700">Password</label>
+          <input type="password"
+                 id="password"
+                 name="password"
+                 class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 required>
+        </div>
+        <div>
+          <label class="block mb-2 text-sm font-medium text-gray-700">Re-enter Password</label>
+          <input type="password"
+                 id="password_confirmation"
+                 name="password_confirmation"
+                 class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                 required>
+        </div>
+      </div>
+
+      <button type="submit" class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 rounded">
+        Save
+      </button>
+    </form>
+  </div>
+</div>
+
+
+
  {{-- add user pop up  begins--}}
-  <div id="addUserModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
+  {{-- <div id="addUserModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
     <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
         <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
         <h2 class="mb-4 text-xl font-semibold">Add New Project</h2>
@@ -192,7 +294,7 @@
     </form>
 
 </div>
-</div>
+</div> --}}
 
 {{-- <div id="successModal1" tabindex="-1" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
     <div class="p-6 text-center bg-white rounded-md shadow-lg w-72">
