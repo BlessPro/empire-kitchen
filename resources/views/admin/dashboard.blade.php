@@ -6,16 +6,16 @@
         {{-- {{ dd($projects) }} --}}
         @php
         $statusClasses = [
-            'in progress' => 'bg-yellow-100 text-yellow-700 px-2 py-1 border border-yellow-500 rounded-full text-xs',
-            'completed' => 'bg-green-100 text-green-700 px-2 py-1 border border-green-500 rounded-full text-xs',
-            'pending' => 'bg-blue-100 text-blue-700 px-2 py-1 border border-blue-500 rounded-full text-xs',
+            'ON_GOING' => 'bg-yellow-100 text-yellow-700 px-2 py-1 border border-yellow-500 rounded-full text-xs',
+            'COMPLETED' => 'bg-green-100 text-green-700 px-2 py-1 border border-green-500 rounded-full text-xs',
+            'IN_REVIEW' => 'bg-blue-100 text-blue-700 px-2 py-1 border border-blue-500 rounded-full text-xs',
         ];
 
 
         $defaultClass = 'bg-gray-100 text-gray-800';
     @endphp
 
-        <main class="ml-64 mt-[100px] flex-1 bg-gray-100 min-h-screen  items-center">
+        <main class="ml-[280px] mt-[100px] flex-1 bg-gray-100 min-h-screen  items-center">
             <div class="p-6 bg-[#F9F7F7]">
              <div class="mb-[20px]">
              <h2 class="text-[25px] font-semi-bold text-gray-900 "> Overview </h2>
@@ -118,7 +118,7 @@
              <div class="flex items-center justify-between pt-4 pb-5 pl-6 pr-6">
                <p class="text-gray-600 text-[15px] font-normal">Easily manage your projects here</p>
                <div class="flex gap-3">
-               
+
                </div>
              </div>
 

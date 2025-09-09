@@ -43,8 +43,9 @@
                   </td>
                   {{-- <td><span class="px-2 py-1 text-xs text-green-600 bg-green-100 rounded-full">Online</span></td>
                   <td>June 25, 2026, 10:45PM</td> --}}
-                  @php
-    $online = $user->last_seen_at && $user->last_seen_at->gt(now()->subMinutes(2));
+                 @php
+    $online = $user->last_seen_at instanceof \Carbon\Carbon
+              && $user->last_seen_at->gt(now()->subMinutes(2));
 @endphp
 
 <td>
@@ -56,7 +57,7 @@
 </td>
 
 <td class="text-sm text-gray-600">
-    @if ($user->last_seen_at)
+    @if ($user->last_seen_at instanceof \Carbon\Carbon)
         {{ $user->last_seen_at->diffForHumans() }}
     @else
         Never active
@@ -90,6 +91,9 @@
               </tbody>
             </table>
           </div>
+
+
+
           <div class="mt-4 mb-5 ml-5 mr-5">
             {{ $users->links('pagination::tailwind') }}
         </div>
@@ -119,8 +123,8 @@
 
       {{-- Show validation errors --}}
       @if ($errors->any())
-        <div class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-          <ul class="list-disc pl-5">
+        <div class="p-3 text-sm text-red-700 border border-red-200 rounded-md bg-red-50">
+          <ul class="pl-5 list-disc">
             @foreach ($errors->all() as $error)
               <li>{{ $error }}</li>
             @endforeach

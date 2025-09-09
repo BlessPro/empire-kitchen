@@ -2,7 +2,7 @@
     <x-slot name="header">
         <!--written on 26.04.2025-->
         @include('admin.layouts.header')
-        <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+        <main class="ml-[280px] mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
             <!--head begins-->
 
             <div class="p-6 bg-[#F9F7F7]">
@@ -162,7 +162,7 @@
                             </div>
 
                         </div>
-                        
+
                         <div class="overflow-x-auto">
                             <table class="min-w-full text-left">
                                 <thead class="items-center text-sm text-gray-600 bg-gray-100">

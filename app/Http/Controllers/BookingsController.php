@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Client;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class BookingsController extends Controller
 {
@@ -45,5 +48,60 @@ public function index(Request $request)
         'clients'=> $clients
     ]);
 }
+
+
+
+
+    public function booked(Request $request)
+    {
+        $projects = Project::with('client:id,firstname,lastname,name')
+            ->where('booked_status', 'BOOKED')
+            ->orderByDesc('id')
+            ->get(['id','name','client_id']);
+
+        return response()->json(
+            $projects->map(fn($p)=>[
+                'id' => $p->id,
+                'name' => $p->name,
+                'client' => [
+                    'id' => $p->client_id,
+                    'name' => $p->client?->name ?? trim(($p->client?->firstname.' '.$p->client?->lastname)),
+                ],
+            ])
+        );
+    }
+
+    public function client(Project $project)
+    {
+        $c = $project->client;
+        return response()->json([
+            'id' => $c?->id,
+            'name' => $c?->name ?? trim(($c?->firstname.' '.$c?->lastname)),
+        ]);
+    }
+
+
+
+
+// app/Http/Controllers/BookingOverrideController.php
+
+    public function override(Request $request, Project $project)
+    {
+        $data = $request->validate([
+            'password' => ['required','string']
+        ]);
+
+        $user = $request->user();
+        if (!$user || !Hash::check($data['password'], $user->password)) {
+            return response()->json(['message' => 'Invalid password.'], 422);
+        }
+
+        $project->update(['booked_status' => 'BOOKED']);
+
+        return response()->json(['ok' => true]);
+    }
+
+
+
 
 }

@@ -47,11 +47,11 @@ class AdminController extends Controller
 
     public function index()
 {
-      
+
 
     $projects = Project::orderBy('created_at','desc')->paginate(10); // fetch paginated projects
     // return view('admin/dashboard', compact(['latestProjectWithAllDates','projects']));
-    return view('admin/dashboard', compact(['projects']));
+    return view('/admin/dashboard', compact(['projects']));
 
 
 }

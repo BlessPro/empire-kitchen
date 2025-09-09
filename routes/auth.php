@@ -93,7 +93,7 @@ Route::middleware('auth')->group(function () {
 
 use App\Http\Middleware\UpdateLastSeen;
 
-Route::middleware(['auth', 'role:admin', UpdateLastSeen::class])->group(function () {
+Route::middleware(['auth', 'role:administrator', UpdateLastSeen::class])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])
         ->name('admin.dashboard');
 });

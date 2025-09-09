@@ -1,10 +1,4 @@
-{{-- <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Admin | {{ $title ?? 'Dashboard' }}</title>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head> --}}
+
 
     <!DOCTYPE html>
     <html lang="en">
@@ -29,6 +23,18 @@
 {{-- <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script> --}}
 <script src="https://code.iconify.design/iconify-icon/2.0.0/iconify-icon.min.js"></script>
 
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""
+/>
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""
+  defer
+></script>
 
       <!--written on 14.04.2025-->
       <!--Modified on 15.04.1015-->

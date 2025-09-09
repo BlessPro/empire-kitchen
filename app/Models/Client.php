@@ -54,4 +54,11 @@ public function followUps()
 
 // Client.php
 public function projects() { return $this->hasMany(Project::class); }
+
+// app/Models/Client.php
+public function getNameAttribute(): string
+{
+    return "{$this->firstname} {$this->lastname}";
+}
+
 }

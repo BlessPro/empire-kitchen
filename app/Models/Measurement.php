@@ -39,7 +39,9 @@ protected $fillable = [
     protected $casts = [
     'images' => 'array',
     'start_time' => 'datetime',
-    'end_time' => 'datetime'
+    'end_time' => 'datetime',
+    'scheduled_date' => 'date',
+
 ];
 
 

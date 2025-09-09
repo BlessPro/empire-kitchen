@@ -22,15 +22,14 @@ class DatabaseSeeder extends Seeder
     //         ProjectSeeder::class,
     //     ]);
     // }
-public function run(): void
-{
-    $this->call([
-        ClientSeeder::class,
-        UserSeeder::class,
-        AccessorySeeder::class,
-        ProjectSeeder::class,
-    ]);
+    public function run(): void
+    {
+        $this->call([
+            EmployeeSeeder::class, // must run first
+            UserSeeder::class, // depends on employees
+            ClientSeeder::class,
+            ProjectSeeder::class,
+            AccessorySeeder::class,
+        ]);
+    }
 }
-
-}
-

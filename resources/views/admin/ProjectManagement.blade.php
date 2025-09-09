@@ -4,7 +4,7 @@
     </x-slot>
 
 
-    <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+    <main class="ml-[280px] mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
 
         <div class="p-6 bg-[#F9F7F7]">
             <div class="mb-[20px]">
@@ -14,32 +14,31 @@
                     <h1 class="text-2xl font-bold">Project Management</h1>
 
                     <a href="{{ route('admin.addproject') }}">
-                    <button  class="px-6 py-2 text-semibold text-[15px]
+                        <button
+                            class="px-6 py-2 text-semibold text-[15px]
                      text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
-                        + Add Project
-                    </button>
-                </a>
+                            + Add Project
+                        </button>
+                    </a>
 
                 </div>
-    <div class="flex items-center justify-between mb-6">
-                                <form id="filterForm" method="GET" action="{{ route('clients.index') }}"
-                                    class="flex gap-3 mb-4">
-                                    <input type="text" name="search" id="searchInput"
-                                        value="{{ request('search') }}" placeholder="Search clients..."
-                                        class="pt-2 pb-2 pl-5 pr-5 border-gray-300 rounded-full">
+                <div class="flex items-center justify-between mb-6">
+                    <form id="filterForm" method="GET" action="{{ route('clients.index') }}" class="flex gap-3 mb-4">
+                        <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
+                            placeholder="Search clients..." class="pt-2 pb-2 pl-5 pr-5 border-gray-300 rounded-full">
 
-                                    <select name="location" id="locationSelect"
-                                        class="pt-2 pb-2 pl-5 pr-5 border-gray-300 rounded-full">
-                                        <option value="">All Locations</option>
-                                        @foreach ($clients->pluck('location')->unique() as $location)
-                                            <option value="{{ $location }}"
-                                                {{ request('location') == $location ? 'selected' : '' }}>
-                                                {{ $location }}</option>
-                                        @endforeach
-                                    </select>
-                                </form>
+                        <select name="location" id="locationSelect"
+                            class="pt-2 pb-2 pl-5 pr-5 border-gray-300 rounded-full">
+                            <option value="">All Locations</option>
+                            @foreach ($clients->pluck('location')->unique() as $location)
+                                <option value="{{ $location }}"
+                                    {{ request('location') == $location ? 'selected' : '' }}>
+                                    {{ $location }}</option>
+                            @endforeach
+                        </select>
+                    </form>
 
-                            </div>
+                </div>
 
                 <!-- Columns (Pending, Ongoing, Completed) -->
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
@@ -105,9 +104,6 @@
                                                     </ul>
                                                 </div>
                                             </div>
-
-
-
 
                                         </div>
                                         <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
@@ -379,7 +375,7 @@
                         <div class="flex justify-end mt-6">
                             <button id="closeSuccessModalYes"
                                 class="px-4 py-2 mr-4 text-white rounded-full bg-fuchsia-900">
-                                <a  ">
+                                <a ">
                                     Ok
                                 </a>
                             </button>
@@ -390,56 +386,77 @@
                 </div>
 
                 <!---end of pop up--->
-                <!--Assign Tech Supervisor Modal-->
-                <div id="assignTechModal"
-                    class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
-                    <div class="w-full max-w-md p-6 bg-white rounded shadow-md">
-                        <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
-                            <h2 class="mb-4 text-xl font-semibold">Assign Tech Supervisor</h2>
-                            <button type="button" onclick="closeTechModal()"
-                                class="px-4 py-2 mt-2 rounded text-fuchsia-900">
-                                <i data-feather="x" class="mr-3 feather-icon group"></i>
-                            </button>
-                        </div>
+  <!-- Assign Tech Supervisor Modal -->
+{{-- <div id="assignTechModal"
+     class="fixed inset-0 z-50 items-center justify-center hidden bg-black/50">
+  <div class="w-full max-w-md p-6 bg-white shadow-xl rounded-2xl"> --}}
 
-                        <form method="POST" action="{{ route('tech.assignSupervisor') }}">
-                            @csrf
-                            <input type="hidden" name="project_id" id="projectIdInput">
+    <div id="assignTechModal"
+     class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/50">
+  <div class="w-full max-w-md p-6 bg-white shadow-xl rounded-2xl">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-lg font-semibold">Assign Technical Supervisor</h2>
+      <button type="button" onclick="closeTechModal()" class="text-gray-500 hover:text-gray-700">
+        <i data-feather="x"></i>
+      </button>
+    </div>
 
-                            <!-- Project Name -->
-                            <div class="mb-4">
-                                <label class="block mb-1 text-sm font-medium">Project Name</label>
-                                <input type="text" id="projectNameInput" disabled readonly
-                                    class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            </div>
+    <!-- Form -->
+    <form method="POST" action="{{ route('tech.assignSupervisor') }}" class="space-y-6">
+      @csrf
+      <input type="hidden" name="project_id" id="projectIdInput">
 
-                            <!-- Select Supervisor -->
-                            <div class="mb-4 max-h-[300px] overflow-y-auto space-y-4">
-                                <label class="block mb-2 text-sm font-medium">Select Supervisor</label>
+      <!-- Project name (read-only) -->
+      <div>
+        <input type="text" id="projectNameInput" disabled readonly
+               class="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:ring-2 focus:ring-purple-500">
+      </div>
 
-                                @foreach ($supervisors as $supervisor)
-                                    <label
-                                        class="flex items-center justify-between p-2 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-100">
-                                        <div class="flex items-center space-x-3">
-                                            <img src="{{ asset('storage/' . $supervisor->profile_pic) }}"
-                                                alt="Supervisor" class="object-cover w-10 h-10 rounded-full">
+      <!-- Supervisors list -->
+      <div class="max-h-[320px] overflow-y-auto">
+          @foreach ($supervisors as $supervisor)
+                                    <label class="block cursor-pointer pb-[10px]">
+                                        <input type="radio" name="supervisor_id" value="{{ $supervisor->id }}"
+                                            class="sr-only peer" required />
+                                        <div
+                                            class="flex items-center gap-3 transition border-b border-gray-200 hover:bg-gray-50 peer-checked:border-2 peer-checked:border-fuchsia-800 peer-checked:rounded-xl peer-checked:bg-white peer-checked:shadow-sm">
+                                            <img src="{{ $supervisor->profile_pic ? asset('storage/' . $supervisor->profile_pic) : asset('images/default-avatar.png') }}"
+                                                alt="Supervisor" class="object-cover w-12 h-12 rounded-full" />
                                             <span class="font-medium text-gray-800">{{ $supervisor->name }}</span>
                                         </div>
                                     </label>
-                                @endforeach
-                            </div>
+                                    @endforeach
+                        </div>
 
-                            <!-- Submit -->
-                            <div class="flex justify-end space-x-2">
-                                <button type="submit"
-                                    class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 mt-5 rounded-[20px]">
-                                    Proceed
-                                </button>
-                            </div>
+                        <!-- Proceed button -->
+                        <button type="submit"
+                            class="w-full py-3 text-lg font-medium text-white rounded-full bg-fuchsia-900 hover:brightness-110">
+                            Proceed
+                        </button>
                         </form>
                     </div>
                 </div>
 
+
+
+                <script>
+                    // Feather icons
+                    if (window.feather) feather.replace();
+
+                    // Optional helpers
+                    function openTechModal(projectId, projectName) {
+                        document.getElementById('projectIdInput').value = projectId || '';
+                        document.getElementById('projectNameInput').value = projectName || '';
+                        document.getElementById('assignTechModal').classList.remove('hidden');
+                        document.body.classList.add('overflow-hidden');
+                    }
+
+                    function closeTechModal() {
+                        document.getElementById('assignTechModal').classList.add('hidden');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                </script>
 
 
 
@@ -518,28 +535,6 @@
                 closeTechModal();
             }
         });
-
-        // After assign: close the modal
-        // If you're using normal form POST, the page will navigate/refresh anyway.
-        // If you want to keep the page and submit via AJAX, uncomment the block below and set your route to return JSON.
-        /*
-        form?.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const url = form.action;
-          const data = new FormData(form);
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            body: data
-          });
-          if (res.ok) {
-            closeTechModal();
-            // TODO: update UI (badge, assigned label) without reload
-          } else {
-            // TODO: show error toast/message
-          }
-        });
-        */
     </script>
 
 

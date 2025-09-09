@@ -46,7 +46,7 @@ private function redirectBasedOnRole(): string
     $role = Auth::user()->role;
 
     return match ($role) {
-        'admin' => route('admin.dashboard'),
+        'administrator' => route('admin.dashboard'),
         'tech_supervisor' => route('tech.dashboard'),
         'designer' => route('designer.dashboard'),
         'accountant' => route('accountant.dashboard'),

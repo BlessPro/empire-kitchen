@@ -6,7 +6,7 @@
                                 <th class="p-4 font-medium text-[15px]">Project</th>
                                 <th class="p-4 font-medium text-[15px]">Location</th>
                                 <th class="p-4 font-medium text-[15px]">Status</th>
-                                {{-- <th class="p-4 font-mediumt  font-medium text-[15px]">Action</th> --}}
+                                <th class="p-4 font-mediumt  font-medium text-[15px]">Action</th>
                             </tr>
                         </thead>
 
@@ -18,7 +18,7 @@
                                     <td class="p-4">
 
                                         <span class="font-normal text-[15px]">
-                                            {{ $p->client->firstname. ' '. $p->client->lastname ?? '—' }}
+                                            {{ $p->client->lastname. ' '. $p->client->firstname ?? '—' }}
                                         </span>
 
                                     </td>
@@ -43,6 +43,50 @@
                                         </span>
                                     </td>
 
+
+<td class="p-4" x-data="{open:false}">
+  <button @click="open = !open" class="p-2 rounded hover:bg-gray-100">
+    <iconify-icon icon="mdi:dots-vertical"></iconify-icon>
+  </button>
+
+  <div x-show="open" x-cloak @click.away="open=false"
+       class="absolute z-10 w-56 mt-2 bg-white border shadow-lg right-6 rounded-xl">
+    {{-- <button class="w-full px-4 py-2 text-left hover:bg-gray-50"
+            @click="
+              open=false;
+              singleModalOpen({
+                projectId: {{ $p->id }},
+                productName: `{{ $p->products()->latest('id')->value('name') ?? 'Product' }}`,
+                clientId: {{ $p->client_id }},
+                clientName: `{{ $p->client?->name ?? trim(($p->client?->firstname.' '.$p->client?->lastname)) }}`,
+              })
+            ">
+      Set measurement
+    </button> --}}
+
+    <button class="w-full px-4 py-2 text-left hover:bg-gray-50"
+        @click="
+          open=false;
+          singleOpenModal({
+            projectId: {{ $p->id }},
+            productName: `{{ $p->products()->latest('id')->value('name') ?? 'Product' }}`,
+            clientId: {{ $p->client_id }},
+            clientName: `{{ $p->client?->name ?? trim(($p->client?->firstname.' '.$p->client?->lastname)) }}`,
+          })
+        ">
+  Set measurement
+</button>
+
+
+    <button class="w-full px-4 py-2 text-left hover:bg-gray-50"
+            @click="
+              open=false;
+              overridePrompt({ projectId: {{ $p->id }} })
+            ">
+      Override Booking Process
+    </button>
+  </div>
+</td>
 
                                 </tr>
                             @empty

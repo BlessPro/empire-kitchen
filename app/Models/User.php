@@ -52,7 +52,16 @@ class User extends Authenticatable
 
 protected $casts = [
     'last_seen_at' => 'datetime',
+
 ];
+
+public function getIsOnlineAttribute(): bool
+{
+    return $this->last_seen_at && $this->last_seen_at->gt(now()->subMinutes(2));
+}
+
+public function employee() { return $this->belongsTo(Employee::class); }
+
 
     public function measurements()
 {

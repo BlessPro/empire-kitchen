@@ -7,6 +7,7 @@ use App\Models\Measurement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Project;
+use Illuminate\Support\Facades\DB;
 
 class MeasurementController extends Controller
 {
@@ -72,7 +73,7 @@ public function StoreCreateMeasurement(Project $project){
     }
 
     // Handle the modal POST
-    public function store(Request $request)
+    public function store1(Request $request)
     {
         $data = $request->validate([
             'client_id'    => ['required', 'exists:clients,id'],
@@ -189,6 +190,35 @@ public function StoreCreateMeasurement(Project $project){
 
         return response()->json($events);
     }
+
+// app/Http/Controllers/MeasurementController.php
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'project_id'   => ['required','exists:projects,id'],
+            'client_id'    => ['required','exists:clients,id'],
+            // use scheduled_at (datetime) or scheduled_date (date) based on your migration
+            'scheduled_at' => ['required','date'], // or use 'scheduled_date' => ['required','date']
+        ]);
+
+        return DB::transaction(function () use ($validated) {
+            // Create measurement
+            $m = Measurement::create([
+                'project_id'   => $validated['project_id'],
+                'client_id'    => $validated['client_id'],
+                'scheduled_at' => $validated['scheduled_at'], // or 'scheduled_date'
+            ]);
+
+            // Update project stage
+            $project = Project::find($validated['project_id']);
+            $project->update(['current_stage' => 'MEASUREMENT']);
+
+            return redirect()->back()->with('success', 'Measurement scheduled and stage updated.');
+        });
+    }
+
+
 
 }
 
