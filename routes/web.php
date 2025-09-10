@@ -130,6 +130,73 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 
+
+
+Route::middleware(['web','auth'])->prefix('admin')->group(function () {
+    Route::get('/ProjectManagement', [ProjectManagementController::class, 'index'])
+        ->name('admin.ProjectManagement');
+
+    // 🔴 required {project} param — no "?"
+    // Route::get('/projects/{project}/supervisors',
+    //     [ProjectManagementController::class, 'supervisorsForProject']
+    // )->name('admin.projects.supervisors');
+
+//     Route::post('/projects/assign-supervisor',
+//         [ProjectManagementController::class, 'assignSupervisor']
+//     )->name('tech.assignSupervisor');
+});
+
+
+
+
+// Route::middleware(['auth']) // or your admin middleware
+//     ->prefix('admin')
+//     ->group(function () {
+//         Route::get('/projects/{project}/supervisors',
+//             [ProjectManagementController::class, 'supervisors']
+//         )->name('admin.projects.supervisors');
+//     });
+Route::middleware(['auth']) // your guards here
+    ->prefix('admin')
+    ->group(function () {
+        Route::get('/projects/{project}/supervisors',
+            [ProjectManagementController::class, 'supervisors']
+        )->name('admin.projects.supervisors');
+
+        // keep your assign action too
+        Route::post('/projects/assign-tech',
+            [ProjectManagementController::class, 'assignSupervisor']
+        )->name('tech.assignSupervisor');
+    });
+
+    // Route::middleware(['auth']) // your guards here
+    // ->prefix('admin')
+    // ->group(function () {
+    //     Route::get('/projects/{project}/supervisors',
+    //         [ProjectManagementController::class, 'supervisors']
+    //     )->name('admin.projects.supervisors');
+
+    //     // keep your assign action too
+    //     Route::post('/projects/assign-tech',
+    //         [ProjectManagementController::class, 'assignSupervisor']
+    //     )->name('tech.assignSupervisor');
+    // });
+
+
+
+// Route::get('/admin/ProjectManagement', [ProjectManagementController::class, 'index'])
+//     ->name('admin.ProjectManagement');
+
+// // JSON: supervisors with assignment flags for a (nullable) project
+// Route::get('/admin/projects/{project?}/supervisors', [ProjectManagementController::class, 'supervisorsForProject'])
+//     ->whereNumber('project')
+//     ->name('admin.projects.supervisors');
+
+// // assign action
+// Route::post('/admin/projects/assign-supervisor', [ProjectManagementController::class, 'assignSupervisor'])
+//     ->name('tech.assignSupervisor');
+
+
     // Route::resource('employees', EmployeeController::class)->only(['index','store','create','edit','update']);
 
     //for handling client projects
