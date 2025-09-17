@@ -54,22 +54,62 @@ class Project extends Model
     {
         return $this->hasOne(Measurement::class);
     }
+    // in App\Models\Project.php
+public function measurements()
+{
+    return $this->hasMany(Measurement::class, 'project_id');
+}
+
     public function installation()
     {
         return $this->hasOne(Installation::class);
     }
 
-    // If you have tables/models for these, add them; otherwise remove their eager-loads in your query.
     public function design()
     {
         return $this->hasOne(Design::class);
-    } // create Design model if needed
-    // public function production()    { return $this->hasOne(Production::class); }     // create Production model if needed
+    }
 
-    // If you're using comments on projects:
-    // Adjust to morphMany if your Comment is polymorphic.
     public function comments()
     {
         return $this->hasMany(Comment::class);
     }
+     public function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
+
+
+
+
+
+
+
+    // App/Models/Project.php
+
+    // assumes projects table has: id, name, tech_supervisor_id, client_id, ...
+
+
+
+    // Stage tables (each owns many rows per project)
+
+    public function designs()
+    {
+        return $this->hasMany(Design::class); // <-- your Design table/model
+    }
+
+    public function productions()
+    {
+        return $this->hasMany(Production::class); // <-- your Production table/model
+    }
+
+    
+
+    public function installations()
+    {
+        return $this->hasMany(Installation::class); // <-- your Installation table/model
+    }
+
+
+
 }

@@ -114,6 +114,7 @@ class Settings extends Controller
                 'administrator',
                 'tech_supervisor',
                 'accountant',
+                'designer',
                 'sales_account',
                 'production_officer',
                 'installation_officer',
@@ -139,7 +140,7 @@ class Settings extends Controller
 
 
 
-    
+
     // public function store(Request $request)
     // {
     //     $validated = $request->validate([

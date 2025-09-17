@@ -136,26 +136,13 @@ Route::middleware(['web','auth'])->prefix('admin')->group(function () {
     Route::get('/ProjectManagement', [ProjectManagementController::class, 'index'])
         ->name('admin.ProjectManagement');
 
-    // 🔴 required {project} param — no "?"
-    // Route::get('/projects/{project}/supervisors',
-    //     [ProjectManagementController::class, 'supervisorsForProject']
-    // )->name('admin.projects.supervisors');
 
-//     Route::post('/projects/assign-supervisor',
-//         [ProjectManagementController::class, 'assignSupervisor']
-//     )->name('tech.assignSupervisor');
 });
 
 
 
 
-// Route::middleware(['auth']) // or your admin middleware
-//     ->prefix('admin')
-//     ->group(function () {
-//         Route::get('/projects/{project}/supervisors',
-//             [ProjectManagementController::class, 'supervisors']
-//         )->name('admin.projects.supervisors');
-//     });
+
 Route::middleware(['auth']) // your guards here
     ->prefix('admin')
     ->group(function () {
@@ -169,6 +156,9 @@ Route::middleware(['auth']) // your guards here
         )->name('tech.assignSupervisor');
     });
 
+
+    Route::get('/measurements', [MeasurementController::class, 'index'])
+    ->name('measurements.index');
     // Route::middleware(['auth']) // your guards here
     // ->prefix('admin')
     // ->group(function () {
@@ -403,7 +393,8 @@ Route::middleware(['auth']) // your guards here
     // for project design page
     // Show form
     Route::get('/designer/ProjectDesign', [designerProjectDesignController::class, 'showUploadForm'])->name('designer.ProjectDesign');
-
+Route::get('/invoices/create', [designerProjectDesignController::class, 'create'])
+     ->name('invoices.create');
     // Handle submission
     Route::post('/designer/ProjectDesign', [designerProjectDesignController::class, 'store'])->name('design.store');
     Route::get('/designer/dashboard', [DashboardController::class, 'index'])->name('designer.dashboard');

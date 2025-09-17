@@ -111,7 +111,7 @@
         @php
             $debt = $totalIncome - $totalExpense;
         @endphp
-                    
+
         @if ($debt < 0)
             <p class="font-bold text-[35px]  text-gray-900">GH₵ {{ number_format(abs($debt), 2) }}</p>
         @else
@@ -286,11 +286,10 @@
 
 {{--table--}}
 
-<div id="followup-table-container" class="shadow-md  min-w-full mt-6 pb-[3px] text-left bg-white rounded-[20px]">
+{{-- <div id="followup-table-container" class="shadow-md  min-w-full mt-6 pb-[3px] text-left bg-white rounded-[20px]">
     @include('accountant.partials.dashboard-table')
-    {{-- @include('accountant.partials.dashboard-table', ['followUps' => $followUps]) --}}
 
-</div>
+</div> --}}
 
       </div>
 </div>

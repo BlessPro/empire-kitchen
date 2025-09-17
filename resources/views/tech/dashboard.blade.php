@@ -1,4 +1,4 @@
-   <x-tech-layout>
+   {{-- <x-tech-layout>
    <x-slot name="header">
 <!--written on 15.05.2025-->
         @include('admin.layouts.header')
@@ -14,30 +14,12 @@
     <!-- Left Column -->
     <div class="flex flex-col gap-6">
       <!-- Overview -->
-      <div class="bg-white p-4 rounded-2xl shadow mt-6">
-    <h2 class="text-xl font-semibold mb-4">Project Stages Overview</h2>
+      <div class="p-4 mt-6 bg-white shadow rounded-2xl">
+    <h2 class="mb-4 text-xl font-semibold">Project Stages Overview</h2>
     <canvas id="projectsBarChart" height="100"></canvas>
 
 </div>
-       {{-- <div class="p-6 bg-white shadow rounded-2xl">
 
-      <div class="flex "> --}}
-        {{-- <div class="w-1/4 h-2 bg-orange-500 rounded"></div>
-        <div class="w-1/4 h-2 bg-blue-500 rounded"></div>
-        <div class="w-1/4 h-2 bg-green-500 rounded"></div>
-        <div class="w-1/4 h-2 bg-purple-500 rounded"></div> --}}
-      {{-- <div class=" p-4 ">
-    <h2 class="text-xl font-semibold mb-4">Project Stages Overview</h2>
-    <canvas id="projectsBarChart" height="100"></canvas>
-</div> --}}
-      {{-- </div> --}}
-      {{-- <div class="space-y-2 text-sm text-gray-600">
-        <div class="flex justify-between"><span class="flex items-center"><span class="w-3 h-3 mr-2 bg-orange-500 rounded-full"></span>Measurement</span><span>8</span></div>
-        <div class="flex justify-between"><span class="flex items-center"><span class="w-3 h-3 mr-2 bg-blue-500 rounded-full"></span>Design</span><span>11</span></div>
-        <div class="flex justify-between"><span class="flex items-center"><span class="w-3 h-3 mr-2 bg-green-500 rounded-full"></span>Production</span><span>5</span></div>
-        <div class="flex justify-between"><span class="flex items-center"><span class="w-3 h-3 mr-2 bg-purple-500 rounded-full"></span>Installation</span><span>9</span></div>
-      </div> --}}
-    {{-- </div> --}}
 
       <!-- Upcoming Measurements -->
       <div class="p-6 bg-white rounded-lg shadow">
@@ -66,114 +48,6 @@
 
       </div>
 
-{{--
-   <div class="bg-white p-6 rounded shadow mt-6">
-    <h2 class="text-xl font-semibold mb-4">Measurement Stage Projects</h2>
-    @forelse($projects as $project)
-        <div class="border rounded-lg p-4 mb-4 shadow-sm">
-            <h3 class="text-lg font-bold text-gray-800">{{ $project['project_name'] }}</h3>
-            <p class="text-sm text-gray-600"><strong>Location:</strong> {{ $project['location'] }}</p>
-            <p class="text-sm text-gray-600"><strong>Start Time:</strong> {{ \Carbon\Carbon::parse($project['start_time'])->format('d M Y, h:i A') }}</p>
-            <p class="text-sm text-gray-600"><strong>End Time:</strong>   {{ \Carbon\Carbon::parse($project['end_time'])->format('d M Y, h:i A') }}</p>
-            <p class="text-sm text-gray-600"><strong>Duration:</strong> {{ $project['duration'] }}</p>
-        </div>
-    @empty
-        <p class="text-gray-500">No measurement stage projects assigned yet.</p>
-    @endforelse
-</div> --}}
-
-
-{{-- @foreach ($projects as $project)
-    <div class="project">
-        <h3>Project: {{ $project['project_name'] }}</h3>
-
-        <ul>
-            @forelse ($project['measurement'] as $measurement)
-                <li>
-                    Start: {{ $measurement['start_time'] ?? 'N/A' }} <br>
-                    End: {{ $measurement['end_time'] ?? 'N/A' }} <br>
-                    Duration: {{ $measurement['duration'] }}
-                </li>
-            @empty
-                <li>No measurements found.</li>
-            @endforelse
-        </ul>
-    </div>
-@endforeach --}}
-{{--
-@foreach ($projects as $project)
-    <div class="project">
-        <h3>Project: {{ $project->name }}</h3>
-
-        <ul>
-            @forelse ($project->measurement as $measurement)
-                <li>
-                    Start: {{ $measurement->start_time ?? 'N/A' }} <br>
-                    End: {{ $measurement->end_time ?? 'N/A' }} <br>
-                    Duration:
-                    @php
-                        $start = $measurement->start_time;
-                        $end = $measurement->end_time;
-                        $duration = ($start && $end) ? $start->diffInHours($end) . ' hours' : 'N/A';
-                    @endphp
-                    {{ $duration }}
-                </li>
-            @empty
-                <li>No measurements found.</li>
-            @endforelse
-        </ul>
-    </div>
-@endforeach --}}
-{{-- @foreach ($projects as $project)
-    <h3>{{ $project['project_name'] }}</h3>
-    @foreach ($project['measurements'] as $measurement)
-        <p>Start: {{ $measurement['start_time'] ?? 'N/A' }}</p>
-        <p>End: {{ $measurement['end_time'] ?? 'N/A' }}</p>
-        <p>Duration: {{ $measurement['duration'] }}</p>
-    @endforeach
-@endforeach --}}
-{{-- @extends('layouts.app')
-
-@section('content') --}}
-{{-- <div class="container">
-    <h2 class="mb-4">Tech Supervisor Dashboard</h2> --}}
-
-    {{-- Chart Section (if you're using chart data) --}}
-    {{-- <div class="mb-5">
-        <h4>Project Stages</h4>
-        <ul class="list-group list-group-horizontal">
-            @foreach($chartLabels as $index => $label)
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    {{ ucfirst($label) }}
-                    <span class="badge bg-primary rounded-pill">{{ $chartData[$index] }}</span>
-                </li>
-            @endforeach
-        </ul>
-    </div> --}}
-
-    {{-- Project Cards --}}
-    {{-- <div class="row">
-        @forelse($projects as $project)
-            <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Name {{ $project['project_name'] }}</h5>
-                        <p class="card-text">
-                            <strong>Location:</strong> {{ $project['location'] }}<br>
-                            <strong>Start Time:</strong> {{ $project['start_time'] }}<br>
-                            <strong>End Time:</strong> {{ $project['end_time'] }}<br>
-                            <strong>Duration:</strong> {{ $project['duration'] }}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        @empty
-            <div class="col-12">
-                <p class="text-muted">No measurement-stage projects assigned to you yet.</p>
-            </div>
-        @endforelse
-    </div> --}}
-{{-- w --}}
 
 
     </div>
@@ -181,47 +55,10 @@
 
     <!-- Right Column -->
     <div class="flex flex-col gap-6">
-         <!-- Production -->
-    <div class="p-6 bg-white shadow rounded-2xl">
-      <h2 class="mb-4 text-lg font-semibold">Production</h2>
-      <div class="flex items-center space-x-6">
-        <div class="relative w-24 h-24">
-          <!-- Placeholder circle -->
-          <svg class="w-full h-full">
-            <circle cx="48" cy="48" r="40" stroke="#FACC15" stroke-width="10" fill="none" />
-            <circle cx="48" cy="48" r="40" stroke="#9333EA" stroke-width="10" stroke-dasharray="50, 251" fill="none" stroke-linecap="round" />
-          </svg>
-          <div class="absolute inset-0 flex items-center justify-center text-xl font-bold">11</div>
-        </div>
-        <div class="space-y-2 text-sm text-gray-700">
-          <div class="flex items-center"><span class="w-3 h-3 mr-2 bg-yellow-400 rounded-full"></span>Working Order (8)</div>
-          <div class="flex items-center"><span class="w-3 h-3 mr-2 bg-purple-800 rounded-full"></span>Cutting List (3)</div>
-        </div>
-      </div>
-    </div>
 
-         <!-- Design -->
-    <div class="p-6 bg-white shadow rounded-2xl">
-      <h2 class="mb-4 text-lg font-semibold">Design</h2>
-      <div class="flex items-center space-x-6">
-        <div class="relative w-24 h-24">
-          <svg class="w-full h-full">
-            <circle cx="48" cy="48" r="40" stroke="#3B82F6" stroke-width="10" fill="none" />
-            <circle cx="48" cy="48" r="40" stroke="#FACC15" stroke-width="10" stroke-dasharray="80, 251" fill="none" stroke-linecap="round" />
-            <circle cx="48" cy="48" r="40" stroke="#8B5CF6" stroke-width="10" stroke-dasharray="50, 251" fill="none" stroke-linecap="round" />
-          </svg>
-          <div class="absolute inset-0 flex items-center justify-center text-xl font-bold">25</div>
-        </div>
-        <div class="space-y-2 text-sm text-gray-700">
-          <div class="flex items-center"><span class="w-3 h-3 mr-2 bg-blue-500 rounded-full"></span>Completed Designs (11)</div>
-          <div class="flex items-center"><span class="w-3 h-3 mr-2 bg-yellow-400 rounded-full"></span>Designs Sent (10)</div>
-          <div class="flex items-center"><span class="w-3 h-3 mr-2 bg-purple-500 rounded-full"></span>Pending Designs (8)</div>
-        </div>
-      </div>
-    </div>
 
       <!-- Recent Activities -->
-      <div class="p-6 bg-white rounded-lg shadow">
+      <div class="p-6 mt-8 bg-white rounded-lg shadow">
         <h2 class="mb-4 text-lg font-semibold">Recent Activities</h2>
         <div class="space-y-4">
           <div class="flex items-center space-x-4">
@@ -294,4 +131,344 @@
 </script>
 
 </main>
+</x-tech-layout>
+
+ --}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<x-tech-layout>
+   <x-slot name="header">
+<!--written on 15.05.2025-->
+        @include('admin.layouts.header')
+         </x-slot>
+
+
+
+
+
+
+
+
+
+
+  <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+    <!-- 2-column responsive grid -->
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+      <!-- LEFT COLUMN -->
+      <div class="space-y-6">
+
+
+<!-- OVERVIEW -->
+<section id="overview" class="bg-white border border-gray-200 shadow-sm rounded-2xl">
+  <div class="px-6 pt-6">
+    <h2 class="text-lg font-semibold">Overview</h2>
+    <p class="mt-1 text-4xl font-semibold">
+      <span id="ov-total">0</span>
+      <span class="text-base font-normal text-gray-600">projects</span>
+    </p>
+  </div>
+
+  <!-- Segmented bar -->
+  <div class="px-6 mt-4">
+    <div class="w-full h-3 overflow-hidden bg-gray-100 rounded-full" role="img" aria-label="Projects by stage">
+      <div id="ov-bar" class="flex h-full"><!-- segments injected --></div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div id="ov-legend" class="grid grid-cols-2 gap-4 px-6 py-5 sm:grid-cols-4"><!-- items injected --></div>
+</section>
+
+{{-- Render function (drop once on the page) --}}
+
+
+<div class="px-4 py-5 space-y-4 sm:px-6">
+  @forelse($upcoming as $m)
+    <div class="bg-white border border-gray-200 shadow-sm rounded-xl">
+      <div class="flex">
+        <div class="w-1.5 rounded-l-xl {{ $m->stripe }}"></div>
+        <div class="flex-1 p-4">
+          <div class="flex items-start justify-between">
+            <h3 class="text-base font-semibold">{{ $m->project_name }}</h3>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-700">
+            <div class="flex items-center gap-2">
+              {{-- calendar/clock --}}
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <span>{{ $m->when }}</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              {{-- user --}}
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.121 17.804A9 9 0 1118.88 6.196M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <span>{{ $m->client_name }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  @empty
+    <div class="p-6 text-sm text-center text-gray-500 border border-gray-300 border-dashed rounded-xl">
+      No upcoming measurements.
+    </div>
+  @endforelse
+</div>
+
+
+
+{{--
+        <!-- UPCOMING MEASUREMENTS -->
+        <section class="bg-white border border-gray-200 shadow-sm rounded-2xl">
+          <div class="flex items-center justify-between px-6 pt-6">
+            <h2 class="text-lg font-semibold">Upcoming Measurements</h2>
+            <button class="text-sm rounded-full border px-4 py-1.5 hover:bg-gray-50">View All</button>
+          </div>
+
+          <div class="px-4 py-5 space-y-4 sm:px-6">
+            <!-- Item -->
+            <div class="bg-white border border-gray-200 shadow-sm rounded-xl">
+              <div class="flex">
+                <div class="w-1.5 rounded-l-xl bg-orange-500"></div>
+                <div class="flex-1 p-4">
+                  <div class="flex items-start justify-between">
+                    <h3 class="text-base font-semibold">New Build</h3>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-700">
+                    <div class="flex items-center gap-2">
+                      <!-- clock -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                      <span>2:30 PM – 5:30 PM</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <!-- user -->
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.121 17.804A9 9 0 1118.88 6.196M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      </svg>
+                      <span>Chris Laventher</span>
+                    </div>
+                    <div class="ml-auto text-sm text-gray-500">3 hours 0 minutes</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Item -->
+            <div class="bg-white border border-gray-200 shadow-sm rounded-xl">
+              <div class="flex">
+                <div class="w-1.5 rounded-l-xl bg-green-500"></div>
+                <div class="flex-1 p-4">
+                  <div class="flex items-start justify-between">
+                    <h3 class="text-base font-semibold">Smith Residence</h3>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-700">
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                      <span>2:30 PM – 5:30 PM</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.121 17.804A9 9 0 1118.88 6.196M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      </svg>
+                      <span>Maple Street, West Legon</span>
+                    </div>
+                    <div class="ml-auto text-sm text-gray-500">3 hours 0 minutes</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Item -->
+            <div class="bg-white border border-gray-200 shadow-sm rounded-xl">
+              <div class="flex">
+                <div class="w-1.5 rounded-l-xl bg-blue-500"></div>
+                <div class="flex-1 p-4">
+                  <div class="flex items-start justify-between">
+                    <h3 class="text-base font-semibold">New Build</h3>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-700">
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      </svg>
+                      <span>2:30 PM – 5:30 PM</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.121 17.804A9 9 0 1118.88 6.196M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      </svg>
+                      <span>Chris Laventher</span>
+                    </div>
+                    <div class="ml-auto text-sm text-gray-500">3 hours 0 minutes</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+ --}}
+      </div>
+
+
+
+      <!-- RIGHT COLUMN -->
+      <div class="space-y-6">
+        <!-- RECENT ACTIVITIES -->
+        <section class="bg-white border border-gray-200 shadow-sm rounded-2xl">
+          <div class="px-6 pt-6">
+            <h2 class="text-lg font-semibold">Recent Activities</h2>
+          </div>
+
+          <div class="px-4 py-5 divide-y sm:px-6">
+            <!-- Activity item -->
+            <div class="flex items-center gap-3 py-3">
+              <img src="https://i.pravatar.cc/64?img=1" class="object-cover w-10 h-10 rounded-full shadow ring-2 ring-white" alt="">
+              <div class="min-w-0">
+                <div class="text-sm">
+                  <span class="font-medium">Chris Laventher</span>
+                  <span class="text-gray-600"> uploaded a file in </span>
+                  <a href="#" class="font-medium text-purple-700 hover:underline">New Build</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 py-3">
+              <img src="https://i.pravatar.cc/64?img=11" class="object-cover w-10 h-10 rounded-full shadow ring-2 ring-white" alt="">
+              <div class="min-w-0">
+                <div class="text-sm">
+                  <span class="font-medium">Chris Laventher</span>
+                  <span class="text-gray-600"> uploaded a file in </span>
+                  <a href="#" class="font-medium text-purple-700 hover:underline">Smiths Residence</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 py-3">
+              <img src="https://i.pravatar.cc/64?img=15" class="object-cover w-10 h-10 rounded-full shadow ring-2 ring-white" alt="">
+              <div class="min-w-0">
+                <div class="text-sm">
+                  <span class="font-medium">Chris Laventher</span>
+                  <span class="text-gray-600"> uploaded a file in </span>
+                  <a href="#" class="font-medium text-purple-700 hover:underline">Johnson Remodel</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 py-3">
+              <img src="https://i.pravatar.cc/64?img=5" class="object-cover w-10 h-10 rounded-full shadow ring-2 ring-white" alt="">
+              <div class="min-w-0">
+                <div class="text-sm">
+                  <span class="font-medium">Chris Laventher</span>
+                  <span class="text-gray-600"> uploaded a file in </span>
+                  <a href="#" class="font-medium text-purple-700 hover:underline">New Build</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 py-3">
+              <img src="https://i.pravatar.cc/64?img=21" class="object-cover w-10 h-10 rounded-full shadow ring-2 ring-white" alt="">
+              <div class="min-w-0">
+                <div class="text-sm">
+                  <span class="font-medium">Chris Laventher</span>
+                  <span class="text-gray-600"> uploaded a file in </span>
+                  <a href="#" class="font-medium text-purple-700 hover:underline">New Build</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+
+
+
+    </div>
+  </main>
+
+
+  <script>
+  function renderOverview(segments, totalOverride = 0) {
+    const $total  = document.getElementById('ov-total');
+    const $bar    = document.getElementById('ov-bar');
+    const $legend = document.getElementById('ov-legend');
+
+    const sum = segments.reduce((s, x) => s + (Number(x.count) || 0), 0);
+    const total = Number(totalOverride) > 0 ? Number(totalOverride) : sum;
+
+    $total.textContent = total;
+
+    // compute widths that sum to exactly 100%
+    const widths = [];
+    if (total <= 0) {
+      for (let i = 0; i < segments.length; i++) widths.push(0);
+    } else {
+      let remaining = 1000; // tenths of a percent
+      segments.forEach((seg, i) => {
+        const w = (i < segments.length - 1)
+          ? Math.round((seg.count / total) * 1000)
+          : remaining;
+        widths.push(Math.max(0, w));
+        remaining -= (i < segments.length - 1) ? w : 0;
+      });
+    }
+
+    // bar
+    $bar.innerHTML = '';
+    segments.forEach((seg, i) => {
+      const pct = widths[i] / 10;
+      const el = document.createElement('div');
+      el.className = `${seg.color} h-full transition-[width] duration-500`;
+      el.style.width = pct + '%';
+      el.title = `${seg.label}: ${seg.count} (${pct.toFixed(1)}%)`;
+      $bar.appendChild(el);
+    });
+
+    // legend
+    $legend.innerHTML = '';
+    segments.forEach((seg, i) => {
+      const pct = widths[i] / 10;
+      const li = document.createElement('div');
+      li.className = 'flex items-center gap-2';
+      li.innerHTML = `
+        <span class="h-2.5 w-2.5 rounded-full ${seg.color}"></span>
+        <span class="text-sm">${seg.label}</span>
+        <span class="ml-auto text-sm text-gray-500" title="${pct.toFixed(1)}%">${seg.count}</span>
+      `;
+      $legend.appendChild(li);
+    });
+  }
+</script>
+
+{{-- Inject server data + call render --}}
+<script>
+  const overviewData   = @json($overviewData, JSON_NUMERIC_CHECK);
+  const totalOverride  = @json($totalAssigned);
+  document.addEventListener('DOMContentLoaded', () => {
+    renderOverview(overviewData, totalOverride);
+  });
+</script>
+
+
 </x-tech-layout>

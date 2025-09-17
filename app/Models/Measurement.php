@@ -29,7 +29,8 @@ protected $fillable = [
     'obstacles',
     'images',
     'start_time',
-    'end_time'
+    'end_time',
+    'scheduled_date'
 ];
 
 
@@ -60,5 +61,6 @@ protected $fillable = [
     {
         return $this->belongsTo(Client::class);
     }
+
 
 }
