@@ -10,11 +10,7 @@ use PHPStan\Rules\PhpDoc\FunctionConditionalReturnTypeRule;
 
 class accountantPaymentController extends Controller
 {
-    //
-//     public Function index(){
-//  $invoices=Invoice::all();
-// return view('accountant.Payments', compact('invoices'));
-//     }
+
 public function index()
 {
     $invoices = Invoice::with(['client', 'summary'])
