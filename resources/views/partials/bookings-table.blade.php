@@ -51,18 +51,7 @@
 
   <div x-show="open" x-cloak @click.away="open=false"
        class="absolute z-10 w-56 mt-2 bg-white border shadow-lg right-6 rounded-xl">
-    {{-- <button class="w-full px-4 py-2 text-left hover:bg-gray-50"
-            @click="
-              open=false;
-              singleModalOpen({
-                projectId: {{ $p->id }},
-                productName: `{{ $p->products()->latest('id')->value('name') ?? 'Product' }}`,
-                clientId: {{ $p->client_id }},
-                clientName: `{{ $p->client?->name ?? trim(($p->client?->firstname.' '.$p->client?->lastname)) }}`,
-              })
-            ">
-      Set measurement
-    </button> --}}
+
 
     <button class="w-full px-4 py-2 text-left hover:bg-gray-50"
         @click="

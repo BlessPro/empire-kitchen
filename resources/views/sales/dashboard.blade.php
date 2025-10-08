@@ -102,42 +102,6 @@
  </main>
 
 
-
-<!-- #region Chart Initialization   -->
-
- <script>
-//     document.addEventListener('DOMContentLoaded', function () {
-//         // Initialize the charts
-//         const ctx1 = document.getElementById('projectChart1').getContext('2d');
-//         const projectChart1 = new Chart(ctx1, {
-//            type: 'doughnut',
-// data: {
-//   labels: ['New Clients', 'In Progress', 'Follow-ups', 'Closed'],
-//   datasets: [{
-//     data: [5, 10, 7, 9],
-//     backgroundColor: ['#FF7300', '#6B1E72', '#EAB308', '#5687F2'],
-//     borderWidth: 1,
-//     borderColor: '#fff',
-//     hoverOffset: 8,
-//     borderRadius: 7,
-//     spacing: 4,
-//   }]
-// },
-// options: {
-//   cutout: '70%',
-//   plugins: {
-//     legend: {
-//       display: false,
-//       position: 'right',
-//       borderRadius: 5,
-//     },
-
-//   }
-// }
-// });
-
-//     });
-</script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const chartData = @json($chartData);

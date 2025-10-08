@@ -7,15 +7,31 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-    protected $fillable = ['client_id', 'name', 'location', 'admin_id', 'tech_supervisor_id', 'designer_id', 'production_officer_id', 'installation_officer_id', 'name', 'status', 'current_stage', 'booked_status', 'estimated_budget', ' due_date'];
+ // App/Models/Project.php
+protected $fillable = [
+    'client_id',
+    'name',
+    'location',
+    'admin_id',
+    'tech_supervisor_id',
+    'designer_id',
+    'production_officer_id',
+    'installation_officer_id',
+    'status',
+    'current_stage',
+    'booked_status',
+    'estimated_budget',
+    'due_date',          // <-- remove leading space
+];
 
-    protected $casts = [
-        'estimated_budget' => 'decimal:2',
-        'status' => 'string', // COMPLETED | ON_GOING | IN_REVIEW
-        'current_stage' => 'string', // measurement | design | production | installation
-        'booked_status' => 'string', // UNBOOKED | BOOKED
-        'due_date' => 'date',
-    ];
+protected $casts = [
+    'estimated_budget' => 'decimal:2',
+    'status'           => 'string',
+    'current_stage'    => 'string',
+    'booked_status'    => 'string',
+    'due_date'         => 'date',
+];
+
 
     /** Parents */
     public function client()
@@ -30,6 +46,7 @@ class Project extends Model
     {
         return $this->belongsTo(User::class, 'tech_supervisor_id');
     }
+    
     public function designer()
     {
         return $this->belongsTo(User::class, 'designer_id');
@@ -83,7 +100,12 @@ public function measurements()
 
 
 
-
+ public function incomes() {
+        return $this->hasMany(Income::class); // FK: incomes.project_id
+    }
+    public function expenses() {
+        return $this->hasMany(Expense::class); // if you also need it
+    }
 
     // App/Models/Project.php
 
@@ -103,12 +125,32 @@ public function measurements()
         return $this->hasMany(Production::class); // <-- your Production table/model
     }
 
-    
-
     public function installations()
     {
         return $this->hasMany(Installation::class); // <-- your Installation table/model
     }
+
+// Project model
+public function budget() { return $this->hasOne(Budget::class); }
+public function projectPhases()
+{
+    return $this->hasMany(\App\Models\ProjectPhase::class);
+}
+
+public function phaseTemplates()
+{
+    return $this->belongsToMany(
+        \App\Models\PhaseTemplate::class,
+        'project_phases',
+        'project_id',
+        'phase_template_id'
+    )->withPivot(['is_checked','checked_by','checked_at','note','sort_order'])
+     ->withTimestamps();
+}
+
+
+
+
 
 
 

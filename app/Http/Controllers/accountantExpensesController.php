@@ -24,30 +24,6 @@ public function showExpenses()
     $categories = Category::all();
     return view('accountant.Expenses', compact('projects', 'categories'));
 }
-
-// public function store(Request $request)
-// {
-//     $validated = $request->validate([
-//         'expense_name' => 'required|string|max:255',
-//         'amount' => 'required|numeric',
-//         'date' => 'required|date',
-//         'project_id' => 'required|exists:projects,id',
-//         'category_id' => 'required|exists:categories,id',
-//         'notes' => 'nullable|string',
-//     ]);
-//     $validated['accountant_id'] = Auth::user()->id; // assuming user is accountant
-//     // $validated['accountant_id'] = auth()->user()->id; // assuming user is accountant
-
-//     Expense::create($validated);
-
-//     return redirect()->back()->with('success', 'Expense recorded successfully.');
-// }
-// public function index()
-// {
-//     $expenses = Expense::orderBy('name')->get();
-//     return view('accountant.Expenses', compact('expenses'));
-// }
-
 //for showing the expenses
 public function index()
 {
@@ -97,12 +73,7 @@ public function store(Request $request)
     }
 
 
-    // new updates
-    //  public function edit($id)
-    // {
-    //     $expense = Expense::findOrFail($id);
-    //     return response()->json($expense);
-    // }
+
 
     public function edit(Expense $expense)
 {

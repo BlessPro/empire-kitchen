@@ -63,33 +63,6 @@ Route::middleware('auth')->group(function () {
         ->name('logout');
 });
 
-// Route::middleware(['auth', 'role:admin'])->group(function () {
-//     Route::get('/admin/dashboard', [AdminController::class, 'index'])
-//         ->name('admin.dashboard');
-// });
-
-// Route::middleware(['auth', 'role:tech_supervisor'])->group(function () {
-//     Route::get('/tech/dashboard', [TechDashboardController::class, 'index'])
-//         ->name('tech.dashboard');
-// });
-
-
-// Route::middleware(['auth', 'role:designer'])->group(function () {
-//     Route::get('/designer/dashboard', [DesignerDashboardController::class, 'index'])
-//         ->name('designer.dashboard');
-// });
-
-// Route::middleware(['auth', 'role:accountant'])->group(function () {
-//     Route::get('/accountant/dashboard', [accountantDashboardController::class, 'index'])
-//         ->name('accountant.dashboard');
-// });
-
-// // Sales Accountant
-// Route::middleware(['auth', 'role:sales_accountant'])->group(function () {
-//     Route::get('/sales/dashboard', [salesDashboardController::class, 'index'])
-//         ->name('sales.dashboard');
-// });
-
 
 use App\Http\Middleware\UpdateLastSeen;
 

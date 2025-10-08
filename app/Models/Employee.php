@@ -10,22 +10,6 @@ class Employee extends Model
 {
     use HasFactory;
 
-    // protected $fillable = [
-    //     'staff_id',
-    //     'name','designation','commencement_date','phone','email',
-    //     'nationality','dob','hometown','language',
-    //     'address','gps',
-    //     'next_of_kin','relation','nok_phone',
-    //     'bank','branch','account_number',
-    //     'avatar_path',
-    // ];
-
-    // protected $casts = [
-    //     'commencement_date' => 'date',
-    //     'dob' => 'date',
-    // ];
-
-
     protected $fillable = [
     'staff_id',
     'name',

@@ -1,175 +1,21 @@
-   {{-- <x-tech-layout>
-   <x-slot name="header">
-<!--written on 15.05.2025-->
-        @include('admin.layouts.header')
-         </x-slot>
-        <main class="ml-64 mt-[100px] flex-1 bg-gray-100 min-h-screen  items-center">
-        <!--head begins-->
-
-            <div class=" bg-[#F9F7F7]">
-             <div class="mb-[20px]">
-     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-
-
-    <!-- Left Column -->
-    <div class="flex flex-col gap-6">
-      <!-- Overview -->
-      <div class="p-4 mt-6 bg-white shadow rounded-2xl">
-    <h2 class="mb-4 text-xl font-semibold">Project Stages Overview</h2>
-    <canvas id="projectsBarChart" height="100"></canvas>
-
-</div>
-
-
-      <!-- Upcoming Measurements -->
-      <div class="p-6 bg-white rounded-lg shadow">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold">Upcoming Measurements</h2>
-          <button class="px-3 py-1 text-sm text-purple-700 border border-purple-700 rounded-full">View All</button>
-        </div>
-        <div class="space-y-4">
-    @forelse($projects as $project)
-        @php
-            $start = \Carbon\Carbon::parse($project['start_time']);
-            $end = \Carbon\Carbon::parse($project['end_time']);
-            $duration = $start->diffForHumans($end, true);
-        @endphp
-
-        <div class="py-2 pl-4 border-l-4 border-orange-500 rounded bg-gray-50">
-            <h3 class="font-medium">{{ $project['project_name'] }}</h3>
-            <p class="text-sm text-gray-600">{{ $project['start_time'] }} - {{ $project['end_time'] }}</p>
-            <p class="text-sm text-gray-600">👤 {{ auth()->user()->name }}</p>
-            <p class="text-sm text-gray-500">{{ $duration }} - 📍 {{ $project['location'] }}</p>
-        </div>
-    @empty
-        <p class="text-gray-500">No measurement stage projects assigned yet.</p>
-    @endforelse
-</div>
-
-      </div>
-
-
-
-    </div>
-
-
-    <!-- Right Column -->
-    <div class="flex flex-col gap-6">
-
-
-      <!-- Recent Activities -->
-      <div class="p-6 mt-8 bg-white rounded-lg shadow">
-        <h2 class="mb-4 text-lg font-semibold">Recent Activities</h2>
-        <div class="space-y-4">
-          <div class="flex items-center space-x-4">
-            <img src="https://i.pravatar.cc/40?img=1" class="w-10 h-10 rounded-full" alt="User">
-            <div>
-              <p class="font-medium">Chris Laventher</p>
-              <p class="text-sm text-gray-600">uploaded a file in <span class="font-semibold text-purple-700">New Build</span></p>
-            </div>
-          </div>
-          <div class="flex items-center space-x-4">
-            <img src="https://i.pravatar.cc/40?img=2" class="w-10 h-10 rounded-full" alt="User">
-            <div>
-              <p class="font-medium">Chris Laventher</p>
-              <p class="text-sm text-gray-600">uploaded a file in <span class="font-semibold text-purple-700">Smiths Residence</span></p>
-            </div>
-          </div>
-          <div class="flex items-center space-x-4">
-            <img src="https://i.pravatar.cc/40?img=3" class="w-10 h-10 rounded-full" alt="User">
-            <div>
-              <p class="font-medium">Chris Laventher</p>
-              <p class="text-sm text-gray-600">uploaded a file in <span class="font-semibold text-purple-700">Johnson Remodel</span></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-  </div>
-           </div>
-    </div>
-
-    <!-- Chart.js CDN (in your head section or layout) -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-    const ctx = document.getElementById('projectsBarChart').getContext('2d');
-
-    const chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: @json($chartLabels),
-            datasets: [{
-                // label: 'Projects by Stage',
-                data: @json($chartData),
-                backgroundColor: [
-                    '#FF7300', // measurement - blue
-                    '#0065D2',  // design - green
-                    '#14BA6D',  // production - yellow
-                    '#9747FF'   // installation - red
-                ],
-                borderColor: [
-                    '#FF7300',
-                    '#0065D2',
-                    '#14BA6D',
-                    '#9747FF'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    precision: 0
-                }
-            }
-        }
-    });
-</script>
-
-</main>
-</x-tech-layout>
-
- --}}
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 <x-tech-layout>
-   <x-slot name="header">
+    <x-slot name="header">
 <!--written on 15.05.2025-->
         @include('admin.layouts.header')
-         </x-slot>
+    </x-slot>
 
 
 
-
-
-
-
-
-
-
-  <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
+<main class="ml-64 mt-[100px] flex-1 w-full  bg-[#F9F7F7] min-h-screen  items-center">
+  <!-- centered page container -->
+  <div class="mx-auto max-w-7xl px-4  py-8 sm:px-6 lg:px-8">
     <!-- 2-column responsive grid -->
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 
-      <!-- LEFT COLUMN -->
       <div class="space-y-6">
-
 
 <!-- OVERVIEW -->
 <section id="overview" class="bg-white border border-gray-200 shadow-sm rounded-2xl">
@@ -193,8 +39,6 @@
 </section>
 
 {{-- Render function (drop once on the page) --}}
-
-
 <div class="px-4 py-5 space-y-4 sm:px-6">
   @forelse($upcoming as $m)
     <div class="bg-white border border-gray-200 shadow-sm rounded-xl">
@@ -233,102 +77,6 @@
 </div>
 
 
-
-{{--
-        <!-- UPCOMING MEASUREMENTS -->
-        <section class="bg-white border border-gray-200 shadow-sm rounded-2xl">
-          <div class="flex items-center justify-between px-6 pt-6">
-            <h2 class="text-lg font-semibold">Upcoming Measurements</h2>
-            <button class="text-sm rounded-full border px-4 py-1.5 hover:bg-gray-50">View All</button>
-          </div>
-
-          <div class="px-4 py-5 space-y-4 sm:px-6">
-            <!-- Item -->
-            <div class="bg-white border border-gray-200 shadow-sm rounded-xl">
-              <div class="flex">
-                <div class="w-1.5 rounded-l-xl bg-orange-500"></div>
-                <div class="flex-1 p-4">
-                  <div class="flex items-start justify-between">
-                    <h3 class="text-base font-semibold">New Build</h3>
-                  </div>
-                  <div class="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-700">
-                    <div class="flex items-center gap-2">
-                      <!-- clock -->
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                      <span>2:30 PM – 5:30 PM</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <!-- user -->
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.121 17.804A9 9 0 1118.88 6.196M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                      </svg>
-                      <span>Chris Laventher</span>
-                    </div>
-                    <div class="ml-auto text-sm text-gray-500">3 hours 0 minutes</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Item -->
-            <div class="bg-white border border-gray-200 shadow-sm rounded-xl">
-              <div class="flex">
-                <div class="w-1.5 rounded-l-xl bg-green-500"></div>
-                <div class="flex-1 p-4">
-                  <div class="flex items-start justify-between">
-                    <h3 class="text-base font-semibold">Smith Residence</h3>
-                  </div>
-                  <div class="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-700">
-                    <div class="flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                      <span>2:30 PM – 5:30 PM</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.121 17.804A9 9 0 1118.88 6.196M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                      </svg>
-                      <span>Maple Street, West Legon</span>
-                    </div>
-                    <div class="ml-auto text-sm text-gray-500">3 hours 0 minutes</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Item -->
-            <div class="bg-white border border-gray-200 shadow-sm rounded-xl">
-              <div class="flex">
-                <div class="w-1.5 rounded-l-xl bg-blue-500"></div>
-                <div class="flex-1 p-4">
-                  <div class="flex items-start justify-between">
-                    <h3 class="text-base font-semibold">New Build</h3>
-                  </div>
-                  <div class="flex flex-wrap items-center gap-4 mt-2 text-sm text-gray-700">
-                    <div class="flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v6l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                      </svg>
-                      <span>2:30 PM – 5:30 PM</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.121 17.804A9 9 0 1118.88 6.196M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                      </svg>
-                      <span>Chris Laventher</span>
-                    </div>
-                    <div class="ml-auto text-sm text-gray-500">3 hours 0 minutes</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </section>
- --}}
       </div>
 
 

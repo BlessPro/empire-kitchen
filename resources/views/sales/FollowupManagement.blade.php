@@ -4,10 +4,10 @@
    @include('sales.layouts.header')
 </x-slot>
      {{-- {{ dd($projects) }} --}}
-   
-        
 
-     
+
+
+
 
   <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
         <!--head begins-->
@@ -232,55 +232,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initial load attach
     attachPaginationEvents();
 </script>
-
-{{-- <script>
-document.addEventListener('DOMContentLoaded', function () {
-    loadFollowUps(); // bind once at start
-
-    function loadFollowUps() {
-        document.querySelectorAll('#followup-table-wrapper .pagination a').forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                const url = this.getAttribute('href');
-
-                fetch(url)
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById('followup-table-wrapper').innerHTML = html;
-                        loadFollowUps(); // rebind after DOM update
-                    });
-            });
-        });
-    }
-});
-</script> --}}
-
-{{-- <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const buttons = document.querySelectorAll('.filter-btn');
-    const rows = document.querySelectorAll('#followups-table-wrapper tr[data-status]');
-
-    buttons.forEach(button => {
-        button.addEventListener('click', function () {
-            const status = this.getAttribute('data-status');
-
-            rows.forEach(row => {
-                if (status === 'all' || row.getAttribute('data-status') === status) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-
-            // Optional: style the active button
-            buttons.forEach(btn => btn.classList.remove('ring', 'ring-offset-2', 'ring-gray-800'));
-            this.classList.add('ring', 'ring-offset-2', 'ring-gray-800');
-        });
-    });
-});
-</script> --}}
-
-
 {{--for filtering--}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {

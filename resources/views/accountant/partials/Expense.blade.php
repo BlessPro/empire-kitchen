@@ -6,14 +6,11 @@
 
     </div>
   </div>
-
-
 </div>
 
         <div class="relative h-80">
             <canvas id="revenueChart11" class="absolute w-full h-full"></canvas>
         </div>
-
 </div>
 
 {{--table--}}
@@ -101,34 +98,3 @@
             .catch(error => console.error('Error fetching chart data:', error));
     });
 </script>
-
-{{-- <script>
-        const ctx11 = document.getElementById('revenueChart11').getContext('2d');
-        new Chart(ctx11, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Revenue',
-                    data: [12000, 15000, 10000, 18000, 22000, 25000, 27000, 20000, 23000, 21000, 19000, 24000],
-                    borderColor: '#6D28D9',
-                    tension: 0.4,
-                    fill: true,
-                     backgroundColor: ['purple', ],
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script> --}}
-

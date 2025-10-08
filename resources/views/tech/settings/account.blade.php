@@ -95,15 +95,5 @@
       </div>
     </div>
 </form>
-{{-- <<form action="{{ route('tech.settings.profile_pic') }}" method="POST" enctype="multipart/form-data">
-    @csrf
-
-    <div class="mb-4">
-        <label for="profile_pic" class="block text-sm font-medium text-gray-700">Update Profile Picture</label>
-        <input type="file" name="profile_pic" id="profile_pic" class="mt-1 block w-full text-sm text-gray-500 file:py-2 file:px-4 file:border file:rounded-lg file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
-    </div>
-
-    <button type="submit" class="px-4 py-2 text-white bg-purple-700 rounded hover:bg-purple-800">Upload</button>
-</form> --}}
 
 

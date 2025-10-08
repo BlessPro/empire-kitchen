@@ -1,13 +1,5 @@
 <?php
 
-// namespace App\Models;
-
-// use Illuminate\Database\Eloquent\Model;
-
-// class Measurement extends Model
-// {
-//     //
-// }
 
 namespace App\Models;
 
@@ -15,9 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Measurement extends Model
 {
-//    protected $fillable = [
-//     'project_id', 'user_id', 'length','width', 'location','height', 'obstacles',  'images'
-//     ];
+
 
 protected $fillable = [
     'project_id',
@@ -34,9 +24,7 @@ protected $fillable = [
 ];
 
 
-    // protected $casts = [
-    //     'images' => 'array',
-    // ];
+
     protected $casts = [
     'images' => 'array',
     'start_time' => 'datetime',
@@ -44,8 +32,6 @@ protected $fillable = [
     'scheduled_date' => 'date',
 
 ];
-
-
 
     public function project()
     {
@@ -56,7 +42,6 @@ protected $fillable = [
     {
         return $this->belongsTo(User::class, 'tech_supervisor_id');
     }
-    // app/Models/Measurement.php
     public function client()
     {
         return $this->belongsTo(Client::class);

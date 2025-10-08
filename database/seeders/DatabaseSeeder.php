@@ -12,16 +12,7 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    // public function run(): void
-    // {
-    //     $this->call([
-    //         UserSeeder::class,
-    //                 AccessorySeeder::class,
 
-    //         ClientSeeder::class,
-    //         ProjectSeeder::class,
-    //     ]);
-    // }
     public function run(): void
     {
         $this->call([
@@ -30,6 +21,10 @@ class DatabaseSeeder extends Seeder
             ClientSeeder::class,
             ProjectSeeder::class,
             AccessorySeeder::class,
+            BudgetCategorySeeder::class,
+            BudgetExampleSeeder::class,
+            PhaseTemplatesSeeder::class,
         ]);
+
     }
 }

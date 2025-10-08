@@ -7,13 +7,7 @@ use App\Models\InvoiceItem;
 
 class Invoice extends Model
 {
-    // protected $fillable = [
-    //     'item_name',
-    //     'description',
-    //     'quantity',
-    //     'unit_price',
-    //     'tax_rate',
-    // ];
+  
         protected $fillable = ['invoice_code', 'due_date', 'client_id', 'project_id', 'send_email'];
 // app/Models/Invoice.php
 

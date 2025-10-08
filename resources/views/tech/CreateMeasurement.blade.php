@@ -28,10 +28,6 @@
 
  <!-- Top Navbar -->
 
- {{-- <button type="submit"
-     id="openMeasurementModal" class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
-     Save Measurement
- </button> --}}
 
      </div>
 
@@ -43,35 +39,6 @@
                 <h2 class="mb-4 text-lg font-semibold text-purple-800"> {{ $project->name}}</h2>
 
 
-                {{-- <form action="{{ route('measurements.store') }}" method="POST" enctype="multipart/form-data">
-              @csrf
-              <!-- existing fields -->
-              <input type="text" name="length" ... >
-              <input type="text" name="height" ... >
-              <input type="text" name="width" ... >
-
-              <textarea name="notes" ...></textarea>
-
-              <input type="file" name="images[]" multiple>
-
-              <input type="radio" name="has_obstruction" value="yes">
-              <input type="radio" name="has_obstruction" value="no">
-
-              <textarea name="obstacles" ...></textarea>
-
-              <button type="submit">Save Measurement</button>
-            </form> --}}
-{{-- action="{{ route('measurements.store') }}" method="POST" enctype="multipart/form-data" --}}
-
-{{-- @if ($errors->any())
-    <div class="p-2 mb-4 text-red-500 bg-red-100 rounded">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>• {{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif --}}
 
 
 <form action="{{ route('tech.measurements.store') }}" method="POST" enctype="multipart/form-data">
@@ -106,13 +73,7 @@
   <!-- Site Photos -->
   <div>
     <h2 class="mb-4 text-lg font-semibold text-purple-800">Site Photos</h2>
-    {{-- <div class="flex items-center justify-center p-6 text-center border-2 border-purple-600 border-dashed rounded-xl">
-      <div>
-        <svg class="mx-auto text-purple-600" width="24" height="24" fill="currentColor"><path d="..."/></svg>
-        <p class="mt-2 text-sm"><span class="font-semibold text-purple-700 cursor-pointer">Click here</span> to upload your file or drag and drop here.</p>
-        <p class="mt-1 text-xs text-gray-500">Supported Format: SVG, JPG, PNG (10mb each)</p>
-      </div>
-    </div> --}}
+
             <div onclick="document.getElementById('account_profile_input').click()"
             class="flex items-center justify-center flex-1 h-32 p-6 text-center text-gray-500 border-2 border-purple-600 border-dashed cursor-pointer rounded-xl hover:bg-gray-50">
             <div>

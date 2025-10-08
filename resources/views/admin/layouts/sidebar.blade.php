@@ -101,18 +101,7 @@
         </a>
 
 
-        {{-- <a href="{{ route('admin.ReportsandAnalytics') }}"
-            class="group relative flex items-center p-5 transition pt-3 pr-5 pb-3 pl-[40px] mb-[08px] mt-[10px] text-[16px]
-                                     {{ request()->routeIs('admin.ReportsandAnalytics') ? 'bg-yellow-300/30 text-yellow-300' : 'hover:bg-yellow-300/30 hover:text-yellow-300 text-white' }}">
-            <span
-                class="absolute left-0 top-0 h-[48px] w-1 bg-[#edc75a] rounded-r-full
-                                            {{ request()->routeIs('admin.ReportsandAnalytics') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100' }}
-                                            transition-transform origin-left"></span>
-            <i data-feather="bar-chart-2"
-                class="feather-icon mr-6 group
-                                         {{ request()->routeIs('admin.ReportsandAnalytics') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
-            Reports and Analytics
-        </a> --}}
+  
 
         <!--testing active Settings?-->
         <a href="{{ route('admin.Settings') }}"

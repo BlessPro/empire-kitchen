@@ -54,30 +54,40 @@
                                                    <span
                                                        class="px-3 py-1 text-sm {{ $statusClasses[$project->status] ?? $defaultClass }}">{{ $project->status }}</span>
                                                </td>
-                                               <td
-                                                   class="p-4 font-normal text-[15px]  flex items-center py-3 space-x-2">
-
+                                               <td class="p-4 font-normal text-[15px] items-center">
                                                    @if ($project->designer)
-                                                       <div
-                                                           class="d-flex align-items-center p-4 font-normal text-[15px] flex items-center py-3 space-x-2 ">
-                                                           <img src="{{ asset('storage/' . $project->designer->profile_pic) }}"
-                                                               alt="designer" width="40" height="40"
-                                                               class="object-cover w-8 h-8 rounded-full">
-                                                           <span>{{ $project->designer->name }}</span>
+                                                       @php
+                                                           $emp = $project->designer->employee;
+                                                           $name = $emp->name ?? ($project->designer->name ?? '—');
+
+                                                           $path = $emp->avatar_path ?? null; // column in employees
+                                                           $avatarUrl = $path
+                                                               ? (\Illuminate\Support\Str::startsWith($path, [
+                                                                   'http://',
+                                                                   'https://',
+                                                               ])
+                                                                   ? $path
+                                                                   : \Illuminate\Support\Facades\Storage::url($path))
+                                                               : asset('images/avatar-placeholder.png'); // put a placeholder in /public/images/
+                                                       @endphp
+
+                                                       <div class="flex items-center gap-2">
+                                                           <img src="{{ $avatarUrl }}" alt="designer" width="40"
+                                                               height="40" class="object-cover w-8 h-8 rounded-full">
+                                                           <span>{{ $name }}</span>
                                                        </div>
                                                    @else
-                                                       <!-- Button to Open Modal -->
                                                        <button
-                                                           class  ="flex px-3 py-1 text-sm font-medium text-purple-800 bg-purple-100 border border-purple-800 rounded-full hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
-                                                           onclick="openModal('{{ $project->id }}', '{{ $project->name }}')"
-                                                           class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                                           data-bs-target="#assignModal"
+                                                           class="flex px-3 py-1 text-sm font-medium text-purple-800 bg-purple-100 border border-purple-800 rounded-full hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                                                           onclick="openModal('{{ $project->id }}', '{{ addslashes($project->name) }}')"
+                                                           data-bs-toggle="modal" data-bs-target="#assignModal"
                                                            data-project-id="{{ $project->id }}">
-                                                           <span> <i data-feather="plus" class="w-4 h-5 m"> </i> </span>
+                                                           <span><i data-feather="plus" class="w-4 h-5 m"></i></span>
                                                            Assign
                                                        </button>
                                                    @endif
                                                </td>
+
                                            </tr>
                                        @endforeach
                                    </tbody>
@@ -93,83 +103,135 @@
 
                        {{-- Select designer pop-up --}}
                        <!-- Modal -->
-                       <div id="assignModal"
-                           class="fixed inset-0 z-50 items-center justify-center hidden bg-black bg-opacity-50">
-                           <div class="w-full max-w-md p-6 bg-white rounded shadow-md">
-                               <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
-                                   <h2 class="mb-4 text-xl font-semibold">Assign Designer</h2>
-                                   <button type="button" onclick="closeModal()"
-                                       class="px-4 py-2 mt-2 rounded text-fuchsia-900"> <i data-feather="x"
-                                           class="mr-3 feather-icon group"></i></button>
-                               </div>
-                               <form method="POST" action="{{ route('tech.AssignDesigners') }}">
-                                   @csrf
-                                   <input type="hidden" name="project_id" id="projectIdInput">
+                       {{-- Button on each project card (use your styles) --}}
 
-                                   <div class="mb-4">
-                                       <label class="block mb-1 text-sm font-medium">Project Name</label>
-                                       <input type="text" id="projectNameInput" disabled readonly
-                                           class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+
+                       {{-- Shared modal (place once at bottom of page) --}}
+                       <div id="designer-modal" class="fixed inset-0 z-50 hidden">
+                           <div class="absolute inset-0 bg-black/40"></div>
+
+                           <div
+                               class="absolute left-1/2 top-1/2 w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white shadow-xl">
+                               <div class="flex items-center justify-between px-5 py-3 border-b">
+                                   <div class="text-base font-semibold">Assign Designer</div>
+                                   <button id="designer-close" class="p-2 hover:bg-gray-100 rounded-lg">&times;</button>
+                               </div>
+
+                               <form id="designer-form" method="POST" action="{{ route('tech.AssignDesigners') }}"
+                                   class="p-5 space-y-4">
+                                   @csrf
+
+                                   <input type="hidden" name="project_id" id="designer-project-id">
+
+                                   <div>
+                                       <label class="block text-sm text-gray-500">Project</label>
+                                       <div id="designer-project-name" class="font-medium text-gray-900"></div>
                                    </div>
 
-                                   <div class="mb-4">
-                                       <label for="design_date" class="block mb-3 text-sm font-medium text-gray-700">Due
-                                           Date</label>
-                                       <input type="date" name="design_date" id="design_date"
-                                           class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                   <div>
+                                       <label class="block text-sm font-medium text-gray-700">Design Date</label>
+                                       <input type="date" name="design_date"
+                                           class="mt-1 w-full rounded-lg border-gray-300 focus:ring-fuchsia-600 focus:border-fuchsia-600"
                                            required>
                                    </div>
 
-                                   <div class="mb-4 max-h-[300px] overflow-y-auto space-y-4">
-                                       <label class="block mb-2 text-sm font-medium">Select Designer</label>
-
-                                       @foreach ($designers as $designer)
-                                           <label
-                                               class="flex items-center justify-between p-2 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-100">
-                                               <div class="flex items-center space-x-3">
-                                                   <img src="{{ asset('storage/' . $designer->profile_pic) }}"
-                                                       alt="Designer" class="object-cover w-10 h-10 rounded-full">
-                                                   <span class="font-medium text-gray-800">{{ $designer->name }}</span>
-                                               </div>
-
-                                               @if ($project->designer_id === $designer->id)
-                                                   <span class="text-sm font-semibold text-purple-800">Already
-                                                       Assigned</span>
-                                               @else
-                                                   <input type="radio" name="designer_id" value="{{ $designer->id }}"
-                                                       class="form-radio text-fuchsia-800 focus:ring-fuchsia-900">
-                                               @endif
-                                           </label>
-                                       @endforeach
+                                   <div>
+                                       <div class="mb-2 text-sm font-medium">Select Designer</div>
+                                       <div id="designer-list" class="max-h-[320px] overflow-y-auto space-y-3">
+                                           {{-- populated by JS --}}
+                                       </div>
+                                       <p id="designer-error" class="hidden mt-2 text-sm text-red-600"></p>
                                    </div>
 
-
-                                   <div class="flex justify-end space-x-2">
+                                   <div class="flex items-center justify-end gap-2 pt-2">
+                                       <button type="button" id="designer-cancel"
+                                           class="px-3 py-1.5 rounded-lg border text-sm">Cancel</button>
                                        <button type="submit"
-                                           class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 mt-5 rounded-[20px]">Proceed</button>
+                                           class="px-3 py-1.5 rounded-lg bg-fuchsia-900 text-white text-sm">Proceed</button>
                                    </div>
                                </form>
                            </div>
                        </div>
+
 
                    </div>
                </div>
 
            </main>
 
-           <script>
-               function openModal(projectId, projectName) {
-                   document.getElementById('projectIdInput').value = projectId;
-                   document.getElementById('projectNameInput').value = projectName;
-                   document.getElementById('assignModal').classList.remove('hidden');
-                   document.getElementById('assignModal').classList.add('flex');
-               }
 
-               function closeModal() {
-                   document.getElementById('assignModal').classList.add('hidden');
-                   document.getElementById('assignModal').classList.remove('flex');
-                   alert("Assignement Created successfully")
-               }
+           <script>
+               (function() {
+                   const modal = document.getElementById('designer-modal');
+                   const btns = document.querySelectorAll('.btn-assign-designer');
+                   const closeEl = document.getElementById('designer-close');
+                   const cancel = document.getElementById('designer-cancel');
+
+                   const fldProjId = document.getElementById('designer-project-id');
+                   const lblProjName = document.getElementById('designer-project-name');
+                   const listEl = document.getElementById('designer-list');
+                   const errEl = document.getElementById('designer-error');
+
+                   function openModal(projectId, projectName) {
+                       fldProjId.value = projectId;
+                       lblProjName.textContent = projectName;
+                       errEl.classList.add('hidden');
+                       listEl.innerHTML = '<div class="text-sm text-gray-500">Loading designers…</div>';
+
+                       const url = `{{ route('admin.designers.list') }}?project_id=${encodeURIComponent(projectId)}`;
+                       fetch(url, {
+                               headers: {
+                                   'Accept': 'application/json'
+                               },
+                               credentials: 'same-origin'
+                           })
+                           .then(r => r.json())
+                           .then(rows => {
+                               listEl.innerHTML = rows.map(d => {
+                                   const right = d.assigned_project ?
+                                       `<span class="text-xs font-semibold text-purple-800">Already Assigned${d.assigned_project.name ? ` (${d.assigned_project.name})` : ''}</span>` :
+                                       `<input type="radio" name="designer_id" value="${d.id}" class="form-radio text-fuchsia-800 focus:ring-fuchsia-900">`;
+                                   return `
+            <label class="flex items-center justify-between p-2 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-50">
+              <div class="flex items-center gap-3">
+                <img src="${d.avatar_url}" alt="" class="w-10 h-10 rounded-full object-cover">
+                <span class="font-medium text-gray-800">${d.name}</span>
+              </div>
+              ${right}
+            </label>
+          `;
+                               }).join('') || '<div class="text-sm text-gray-500">No designers found.</div>';
+                           })
+                           .catch(() => {
+                               listEl.innerHTML = '<div class="text-sm text-red-600">Failed to load designers.</div>';
+                           });
+
+                       modal.classList.remove('hidden');
+                   }
+
+                   function closeModal() {
+                       modal.classList.add('hidden');
+                   }
+
+                   btns.forEach(b => {
+                       b.addEventListener('click', () => openModal(b.dataset.projectId, b.dataset.projectName));
+                   });
+                   closeEl.addEventListener('click', closeModal);
+                   cancel.addEventListener('click', closeModal);
+                   modal.addEventListener('click', (e) => {
+                       if (e.target === modal) closeModal();
+                   });
+
+                   // guard: if radios exist, require one checked
+                   document.getElementById('designer-form').addEventListener('submit', (e) => {
+                       const radios = listEl.querySelectorAll('input[type="radio"]');
+                       if (radios.length && !listEl.querySelector('input[type="radio"]:checked')) {
+                           e.preventDefault();
+                           errEl.textContent = 'Please select a designer.';
+                           errEl.classList.remove('hidden');
+                       }
+                   });
+               })();
            </script>
 
    </x-tech-layout>

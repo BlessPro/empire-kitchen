@@ -75,10 +75,22 @@
                                     <i data-feather="trash" class="mr-3"></i>
                                 </button>
                             </form>
-                            <button data-id="{{ $user->id }}"
+                            {{-- <button data-id="{{ $user->id }}"
                                 class="text-gray-500 hover:text-red-500 btn btn-primary editUserBtn">
                                 <i data-feather="edit-3" class="mr-3"></i>
-                            </button>
+                            </button> --}}
+
+
+                            <button
+  type="button"
+  class="text-gray-500 hover:text-fuchsia-700 btn btn-primary editUserBtn"
+  data-id="{{ $user->id }}"
+  data-name="{{ $user->name ?? ($user->employee->name ?? '') }}"
+  data-role="{{ $user->role }}"
+>
+  <i data-feather="edit-3" class="mr-3"></i>
+</button>
+
 
 
                             {{-- <button class="btn btn-primary editUserBtn" data-id="{{ $user->id }}">Edit</button> --}}
@@ -231,110 +243,72 @@
 
 
 {{-- user edit pop up --}}
+<style>[x-cloak]{display:none!important}</style>
 
-
-
-<div id="editUserModal"
-    tabindex="-1"class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
-    <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
-        <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
-            <h2 class="mb-4 text-xl font-semibold">Edit User</h2>
-            <button type="button" id="closeModalBtn" class="px-4 py-2 text-black "> <i data-feather="x"
-                    class="mr-3 feather-icon group"></i></button>
-        </div>
-        <form id="editUserForm" enctype="multipart/form-data">
-
-            @csrf
-            <input type="hidden" id="edit_user_id">
-
-            <!---group 1-->
-            <img id="edit_profile_preview" src="" alt="Profile Preview"
-                class="object-cover w-20 h-20 mx-auto mb-6 rounded-full" />
-
-            <div class="flex flex-col gap-4 mb-4 sm:flex-row">
-
-                <div>
-                    <label class="block mb-2.5 text-sm font-medium text-gray-700">Name</label>
-                    <input type="text" name="name" id="edit_name" placeholder="Name"
-                        class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required>
-                </div>
-
-                <div>
-                    <label class="block mb-2.5 text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" name="email" id="edit_email" placeholder="Email"
-                        class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required>
-                </div>
-
-            </div>
-            <!---group 1 ends-->
-
-            <!---group 2 begins-->
-            <div class="flex flex-col gap-4 sm:flex-row">
-
-                <div>
-                    <label class="block mb-2.5 text-sm font-medium text-gray-700">Phone Number</label>
-                    <input type="text" name="phone_number" id="edit_phone_number" placeholder="Phone Number"
-                        class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required>
-                </div>
-
-                <div>
-                    <label class="block mb-2.5 text-sm font-medium text-gray-700">Role</label>
-                    <select name="role" id="edit_role"
-                        class="w-[270px] px-3 py-2 border
-                border-gray-300 rounded-md focus:outline-none
-                focus:ring-2 focus:ring-blue-500"
-                        required name="role">
-                        <option value="admin">Admin</option>
-                        <option value="tech_supervisor">Tech Supervisor</option>
-                        <option value="designer">Designer</option>
-                        <option value="sales_accountant">Sales Accountant</option>
-                        <option value="accountant">Accountant</option>
-                    </select>
-
-                </div>
-            </div>
-            <!---group 2 ends-->
-
-            <!---group 3 begins-->
-
-            <div class="flex flex-col gap-4 mb-6 sm:flex-row">
-
-                <div>
-                    <label class="block mb-2.5 text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" name="password" id="edit_password" placeholder="New Password (Optional)"
-                        class="w-[270px] px-3  border border-gray-300 rounded-md focus:outline-none
-                focus:ring-2 focus:ring-blue-500"
-                        required>
-                    <span id="passwordError" class="block mt-1 text-sm text-red-500"></span>
-
-                </div>
-
-
-                <div>
-                    <label class="block mb-2.5 text-sm font-medium text-gray-700">Profile Picture</label>
-                    <input type="file" id="edit_profile_pic" name="profile_pic" accept="image/*"
-                        class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-
-            </div>
-            <!---group 3 ends-->
-
-            <!---group 4 begins-->
-
-
-            <!---group 4 ends-->
-
-            <button type="submit" class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 rounded">Save
-                Client</button>
-
-
-        </form>
-
+<div id="editUserModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/40">
+  <div class="w-full max-w-md p-6 bg-white rounded-2xl">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold">Edit User</h3>
+      <button type="button" id="euClose" class="text-2xl leading-none text-slate-500 hover:text-slate-700">&times;</button>
     </div>
+
+    <form id="editUserForm"
+          method="POST"
+          action=""   {{-- set dynamically in JS --}}
+          data-action-template="{{ url('/admin/users/__ID__') }}"
+          class="mt-4 space-y-4">
+      @csrf
+
+      <input type="hidden" id="euUserId" name="id" value="">
+
+      {{-- Full name --}}
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Full name</label>
+        <input type="text" id="euName" name="name"
+               class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-fuchsia-800"
+               placeholder="Enter full name" required>
+      </div>
+
+      {{-- Role --}}
+      <div>
+        <label class="block mb-1 text-sm font-medium text-gray-700">Account type</label>
+        <select id="euRole" name="role"
+                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-fuchsia-800" required>
+          <option value="admin">Admin</option>
+          <option value="accountant">Accountant</option>
+          <option value="designer">Designer</option>
+          <option value="tech_supervisor">Technical Supervisor</option>
+          <option value="production_officer">Production Officer</option>
+          <option value="installation_officer">Installation Officer</option>
+        </select>
+      </div>
+
+      {{-- Password reset (optional) --}}
+      <div class="p-3 border rounded-xl">
+        <div class="mb-2 text-sm font-medium text-gray-700">Reset password</div>
+        <div class="grid gap-3">
+          <input type="password" id="euPassword" name="password"
+                 class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-fuchsia-800"
+                 placeholder="New password (leave blank to keep current)">
+          <input type="password" id="euPasswordConfirm" name="password_confirmation"
+                 class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-fuchsia-800"
+                 placeholder="Re-enter new password">
+        </div>
+        <p class="mt-2 text-xs text-gray-500">Leave both password fields empty to keep existing password.</p>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-2">
+        <button type="button" id="euCancel" class="px-4 py-2 border rounded-lg">Cancel</button>
+        <button type="submit" class="px-4 py-2 text-white rounded-lg bg-fuchsia-900 hover:bg-purple-800">
+          Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
+
+
+
 
 
 <!-- Success Modal -->
@@ -359,57 +333,85 @@
 
 
 {{-- another modal for user edit --}}
+<script>
+(function(){
+  const modal   = document.getElementById('editUserModal');
+  const form    = document.getElementById('editUserForm');
+  const tpl     = form?.getAttribute('data-action-template') || '';
+  const closeBt = document.getElementById('euClose');
+  const cancel  = document.getElementById('euCancel');
+
+  const fId     = document.getElementById('euUserId');
+  const fName   = document.getElementById('euName');
+  const fRole   = document.getElementById('euRole');
+  const fPass   = document.getElementById('euPassword');
+  const fPass2  = document.getElementById('euPasswordConfirm');
+
+  function show() {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.classList.add('overflow-hidden');
+  }
+  function hide() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.classList.remove('overflow-hidden');
+    // clear sensitive fields
+    fPass.value = '';
+    fPass2.value = '';
+  }
+
+  // Open from any .editUserBtn (event delegation)
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.editUserBtn');
+    if (!btn) return;
+
+    e.preventDefault();
+
+    const id   = btn.getAttribute('data-id');
+    const name = btn.getAttribute('data-name') || '';
+    const role = btn.getAttribute('data-role') || '';
+
+    // Set form action to /admin/users/{id}
+    if (tpl && id) form.action = tpl.replace('__ID__', id);
+
+    // Fill fields
+    fId.value   = id || '';
+    fName.value = name;
+    fRole.value = role;
+
+    // If inside a dropdown, close it
+    btn.closest('[data-more-menu]')?.classList.add('hidden');
+
+    show();
+  });
+
+  // Close handlers
+  closeBt?.addEventListener('click', hide);
+  cancel?.addEventListener('click', hide);
+  modal.addEventListener('click', (e) => { if (e.target === modal) hide(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) hide();
+  });
+
+  // Optional client-side guard: if one password is filled, require both
+  form.addEventListener('submit', (e) => {
+    const p1 = fPass.value.trim();
+    const p2 = fPass2.value.trim();
+    if ((p1 && !p2) || (!p1 && p2)) {
+      e.preventDefault();
+      alert('Please enter both password fields (or leave both empty).');
+    }
+  });
+})();
+</script>
+
+
+
+
 
 <script>
-    // Edit User Modal
-    // Show the modal
-    document.querySelectorAll('.editUserBtn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const userId = this.dataset.id;
-            fetch(`/admin/users/${userId}`)
-                .then(res => res.json())
-                .then(data => {
-                    document.getElementById('edit_user_id').value = userId;
-                    document.getElementById('edit_name').value = data.name;
-                    document.getElementById('edit_email').value = data.email;
-                    document.getElementById('edit_phone_number').value = data.phone_number;
-                    document.getElementById('edit_role').value = data.role;
-                    document.getElementById('edit_profile_preview').src =
-                        `/storage/${data.profile_pic}`;
 
-                    // Use Tailwind class toggling
-                    document.getElementById('editUserModal').classList.remove('hidden');
-                    document.getElementById('editUserModal').classList.add('flex');
-                });
-        });
-    });
-
-    // Close modal
-    document.getElementById('closeModalBtn').addEventListener('click', function() {
-        document.getElementById('editUserModal').classList.remove('flex');
-        document.getElementById('editUserModal').classList.add('hidden');
-    });
-
-    // Submit form
-    document.getElementById('editUserForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const userId = document.getElementById('edit_user_id').value;
-        const formData = new FormData(this);
-
-        fetch(`/admin/users/${userId}`, {
-                method: 'POST',
-                body: formData,
-            })
-            .then(res => res.json())
-            .then(res => {
-                if (res.message) {
-                    document.getElementById('editUserModal').classList.add('hidden');
-                    document.getElementById('editUserModal').classList.remove('flex');
-
-                    document.getElementById('successModal').classList.remove('hidden');
-                }
-            });
-    });
 
     // Success Modal OK
     document.getElementById('successOkBtn').addEventListener('click', function() {

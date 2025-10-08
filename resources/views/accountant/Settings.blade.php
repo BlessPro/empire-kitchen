@@ -9,8 +9,6 @@
             <div class="">
              <div class="mb-[20px]">
 
-
-
                 <!-- Tabs -->
 <div class="flex mb-6 border-b">
 

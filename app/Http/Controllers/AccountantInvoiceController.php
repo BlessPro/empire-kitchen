@@ -35,13 +35,7 @@ public function invoiceview($id)
     // $qrImage = QrCode::format('png')->size(200)->generate($qrData);
 
     // // Save to storage/app/public/qrcodes/
-    // $filename = "qrcodes/{$invoice->id}.png";
-    // Storage::disk('public')->put($filename, $qrImage);
 
-    // return view('accountant.Invoice.Invoiceview', [
-    //     'invoice' => $invoice,
-    //     'qrPath' => Storage::url($filename) // gives you /storage/qrcodes/123.png
-    // ]);
 
     return view('accountant.Invoice.Invoiceview', compact('invoice'));
 }

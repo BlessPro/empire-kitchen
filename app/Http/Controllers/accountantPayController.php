@@ -27,29 +27,10 @@ class accountantPayController extends Controller
 
 }
 
-
-
-// public function store(Request $request)
-// {
-//     $validated = $request->validate([
-//         'client_id' => 'required|exists:clients,id',
-//       
-//         'amount' => 'required|numeric',
-//         'date' => 'required|date',
-//         'project_stage' => 'required|string|in:Measurement,Design,Production,Installation',
-//         'payment_method' => 'required|string|in:Cash,Cheque,Online',
-//     ]);
-
-//     Income::create($validated);
-
-//     return response()->json(['message' => 'Income recorded successfully']);
-// }
-
-
 public function store(Request $request)
 {
     $validated = $request->validate([
-        'client_id' => 'required|exists:clients,id',     
+        'client_id' => 'required|exists:clients,id',
         'project_id' => 'required|exists:projects,id',
         'category_id' => 'required|exists:categories,id',
         'amount' => 'required|numeric',
@@ -78,24 +59,12 @@ public function getProjectsByClient1($client_id)
     // return view('accountant.Expenses', compact('expenses'));
 }
 
-// public function index()
-// {
-//       $expenses = Expense::with(['category', 'project'])->latest()->get();
 
-//     $projects = Project::all();
-//     $categories = Category::all();
-
-//     $clients = Client::all(); // Add this line
-
-//     return view('accountant.Payment.Pay', compact( 'projects', 'categories', 'expenses','clients'));
-// }
 
 public function getByClient($id)
 {
     $projects = Project::where('client_id', $id)->get();
     return response()->json($projects);
 }
-
-
 
 }

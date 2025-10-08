@@ -4,37 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-// class Installation extends Model
-// {
-//     //
-// }
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Installation extends Model
 {
-    // protected $fillable = [
-    //     'project_id', 'user_id', 'installation_image_path', 'installed_at'
-    // ];
 
-    protected $fillable = [
-    'client_id',
-    'project_id',
-    'user_id',
-    'created_at',
-    'start_time',
-    'end_time',
-    'notes',
 
+protected $fillable = [
+  'client_id','project_id','user_id',
+  'install_date','install_time','start_time',
+  'notes','is_done','done_at',
 ];
 protected $casts = [
-    'created_at' => 'datetime',
-    'start_time' => 'datetime',
-    'end_time' => 'datetime',
+  'install_date' => 'date',
+  'start_time'   => 'datetime',
+  'is_done'      => 'boolean',
+  'done_at'      => 'datetime',
 ];
-
-
 
     public function project()
     {
@@ -50,6 +39,9 @@ protected $casts = [
 {
     return $this->belongsTo(Client::class);
 }
+
+public function user(){ return $this->belongsTo(\App\Models\User::class); }
+
 
 
 

@@ -18,10 +18,7 @@
 
           <!-- Right side: Notifications and Profile -->
           <div class="flex items-center justify-end w-1/3 space-x-4">
-            <!-- <button class="relative">
-              <i data-feather="bell"></i>
-              <span class="absolute -top-2 -right-2 bg-purple-600 text-white rounded-full text-xs px-1.5">12</span>
-            </button> -->
+          
             <button class="relative">
               <i data-feather="bell"></i>
               <span class="absolute -top-2 -right-2 bg-purple-600 text-white rounded-full text-xs px-1.5">12</span>

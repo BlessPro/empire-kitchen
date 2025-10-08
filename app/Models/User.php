@@ -55,6 +55,8 @@ protected $casts = [
 
 ];
 
+
+
 public function getIsOnlineAttribute(): bool
 {
     return $this->last_seen_at && $this->last_seen_at->gt(now()->subMinutes(2));
@@ -100,6 +102,10 @@ public function expenses()
 {
     return $this->hasMany(Expense::class, 'accountant_id');
 }
+
+
+// app/Models/User.php
+
 
 }
 

@@ -1,549 +1,363 @@
-<x-app-layout>
-    <x-slot name="header">
-<!--written on 19.05.2025 @ 9:45-->
-    <!-- Main Content -->
-<meta name="csrf-token" content="{{ csrf_token() }}">
+<x-layouts.app>
+  <x-slot name="header">
+    @include('admin.layouts.header')
+  </x-slot>
 
+{{-- Make BOOKED projects available to JS --}}
 <style>
-    .fc .fc-button {
-        background-color: #5A0562; /* Tailwind's blue-600 */
-        color: white;
-        font-size: 1rem; /* text-sm */
-        padding: 0.25rem 0.75rem; /* py-1 px-3 */
-        border-radius: 0.375rem; /* rounded-md */
-        border: none;
-        margin: 0 0.25rem;
-        transition: all 0.2s ease-in-out;
-    }
+  /* Toolbar buttons */
+  .fc .fc-button { background:#F7D847; border-color:#F7D847; color:#111827; box-shadow:none; }
+  .fc .fc-button:disabled { opacity:.85; }
+  .fc .fc-button-primary:not(:disabled).fc-button-active,
+  .fc .fc-button-primary:not(:disabled):active,
+  .fc .fc-button-primary:focus { background:#5A0562; border-color:#5A0562; color:#fff; }
+  .fc .fc-button-primary:hover:not(:disabled){ filter:brightness(.95); }
 
-    .fc .fc-button:hover {
-        background-color: #ff7300; /* Tailwind's blue-700 */
-    }
+  /* Event chip with vertical bar */
+  .fc-event.custom-pill { border:0!important; background:transparent!important; padding:0!important; }
+  .fc-event.custom-pill .pill{
+    display:flex; align-items:center; gap:8px; border-radius:10px; padding:2px 8px;
+    border:1px solid #e5e7eb; background:#fff;
+  }
+  .fc-event.custom-pill .bar{ width:6px; align-self:stretch; border-radius:4px; background:#ccc; }
+  .fc-event.custom-pill .title{
+    font-size:12px; color:#111827; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    max-width:140px;
+  }
 
-    .fc .fc-button.fc-button-active {
-        background-color: #ff7300; /* Tailwind's blue-900 */
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-    }
-
-    .fc .fc-toolbar-title {
-        font-weight: 600;
-        color: #5A0562; /* text-gray-800 */
-        font-size: 1.125rem; /* text-lg */
-    }
+  /* Simple popover shell */
+  .install-pop{
+    position:absolute; z-index:9999; width:360px; background:#fff; border:1px solid #eee;
+    border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.08); padding:16px;
+  }
+  .install-pop .row{ display:flex; gap:8px; align-items:center; margin:6px 0; }
+  .icon-btn{ width:34px; height:34px; border:1px solid #e5e7eb; border-radius:10px; display:flex; align-items:center; justify-content:center; }
+  .btn-ghost{ border:1px solid #e5e7eb; border-radius:10px; padding:6px 10px; background:#fff; }
 </style>
 
-    </x-slot>
-    @include('admin.layouts.header')
-    <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
-        <!--head begins-->
+  <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen">
 
-            <div class="p-6 bg-[#F9F7F7]">
-             <div class="mb-[20px]">
-
-            <!-- FullCalendar Styles -->
-
-
-<!-- Tailwind Styles already included in your layout -->
-<!-- Create Installation Button -->
-{{-- <button onclick="openModal()" class="px-4 py-2 mt-4 mb-4 text-white rounded-[20px] bg-fuchsia-950 hover:bg-purple-800">
-            <iconify-icon icon="majesticicons:plus-line" width="18" style="color: #fff;"></iconify-icon>
- Create Installation
-</button> --}}
-<div class="p-6 bg-white shadow-md rounded-xl">
-    <div id="calendar"></div>
+<script>
+  window.BOOKED_PROJECTS = @json($bookedProjects ?? []);
+</script>
+  <div class="mb-3 flex items-center justify-between">
+  <h2 class="text-lg font-semibold text-gray-900">Installations</h2>
+  <button id="btn-open-create" class="px-4 py-2 rounded-full bg-fuchsia-700 text-white text-sm hover:bg-fuchsia-800">
+    + New Installation
+  </button>
 </div>
-
-
-{{-- installationmodal --}}
-
-<div id="installationModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-gray-800 bg-opacity-50">
-    <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
-       <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
-
-        <h2 class="mb-4 text-xl font-bold ">Create Installation</h2>
-
-        <button type="button" onclick="closeModal()"
-        class="px-4 py-2 ">
-        <iconify-icon icon="material-symbols:close-rounded" width="22" style="color: #5A0562;"></iconify-icon>
-    </button>
-       </div>
-     {{-- //   <form id="installationForm"> --}}
-            <form id="installationForm" method="POST" enctype="multipart/form-data">
-
-            @csrf
-            <!-- Client -->
-            <div class="mb-4">
-                <label class="block mb-2 text-sm font-medium text-gray-700">Client</label>
-                <select id="client_id" name="client_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    <option value="">Select a client</option>
-                    @foreach(\App\Models\Client::all() as $client)
-                        <option value="{{ $client->id }}"
-                            data-phone="{{ $client->phone_number }}"
-                            data-location="{{ $client->location }}">
-                            {{ $client->firstname }} {{ $client->lastname }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-
-
-               <!---CLient info-->
-
-            <div class="flex flex-col gap-4 sm:flex-row">
-
-            <div>
-                <label class="block mb-2 text-sm font-medium text-gray-700">Name</label>
-                <input type="text" id="client_phone" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Phone Number" readonly>
-            </div>
-
-            <div>
-                <label class="block mb-2 text-sm font-medium text-gray-700">Email</label>
-            <input type="text" id="client_location" class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Location" readonly>
-            </div>
-
-        </div>
-
-            <!-- Project -->
-            <div class="mb-4">
-                <label class="block mb-2 text-sm font-medium text-gray-700">Project</label>
-                <select id="project_id" name="project_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                    <option value="">Select a project</option>
-                    <!-- JS will populate based on selected client -->
-                </select>
-            </div>
-
-            <!-- Start/End Time -->
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label class="block mb-2 text-sm font-medium text-gray-700">Start Time</label>
-                    <input type="datetime-local" id="start_time" name="start_time" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                </div>
-                <div>
-                    <label class="block mb-2 text-sm font-medium text-gray-700">End Time</label>
-                    <input type="datetime-local" id="end_time" name="end_time" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                </div>
-            </div>
-
-            <!-- Duration -->
-            <div class="mb-4">
-                <label class="block mb-2 text-sm font-medium text-gray-700">Duration</label>
-                <input type="text" id="duration" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Duration (auto)" readonly>
-            </div>
-
-            <!-- Notes -->
-            <div class="mb-4">
-                <label class="block mb-2 text-sm font-medium text-gray-700">Notes</label>
-                <textarea name="notes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Additional Notes (optional)"></textarea>
-            </div>
-
-            <!-- Buttons -->
-            <div class="flex justify-end space-x-4">
-                <button type="submit" class="w-full px-4 py-2 text-white rounded bg-fuchsia-900 hover:bg-purple-800">Save</button>
-            </div>
-        </form>
+    <div class="p-6">
+      <div class="rounded-[20px] border border-gray-200 bg-white shadow-sm p-4">
+        <div id="calendar"></div>
+      </div>
     </div>
-</div>
-
-{{-- installationmodal --}}
-
-
-
-
-
-<div id="editModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-30">
-    <div class="w-full max-w-md p-6 bg-white rounded shadow-md">
-<div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
-        <h2 class="mb-4 text-xl font-semibold">Edit Installation</h2>
-        <button onclick="closeEditModal()" type="button" id="closeModalBtn" class="px-4 py-2 text-black "> <i data-feather="x"
-    class="mr-3 feather-icon group"></i>
-
-     {{-- <button type="button"  class="text-gray-600">Cancel</button> --}}
-    </button>
-<input type="hidden" id="editClientId" name="client_id">
-<input type="hidden" id="editProjectId" name="project_id">
-
-        </div>
-           <form id="editForm" enctype="multipart/form-data">
-            @csrf
-
-            <input type="hidden" id="editEventId">
-            <div class="mb-2">
-                <label>Project Name:</label>
-                <input type="text" id="editProjectName" readonly class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div class="mb-2">
-                <label>Start Time:</label>
-                <input type="datetime-local" id="editStartTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div class="mb-2">
-                <label>End Time:</label>
-                <input type="datetime-local" id="editEndTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            <div class="mb-4">
-                <label>Notes:</label>
-                <textarea id="editNotes" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-            </div>
-            <div class="flex justify-end space-x-2">
-                <button type="submit" class="bg-fuchsia-900 w-full text-[20px] text-white px-4 py-2 rounded">Update</button>
-            </div>
-        </form>
+{{-- Create Installation Modal --}}
+<div id="install-modal" class="fixed inset-0 z-[10000] hidden">
+  <div class="absolute inset-0 bg-black/30"></div>
+  <div class="absolute left-1/2 top-1/2 w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white shadow-xl p-5">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-base font-semibold text-gray-900">New Installation</h3>
+      <button id="install-modal-close" class="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center">
+        ✕
+      </button>
     </div>
+
+    <form id="install-form" class="space-y-3">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Project</label>
+        <select id="install-project" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-fuchsia-600 focus:border-fuchsia-600" required>
+          <option value="" selected disabled>Choose a booked project…</option>
+          @forelse($bookedProjects as $p)
+            <option value="{{ $p->id }}"> {{ $p->name }} (ID: {{ $p->id }})</option>
+          @empty
+            <option value="" disabled>No BOOKED projects found</option>
+          @endforelse
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Date</label>
+          <input type="date" id="install-date" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-fuchsia-600 focus:border-fuchsia-600" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Time</label>
+          <input type="time" id="install-time" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-fuchsia-600 focus:border-fuchsia-600" required>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Notes</label>
+        <textarea id="install-notes" rows="3" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-fuchsia-600 focus:border-fuchsia-600" placeholder="Optional"></textarea>
+      </div>
+
+      <p id="install-error" class="hidden mt-2 text-sm text-red-600"></p>
+
+      <div class="pt-2 flex items-center justify-end gap-2">
+        {{-- <button type="button" id="install-cancel" class="px-3 py-1.5 rounded-lg border border-gray-200 text-sm">Cancel</button> --}}
+        <button type="submit" class="w-full px-3 py-1.5 rounded-lg bg-fuchsia-900 text-white text-sm hover:bg-fuchsia-800">Schedule</button>
+      </div>
+    </form>
+  </div>
 </div>
 
+  </main>
 
-</div>
-</div>
-</main>
-<!-- FullCalendar Script -->
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+
+
+{{-- Create/Edit Modal --}}
+  {{-- Iconify + FullCalendar --}}
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <link  href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
 
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-  var calendarEl = document.getElementById('calendar');
+(function(){
+  const calendarEl = document.getElementById('calendar');
+  if (!calendarEl) return;
 
-  var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,timeGridWeek,listWeek'
-    },
-    events: '/TimeManagement/events', // pulls from controller
-    eventColor: '#0036BF',
-    height: 'auto',
+  const csrf = '{{ csrf_token() }}';
+  let popEl = null;
 
-    eventClick: function (info) {
-      const event = info.event;
+  // ---------- helpers ----------
+  function closePop(){ if (popEl){ popEl.remove(); popEl=null; } }
+  document.addEventListener('click', (e)=>{ if(popEl && !popEl.contains(e.target)) closePop(); });
+  document.addEventListener('keydown', (e)=>{ if (e.key==='Escape') closePop(); });
 
-      // Build a small info card near the click
-      const popup = document.createElement('div');
-      popup.className = 'bg-white shadow-lg rounded-lg p-4 border border-gray-200 fixed z-50';
-      const popupWidth = 280, popupHeight = 160;
-      const vw = window.innerWidth, vh = window.innerHeight;
+  // stable color per project (hash)
+  const palette = ['#5A0562','#F59E0B','#10B981','#3B82F6','#EF4444','#8B5CF6','#14B8A6','#F43F5E'];
+  function hashColor(key){
+    const s = String(key||'');
+    let h = 0; for (let i=0;i<s.length;i++){ h = (h<<5)-h + s.charCodeAt(i); h |= 0; }
+    const idx = Math.abs(h) % palette.length;
+    return palette[idx];
+  }
+  // hex -> rgba with alpha
+  function rgba(hex, a=.15){
+    const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if(!m) return `rgba(90,5,98,${a})`;
+    return `rgba(${parseInt(m[1],16)},${parseInt(m[2],16)},${parseInt(m[3],16)},${a})`;
+  }
+  function longDate(ymd){
+    const d = new Date(ymd); if(Number.isNaN(d.getTime())) return '—';
+    return d.toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric'});
+  }
 
-      let top = info.jsEvent.clientY + 10;
-      let left = info.jsEvent.clientX;
+  // ---------- popover ----------
+  function buildInstallPopover({ anchorEl, title, dateStr, notes, figma_url, image_url, color, id }){
+    closePop();
+    popEl = document.createElement('div');
+    popEl.className = 'install-pop';
+    popEl.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:18px;font-weight:700">${title||'(Untitled)'}</div>
+        <button type="button" id="btn-close" class="icon-btn" title="Close">✕</button>
+      </div>
 
-      if (left + popupWidth > vw)  left = vw - popupWidth - 10;
-      if (top + popupHeight > vh) top = vh - popupHeight - 10;
+      <div class="row">
+        <span class="iconify" data-icon="ph:calendar-blank" style="color:${color};font-size:18px"></span>
+        <div>${longDate(dateStr)}</div>
+      </div>
 
-      popup.style.top = `${top}px`;
-      popup.style.left = `${left}px`;
-      popup.style.width = `${popupWidth}px`;
+      ${image_url ? `
+        <div style="margin:8px 0">
+          <img src="${image_url}" alt="Attachment" style="width:100%; height:140px; object-fit:cover; border-radius:12px; border:1px solid #eee"/>
+        </div>` : ''}
 
-      const startLabel = event.start ? new Date(event.start).toLocaleString() : '—';
+      <div class="row" style="align-items:flex-start">
+        <span class="iconify" data-icon="ph:notepad" style="color:${color};font-size:18px"></span>
+        <div style="color:#6b7280; line-height:1.25">${notes||'—'}</div>
+      </div>
 
-      popup.innerHTML = `
-        <div class="flex items-start justify-between mb-2">
-          <div class="font-semibold text-gray-800 pr-4">${event.title}</div>
-          <button type="button" aria-label="Close"
-                  class="ml-2 rounded p-1 hover:bg-gray-100" id="popupCloseBtn">✕</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
+        <div style="display:flex;gap:8px;align-items:center">
+          ${figma_url ? `<a href="${figma_url}" target="_blank" class="btn-ghost" style="text-decoration:none">Open Figma</a>` : ''}
         </div>
-        <div class="mb-1 text-sm"><strong>Date:</strong> ${startLabel}</div>
-        <div class="mb-2 text-sm"><strong>Notes:</strong> ${event.extendedProps?.notes ?? 'N/A'}</div>
-      `;
+        <div style="display:flex; gap:8px">
+          <button class="icon-btn" id="btn-edit" title="Edit"><span class="iconify" data-icon="ph:pencil-simple-line"></span></button>
+          <button class="icon-btn" id="btn-del" title="Delete"><span class="iconify" data-icon="ph:trash-simple"></span></button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(popEl);
+    const rect = anchorEl.getBoundingClientRect();
+    popEl.style.top  = (window.scrollY + rect.top + rect.height + 8) + 'px';
+    popEl.style.left = Math.min(window.scrollX + rect.left, window.scrollX + window.innerWidth - 380) + 'px';
 
-      document.body.appendChild(popup);
+    popEl.querySelector('#btn-close')?.addEventListener('click', closePop);
 
-      function removePopup() {
-        popup.remove();
-        document.removeEventListener('click', outsideClick);
-      }
+    // (wire edit/delete here if you want)
+    popEl.querySelector('#btn-del')?.addEventListener('click', async ()=>{
+      if (!confirm('Delete this installation?')) return;
+      await fetch(`{{ route('admin.installations.destroy', ['installation' => 'ID']) }}`.replace('ID', id), {
+        method: 'DELETE',
+        headers: { 'X-CSRF-TOKEN': csrf, 'X-Requested-With':'XMLHttpRequest', 'Accept':'application/json' },
+        credentials: 'same-origin'
+      });
+      closePop();
+      window.__installCalendar?.refetchEvents();
+    });
+  }
 
-      function outsideClick(e) {
-        if (!popup.contains(e.target)) removePopup();
-      }
+  // ---------- FullCalendar ----------
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    timeZone: 'local',
+    height: 'auto',
+    headerToolbar: { left:'prev,next today', center:'title', right:'dayGridMonth,timeGridWeek,timeGridDay' },
 
-      // Close button
-      popup.querySelector('#popupCloseBtn').addEventListener('click', removePopup);
+    // Feed from DB – all-day using only install_date
+    events: (info, success, failure) => {
+      const url = '{{ route('admin.installations.feed') }}'
+        + '?start=' + encodeURIComponent(info.startStr)
+        + '&end='   + encodeURIComponent(info.endStr);
 
-      // Close when clicking outside
-      setTimeout(() => document.addEventListener('click', outsideClick), 0);
+      fetch(url, { method:'GET', credentials:'same-origin', headers:{ 'Accept':'application/json' } })
+        .then(async res => {
+          const txt = await res.text();
+          if (!res.ok) throw new Error(txt || ('HTTP '+res.status));
+          const raw = JSON.parse(txt);
+
+          // ensure each event has a stable color + tinted bg on client
+          const mapped = raw.map(ev => {
+            const pid   = (ev.extendedProps && ev.extendedProps.project_id) ?? ev.title ?? ev.id;
+            const color = (ev.extendedProps && ev.extendedProps.color) || hashColor(pid);
+            return {
+              ...ev,
+              allDay: true,
+              classNames: ['custom-pill'],
+              extendedProps: { ...(ev.extendedProps||{}), color },
+              // use FullCalendar color fields for timeGrid/week; we still render custom in dayGrid
+              backgroundColor: rgba(color, .15),
+              borderColor: 'transparent',
+              textColor: '#111827'
+            };
+          });
+          success(mapped);
+        })
+        .catch(err => { console.error(err); alert('Failed to load installations.'); failure(err); });
+    },
+
+    // custom pill with vertical colored bar
+    eventClassNames(){ return ['custom-pill']; },
+    eventContent(arg){
+      const color = arg.event.extendedProps.color || '#5A0562';
+      const title = arg.event.title || '(Untitled)';
+      const root  = document.createElement('div');
+      root.innerHTML = `
+        <div class="pill" style="background:${rgba(color,.15)}">
+          <div class="bar" style="background:${color}"></div>
+          <div class="title" title="${title}">${title}</div>
+        </div>`;
+      return { domNodes: [root] };
+    },
+
+    eventClick(info){
+      const x = info.event.extendedProps || {};
+      const ymd = x.install_date || info.event.startStr;
+      buildInstallPopover({
+        anchorEl: info.el,
+        title: info.event.title,
+        dateStr: ymd,
+        notes: x.notes,
+        figma_url: x.figma_url || null,
+        image_url: x.image_url || null,
+        color: x.color || '#5A0562',
+        id: info.event.id
+      });
     }
   });
 
+  window.__installCalendar = calendar;
   calendar.render();
-});
+})();
 </script>
-
-
 
 <script>
+(function(){
+  const csrf = '{{ csrf_token() }}';
 
+  const modal      = document.getElementById('install-modal');
+  const btnOpen    = document.getElementById('btn-open-create');
+  const btnClose   = document.getElementById('install-modal-close');
+  const btnCancel  = document.getElementById('install-cancel');
+  const form       = document.getElementById('install-form');
+  const errBox     = document.getElementById('install-error');
 
+  const fldProject = document.getElementById('install-project');
+  const fldDate    = document.getElementById('install-date');
+  const fldTime    = document.getElementById('install-time');
+  const fldNotes   = document.getElementById('install-notes');
 
-function openEventModal(project, start, notes) {
-    document.getElementById('eventProject').innerText = project;
-    document.getElementById('eventStart').innerText = new Date(start).toLocaleString();
-    document.getElementById('eventNotes').innerText = notes;
-    document.getElementById('eventDetailsModal').classList.remove('hidden');
-}
+  function openModal(prefill = {}) {
+    fldProject.value = prefill.project_id ? String(prefill.project_id) : '';
+    fldDate.value    = prefill.date || '';
+    fldTime.value    = prefill.time || '';
+    fldNotes.value   = prefill.notes || '';
+    errBox.classList.add('hidden');
+    modal.classList.remove('hidden');
+  }
+  function closeModal(){ modal.classList.add('hidden'); }
 
-function closeEventModal() {
-    document.getElementById('eventDetailsModal').classList.add('hidden');
-}
+  btnOpen?.addEventListener('click', ()=> openModal());
+  btnClose?.addEventListener('click', closeModal);
+  btnCancel?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') closeModal(); });
 
-
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    var calendarEl = document.getElementById('calendar');
-
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,listWeek'
-        },
-        events: '/TimeManagement/events',
-
-        eventColor: '#0036BF',
-        height: 'auto',
-        eventClick: function (info) {
-    const event = info.event;
-
-    const popup = document.createElement('div');
-    popup.className = 'bg-white shadow-md rounded p-4 border border-gray-200 fixed z-50';
-    popup.style.position = 'fixed'; // ensure it's fixed to the viewport
-
-    // Set default popup dimensions
-    const popupWidth = 250;
-    const popupHeight = 150;
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-
-    // Initial top/left based on cursor position
-    let top = info.jsEvent.clientY + 10;
-    let left = info.jsEvent.clientX;
-
-    // Adjust if popup would go off-screen
-    if (left + popupWidth > viewportWidth) {
-        left = viewportWidth - popupWidth - 10;
-    }
-    if (top + popupHeight > viewportHeight) {
-        top = viewportHeight - popupHeight - 10;
-    }
-
-    popup.style.top = `${top}px`;
-    popup.style.left = `${left}px`;
-    popup.style.width = `${popupWidth}px`; // optional fixed width
-
-    popup.innerHTML = `
-        <div class="mb-2 font-semibold text-gray-800">${event.title}</div>
-        <div class="mb-1 text-sm"><strong>Start:</strong> ${new Date(event.start).toLocaleString()}</div>
-        <div class="mb-2 text-sm"><strong>Notes:</strong> ${event.extendedProps.notes ?? 'N/A'}</div>
-
-        <div class="flex justify-end mt-2">
-            <button id="editEventBtn" class="text-sm text-blue-500 hover:text-blue-700"><i data-feather="edit-3" class="mr-3"></i> Edit</button>
-            <button id="deleteEventBtn" class="text-sm text-red-500 hover:text-red-700">🗑️ Delete</button>
-        </div>
-    `;
-
-    document.body.appendChild(popup);
-
-    function removePopup() {
-        popup.remove();
-        document.removeEventListener('click', outsideClickListener);
-    }
-
-    function outsideClickListener(e) {
-        if (!popup.contains(e.target)) {
-            removePopup();
-        }
-    }
-
-    setTimeout(() => {
-        document.addEventListener('click', outsideClickListener);
-    }, 0);
-
-    // Delete Handler
-    popup.querySelector('#deleteEventBtn').addEventListener('click', function () {
-        if (confirm('Are you sure you want to delete this installation?')) {
-            fetch(`/admin/Installation/${event.id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    'Accept': 'application/json'
-                }
-            }).then(res => res.json())
-              .then(data => {
-                  if (data.success) {
-                      calendar.refetchEvents();
-                      alert('Deleted successfully');
-                      removePopup();
-                  } else {
-                      alert('Failed to delete.');
-                  }
-              });
-        }
-    });
-
-
-            // Edit Handler
-            popup.querySelector('#editEventBtn').addEventListener('click', function () {
-                removePopup();
-                openEditModal(event); // Call a function to open a modal with prefilled form
-            });
-        }
-
-    });
-
-    calendar.render();
-});
-
-
-
-//for the edit pop up
-
-// function openEditModal(event) {
-//     document.getElementById('editEventId').value = event.id;
-//     document.getElementById('editProjectName').value = event.title;
-//     document.getElementById('editStartTime').value = new Date(event.start).toISOString().slice(0,16);
-//     document.getElementById('editEndTime').value = new Date(event.end).toISOString().slice(0,16);
-//     document.getElementById('editNotes').value = event.extendedProps.notes ?? '';
-
-//     document.getElementById('editModal').classList.remove('hidden');
-// }
-
-
-function openEditModal(event) {
-    document.getElementById('editEventId').value = event.id;
-    document.getElementById('editProjectName').value = event.title;
-    document.getElementById('editStartTime').value = new Date(event.start).toISOString().slice(0,16);
-    document.getElementById('editEndTime').value = event.end ? new Date(event.end).toISOString().slice(0,16) : '';
-    document.getElementById('editNotes').value = event.extendedProps.notes ?? '';
-
-    // Add these if available in extendedProps
-    document.getElementById('editClientId').value = event.extendedProps.client_id ?? '';
-    document.getElementById('editProjectId').value = event.extendedProps.project_id ?? '';
-
-    document.getElementById('editModal').classList.remove('hidden');
-}
-
-
-
-
-
-function closeEditModal() {
-    document.getElementById('editModal').classList.add('hidden');
-}
-
-document.getElementById('editForm').addEventListener('submit', function(e) {
+  form.addEventListener('submit', async (e)=>{
     e.preventDefault();
+    errBox.classList.add('hidden');
 
-    const id = document.getElementById('editEventId').value;
-    const formData = new FormData(this);
+    const payload = {
+      project_id: Number(fldProject.value),
+      install_date: fldDate.value,  // YYYY-MM-DD
+      install_time: fldTime.value,  // HH:MM
+      notes: fldNotes.value || null
+    };
 
-    // const formData = new FormData();
-       fetch(`/admin/ScheduleInstallation/${id}`, {
+    try {
+      if (!payload.project_id) throw new Error('Please select a project.');
+      if (!payload.install_date || !payload.install_time) throw new Error('Date and Time are required.');
+
+      const res = await fetch(`{{ route('admin.installations.store') }}`, {
         method: 'POST',
-        body: formData,
-    })
-    .then(res => res.json())
-    .then(res => {
-        if (res.message) {
-            document.getElementById('editUserModal').classList.add('hidden');
-            document.getElementById('editUserModal').classList.remove('flex');
-            document.getElementById('successModal').classList.remove('hidden');
-        }
-    });
-});
+        headers: {
+          'X-CSRF-TOKEN': csrf,
+          'X-Requested-With': 'XMLHttpRequest',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify(payload)
+      });
 
+      if (!res.ok) {
+        const text = await res.text();
+        let msg = `HTTP ${res.status}`;
+        try {
+          const j = JSON.parse(text);
+          if (j?.errors) msg = Object.entries(j.errors).map(([k,v]) => `${k}: ${v.join(', ')}`).join('\n');
+          else if (j?.message) msg = j.message; else msg = text.slice(0, 500);
+        } catch { msg = text.slice(0, 500); }
+        throw new Error(msg);
+      }
 
-
-
-function openModal() {
-    document.getElementById('installationModal').classList.remove('hidden');
-}
-
-function closeModal() {
-    document.getElementById('installationModal').classList.add('hidden');
-    document.getElementById('installationForm').reset();
-    document.getElementById('project_id').innerHTML = '<option value="">Select a project</option>';
-    document.getElementById('duration').value = '';
-}
-
-document.getElementById('client_id').addEventListener('change', function () {
-    const selected = this.options[this.selectedIndex];
-    document.getElementById('client_phone').value = selected.getAttribute('data-phone') || '';
-    document.getElementById('client_location').value = selected.getAttribute('data-location') || '';
-
-    const clientId = this.value;
-    fetch(`/api/projects/by-client/${clientId}`)
-        .then(res => res.json())
-        .then(data => {
-            const projectSelect = document.getElementById('project_id');
-            projectSelect.innerHTML = '<option value="">Select a project</option>';
-            data.forEach(project => {
-                projectSelect.innerHTML += `<option value="${project.id}">${project.name}</option>`;
-            });
-        });
-});
-
-// Shared function to calculate and update duration
-function updateDuration() {
-    const start = new Date(document.getElementById('start_time').value);
-    const end = new Date(document.getElementById('end_time').value);
-    const diffMs = end - start;
-
-    if (diffMs > 0) {
-        const minutes = Math.floor(diffMs / 60000);
-        const hours = Math.floor(minutes / 60);
-        const remainingMinutes = minutes % 60;
-        document.getElementById('duration').value = `${hours} hr(s) ${remainingMinutes} min(s)`;
-    } else {
-        document.getElementById('duration').value = '';
+      // refresh calendar if present
+      window.__installCalendar?.refetchEvents();
+      closeModal();
+    } catch (err) {
+      errBox.textContent = err.message || 'Failed to save.';
+      errBox.classList.remove('hidden');
     }
-}
-
-// Call updateDuration on end_time change
-document.getElementById('end_time').addEventListener('change', updateDuration);
-
-// NEW: Call updateDuration on start_time change as well
-document.getElementById('start_time').addEventListener('change', updateDuration);
-
-document.getElementById('installationForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-
-
-
-fetch('/installations/store', {
-    method: 'POST',
-    headers: {
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-        'Accept': 'application/json'
-    },
-    body: formData
-})
-
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            closeModal();
-            calendar.refetchEvents();
-            alert('Installation created successfully!');
-        } else {
-            alert('Error saving installation');
-        }
-    })
-    .catch(async (err) => {
-    const text = await err.text();
-    console.error('Update error:', text);
-    alert('Something went wrong: ' + text);
-});
-
-    // .catch(() => alert('Something went wrong.'));
-});
-
-
+  });
+})();
 </script>
 
-</x-app-layout>
 
 
+
+
+</x-layouts.app>

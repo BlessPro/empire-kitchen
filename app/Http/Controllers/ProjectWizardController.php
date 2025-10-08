@@ -92,4 +92,19 @@ class ProjectWizardController extends Controller
                 ->with('success', 'Project & Product created successfully.');
         });
     }
+
+// App/Http/Controllers/ProductWizardController.php
+    public function show(\App\Models\Product $product, Request $r)
+    {
+        $step = max(1, (int) $r->query('step', 1));
+        $currentStep = min($step, 5); // adjust to your step count
+    
+        // If your Step 1 is "Create Project", just start rendering from Step 2 when asked
+        return view('admin.products.wizard', [
+            'product' => $product->load('project'),
+            'currentStep' => $currentStep,
+        ]);
+    }
+    
+
 }

@@ -50,7 +50,7 @@ private function redirectBasedOnRole(): string
         'tech_supervisor' => route('tech.dashboard'),
         'designer' => route('designer.dashboard'),
         'accountant' => route('accountant.dashboard'),
-        'sales_accountant' => route('sales.dashboard'),
+        'sales_account' => route('sales.dashboard'),
 
         // Add other roles as needed
         // If no specific route is defined for the role, redirect to a default route

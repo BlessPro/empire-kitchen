@@ -16,7 +16,7 @@ class LoginResponse implements LoginResponseContract
             'tech_supervisor' => redirect()->intended('/tech/dashboard'),
             'designer' => redirect()->intended('/designer/dashboard'),
             'accountant' => redirect()->intended('/accountant/dashboard'),
-            'sales_accountant' => redirect()->intended('/sales/dashboard'),
+            'sales_account' => redirect()->intended('/sales/dashboard'),
             default => redirect('/dashboard'),
         };
     }
