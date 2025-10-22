@@ -94,7 +94,11 @@
                   @endforeach
                 </select>
               </div>
-
+ <div class="mt-4">
+                {{-- location --}}
+                <label class="block text-[15px] mb-2 font-semibold text-gray-900">location</label>
+                <input type="text" name="project[location]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
+              </div>
             </div>
           </div>
 
@@ -122,6 +126,7 @@
                   <label class="block text-[15px] mb-2 font-semibold text-gray-900">Sample Finish Image</label>
                   <input type="file" name="product[sample_finish_image]" accept="image/*" class="w-full px-3 py-2 bg-white border rounded-lg">
                 </div>
+                
               </div>
             </div>
           </div>
@@ -219,8 +224,8 @@
   // $sizes: global sizes list
   // $initialRows: the current product’s selected accessories (for edit), or [] on create
   $catalog = \App\Models\Accessory::with('types:id,accessory_id,value')
-              ->where('is_active', true)->get(['id','name']);
-  $sizes    = ['45cm','50cm','54cm','60cm','70cm','80cm','90cm'];
+              ->where('is_active', true)->get(columns: ['id','name']);
+  $sizes    = ['45cm x 40cm','50cm x 70cm','54cm x 40cm','60cm x 66cm','70cm x 34cm','80cm x 55cm','90cm x 88cm'];
   $initialRows = old('accessories', isset($product)
       ? $product->accessories->map(fn($a)=>[
             'accessory_id'=>$a->id,

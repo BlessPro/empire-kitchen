@@ -112,7 +112,7 @@
       <!-- Measurement Date & Time -->
       <div>
         <label class="block mb-1 text-sm font-medium">Measurement Date & Time</label>
-        <input type="date" name="scheduled_at" class="w-full px-3 py-2 mb-4 border rounded-lg" required />
+        <input type="date" name="scheduled_date" class="w-full px-3 py-2 mb-4 border rounded-lg" required />
       </div>
 
       <div class="flex justify-end gap-2 mt-6">
@@ -157,7 +157,7 @@
 
       <div class="mb-4">
         <label class="block mb-1 text-sm font-medium">Measurement Date & Time</label>
-        <input type="date" name="scheduled_at" class="w-full px-3 py-2 border rounded-lg" required />
+        <input type="date" name="scheduled_date" class="w-full px-3 py-2 border rounded-lg" required />
       </div>
 
       <div class="flex justify-end gap-2 mt-6">

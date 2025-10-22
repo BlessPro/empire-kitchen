@@ -16,6 +16,9 @@ use App\Models\Employee;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Client;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class techAssignDesignersController extends Controller
 {
@@ -42,42 +45,6 @@ public function index()
 
     return view('tech.AssignDesigners', compact('projects'));
 }
-
-
-
-
-// public function showDesignerAssignment()
-// {
-//     $projects = Project::with(['client', 'designer'])
-//                 ->where('tech_supervisor_id', Auth::id()) // Only projects for the logged-in supervisor
-//                 ->orderBy('created_at', 'desc')
-//                 ->paginate(10);
-
-//     $designers = User::where('role', 'designer')->get();
-
-//     return view('tech.AssignDesigners', compact('projects', 'designers'));
-// }
-
-
-// public function showDesignerAssignment()
-// {
-//     $projects = \App\Models\Project::with(['client','designer'])
-//         ->where('tech_supervisor_id', Auth::id())
-//         ->orderByDesc('created_at')
-//         ->paginate(10);
-
-//     // Pull designers and their employee profile in one query
-//     $designers = \App\Models\User::where('role', 'designer')
-//         ->with(['employee' => function ($q) {
-//             $q->select('id','user_id','name','profile_pic'); // adjust columns
-//         }])
-//         ->get(['id']); // include other user columns if you need them
-
-//     return view('tech.AssignDesigners', compact('projects','designers'));
-// }
-
-
-
 
 public function showDesignerAssignment()
 {
@@ -244,72 +211,158 @@ public function showDesignerAssignment_old()
 }
 
 
-// public function showDesignerAssignment()
+// public function assignDesigner(Request $request)
 // {
-//     $projects = \App\Models\Project::with(['client','designer'])
-//         ->where('tech_supervisor_id', Auth::id())
-//         ->orderByDesc('created_at')
-//         ->paginate(10);
+//     $request->validate([
+//         'project_id' => 'required|exists:projects,id',
+//         'designer_id' => 'required|exists:users,id',
+//         'design_date' => 'required|date'
+//     ]);
 
-//     // Join designers to employees via matching email
-//     $designers = User::where('role', 'designer')
-//         ->leftJoin('employees', 'employees.email', '=', 'users.email')
-//         ->get([
-//             'users.id as user_id',
-//             'users.email',
-//             'employees.name as emp_name',
-//             'employees.avatar_path as emp_avatar'
-//         ]);
+//     // Save to the Project table
+//     $project = Project::find($request->project_id);
+//     $project->designer_id = $request->designer_id;
+//     $project->current_stage = 'design';
+//     $project->save();
 
-//     return view('tech.AssignDesigners', compact('projects','designers'));
+//     // Save to the Design table
+//     $design = new Design();
+//     $design->project_id = $request->project_id;
+//     $design->design_date = $request->design_date;
+//     $design->save();
+
+//     return redirect()->back()->with('success', 'Designer and design date assigned successfully!');
 // }
-
-
-// public function showDesignerAssignment()
-// {
-//     $projects = \App\Models\Project::with(['client','designer'])
-//         ->where('tech_supervisor_id', Auth::id())
-//         ->orderByDesc('created_at')
-//         ->paginate(10);
-
-//     // Join designers to employees via matching email
-//     $designers = User::where('role', 'designer')
-//         ->leftJoin('employees', 'employees.email', '=', 'users.email')
-//         ->get([
-//             'users.id as user_id',
-//             'users.email',
-//             'employees.name as emp_name',
-//             'employees.avatar_path as emp_avatar'
-//         ]);
-
-//     return view('tech.AssignDesigners', compact('projects','designers'));
-// }
-
 
 public function assignDesigner(Request $request)
 {
-    $request->validate([
-        'project_id' => 'required|exists:projects,id',
-        'designer_id' => 'required|exists:users,id',
-        'design_date' => 'required|date'
+    $validated = $request->validate([
+        'project_id'  => ['required','exists:projects,id'],
+        'designer_id' => ['required','exists:users,id'], // keep simple while testing
+        'design_date' => ['required','date'],
     ]);
 
-    // Save to the Project table
-    $project = Project::find($request->project_id);
-    $project->designer_id = $request->designer_id;
-    $project->current_stage = 'design';
-    $project->save();
+    $project = Project::findOrFail($validated['project_id']);
 
-    // Save to the Design table
-    $design = new Design();
-    $design->project_id = $request->project_id;
-    $design->design_date = $request->design_date;
-    $design->save();
+    DB::transaction(function () use ($project, $validated) {
+        // Allow same designer on many projects
+        $project->forceFill([
+            'designer_id'   => $validated['designer_id'],
+            'current_stage' => 'design',
+        ])->save();
 
-    return redirect()->back()->with('success', 'Designer and design date assigned successfully!');
+        // Only dedupe per (project, date)
+        Design::firstOrCreate(
+            [
+                'project_id'  => $project->id,
+                'design_date' => Carbon::parse($validated['design_date'])->toDateString(),
+            ],
+            []
+        );
+    });
+
+    return back()->with('success','Designer and design date assigned successfully!');
 }
 
-    public function list(Request $request)
+
+
+
+
+public function assignDesigner_old(Request $request)
+{
+    $validated = $request->validate([
+        'project_id'  => ['required','exists:projects,id'],
+        'designer_id' => [
+            'required',
+            Rule::exists('users','id')->where(fn($q) => $q->where('role','designer')),
+        ],
+        'design_date' => ['required','date'],
+    ]);
+
+    $project    = Project::findOrFail($validated['project_id']);
+    $designDate = Carbon::parse($validated['design_date'])->toDateString();
+
+    DB::transaction(function () use ($project, $validated, $designDate) {
+        // 1) Set designer on the project (this does NOT prevent same designer on other projects)
+        $project->update([
+            'designer_id'   => $validated['designer_id'],
+            'current_stage' => 'design',
+        ]);
+
+        // 2) Create a design row for this project/date (dedupe per project+date only)
+        Design::firstOrCreate(
+            ['project_id' => $project->id, 'design_date' => $designDate],
+            [] // extra fillable fields go here if any
+        );
+    });
+
+    return back()->with('success', 'Designer and design date assigned successfully!');
+}
+
+
+
+public function list_newold(Request $request)
+{
+    $currentProjectId = (int) $request->query('project_id');
+
+    // Pull designers (users.role = 'designer')
+    $userCols = ['id','role'];
+    foreach (['name','email','employee_id'] as $col) {
+        if (Schema::hasColumn('users', $col)) $userCols[] = $col;
+    }
+    $users = User::whereRaw('LOWER(role) = ?', ['designer'])->get($userCols);
+
+    // Pull employees
+    $empCols = ['id','name','avatar_path'];
+    foreach (['email','user_id','staff_id'] as $col) {
+        if (Schema::hasColumn('employees', $col)) $empCols[] = $col;
+    }
+    $employees = Employee::get($empCols);
+
+    // Build possible link maps
+    $empByUserId  = in_array('user_id', $empCols)  ? $employees->whereNotNull('user_id')->keyBy('user_id')   : collect();
+    $empByEmail   = in_array('email', $empCols)    ? $employees->whereNotNull('email')->keyBy('email')       : collect();
+    $empByStaffId = in_array('staff_id', $empCols) ? $employees->whereNotNull('staff_id')->keyBy('staff_id') : collect();
+
+    $usersHaveEmail      = in_array('email', $userCols, true);
+    $usersHaveEmployeeId = in_array('employee_id', $userCols, true);
+
+    // Normalize rows for UI (ONLY id, name, avatar_url)
+    $rows = $users->map(function ($u) use ($empByUserId, $empByEmail, $empByStaffId, $usersHaveEmail, $usersHaveEmployeeId) {
+        $emp = null;
+
+        if ($empByUserId->isNotEmpty()) {
+            $emp = $empByUserId->get($u->id);
+        }
+        if (!$emp && $usersHaveEmail && $empByEmail->isNotEmpty() && !empty($u->email)) {
+            $emp = $empByEmail->get($u->email);
+        }
+        if (!$emp && $usersHaveEmployeeId && $empByStaffId->isNotEmpty() && !empty($u->employee_id)) {
+            $emp = $empByStaffId->get($u->employee_id);
+        }
+
+        $name = $emp->name ?? $u->name ?? '—';
+        $path = $emp->avatar_path ?? null;
+        $avatarUrl = $path
+            ? (Str::startsWith($path, ['http://','https://']) ? $path : Storage::url($path))
+            : asset('images/avatar-placeholder.png');
+
+        return [
+            'id'         => (int) $u->id,
+            'name'       => $name,
+            'avatar_url' => $avatarUrl,
+        ];
+    })->values();
+
+    return response()->json($rows);
+}
+
+
+
+
+
+
+    public function list_old(Request $request)
     {
         $currentProjectId = (int) $request->query('project_id');
 
@@ -378,4 +431,45 @@ public function assignDesigner(Request $request)
     }
 
 
+
+    public function list(Request $request)
+{
+    // Load designers + employee in one go (case-insensitive role match)
+    $designers = User::with('employee')
+        ->whereRaw('LOWER(role) = ?', ['designer'])
+        ->get();
+
+    // Build a map of the latest project per designer (current assignment)
+    // If you want "latest design event" instead, swap to the designs table and order by design_date/created_at.
+    $latestByDesigner = Project::whereNotNull('designer_id')
+        ->select('id','name','designer_id','created_at')
+        ->orderBy('designer_id')
+        ->orderByDesc('created_at')
+        ->get()
+        ->groupBy('designer_id')
+        ->map(fn($g) => $g->first()); // newest project for that designer
+
+    $rows = $designers->map(function ($u) use ($latestByDesigner) {
+        // Name priority: Employee.name -> User.name -> "—"
+        $name = optional($u->employee)->name ?? $u->name ?? '—';
+
+        // Avatar priority: Employee.avatar_path -> placeholder
+        $path = optional($u->employee)->avatar_path;
+        $avatarUrl = $path
+            ? (Str::startsWith($path, ['http://','https://']) ? $path : Storage::url($path))
+            : asset('images/avatar-placeholder.png'); // ensure this file exists
+
+        // Latest project for this designer (if any)
+        $lp = $latestByDesigner->get($u->id);
+
+        return [
+            'id'             => (int) $u->id,
+            'name'           => $name,
+            'avatar_url'     => $avatarUrl,
+            'latest_project' => $lp ? ['id' => (int) $lp->id, 'name' => $lp->name] : null,
+        ];
+    })->values();
+
+    return response()->json($rows);
+}
 }

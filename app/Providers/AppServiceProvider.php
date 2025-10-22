@@ -6,9 +6,17 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Laravel\Fortify\Contracts\LoginResponse; // Import the correct LoginResponse interface
 use App\Http\Responses\CustomLoginResponse;  // Import the CustomLoginResponse class
+ use App\Models\Project;
+use App\Policies\ProjectPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+   
+protected $policies = [
+    Project::class => ProjectPolicy::class,
+];
+
     /**
      * Register any application services.
      */

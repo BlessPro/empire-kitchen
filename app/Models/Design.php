@@ -11,12 +11,16 @@ class Design extends Model
     'designer_id',
     'images', // ✅ This was missing!
     'notes',  // ✅ If you're saving notes too
-    'uploaded_at'
+    'uploaded_at',
+    'design_date',
+    'scheduled_date',
 ];
 
 protected $casts = [
     'images' => 'array',
-     'design_date' => 'datetime',
+    'design_date' => 'datetime',
+    'scheduled_date' => 'datetime',
+
 ];
 
     protected $dates = [

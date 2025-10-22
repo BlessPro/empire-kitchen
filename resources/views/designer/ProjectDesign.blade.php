@@ -15,21 +15,21 @@
                 {{-- navigation bar --}}
                 <div class="flex items-center justify-between">
                     <div class="flex items-center justify-between mb-6">
-                        <h1 class="mb-6 text-xl font-semibold">Upload Designs</h1>
+                        <h1 class="mb-6 text-2xl font-bold">Upload Designs</h1>
                     </div>
 
-                    <a href="{{ route('designer.designs.viewuploads') }}">
+                    {{-- <a href="{{ route('designer.designs.viewuploads') }}">
                         <button
                             class="px-6 py-2 text-semibold text-[15px] text-white rounded-[10px] bg-fuchsia-900 hover:bg-[#F59E0B]">
                             View Upload
                         </button>
-                    </a>
+                    </a> --}}
                 </div>
 
                 <div class="w-[450px] items-center justify-center mx-auto">
 
                     @if (session('success'))
-                        <div class="mb-3 text-sm text-green-700 bg-green-100 border border-green-200 rounded px-3 py-2">
+                        <div class="px-3 py-2 mb-3 text-sm text-green-700 bg-green-100 border border-green-200 rounded">
                             {{ session('success') }}
                         </div>
                     @endif
@@ -93,12 +93,12 @@
 
 
                         <div id="progressCard"
-                            class="hidden w-full rounded-2xl p-4 mb-4 bg-gradient-to-br from-gray-900 to-gray-800 text-white shadow-lg">
+                            class="hidden w-full p-4 mb-4 text-white shadow-lg rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800">
 
                             <div class="flex items-center justify-between mb-2">
                                 <div class="flex items-center gap-3">
                                     <span
-                                        class="inline-flex h-6 w-6 rounded-full bg-white/10 ring-1 ring-white/20 items-center justify-center">
+                                        class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/10 ring-1 ring-white/20">
                                         <!-- icon -->
                                     </span>
                                     <div class="flex flex-col">
@@ -108,8 +108,8 @@
                                 </div>
                                 <span id="progressPercentText" class="text-sm font-medium">0%</span>
                             </div>
-                            <div class="h-3 bg-white/10 rounded-full overflow-hidden ring-1 ring-white/10">
-                                <div id="progressBar" class="h-3 rounded-full transition-all duration-200"
+                            <div class="h-3 overflow-hidden rounded-full bg-white/10 ring-1 ring-white/10">
+                                <div id="progressBar" class="h-3 transition-all duration-200 rounded-full"
                                     style="width:0%; background:linear-gradient(90deg,#A78BFA,#22D3EE)"></div>
                             </div>
                             <div id="progressStatus" class="mt-2 text-xs text-white/80">Preparing files…</div>
@@ -141,13 +141,13 @@
                     </form>
 
                     <!-- SINGLE POPUP: INVOICE MODAL (shows ONLY after submit success) -->
-                    <div id="invoiceModal" class="hidden fixed inset-0 z-40 items-center justify-center bg-black/40">
-                        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+                    <div id="invoiceModal" class="fixed inset-0 z-40 items-center justify-center hidden bg-black/40">
+                        <div class="w-full max-w-md p-6 bg-white shadow-xl rounded-2xl">
                             <div class="flex items-start justify-between">
                                 <div class="flex items-center gap-2">
                                     <span
-                                        class="inline-flex h-6 w-6 rounded-full bg-purple-100 items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-purple-700"
+                                        class="inline-flex items-center justify-center w-6 h-6 bg-purple-100 rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-purple-700"
                                             viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd"
                                                 d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L8.5 11.086l6.543-6.543a1 1 0 011.414 0z"
@@ -159,19 +159,19 @@
                                 <button class="text-gray-400 hover:text-gray-600" id="invoiceCloseBtn">✕</button>
                             </div>
 
-                            <p class="text-sm text-gray-600 mt-2">
+                            <p class="mt-2 text-sm text-gray-600">
                                 Do you want to create an invoice now?
                             </p>
 
                             <div class="flex items-center justify-end gap-3 mt-6">
                                 <button id="invoiceCancelBtn"
-                                    class="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50">
+                                    class="px-4 py-2 border border-gray-300 rounded-xl hover:bg-gray-50">
                                     Cancel
                                 </button>
 
                                 {{-- You will wire this link to your real invoice route --}}
                                 <a href="{{ route('invoices.create') }}"
-                                    class="px-4 py-2 rounded-xl bg-fuchsia-900 text-white hover:bg-purple-800">
+                                    class="px-4 py-2 text-white rounded-xl bg-fuchsia-900 hover:bg-purple-800">
                                     Create Invoice
                                 </a>
                             </div>

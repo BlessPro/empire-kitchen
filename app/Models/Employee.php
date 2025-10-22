@@ -39,6 +39,8 @@ protected $casts = [
     'updated_at'        => 'datetime',
 ];
 
+
+
 public function getAvatarUrlAttribute()
 {
     return $this->avatar_path

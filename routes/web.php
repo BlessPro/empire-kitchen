@@ -11,7 +11,6 @@ use App\Http\Controllers\ClientManagementController;
 use App\Http\Controllers\ProjectManagementController;
 use App\Http\Controllers\Settings;
 use App\Http\Controllers\ReportsandAnalytics;
-use App\Http\Controllers\ScheduleInstallationController;
 use App\Http\Controllers\InstallationCalendarController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\designerAssignDesigners;
@@ -22,7 +21,6 @@ use App\Http\Controllers\InboxController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\techClientController;
 use App\Http\Controllers\techProjectManagementController;
-use App\Http\Controllers\techReportsandAnalyticsController;
 use App\Http\Controllers\techScheduleMeasurementController;
 use App\Http\Controllers\techSettingsController;
 use App\Http\Controllers\techInboxController;
@@ -55,33 +53,9 @@ use App\Models\Client;
 use App\Http\Controllers\CostsController;
 use App\Http\Controllers\BudgetsController;
 use App\Http\Controllers\ProductQuickCreateController;
-use App\Http\Controllers\ProjectWizardController;
-
-
-
-
-
-    // // Calendar page
-    // Route::get('/admin/installations/calendar', [InstallationCalendarController::class, 'index'])
-    //     ->name('admin.installations.calendar');
-
-    // // JSON feed + actions (Blade uses route() + CSRF)
-    // Route::get('/admin/installations', [InstallationCalendarController::class, 'feed'])
-    //     ->name('admin.installations.feed');
-
-    // Route::post('/admin/installations', [InstallationCalendarController::class, 'store'])
-    //     ->name('admin.installations.store');
-
-    // Route::patch('/admin/installations/{installation}', [InstallationCalendarController::class, 'update'])
-    //     ->name('admin.installations.update');
-
-    // Route::delete('/admin/installations/{installation}', [InstallationCalendarController::class, 'destroy'])
-    //     ->name('admin.installations.destroy');
-
-    // Route::post('/admin/installations/{installation}/done', [InstallationCalendarController::class, 'markDone'])
-    //     ->name('admin.installations.done');
-
-
+use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\UserSearchController;
 
 
 Route::get('/', function () {
@@ -96,10 +70,7 @@ Route::get('/dashboard', function () {
 
 //profile route
 Route::middleware(['auth', UpdateLastSeen::class])->group(function () {
-    // Route::middleware(['auth', 'role:designer', UpdateLastSeen::class])->group(function () {
-    //     Route::get('/designer/dashboard', [DesignerDashboardController::class, 'index'])
-    //         ->name('designer.dashboard');
-    // });
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -140,12 +111,7 @@ Route::middleware(['web','auth'])->prefix('admin')->group(function () {
     Route::get('/ProjectManagement', [ProjectManagementController::class, 'index'])
         ->name('admin.ProjectManagement');
 
-
 });
-
-
-
-
 
 Route::middleware(['auth']) // your guards here
     ->prefix('admin')
@@ -205,38 +171,21 @@ Route::middleware(['auth']) // your guards here
 
 // // routes/web.php
 
-// Route::get('/admin/project-info', [ProjectController::class, 'show'])
-//     ->name('admin.projectInfo');
-// routes/web.php
-// Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(function () {
-//     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
-// });
-
-
 Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(function () {
     Route::get('/projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
 
-    // tick/untick a phase for this project (AJAX)
-    Route::post('/projects/{project}/phases/{template}/toggle', [ProjectController::class, 'togglePhase'])
-        ->name('projects.phases.toggle');
 });
 
 
-
 // routes/web.php
-
-// Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(function () {
-//     Route::post('/products/quick-create', [ProductQuickCreateController::class, 'store'])
-//         ->name('products.quickCreate');
-
-//     // your wizard route (you likely already have something similar)
-//     Route::get('/products/{product}/wizard', [ProjectWizardController::class, 'store'])
-//         ->name('products.wizard');
-// });
-
-
-// routes/web.php
-
+//editing the project info page
+Route::middleware(['auth']) // + your admin/role middleware if any
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::post('/projects/{project}/phases/{template}/toggle', [ProjectController::class, 'togglePhase'])
+            ->name('projects.phases.toggle');
+    });
 
 Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(function () {
     // already exists; keep as-is (only change redirect line later)
@@ -246,11 +195,6 @@ Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(functi
     // new page to edit/continue product wizard (skip project creation)
     Route::get('/addproduct/{product}/add', [ProductQuickCreateController::class, 'edit'])
         ->name('addproduct');
-
-    // save updates to the same product (one form or per-step, your choice)
-    // Route::patch('/products/{product}', [ProductQuickCreateController::class, 'update'])
-    //     ->name('products.update');
-
 });
 
 // routes/web.php
@@ -260,15 +204,153 @@ Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(functi
         ->name('products.update');
 });
 
-// routes/web.php
+Route::middleware(['web','auth'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::post('/products/{product}/type', [ProjectController::class, 'updateType'])
+            ->name('products.updateType');
+
+                    Route::post('/products/{product}/finish', [ProjectController::class, 'updateProductFinish'])
+            ->name('products.updateFinish');
+
+             Route::post('/products/{product}/glass-door', [ProjectController::class, 'updateProductGlassDoor'])
+            ->name('products.updateGlassDoor');
+
+             Route::post('/products/{product}/worktop', [ProjectController::class, 'updateProductWorktop'])
+            ->name('products.updateWorktop');
+
+               Route::post('/products/{product}/sink-tap', [ProjectController::class, 'updateProductSinkTap'])
+            ->name('products.updateSinkTap');
+
+        //          // List current accessories for a product (JSON)
+        // Route::get('/products/{product}/accessories', [ProjectController::class, 'listProductAccessories'])
+        //     ->name('products.accessories.list');
+
+
+
+    });
+
+
+                 // NEW: attach brand-new accessories to a product
+
+Route::middleware(['web','auth'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        // List for modal boot (catalog + types + sizes [+ existing items if you want])
+        Route::get('/products/{product}/accessories', [ProjectController::class, 'listProductAccessories'])
+            ->name('products.accessories.list');
+
+        // Attach new accessories (or update if already exists)
+        Route::post('/products/{product}/accessories/attach', [ProjectController::class, 'attachProductAccessories'])
+            ->name('products.accessories.attach');
+
+        // Create a brand new accessory (name + types CSV)
+        Route::post('/accessories', [ProjectController::class, 'Accstore'])
+            ->name('accessories.store');
+
+     // Bulk edit existing (update pivot fields, or detach if marked deleted)
+        Route::post('/products/{product}/accessories/bulk', [ProjectController::class, 'bulkUpdateProductAccessories'])
+            ->name('products.accessories.bulk');
+
+    });
+
+
+    // routes/web.php
+
+Route::middleware(['web', 'auth'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        // LIST comments (GET)
+        Route::get('/projects/{project}/comments',
+            [ProjectController::class, 'commentsIndex']
+        )->name('projects.comments.index');
+
+        // MARK SEEN (POST)
+        Route::post('/projects/{project}/comments/seen',
+            [ProjectController::class, 'commentsMarkSeen']
+        )->name('projects.comments.seen');
+
+        // UNREAD COUNT (GET)
+        Route::get('/projects/{project}/comments/unread_count',
+            [ProjectController::class, 'commentsUnreadCount']
+        )->name('projects.comments.unread');
+
+        // (optional) DELETE single comment
+        Route::delete('/comments/{comment}',
+            [ProjectController::class, 'commentsDestroy']
+        )->name('comments.destroy');
+    });
+
+
+
+        Route::post('/projects/{project}/comments',
+            [ProjectController::class, 'commentsStore']
+        )->name('admin.projects.comments.store');
+
+
+
+        // routes/api.php (or web.php if you prefer)
+
+Route::middleware('auth')->group(function () {
+    Route::get('/conversations', [ConversationController::class, 'index'])
+        ->name('conversations.index');
+});
+
+// routes/api.php
+
+Route::middleware('auth')->group(function () {
+    Route::get('/conversations/{conversation}/messages', [MessageController::class, 'index'])
+        ->name('messages.index');
+});
+
+// routes/api.php
+
+Route::middleware('auth')->group(function () {
+    Route::post('/conversations/{conversation}/read', [ConversationController::class, 'markRead'])
+        ->name('conversations.read');
+});
+
+// routes/api.php
+
+Route::middleware('auth')->group(function () {
+    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store'])
+        ->name('messages.store');
+});
+
+// routes/api.php
+
+
+Route::middleware('auth')->group(function () {
+    // Create chats
+    Route::post('/conversations/direct', [ConversationController::class, 'storeDirect'])
+        ->name('conversations.storeDirect');
+    Route::post('/conversations/group',  [ConversationController::class, 'storeGroup'])
+        ->name('conversations.storeGroup');
+
+    // User search for the modal
+    Route::get('/users/search', [UserSearchController::class, 'index'])
+        ->name('users.search');
+});
+
+// routes/api.php
+
+Route::middleware('auth')->group(function () {
+    Route::post('/messages/{message}/hide',   [MessageController::class, 'hide'])->name('messages.hide');
+    Route::delete('/messages/{message}/hide', [MessageController::class, 'unhide'])->name('messages.unhide');
+});
+
+
+
+
 
 Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(function () {
     Route::post('/projects/{project}/duplicate', [ProductQuickCreateController::class, 'duplicate'])
         ->name('projects.duplicate');
 });
-
-
-
 
     //deleting project from the dashboard
     Route::delete('admin/dashboard/projects/{id}', [ProjectManagementController::class, 'destroy'])->name('projects.destroy');
@@ -294,31 +376,18 @@ Route::middleware(['auth','role:admin'])
             ->name('users.update');   // POST for updates
     });
 
-
-
-
     Route::post('/users', [settings::class, 'store'])->name('users.store');
     // Route::post('/userss', [Settings::class, 'settings'])->name('');
-
-
-
-
-
-
-
 // 1
     //for rditing logged user
     Route::post('/admin/ScheduleInstallation/{id}', [InstallationController::class, 'update'])->name('admin.ScheduleInstallation.update');
     // Route::get('/TimeManagement/events', [InstallationController::class, 'calendarEvents']);
     Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destroy']);
 
-
     // 2
   Route::get('/admin/ScheduleInstallation', [InstallationCalendarController::class, 'index'])
         ->name('admin.ScheduleInstallation')
         ->middleware('auth');
-
-
     //3
         //must delete installation route
 
@@ -432,6 +501,8 @@ Route::middleware(['web','auth'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/tech/Settings', [techSettingsController::class, 'index'])->name('tech.Settings');
     Route::get('/tech/Inbox', [techInboxController::class, 'index'])->name('tech.Inbox');
     Route::get('/tech/AssignDesigners', [techAssignDesignersController::class, 'index'])->name('tech.AssignDesigners');
+    Route::put('/tech/AssignDesigners/{id}', [techAssignDesignersController::class, 'update'])->name('tech.AssignDesigners.');
+
     // updating the users profile pic only
     Route::post('/tech/settings/profile-pic', [UserController::class, 'updateProfilePic'])->name('tech.settings.profile_pic');
 
@@ -471,13 +542,6 @@ Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(functi
     // Route::post('/assign-designer', [AssignDesignersController::class, 'assignDesigner'])->name('assignDesigner');
 });
 
-
-
-
-
-
-
-
     // Assign designer to project
     Route::post('tech/AssignDesigners', [techAssignDesignersController::class, 'assignDesigner'])->name('assign.designer');
     Route::get('/tech/ScheduleMeasurement/events', [techScheduleMeasurementController::class, 'calendarEvents'])->name('tech.ScheduleInstallations.events');
@@ -496,9 +560,9 @@ Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(functi
     //For the report and analytics page
     Route::get('/admin/ReportandAnalytics', [ProjectManagementController::class, 'index'])->name('admin.ReportandAnalytics');
     // for scheduling the installation on admin level
-    Route::get('/designer/AssignedProjects', [DesignerNavigationController::class, 'AssignedProjects'])
-        ->name('designer.AssignedProjects')
-        ->middleware('auth');
+    // Route::get('/designer/AssignedProjects', [DesignerNavigationController::class, 'AssignedProjects'])
+    //     ->name('designer.AssignedProjects')
+    //     ->middleware('auth');
     // Route::get('/designer/ProjectDesign', [DesignerNavigationController::class, 'ProjectDesign'])->name('designer.ProjectDesign')->middleware('auth');
     Route::get('/designer/TimeManagement', [DesignerNavigationController::class, 'TimelineManagement'])
         ->name('designer.TimeManagement')

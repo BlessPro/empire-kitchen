@@ -1,6 +1,4 @@
-<x-tech-layout>
-<!--written on 26.04.2025-->
-     {{-- resources/views/inbox.blade.php --}}
+{{-- resources/views/inbox.blade.php --}}
 {{-- Matches the backend contracts and names we built together. TailwindCSS + vanilla JS. --}}
 {{-- <!DOCTYPE html>
 <html lang="en">
@@ -478,5 +476,4 @@
 
 
 
-
-</x-tech-layout>
+</x-layouts.app>

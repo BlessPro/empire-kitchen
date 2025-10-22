@@ -199,7 +199,7 @@ public function StoreCreateMeasurement(Project $project){
             'project_id'   => ['required','exists:projects,id'],
             'client_id'    => ['required','exists:clients,id'],
             // use scheduled_at (datetime) or scheduled_date (date) based on your migration
-            'scheduled_at' => ['required','date'], // or use 'scheduled_date' => ['required','date']
+            'scheduled_date' => ['required','date'], // or use 'scheduled_date' => ['required','date']
         ]);
 
         return DB::transaction(function () use ($validated) {
@@ -207,7 +207,7 @@ public function StoreCreateMeasurement(Project $project){
             $m = Measurement::create([
                 'project_id'   => $validated['project_id'],
                 'client_id'    => $validated['client_id'],
-                'scheduled_at' => $validated['scheduled_at'], // or 'scheduled_date'
+                'scheduled_date' => $validated['scheduled_date'], // or 'scheduled_date'
             ]);
 
             // Update project stage

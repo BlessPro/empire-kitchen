@@ -259,7 +259,7 @@ public function store(Request $request)
         'project.client_id'   => ['required', 'exists:clients,id'],
         'project.name'        => ['required', 'string', 'max:150'],
         'project.due_date'             => ['nullable', 'date'],
-
+        'project.location'        => ['nullable', 'string', 'max:255'],
         // Product
         'product.product_type'         => ['nullable', 'string', 'max:80'],
         'product.type_of_finish'       => ['nullable', 'string', 'max:80'],

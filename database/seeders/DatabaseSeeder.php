@@ -24,7 +24,15 @@ class DatabaseSeeder extends Seeder
             BudgetCategorySeeder::class,
             BudgetExampleSeeder::class,
             PhaseTemplatesSeeder::class,
+            InboxDemoSeeder::class,
         ]);
 
+$this->call(\Database\Seeders\InboxDemoSeeder::class);
+
+
     }
+
+
+
+
 }

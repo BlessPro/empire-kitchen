@@ -32,6 +32,10 @@ protected $casts = [
     'due_date'         => 'date',
 ];
 
+// app/Models/Project.php
+public function commentViews() {
+    return $this->hasMany(\App\Models\ProjectCommentView::class);
+}
 
     /** Parents */
     public function client()
@@ -46,7 +50,7 @@ protected $casts = [
     {
         return $this->belongsTo(User::class, 'tech_supervisor_id');
     }
-    
+
     public function designer()
     {
         return $this->belongsTo(User::class, 'designer_id');
@@ -76,7 +80,15 @@ public function measurements()
 {
     return $this->hasMany(Measurement::class, 'project_id');
 }
+// public function production()
+// {
+//     return $this->hasOne(Production::class);
+// }
 
+public function production()
+{
+    return $this->hasmany(Production::class);
+}
     public function installation()
     {
         return $this->hasOne(Installation::class);
@@ -97,6 +109,14 @@ public function measurements()
     }
 
 
+
+
+// If a project can have many installation rows, use the latest by install_date:
+public function latestInstallation()
+{
+    return $this->hasOne(Installation::class)->latestOfMany('install_date');
+}
+// If it's strictly one installation per project, name it installation() and use hasOne(Installation::class).
 
 
 

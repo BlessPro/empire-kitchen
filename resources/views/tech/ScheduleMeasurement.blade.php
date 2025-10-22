@@ -9,27 +9,27 @@
 
     <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen">
         <div class="p-6">
-            <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center justify-between mb-6">
                 <h1 class="text-2xl font-bold">Measurement Calendar</h1>
-                <button onclick="openCreateModal()" class="px-4 py-2 text-white bg-fuchsia-900 hover:bg-fuchsia-700 rounded">+ Schedule Measurement</button>
+                {{-- <button onclick="openCreateModal()" class="px-4 py-2 text-white rounded bg-fuchsia-900 hover:bg-fuchsia-700">+ Schedule Measurement</button> --}}
             </div>
 
-            <div class="bg-white p-4 rounded-xl shadow">
+            <div class="p-4 bg-white shadow rounded-xl">
                 <div id="calendar"></div>
             </div>
         </div>
     </main>
 
     {{-- Success Toast --}}
-    <div id="successToast" class="fixed bottom-5 right-5 hidden bg-green-600 text-white px-4 py-2 rounded shadow">
+    <div id="successToast" class="fixed hidden px-4 py-2 text-white bg-green-600 rounded shadow bottom-5 right-5">
         <span id="successMessage"></span>
     </div>
 
     {{-- Create Modal --}}
-    <div id="createModal" class="fixed inset-0 z-50 hidden bg-black bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-xl">
+    <div id="createModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
+        <div class="w-full max-w-xl p-6 bg-white rounded-lg shadow-lg">
 
-            <h2 class="text-xl font-semibold mb-4">Schedule Measurement</h2>
+            <h2 class="mb-4 text-xl font-semibold">Schedule Measurement</h2>
 
             <form id="createForm">
                 @csrf
@@ -82,7 +82,7 @@
 
                 <div class="flex justify-end gap-2">
                     <button type="button" onclick="closeCreateModal()" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-fuchsia-900 text-white rounded">Save</button>
+                    <button type="submit" class="px-4 py-2 text-white rounded bg-fuchsia-900">Save</button>
                 </div>
             </form>
         </div>
@@ -190,9 +190,9 @@ document.addEventListener('DOMContentLoaded', function () {
             popup.style.top = `${info.jsEvent.clientY}px`;
             popup.style.left = `${info.jsEvent.clientX}px`;
             popup.innerHTML = `
-                <div class="font-semibold mb-2">${e.title}</div>
-                <div class="text-sm mb-1"><strong>From:</strong> ${new Date(e.start).toLocaleString()}</div>
-                <div class="text-sm mb-2"><strong>To:</strong> ${new Date(e.end).toLocaleString()}</div>
+                <div class="mb-2 font-semibold">${e.title}</div>
+                <div class="mb-1 text-sm"><strong>From:</strong> ${new Date(e.start).toLocaleString()}</div>
+                <div class="mb-2 text-sm"><strong>To:</strong> ${new Date(e.end).toLocaleString()}</div>
                 <div class="flex justify-end gap-2 mt-3">
                     <button onclick="deleteEvent(${e.id})" class="text-red-600">🗑 Delete</button>
                 </div>
