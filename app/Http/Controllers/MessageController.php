@@ -12,6 +12,45 @@ use Illuminate\Support\Arr;
 
 class MessageController extends Controller
 {
+
+
+
+    public function hide(\Illuminate\Http\Request $request, int $message)
+{
+    $me = $request->user()->id;
+
+    // Verify the message exists and I’m a participant in its conversation
+    $row = DB::table('messages as m')
+        ->join('conversation_participants as p', function ($j) use ($me) {
+            $j->on('p.conversation_id','=','m.conversation_id')
+              ->where('p.user_id','=',$me);
+        })
+        ->where('m.id', $message)
+        ->select('m.id')
+        ->first();
+
+    if (!$row) return response()->json(['ok'=>false,'error'=>'Forbidden'], 403);
+
+    DB::table('message_hidden')->updateOrInsert(
+        ['message_id'=>$message, 'user_id'=>$me],
+        ['updated_at'=>now(), 'created_at'=>now()]
+    );
+
+    return response()->json(['ok'=>true]);
+}
+
+public function unhide(\Illuminate\Http\Request $request, int $message)
+{
+    $me = $request->user()->id;
+
+    DB::table('message_hidden')
+        ->where('message_id', $message)
+        ->where('user_id', $me)
+        ->delete();
+
+    return response()->json(['ok'=>true]);
+}
+
     // Fetch messages between auth user and another user
     // public function index(User $user)
     // {
@@ -259,8 +298,7 @@ class MessageController extends Controller
         /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
         $disk = Storage::disk('public');
         $url = $disk->url($path);
-        // Build downloadable URL from public disk
-        $url = Storage::url($path);
+        $this->afterMessageSaved($conversation, $messageId, $now, $me);
 
         return response()->json([
             'ok'   => true,
@@ -397,7 +435,7 @@ private function afterMessageSaved(int $conversation, int $messageId, \Illuminat
 }
 
 
-public function hide(\Illuminate\Http\Request $request, int $message)
+public function hide_old(\Illuminate\Http\Request $request, int $message)
 {
     $me = $request->user()->id;
 
@@ -421,7 +459,7 @@ public function hide(\Illuminate\Http\Request $request, int $message)
     return response()->json(['ok'=>true]);
 }
 
-public function unhide(\Illuminate\Http\Request $request, int $message)
+public function unhide_old(\Illuminate\Http\Request $request, int $message)
 {
     $me = $request->user()->id;
 

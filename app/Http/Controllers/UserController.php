@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Schema;
+use App\Models\Employee;
 
 class UserController extends Controller
 {
@@ -149,28 +152,77 @@ public function update(Request $request, \App\Models\User $user)
 
     public function UpdateLoggedUser(Request $request)
     {
-        $user = User::findOrFail(Auth::id());
+        $user = Auth::user();
+        $employee = $user->employee;
 
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'phone_number' => 'required|string|max:20',
-            'password' => 'nullable|string|min:8',
-            'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        $emailRules = [
+            'required',
+            'string',
+            'email',
+            'max:255',
+            Rule::unique('employees', 'email')->ignore($employee?->id),
+        ];
+
+        if (Schema::hasColumn('users', 'email')) {
+            $emailRules[] = Rule::unique('users', 'email')->ignore($user->id);
+        }
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => $emailRules,
+            'phone' => [
+                'required',
+                'string',
+                'max:20',
+                Rule::unique('employees', 'phone')->ignore($employee?->id),
+            ],
+            'role' => [
+                'required',
+                Rule::in([
+                    'admin',
+                    'tech_supervisor',
+                    'designer',
+                    'sales_accountant',
+                    'accountant',
+                    'production_officer',
+                    'installation_officer',
+                ]),
+            ],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
-        if ($request->hasFile('profile_pic')) {
-            $path = $request->file('profile_pic')->store('profile_pics', 'public');
-            $validated['profile_pic'] = $path;
-        }
-
-        if ($validated['password'] ?? false) {
-            $validated['password'] = Hash::make($validated['password']);
+        if (!$employee) {
+            $employee = Employee::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+            ]);
+            $user->employee_id = $employee->id;
         } else {
-            unset($validated['password']); // Keep current password
+            $employee->update([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+            ]);
         }
 
-        $user->update($validated);
+        if (Schema::hasColumn('users', 'name')) {
+            $user->name = $data['name'];
+        }
+        if (Schema::hasColumn('users', 'email')) {
+            $user->email = $data['email'];
+        }
+        if (Schema::hasColumn('users', 'phone_number')) {
+            $user->phone_number = $data['phone'];
+        }
+
+        $user->role = $data['role'];
+
+        if (!empty($data['password'])) {
+            $user->password = Hash::make($data['password']);
+        }
+
+        $user->save();
 
         return redirect()->back()->with('success', 'Account updated successfully.');
     }

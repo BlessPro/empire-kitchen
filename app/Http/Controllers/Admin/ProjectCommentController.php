@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Auth;
  *  GET  /admin/projects/{project}/comments/unread-count -> unreadCount()
  *  POST /admin/projects/{project}/comments/mark-seen    -> markSeen()
  */
-class CommentController extends Controller
+class ProjectCommentController extends Controller
 {
     /**
      * List comments for a project.

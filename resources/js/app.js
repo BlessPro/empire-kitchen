@@ -14,111 +14,193 @@ feather.replace();
 // const clientsChartCtx2 = document.getElementById('clientsChart2').getContext('2d');
 
 
-//variales for the pipeline chart
-const pipeline_chart=document.getElementById('ProjectsPipeline').getContext('2d');
-//initializing the barcharts
-new Chart(pipeline_chart, {
-type: 'bar',
-data: {
-  labels: ['', '', '', ''],
+// Dashboard charts (admin)
+const pipelineLegend = document.getElementById('pipelineLegend');
+const renderPipelineLegend = (labels = [], counts = [], colors = []) => {
+    if (!pipelineLegend) return;
+    pipelineLegend.innerHTML = '';
 
-  datasets: [{
-    data: [5, 10, 25, 9, 6],
-    label: "Shadow",
-    backgroundColor: ['#FFA500', '#0065D2', '#14BA6D', '#AF52DE', ],
-    borderWidth: 1,
-      borderColor: '#fff',
-      hoverOffset: 8,
-      borderRadius: 10,
-      spacing: 4,
-          // Controls individual bar thickness relative to the category width
-       barPercentage: 0.6,      // default is 0.9
-
-    // Controls how much space each category takes
-       categoryPercentage: 0.7, // default is 0.8
-
-  }]
-},
-options: {
-plugins: {
-legend: {
-  display: false // hides legend under chart
-}
-},
-scales: {
-x: {
-  grid: {
-    display:false,
-    borderDash: [4, 4], // makes X axis grid dashed
-    color: "rgba(0,0,0,0.1)"
-  },
-  ticks: {
-    color: "#4B5563", // Tailwind gray-700
-    font: {
-      size: 12
+    if (!labels.length) {
+        const empty = document.createElement('li');
+        empty.className = 'text-sm text-gray-500';
+        empty.textContent = 'No project data yet';
+        pipelineLegend.appendChild(empty);
+        return;
     }
-  }
-},
-y: {
-  grid: {
-    display:true,
-    borderDash: [4, 4], //  makes Y axis grid dashed
-    color: "rgba(0,0,0,0.1)"
-  },
-  ticks: {
-    stepSize: 5,
-    color: "#4B5563",
-    font: {
-      size: 12
+
+    labels.forEach((label, index) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center space-x-2';
+        const color = colors[index] || '#9ca3af';
+        const value = counts[index] ?? 0;
+        li.innerHTML = `
+            <span class="w-3 h-3 rounded-full" style="background-color:${color}"></span>
+            <span>${label} (${value})</span>
+        `;
+        pipelineLegend.appendChild(li);
+    });
+};
+
+const pipelineCanvas = document.getElementById('ProjectsPipeline');
+let pipelineChart;
+if (pipelineCanvas) {
+    const pipelineCtx = pipelineCanvas.getContext('2d');
+    pipelineChart = new Chart(pipelineCtx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                label: 'Projects',
+                backgroundColor: [],
+                borderWidth: 1,
+                borderColor: '#fff',
+                hoverOffset: 8,
+                borderRadius: 10,
+                spacing: 4,
+                barPercentage: 0.6,
+                categoryPercentage: 0.7,
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false,
+                        borderDash: [4, 4],
+                        color: 'rgba(0,0,0,0.1)'
+                    },
+                    ticks: {
+                        color: '#4B5563',
+                        font: { size: 12 }
+                    }
+                },
+                y: {
+                    grid: {
+                        display: true,
+                        borderDash: [4, 4],
+                        color: 'rgba(0,0,0,0.1)'
+                    },
+                    ticks: {
+                        stepSize: 5,
+                        color: '#4B5563',
+                        font: { size: 12 }
+                    }
+                }
+            }
+        }
+    });
+
+    const loadPipeline = async () => {
+        try {
+            const response = await axios.get('/admin/dashboard/pipeline');
+            const payload = response.data || {};
+            const labels = payload.labels || [];
+            const counts = payload.data || [];
+            const colors = payload.colors || [];
+
+            pipelineChart.data.labels = labels;
+            pipelineChart.data.datasets[0].data = counts;
+            pipelineChart.data.datasets[0].backgroundColor = colors.length ? colors : pipelineChart.data.datasets[0].backgroundColor;
+            pipelineChart.update();
+
+            renderPipelineLegend(labels, counts, colors);
+        } catch (error) {
+            console.error('Failed to load project pipeline data', error);
+        }
+    };
+
+    loadPipeline();
+}
+
+const legendElements = {
+    clients: document.getElementById('legend-clients'),
+    projects: document.getElementById('legend-projects'),
+    bookings: document.getElementById('legend-bookings'),
+};
+
+const updateLegendCounts = (counts = {}) => {
+    if (legendElements.clients) {
+        legendElements.clients.textContent = `New Clients (${counts.clients ?? 0})`;
     }
-  }
+    if (legendElements.projects) {
+        legendElements.projects.textContent = `New Projects (${counts.projects ?? 0})`;
+    }
+    if (legendElements.bookings) {
+        legendElements.bookings.textContent = `New Bookings (${counts.bookings ?? 0})`;
+    }
+};
+
+const clientsCanvas = document.getElementById('clientsChart');
+let clientsChart;
+if (clientsCanvas) {
+    const donutCtx = clientsCanvas.getContext('2d');
+    const donutColors = ['#f97316', '#581c87', '#6366f1'];
+    clientsChart = new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['New Clients', 'New Projects', 'New Bookings'],
+            datasets: [{
+                data: [0, 0, 0],
+                backgroundColor: donutColors,
+                borderWidth: 1,
+                borderColor: '#fff',
+                hoverOffset: 8,
+                borderRadius: 7,
+                spacing: 4,
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    display: false,
+                },
+            }
+        }
+    });
+
+    const rangeSelect = document.getElementById('dashboardRange');
+
+    const loadMetrics = async (range = 'this_month') => {
+        try {
+            const response = await axios.get('/admin/dashboard/metrics', {
+                params: { range }
+            });
+
+            const payload = response.data || {};
+            const counts = payload.counts || {};
+
+            clientsChart.data.datasets[0].data = [
+                counts.clients ?? 0,
+                counts.projects ?? 0,
+                counts.bookings ?? 0,
+            ];
+            clientsChart.update();
+
+            updateLegendCounts(counts);
+
+            if (rangeSelect && payload.range && rangeSelect.value !== payload.range) {
+                rangeSelect.value = payload.range;
+            }
+        } catch (error) {
+            console.error('Failed to load dashboard metrics', error);
+        }
+    };
+
+    if (rangeSelect) {
+        rangeSelect.addEventListener('change', (event) => {
+            loadMetrics(event.target.value);
+        });
+    }
+
+    loadMetrics(rangeSelect ? rangeSelect.value : 'this_month');
 }
-}
-}
-});
-
-//   options: {
-//     plugins: {
-//       legend: {
-//         display: false,
-//         position: 'false',
-//         borderRadius: 5,
-
-
-//       },
-
-
-//     }
-//   }
-// });
-//initializing the doughnut chart for the admin/dashboard
-const ctx = document.getElementById('clientsChart').getContext('2d');
-new Chart(ctx, {
-type: 'doughnut',
-data: {
-  labels: ['New Clients', 'Schd. Measurements', 'Pending Designs', 'Quotes', 'Payments'],
-  datasets: [{
-    data: [5, 25, 7, 9, 6],
-    backgroundColor: ['#f97316', '#581c87', '#8b5cf6', '#eab308', '#3b82f6'],
-    borderWidth: 1,
-      borderColor: '#fff',
-      hoverOffset: 8,
-      borderRadius: 7,
-      spacing: 4,
-  }]
-},
-options: {
-  cutout: '70%',
-  plugins: {
-    legend: {
-      display: false,
-      position: 'right',
-      borderRadius: 5,
-    },
-
-  }
-}
-});
 
 //initializing the doughnut chart for the admin/report page
 const ctx1 = document.getElementById('clientsChart1').getContext('2d');
@@ -192,31 +274,6 @@ options: {
 //     }
 // });
 
-
-//adding month filter to the Total Incoming Clients section
-// Get the select element and month names
-
-const monthSelect = document.getElementById('month');
-const monthNames = [
-"January", "February", "March", "April", "May", "June",
-"July", "August", "September", "October", "November", "December"
-];
-
-const currentMonthIndex = new Date().getMonth(); // 0 = Jan, 11 = Dec
-
-// Add all months as options
-monthNames.forEach((name, index) => {
-const option = document.createElement("option");
-option.value = String(index + 1).padStart(2, '0'); // Format as 01, 02, ...
-option.textContent = name;
-
-// Automatically select current month
-if (index === currentMonthIndex) {
-option.selected = true;
-}
-
-monthSelect.appendChild(option);
-});
 
 //for the form submittion
 //added29.04.2025
@@ -333,5 +390,3 @@ clientForm.addEventListener('submit', async (e) => {
         document.getElementById('successModal').classList.add('hidden');
         location.reload(); // refresh to update the table
     });
-
-

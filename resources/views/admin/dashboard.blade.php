@@ -28,9 +28,15 @@
                             <!-- Doughnut Chart  -->
 
                             <div>
-                                <select id="month"
+                                <select id="dashboardRange"
                                     class="p-2 rounded-[20px] text-[12px] pr-4 border border-gray-300 bg-white text-gray-700">
-
+                                    <option value="7days">Last 7 Days</option>
+                                    <option value="this_month" selected>This Month</option>
+                                    <option value="3months">Last 3 Months</option>
+                                    <option value="6months">Last 6 Months</option>
+                                    <option value="year_to_date">Year to Date</option>
+                                    <option value="last_year">Last Year</option>
+                                    <option value="all_time">All Time</option>
                                 </select>
 
                             </div>
@@ -42,60 +48,50 @@
                             <div class="flex justify-center items-center w-[270px] h-[270px] mx-auto">
                                 <canvas id="clientsChart" class="w-full h-full"></canvas>
                             </div>
+
+
                             <span class="flex flex-col items-center justify-center">
 
                                 <!-- Legend -->
-                                <ul class="items-center space-y-3">
+                                <ul class="items-center space-y-3 text-gray-800 font-normal text-[15px]">
                                     <li class="flex items-center">
                                         <span class="w-10 h-5 mr-3 bg-orange-500 rounded-full"></span>
-                                        <span class="text-gray-800 font-normal text-[15px]">Clients (5)</span>
+                                        <span id="legend-clients" class="">New Clients (0)</span>
                                     </li>
 
                                     <li class="flex items-center">
                                         <span class="w-10 h-5 rounded-[15px] bg-purple-900 mr-3"></span>
-                                        <span class="text-gray-800 font-normal text-[15px]">Projects
-                                            (10)</span>
+                                        <span id="legend-projects" class="">New Projects (0)</span>
                                     </li>
 
                                     <li class="flex items-center">
-                                        <span class="w-10 h-5 rounded-[15px] bg-violet-500 mr-3"></span>
-                                        <span class="text-gray-800 font-normal text-[15px]">Bookings (7)</span>
+                                        <span class="w-10 h-5 rounded-[15px] bg-indigo-500 mr-3"></span>
+                                        <span id="legend-bookings" class="">New Bookings (0)</span>
                                     </li>
                                 </ul>
                             </span>
+
+                        
+                            
                         </div>
 
                     </div>
+                        <a href="{{ route('admin.ProjectManagement') }}" class="">
 
                     <!--the pipeline bar chart begins-->
                     <div class="bg-white p-4 rounded-[30px] shadow">
 
+
+
                         <div class="flex items-center justify-between px-5 py-2 space-x-6">
                             <h2 class="font-normal text-[14px] text-gray-900">Project Pipeline</h2>
 
-                            <div class="flex items-center space-x-6">
-                                <div class="flex items-center space-x-2">
-                                    <span class="w-3 h-3 bg-orange-400 rounded-full"></span>
-                                    <span class="text-[15px] font-normal text-gray-700">Measurement</span>
-                                </div>
-                                <div class="flex items-center space-x-2">
-                                    <span class="w-3 h-3 bg-blue-600 rounded-full"></span>
-                                    <span class="text-[15px] font-normal text-gray-700">Design</span>
-                                </div>
-                                <div class="flex items-center space-x-2">
-                                    <span class="w-3 h-3 bg-green-500 rounded-full"></span>
-                                    <span class="text-[15px] font-normal text-gray-700">Installation</span>
-                                </div>
-                                <div class="flex items-center space-x-2">
-                                    <span class="w-3 h-3 bg-purple-400 rounded-full"></span>
-                                    <span class="text-[15px] font-normal text-gray-700">Payment</span>
-                                </div>
-                            </div>
+                            <ul id="pipelineLegend" class="flex flex-wrap items-center gap-4 text-[15px] font-normal text-gray-700"></ul>
                         </div>
 
                         <canvas id="ProjectsPipeline" class="w-full h-full"></canvas>
                     </div>
-
+                </a>
                     <!--the pipeline bar chart begins-->
                 </div>
 

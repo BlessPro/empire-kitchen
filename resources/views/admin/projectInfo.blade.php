@@ -15,62 +15,32 @@
             'inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-[#5A0562] ring-1 ring-[#E3C8F1] hover:bg-[#FBF7FE]';
     @endphp
 
-    <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen">
+    <main class="ml-[280px] mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen">
         <div class="p-6">
-            <div class="justify-between">
-
-                @php
-    // Normalize project id & name from whatever the controller sent
-    $projectId   = $project->__meta['project_id'] ?? $project->id ?? null;
-    $projectName = $project->name ?? ($project->title ?? 'Project');
-@endphp
-
-    <h1>Project Management</h1>
-{{-- Floating Comments Button --}}
-
-{{-- <button id="btn-comments"
-        type="button"
-        class="fixed bottom-5 right-5 z-40 rounded-full shadow-lg bg-[#4B0066] text-white px-4 py-3 flex items-center gap-2"
-        data-project-id="{{ $project->__meta['project_id'] }}"
-        data-project-name="{{ $project->name }}">
-  <span>Comments</span>
-  <span id="comments-badge" class="hidden h-5 px-1 text-xs text-center text-white rounded-full min-w-5 bg-white/20">0</span>
-</button> --}}
+        {{-- navigation bar --}}
+<div class="flex items-center justify-between mb-6">
+   <div class="flex items-center justify-between mb-6">
+    <span><i data-feather="home" class="w-[5] h-[5] text-fuchsia-900 ml-[3px]"></i></span>
+    <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>
+    <a href="{{ route('admin.ProjectManagement') }}">
+        <h3 class="font-sans font-normal text-black cursor-pointer hover:underline">Project Management</h3>
+    </a>
+        <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>
+</span> <span class="font-semibold text-fuchsia-900 ">
+    {{-- {{ $project->client->firstname . '  '.$project->client->lastname }} --}}
+</span></div>
 
 
-
-<button
-  id="commentsBtn"
-  @click="openComments()"
-  class="relative inline-flex items-center gap-2"
->
-  <span>Comments</span>
-  <span
-    x-show="unreadCount > 0"
-    x-text="unreadCount"
-    class="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-xs font-semibold text-white"
-  ></span>
-</button>
-
-<div
-  x-data="commentsPanel('{{ route('admin.projects.comments.index', $project) }}',
-                        '{{ route('admin.projects.comments.store', $project) }}',
-                        '{{ route('admin.projects.comments.unread', $project) }}',
-                        '{{ route('admin.projects.comments.markSeen', $project) }}')"
-  x-init="init()"
->
-  <!-- your modal/panel markup here -->
-</div>
+   {{-- <button class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">+ Add Project</button> --}}
+    <!-- ADD CLIENT BUTTON -->
+{{-- Comments: Button + Drawer --}}
+@include('admin.partials.comments-drawer', ['project' => $project])
 
 
-</div>
+    </div>
 
 
             <div class="rounded-[20px] border border-gray-200 bg-white shadow-sm overflow-hidden">
-
-
-
-
                 {{-- Header --}}
                 <div class="flex flex-wrap items-center justify-between gap-3 p-5 border-b border-gray-100">
                     <div>
@@ -107,19 +77,6 @@
                     <span
                         class="px-3 py-1 text-xs font-medium rounded-full bg-fuchsia-100 text-fuchsia-800">Installation</span>
                 </div>
-
-
-
-
-{{-- @php
-  // Provide the product_type you filtered templates by in the controller (or set to null)
-  $currentProductType = $project->productTypes[0] ?? null;
-@endphp --}}
-
-
-
-
-
 
 @php
   $chip =
@@ -242,6 +199,16 @@
                                 <button
                                     class="ml-2 inline-flex items-center h-7 rounded-[10px] bg-[#5A0562] px-3 text-xs font-medium text-white">+
                                     Add Product</button>
+
+ <a href="#"
+   class="add-product-trigger block px-4 py-2 hover:bg-gray-100"
+   data-project-id="{{ $project->id }}"
+   data-project-name="{{ $project->name }}"
+   onclick="event.preventDefault();">
+  Add new product
+</a>
+
+
                             </div>
                         </div>
                     </div>
@@ -1160,6 +1127,11 @@
   </div>
 </div>
 
+
+
+@include('admin.partials.add-product', ['project' => $project])
+
+
 <script>
 function accEditEditor({ listUrlTpl, bulkUrlTpl, csrf }) {
   return {
@@ -1683,306 +1655,6 @@ function accAddEditor({ listUrlTpl, attachUrlTpl, createUrl, csrf }) {
 })();
 </script>
 
-
-{{-------}}
-
-{{-- Floating Comments Button --}}
-{{-- Floating Comments Button --}}
-{{-- <button id="btn-comments"
-        type="button"
-        class="fixed bottom-5 right-5 z-40 rounded-full shadow-lg bg-[#4B0066] text-white px-4 py-3 flex items-center gap-2"
-        data-project-id="{{ $project->id }}"
-        data-project-name="{{ $project->name }}
-        ">
-
-  <span>Comments</span>
-  <span id="comments-badge" class="hidden h-5 px-1 text-xs text-center text-white rounded-full min-w-5 bg-white/20">0</span>
-</button> --}}
-
-
-
-
-{{-- Slide-in Comments Panel --}}
-<div id="comments-modal" class="fixed inset-0 z-[70] hidden">
-  <div class="absolute inset-0 bg-black/20"></div>
-  <div class="absolute right-0 top-0 h-full w-[420px] max-w-[92vw] bg-white shadow-xl flex flex-col">
-    <div class="flex items-center justify-between px-4 py-3 border-b">
-      <h3 class="text-lg font-semibold">Comments</h3>
-      <button id="comments-close" class="p-2 rounded-lg hover:bg-gray-100">✕</button>
-    </div>
-
-    <div id="comments-root"
-         x-data="projectComments({
-           projectId: `{{ $project->__meta['project_id'] }}`,
-           listUrl:   `{{ route('admin.projects.comments.index',  ['project'=>'__ID__']) }}`,
-           createUrl: `{{ route('admin.projects.comments.store',  ['project'=>'__ID__']) }}`,
-           seenUrl:   `{{ route('admin.projects.comments.seen',   ['project'=>'__ID__']) }}`,
-           unreadUrl: `{{ route('admin.projects.comments.unread', ['project'=>'__ID__']) }}`,
-           csrf:      `{{ csrf_token() }}`
-         })"
-         class="flex flex-col flex-1">
-
-      <div id="comments-list" class="flex-1 px-4 py-3 space-y-3 overflow-y-auto">
-        <template x-if="!items.length && !loading">
-          <div class="flex flex-col items-center justify-center h-[60vh] text-gray-500 gap-2">
-            <svg viewBox="0 0 24 24" class="w-12 h-12 opacity-30"><path fill="currentColor" d="M4 4h16v12H6l-2 2z"/></svg>
-            <p>You will see your teams comments here</p>
-          </div>
-        </template>
-
-        <template x-for="c in items" :key="c.id">
-          <div class="flex items-start gap-3">
-            <img :src="c.user.avatar || '/images/avatar-placeholder.png'"
-                 class="object-cover w-8 h-8 rounded-full" alt="">
-            <div class="flex-1">
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-semibold" x-text="c.user.name"></span>
-                <span class="text-xs text-gray-500" x-text="fmtTime(c.created_at)"></span>
-              </div>
-              <div class="mt-0.5 text-sm whitespace-pre-line" x-text="c.body"></div>
-            </div>
-          </div>
-        </template>
-      </div>
-
-      <div class="p-3 border-t">
-        <div class="flex items-end gap-2 px-3 py-2 border rounded-xl">
-          <textarea x-model="draft" @keydown.enter.prevent="maybeSend($event)"
-                    placeholder="Start typing" rows="1"
-                    class="flex-1 py-1 resize-none focus:outline-none"></textarea>
-          <button class="px-3 py-1.5 rounded-lg bg-[#4B0066] text-white text-sm disabled:opacity-50"
-                  :disabled="!canSend()" @click="send()">Comment</button>
-        </div>
-        <p class="mt-1 text-xs text-gray-500" x-show="status" x-text="status"></p>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-
-
-<script>
-function apiJson(url, { method = 'GET', body = null, csrf = null } = {}) {
-  const headers = { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' };
-  const opts = { method, credentials: 'same-origin', headers };
-  if (method !== 'GET') {
-    headers['Content-Type'] = 'application/json';
-    if (csrf) headers['X-CSRF-TOKEN'] = csrf;
-    opts.body = JSON.stringify(body || {});
-  }
-  return fetch(url, opts).then(async (res) => {
-    let data = null;
-    try { data = await res.json(); } catch(_) {}
-    if (!res.ok) {
-      const err = new Error(data?.message || res.statusText || 'Request failed');
-      err.status = res.status; err.payload = data; throw err;
-    }
-    return data || {};
-  });
-}
-
-function ensureAdmin(urlStr) {
-  try {
-    const abs = new URL(urlStr, window.location.origin);
-    if (!abs.pathname.startsWith('/admin/')) {
-      abs.pathname = '/admin' + (abs.pathname.startsWith('/') ? abs.pathname : '/' + abs.pathname);
-    }
-    return abs.pathname + abs.search;
-  } catch {
-    if (!/^\/admin\//.test(urlStr)) return '/admin' + (urlStr.startsWith('/') ? urlStr : '/' + urlStr);
-    return urlStr;
-  }
-}
-
-function projectComments({ projectId, listUrl, createUrl, seenUrl, unreadUrl, csrf }) {
-  return {
-    items: [],
-    loading: false,
-    draft: '',
-    lastId: 0,
-    isOpen: false,
-    status: '',
-    pollTimer: null,
-    backoffMs: 0,
-    pollingOpenMs: 4000,
-    pollingClosedMs: 20000,
-
-    canSend() { return (this.draft || '').trim().length > 0; },
-
-    async open() {
-      if (this.isOpen) return;
-      if (!projectId) {
-        const btn = document.getElementById('btn-comments');
-        projectId = btn?.dataset?.projectId || projectId;
-      }
-      if (!projectId) { this.status = 'Missing project id.'; return; }
-
-      this._urls = {
-        list:   ensureAdmin(listUrl.replace('__ID__', encodeURIComponent(projectId))),
-        create: ensureAdmin(createUrl.replace('__ID__', encodeURIComponent(projectId))),
-        seen:   ensureAdmin(seenUrl.replace('__ID__', encodeURIComponent(projectId))),
-        unread: ensureAdmin(unreadUrl.replace('__ID__', encodeURIComponent(projectId))),
-      };
-      console.debug('[comments] urls', this._urls);
-
-      this.isOpen = true;
-      this.clearBadge();
-      await this.initialLoad();
-      this.startPollingOpen();
-      this.markSeenBulk(this.items.map(i => i.id));
-      this.scrollToBottom();
-    },
-
-    close() {
-      this.isOpen = false;
-      this.stopPolling();
-    },
-
-    async initialLoad() {
-      this.loading = true;
-      try {
-        const j = await apiJson(this._urls.list);
-        this.items = (j.comments || []).sort((a,b)=>a.id-b.id);
-        this.lastId = this.items.length ? this.items[this.items.length-1].id : 0;
-        this.status = '';
-      } catch (e) {
-        this.status = (e.status === 401) ? 'Please log in.' :
-                      (e.status === 403) ? 'Not allowed.' : 'Could not load comments.';
-        console.error('[comments] initial load error', e);
-      } finally { this.loading = false; }
-    },
-
-    async fetchNew() {
-      if (!this.lastId) return;
-      try {
-        const url = this._urls.list + (this._urls.list.includes('?') ? '&' : '?') + `after_id=${this.lastId}&limit=25`;
-        const j = await apiJson(url);
-        const news = (j.comments || []);
-        if (news.length) {
-          this.items.push(...news);
-          this.lastId = this.items[this.items.length-1].id;
-          this.markSeenBulk(news.map(i => i.id));
-          if (this.isNearBottom()) this.scrollToBottom();
-        }
-        this.backoffMs = 0;
-        this.status = '';
-      } catch (e) {
-        this.backoffMs = Math.min(20000, (this.backoffMs || 2000) * 2);
-        this.status = (e.status === 401 || e.status === 419) ? 'Session expired. Refresh.' : 'Reconnecting…';
-        console.warn('[comments] fetchNew error', e);
-      }
-    },
-
-    async send() {
-      const text = (this.draft || '').trim();
-      if (!text) return;
-      const tmpId = 'tmp-' + Date.now();
-      const optimistic = {
-        id: tmpId, project_id: Number(projectId), body: text,
-        created_at: new Date().toISOString(), is_own: true,
-        user: { name: 'You', avatar: null, role: null }
-      };
-      this.items.push(optimistic);
-      this.draft = '';
-      this.scrollToBottom();
-
-      try {
-        const j = await apiJson(this._urls.create, { method: 'POST', body: { comment: text }, csrf });
-        const real = j.comment;
-        const idx = this.items.findIndex(i => i.id === tmpId);
-        if (idx !== -1) this.items[idx] = real; else this.items.push(real);
-        this.lastId = Math.max(this.lastId, real?.id || 0);
-        this.markSeenBulk([real?.id].filter(Boolean));
-        this.status = '';
-      } catch (e) {
-        console.error('[comments] send error', e);
-        this.status = (e.status === 401 || e.status === 419) ? 'Session expired. Refresh.' : 'This action is unauthorized.';
-      }
-    },
-
-    async markSeenBulk(ids) {
-      const uniq = Array.from(new Set((ids || []).filter(Boolean)));
-      if (!uniq.length) return;
-      try {
-        await apiJson(this._urls.seen, { method: 'POST', body: { comment_ids: uniq }, csrf });
-        this.clearBadge();
-      } catch (e) {
-        console.warn('[comments] markSeen error', e);
-      }
-    },
-
-    startPollingOpen() {
-      this.stopPolling();
-      const tick = async () => {
-        if (!this.isOpen) return;
-        await this.fetchNew();
-        this.pollTimer = setTimeout(tick, this.pollingOpenMs + this.backoffMs);
-      };
-      tick();
-    },
-
-    startPollingClosed() {
-      this.stopPolling();
-      const badgeEl = document.getElementById('comments-badge');
-      const tick = async () => {
-        if (this.isOpen) return;
-        try {
-          const j = await apiJson(this._urls?.unread || '');
-          const n = j.unread ?? 0;
-          if (n > 0) { badgeEl.textContent = n; badgeEl.classList.remove('hidden'); }
-          else this.clearBadge();
-          this.backoffMs = 0;
-        } catch (e) {
-          this.backoffMs = Math.min(20000, (this.backoffMs || 2000) * 2);
-          console.warn('[comments] unread poll error', e);
-        }
-        this.pollTimer = setTimeout(tick, this.pollingClosedMs + this.backoffMs);
-      };
-      if (this._urls?.unread) tick();
-    },
-
-    stopPolling(){ if (this.pollTimer) { clearTimeout(this.pollTimer); this.pollTimer = null; } },
-
-    maybeSend(e){
-      if (!e.shiftKey) this.send();
-      else {
-        const ta = e.target; const val = ta.value; const pos = ta.selectionStart;
-        ta.value = val.slice(0,pos) + "\n" + val.slice(pos); this.draft = ta.value;
-      }
-    },
-
-    isNearBottom() { const el = document.getElementById('comments-list'); return el ? (el.scrollHeight - el.scrollTop - el.clientHeight) < 80 : false; },
-    scrollToBottom(){ const el = document.getElementById('comments-list'); if (el) el.scrollTop = el.scrollHeight; },
-    clearBadge(){ const b=document.getElementById('comments-badge'); if (b){ b.textContent='0'; b.classList.add('hidden'); } },
-    fmtTime(iso){ if(!iso) return ''; const d=new Date(iso), diff=(Date.now()-d.getTime())/1000; if(diff<60) return 'just now'; if(diff<3600) return Math.floor(diff/60)+'m ago'; if(diff<86400) return Math.floor(diff/3600)+'h ago'; return d.toLocaleString(); },
-  };
-}
-
-(function(){
-  const btn   = document.getElementById('btn-comments');
-  const modal = document.getElementById('comments-modal');
-  const close = document.getElementById('comments-close');
-
-  function comp(){ const root = document.getElementById('comments-root'); return root?._x_dataStack?.[0] || root?.__x?.$data || root?._x_data || null; }
-
-  function openModal(){ const c=comp(); if(!c) return; c.open(); modal?.classList.remove('hidden'); }
-  function closeModal(){ const c=comp(); if(c) c.close(); modal?.classList.add('hidden'); if(c) c.startPollingClosed(); }
-
-  btn?.addEventListener('click', (e)=>{ e.preventDefault(); openModal(); });
-  close?.addEventListener('click', closeModal);
-  modal?.addEventListener('click', (e)=>{ if (e.target === modal) closeModal(); });
-
-  document.addEventListener('alpine:init', () => {
-    setTimeout(()=>{ const c=comp(); if(c && c._urls?.unread) c.startPollingClosed(); }, 400);
-  });
-
-  document.addEventListener('visibilitychange', () => {
-    const c=comp(); if(!c) return;
-    if (document.visibilityState === 'visible') { if (c.isOpen) c.fetchNew(); else if (c._urls?.unread) c.startPollingClosed(); }
-  });
-})();
-</script>
 
 {{---new js for the color show and upload preview (finish)--}}
 <script>
@@ -2990,93 +2662,12 @@ function accAddEditor({ listUrlTpl, attachUrlTpl, createUrl, csrf }) {
   cancel?.addEventListener('click', closeModal);
   modal?.addEventListener('click', (e)=>{ if (e.target === modal) closeModal(); });
 })();
+
 </script>
 
-{{--
-<script>
-function accAddEditor({ listUrlTpl, attachUrlTpl, csrf }) {
-  return {
-    productId: null, catalog: [], sizes: [], typesMap: {}, rows: [],
-    async open(pid, pname) {
-      this.productId = pid;
-      document.getElementById('acc-add-product-name').textContent = pname ? `— ${pname}` : '';
-      const url = listUrlTpl.replace('__ID__', encodeURIComponent(pid));
-      const res = await fetch(url, { headers:{'Accept':'application/json'}, credentials:'same-origin' });
-      const data = await res.json();
-      this.catalog = data.catalog || [];
-      this.sizes   = data.sizes   || [];
-      this.typesMap = Object.fromEntries(this.catalog.map(c => [c.id, c.types || []]));
-      const first = this.catalog[0] || {id:null, name:'Accessory', types:[]};
-      this.rows = [{ _key:'new-'+Date.now(), accessory_id:first.id, name:first.name, size:'', type:'', quantity:1, notes:'' }];
-    },
-    addRow() {
-      const first = this.catalog[0] || {id:null, name:'Accessory', types:[]};
-      this.rows.push({ _key:'new-'+Date.now()+Math.random(), accessory_id:first.id, name:first.name, size:'', type:'', quantity:1, notes:'' });
-    },
-    selectAccessory(i, item) {
-      const row = this.rows[i]; if (!row) return;
-      row.accessory_id = item.id; row.name = item.name;
-      const allowed = (this.typesMap[item.id] || []);
-      if (!allowed.includes(row.type)) row.type = '';
-    },
-    remove(i) { this.rows.splice(i,1); },
-    async save() {
-      const url = attachUrlTpl.replace('__ID__', encodeURIComponent(this.productId));
-      const items = this.rows.map(r => ({
-        accessory_id: r.accessory_id, size: r.size || null, type: r.type || null,
-        quantity: r.quantity ?? null, notes: r.notes || null
-      }));
-      const res = await fetch(url, {
-        method:'POST', credentials:'same-origin',
-        headers:{ 'Accept':'application/json','Content-Type':'application/json','X-CSRF-TOKEN': csrf },
-        body: JSON.stringify({ items })
-      });
-      if (!res.ok) { document.getElementById('acc-add-error').classList.remove('hidden'); return; }
-      const data = await res.json();
-      // refresh the displayed grid
-      const gridEl = document.getElementById('appliances-grid');
-      if (gridEl) {
-        const itemsOut = data.items || [];
-        gridEl.innerHTML = itemsOut.length ? itemsOut.map(a => `
-          <div class="rounded-xl border border-gray-200 p-4 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.02)]">
-            <div class="flex items-center gap-2">
-              <div class="flex items-center justify-center w-8 h-8 bg-gray-100 rounded-lg">
-                <svg class="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <rect x="4" y="6" width="16" height="12" rx="2" stroke-width="1.5" />
-                  <path d="M4 10h16" stroke-width="1.5" />
-                </svg>
-              </div>
-              <h4 class="text-sm font-semibold text-gray-900">${(a.name||'Accessory').toString().replace(/[&<>"]/g,s=>({ '&':'&amp;','<':'&lt;','>':'&gt;' }[s]||s))}</h4>
-            </div>
-            <dl class="grid grid-cols-2 gap-2 mt-3 text-xs">
-              <div><dt class="text-gray-500">Size</dt><dd class="font-medium text-gray-800">${a.size ?? '—'}</dd></div>
-              <div><dt class="text-gray-500">Type</dt><dd class="font-medium text-gray-800">${a.type ?? '—'}</dd></div>
-            </dl>
-          </div>
-        `).join('') : `<div class="p-6 text-center text-gray-500 border border-dashed rounded-xl">No accessories attached.</div>`;
-      }
-      document.getElementById('acc-add-modal')?.classList.add('hidden');
-    }
-  };
-}
+{{-- Comments: Drawer Script --}}
+@include('admin.partials.comments-drawer-script')
 
-// open/close wiring
-(function(){
-  const btn   = document.getElementById('btn-add-accessories');
-  const modal = document.getElementById('acc-add-modal');
-  const closeX= document.getElementById('acc-add-close');
-  const cancel= document.getElementById('acc-add-cancel');
-  async function openModal(pid, pname){
-    const comp = document.getElementById('acc-add-alpine')?.__x?.$data;
-    if (comp?.open) { await comp.open(pid, pname); }
-    modal.classList.remove('hidden');
-  }
-  function closeModal(){ modal.classList.add('hidden'); }
-  btn?.addEventListener('click', (e)=>{ e.preventDefault(); const pid=btn.dataset.productId; if (pid) openModal(pid, btn.dataset.productName||''); });
-  closeX?.addEventListener('click', closeModal);
-  cancel?.addEventListener('click', closeModal);
-  modal?.addEventListener('click', (e)=>{ if (e.target === modal) closeModal(); });
-})();
-</script> --}}
+@include('admin.partials.add-products-js', ['project' => $project])
 
 </x-layouts.app>

@@ -9,13 +9,15 @@
 
 
 
-<main class="ml-64 mt-[100px] flex-1 w-full  bg-[#F9F7F7] min-h-screen  items-center">
-  <!-- centered page container -->
-  <div class="mx-auto max-w-7xl px-4  py-8 sm:px-6 lg:px-8">
-    <!-- 2-column responsive grid -->
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+@php
+    $recentActivities = isset($recentActivities) ? collect($recentActivities) : collect();
+@endphp
 
-      <div class="space-y-6">
+<main class="flex-1 w-full min-h-screen bg-[#F9F7F7] pt-24 pb-12 overflow-x-hidden">
+  <div class="w-full max-w-7xl px-4 sm:px-6 lg:px-8 xl:px-10 mx-auto">
+    <div class="grid grid-cols-1 gap-6 xl:grid-cols-3 xl:gap-8">
+
+      <div class="space-y-6 xl:col-span-2">
 
 <!-- OVERVIEW -->
 <section id="overview" class="bg-white border border-gray-200 shadow-sm rounded-2xl">
@@ -89,62 +91,36 @@
             <h2 class="text-lg font-semibold">Recent Activities</h2>
           </div>
 
-          <div class="px-4 py-5 divide-y sm:px-6">
-            <!-- Activity item -->
-            <div class="flex items-center gap-3 py-3">
-              <img src="https://i.pravatar.cc/64?img=1" class="object-cover w-10 h-10 rounded-full shadow ring-2 ring-white" alt="">
-              <div class="min-w-0">
-                <div class="text-sm">
-                  <span class="font-medium">Chris Laventher</span>
-                  <span class="text-gray-600"> uploaded a file in </span>
-                  <a href="#" class="font-medium text-purple-700 hover:underline">New Build</a>
-                </div>
+          <div class="px-4 py-5 sm:px-6">
+            @if($recentActivities->isNotEmpty())
+              <div class="divide-y">
+                @foreach($recentActivities as $activity)
+                  <div class="flex items-start gap-3 py-3">
+                    @if(!empty($activity['user_avatar']))
+                      <img src="{{ $activity['user_avatar'] }}" alt="{{ $activity['user_name'] }}" class="object-cover w-10 h-10 rounded-full shadow ring-2 ring-white">
+                    @else
+                      <div class="flex items-center justify-center w-10 h-10 text-sm font-semibold uppercase rounded-full bg-slate-200 text-slate-600 shadow ring-2 ring-white">
+                        {{ $activity['initials'] ?? 'NA' }}
+                      </div>
+                    @endif
+                    <div class="min-w-0">
+                      <p class="text-sm leading-6 text-gray-700">
+                        <span class="font-medium text-gray-900">{{ $activity['user_name'] }}</span>
+                        <span class="text-gray-600"> {{ $activity['description'] }} </span>
+                        <span class="font-medium text-purple-700">{{ $activity['project_name'] }}</span>
+                      </p>
+                      @if(!empty($activity['time']))
+                        <p class="mt-1 text-xs font-medium uppercase tracking-wide text-gray-400">{{ $activity['time'] }}</p>
+                      @endif
+                    </div>
+                  </div>
+                @endforeach
               </div>
-            </div>
-
-            <div class="flex items-center gap-3 py-3">
-              <img src="https://i.pravatar.cc/64?img=11" class="object-cover w-10 h-10 rounded-full shadow ring-2 ring-white" alt="">
-              <div class="min-w-0">
-                <div class="text-sm">
-                  <span class="font-medium">Chris Laventher</span>
-                  <span class="text-gray-600"> uploaded a file in </span>
-                  <a href="#" class="font-medium text-purple-700 hover:underline">Smiths Residence</a>
-                </div>
+            @else
+              <div class="py-10 text-sm text-center text-gray-500">
+                No recent activity yet. You’ll see project comments and uploads here.
               </div>
-            </div>
-
-            <div class="flex items-center gap-3 py-3">
-              <img src="https://i.pravatar.cc/64?img=15" class="object-cover w-10 h-10 rounded-full shadow ring-2 ring-white" alt="">
-              <div class="min-w-0">
-                <div class="text-sm">
-                  <span class="font-medium">Chris Laventher</span>
-                  <span class="text-gray-600"> uploaded a file in </span>
-                  <a href="#" class="font-medium text-purple-700 hover:underline">Johnson Remodel</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3 py-3">
-              <img src="https://i.pravatar.cc/64?img=5" class="object-cover w-10 h-10 rounded-full shadow ring-2 ring-white" alt="">
-              <div class="min-w-0">
-                <div class="text-sm">
-                  <span class="font-medium">Chris Laventher</span>
-                  <span class="text-gray-600"> uploaded a file in </span>
-                  <a href="#" class="font-medium text-purple-700 hover:underline">New Build</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-3 py-3">
-              <img src="https://i.pravatar.cc/64?img=21" class="object-cover w-10 h-10 rounded-full shadow ring-2 ring-white" alt="">
-              <div class="min-w-0">
-                <div class="text-sm">
-                  <span class="font-medium">Chris Laventher</span>
-                  <span class="text-gray-600"> uploaded a file in </span>
-                  <a href="#" class="font-medium text-purple-700 hover:underline">New Build</a>
-                </div>
-              </div>
-            </div>
+            @endif
           </div>
         </section>
       </div>

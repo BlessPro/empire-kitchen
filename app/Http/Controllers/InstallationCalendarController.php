@@ -55,40 +55,32 @@ class InstallationCalendarController extends Controller
 
         return view('admin.ScheduleInstallation', compact('bookedProjects'));
     }
-
-public function store1(Request $r)
+public function update(\Illuminate\Http\Request $request, int $installation)
 {
-    $data = $r->validate([
-        'project_id' => [
-            'required',
-            Rule::exists('projects','id')->where(
-                fn($q) => $q->whereRaw("LOWER(TRIM(COALESCE(booked_status,''))) = 'booked'")
-            ),
-        ],
-        'install_date' => ['required','date'],                       // YYYY-MM-DD
-        'install_time' => ['required','regex:/^\d{2}:\d{2}(:\d{2})?$/'], // HH:MM or HH:MM:SS
-        'notes'        => ['nullable','string','max:1000'],
+    // validate (mirror your store rules)
+    $data = $request->validate([
+        'project_id'   => ['required','integer','exists:projects,id'],
+        'install_date' => ['required','date'],        // YYYY-MM-DD
+        'install_time' => ['required'],               // HH:MM (store as string or time column)
+        'notes'        => ['nullable','string','max:2000'],
     ]);
 
-    // normalize time to HH:MM
-    $time = strlen($data['install_time']) === 8
-        ? substr($data['install_time'], 0, 5)
-        : $data['install_time'];
+    $model = \App\Models\Installation::query()->findOrFail($installation);
 
-    $data['start_time'] = Carbon::createFromFormat(
-        'Y-m-d H:i',
-        "{$data['install_date']} {$time}",
-        config('app.timezone')
-    );
+    // Optional: you can protect edits (e.g., ensure same client/tenant)
+    // For now, we keep it open to any authenticated user (like your store).
 
-    $data['user_id'] = $r->user()->id ?? null;
+    $model->project_id   = $data['project_id'];
+    $model->install_date = $data['install_date'];
+    $model->install_time = $data['install_time'];
+    $model->notes        = $data['notes'] ?? null;
+    $model->save();
 
-    $install = \App\Models\Installation::create($data);
-    return response()->json(['ok' => true, 'id' => $install->id], 201);
+    return response()->json(['ok' => true]);
 }
 
 
-public function update(Request $r, \App\Models\Installation $installation)
+public function update_old(Request $r, \App\Models\Installation $installation)
 {
 
 

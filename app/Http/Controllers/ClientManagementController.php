@@ -6,26 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Client; // Import the Client model
 use App\Models\Project; // Import the Project model
-use Barryvdh\DomPDF\Facade\Pdf; // Import the Pdf facade
-use App\Exports\ProjectsExport; // Ensure this import exists after creating the export class
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator; // Import the Validator facade
 use Illuminate\Support\Facades\Auth; // Import the Auth facade
-// use illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Contracts\View\View;
 
 class ClientManagementController extends Controller
 {
-//     public function index()
-// {
-//     $clients = Client::withCount('projects')
-//                      ->orderBy('created_at', 'desc') // Order by newest
-//                      ->paginate(10);
-
-//     return view('admin.ClientManagement', compact('clients'));
-// }
-
 
 public function index(Request $request)
 {
@@ -92,6 +79,38 @@ public function showProjectname(Project $project)
     return view('admin.ClientManagement.projectinfo', compact('project'));
 }
 
+
+    /**
+     * GET /admin/clients/{client}/projects
+     * Shows all projects for a client, grouped by current_stage
+     */
+    public function projects(int $client): View
+    {
+        // Fetch the client (minimal fields; adjust columns if needed)
+        $clientModel = Client::query()->findOrFail($client);
+
+        // Fetch all projects for this client; eager load client for card display
+        $all = Project::query()
+            ->where('client_id', $clientModel->id)
+            ->with(['client'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Buckets by current_stage (standardized identifiers)
+        $measurements  = $all->where('current_stage', 'MEASUREMENT')->values();
+        $designs       = $all->where('current_stage', 'DESIGN')->values();
+        $productions   = $all->where('current_stage', 'PRODUCTION')->values();
+        $installations = $all->where('current_stage', 'INSTALLATION')->values();
+
+        // Render the view you specified
+        return view('Admin.ClientManagement.client-projects', [
+            'client'        => $clientModel,
+            'measurements'  => $measurements,
+            'designs'       => $designs,
+            'productions'   => $productions,
+            'installations' => $installations,
+        ]);
+    }
 
 
 public function store(Request $request)

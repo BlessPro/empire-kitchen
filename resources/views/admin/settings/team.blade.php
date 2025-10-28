@@ -30,39 +30,29 @@
 
             <tbody class="text-gray-700">
                 @foreach ($users as $user)
+                    @php
+                        $employee = $user->employee;
+                        $avatar = $employee?->avatar_path
+                            ? asset('storage/' . ltrim($employee->avatar_path, '/'))
+                            : 'https://i.pravatar.cc/30';
+                        $lastSeen = $user->last_seen_at;
+                        $online = $lastSeen && $lastSeen->gt(now()->subMinutes(5));
+                    @endphp
                     <tr class="border-t">
                         <td class="flex items-center py-3 space-x-2">
-                            {{-- <img src="https://i.pravatar.cc/30?img=1" class="w-8 h-8 rounded-full"> --}}
-                            <img src="{{ $user->profile_pic ? asset('storage/' . $user->profile_pic) : 'https://i.pravatar.cc/30' }}"
-                                class="object-cover w-8 h-8 rounded-full">
-
-
-
-                            <span>{{ $user->name }}</span>
+                            <img src="{{ $avatar }}" class="object-cover w-8 h-8 rounded-full" alt="">
+                            <span>{{ $employee?->name ?? 'Unknown User' }}</span>
                         </td>
-                        {{-- <td><span class="px-2 py-1 text-xs text-green-600 bg-green-100 rounded-full">Online</span></td>
-                  <td>June 25, 2026, 10:45PM</td> --}}
-                        @php
-                            $online =
-                                $user->last_seen_at instanceof \Carbon\Carbon &&
-                                $user->last_seen_at->gt(now()->subMinutes(2));
-                        @endphp
-
                         <td>
                             @if ($online)
-                                <span class="px-2 py-1 text-xs text-green-600 bg-green-100 rounded-full">🟢
-                                    Online</span>
+                                <span class="px-2 py-1 text-xs text-green-600 bg-green-100 rounded-full">Online</span>
                             @else
-                                <span class="px-2 py-1 text-xs text-gray-600 bg-gray-100 rounded-full">⚪ Offline</span>
+                                <span class="px-2 py-1 text-xs text-gray-600 bg-gray-100 rounded-full">Offline</span>
                             @endif
                         </td>
 
                         <td class="text-sm text-gray-600">
-                            @if ($user->last_seen_at instanceof \Carbon\Carbon)
-                                {{ $user->last_seen_at->diffForHumans() }}
-                            @else
-                                Never active
-                            @endif
+                            {{ $lastSeen ? $lastSeen->diffForHumans() : 'Never active' }}
                         </td>
 
                         <td>{{ $user->role }}</td>
@@ -75,30 +65,18 @@
                                     <i data-feather="trash" class="mr-3"></i>
                                 </button>
                             </form>
-                            {{-- <button data-id="{{ $user->id }}"
-                                class="text-gray-500 hover:text-red-500 btn btn-primary editUserBtn">
-                                <i data-feather="edit-3" class="mr-3"></i>
-                            </button> --}}
-
 
                             <button
-  type="button"
-  class="text-gray-500 hover:text-fuchsia-700 btn btn-primary editUserBtn"
-  data-id="{{ $user->id }}"
-  data-name="{{ $user->name ?? ($user->employee->name ?? '') }}"
-  data-role="{{ $user->role }}"
->
-  <i data-feather="edit-3" class="mr-3"></i>
-</button>
-
-
-
-                            {{-- <button class="btn btn-primary editUserBtn" data-id="{{ $user->id }}">Edit</button> --}}
+                                type="button"
+                                class="text-gray-500 hover:text-fuchsia-700 btn btn-primary editUserBtn"
+                                data-id="{{ $user->id }}"
+                                data-name="{{ $employee?->name ?? '' }}"
+                                data-role="{{ $user->role }}"
+                            >
+                                <i data-feather="edit-3" class="mr-3"></i>
+                            </button>
                         </td>
-
-
                     </tr>
-                    <!-- Repeat for others -->
                 @endforeach
 
                 <!-- Add more rows similarly -->
@@ -177,11 +155,11 @@
                             class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             required>
                             <option value="" disabled selected>Select account type</option>
-                            <option value="administrator">Administrator</option>
-                            <option value="tech_supervisor">Tech Supervisor</option>
+                            <option value="admin">Admin</option>
+                            <option value="tech_supervisor">Technical Supervisor</option>
                             <option value="designer">Designer</option>
+                            <option value="sales_accountant">Sales Accountant</option>
                             <option value="accountant">Accountant</option>
-                            <option value="sales_account">Sales Account</option>
                             <option value="production_officer">Production Officer</option>
                             <option value="installation_officer">Installation Officer</option>
                         </select>
@@ -275,9 +253,10 @@
         <select id="euRole" name="role"
                 class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-fuchsia-800" required>
           <option value="admin">Admin</option>
-          <option value="accountant">Accountant</option>
-          <option value="designer">Designer</option>
           <option value="tech_supervisor">Technical Supervisor</option>
+          <option value="designer">Designer</option>
+          <option value="sales_accountant">Sales Accountant</option>
+          <option value="accountant">Accountant</option>
           <option value="production_officer">Production Officer</option>
           <option value="installation_officer">Installation Officer</option>
         </select>

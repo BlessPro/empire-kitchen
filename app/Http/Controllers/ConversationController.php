@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class ConversationController extends Controller
@@ -80,7 +83,7 @@ class ConversationController extends Controller
                     $displayByUser[$dr->user_id] = [
                         'name'        => $dr->name ?? 'Unknown',
                         'designation' => $dr->designation ?? '',
-                        'avatar'      => $dr->avatar_path,
+                        'avatar'      => $this->formatAvatar($dr->avatar_path) ?? $this->defaultUserAvatar(),
                     ];
                 }
             }
@@ -97,7 +100,7 @@ class ConversationController extends Controller
 
             $title     = $r->title;
             $subtitle  = null;
-            $avatarUrl = $r->avatar_url;
+            $avatarUrl = $this->formatAvatar($r->avatar_url);
 
             if ($isDM) {
                 $otherId = $otherByConversation[$r->id] ?? null;
@@ -109,6 +112,12 @@ class ConversationController extends Controller
                         $avatarUrl = $disp['avatar'] ?: $avatarUrl;
                     }
                 }
+
+                if (!$avatarUrl) {
+                    $avatarUrl = $this->defaultUserAvatar();
+                }
+            } else {
+                $avatarUrl = $avatarUrl ?: $this->groupAvatar($r->id);
             }
 
             // If there was a DM search term, filter here by other participant name/designation
@@ -120,6 +129,9 @@ class ConversationController extends Controller
                 }
             }
 
+            $lastMessageAt = $r->last_message_at ? Carbon::parse($r->last_message_at) : null;
+            $lastReadAt    = $r->last_read_at ? Carbon::parse($r->last_read_at) : null;
+
             $items[] = [
                 'id'                      => (int) $r->id,
                 'type'                    => $r->type,
@@ -128,9 +140,9 @@ class ConversationController extends Controller
                 'avatar'                  => $avatarUrl,
                 'preview'                 => $r->preview,
                 'preview_is_me'           => (bool) ($r->preview_sender_id === $me),
-                'last_message_at'         => optional($r->last_message_at)->toDateTimeString(),
-                'last_message_at_human'   => optional($r->last_message_at)->diffForHumans(),
-                'has_unread'              => $r->last_message_at && (!$r->last_read_at || $r->last_message_at > $r->last_read_at),
+                'last_message_at'         => $lastMessageAt ? $lastMessageAt->toDateTimeString() : null,
+                'last_message_at_human'   => $lastMessageAt ? $lastMessageAt->diffForHumans() : null,
+                'has_unread'              => $lastMessageAt && (!$lastReadAt || $lastReadAt->lt($lastMessageAt)),
             ];
         }
 
@@ -380,4 +392,59 @@ public function markRead(\Illuminate\Http\Request $request, int $conversation)
 
 
 
+    /**
+     * Normalize avatar paths coming from the database to full URLs.
+     */
+    private function formatAvatar(?string $path): ?string
+    {
+        if (empty($path)) {
+            return null;
+        }
+
+        if (Str::startsWith($path, ['http://', 'https://', '//', 'data:'])) {
+            return $path;
+        }
+
+        $normalized = ltrim($path, '/');
+
+        foreach (['public/', 'storage/'] as $prefix) {
+            if (Str::startsWith($normalized, $prefix)) {
+                $normalized = substr($normalized, strlen($prefix));
+                break;
+            }
+        }
+
+        if (!Storage::disk('public')->exists($normalized)) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($normalized);
+    }
+
+    /**
+     * Provide a default avatar when a user has not uploaded one.
+     */
+    private function defaultUserAvatar(): string
+    {
+        return asset('images/default-avatar.png');
+    }
+
+    /**
+     * Provide a deterministic, carpentry-themed icon for group conversations.
+     */
+    private function groupAvatar(int $conversationId): string
+    {
+        $icons = [
+            'https://api.iconify.design/mdi/hand-saw.svg?color=%23b45309',
+            'https://api.iconify.design/mdi/hammer-wrench.svg?color=%231f2937',
+            'https://api.iconify.design/mdi/tape-measure.svg?color=%230f766e',
+            'https://api.iconify.design/mdi/screwdriver.svg?color=%234c1d95',
+            'https://api.iconify.design/mdi/axe.svg?color=%23b91c1c',
+            'https://api.iconify.design/mdi/chisel.svg?color=%231c1917',
+        ];
+
+        $index = $conversationId % count($icons);
+
+        return $icons[$index];
+    }
 }

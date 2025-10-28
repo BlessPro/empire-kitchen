@@ -1,12 +1,11 @@
 <?php
+
 use App\Http\Controllers\accountantCategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AccountantInboxController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\DesignerNavigationController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController; // Ensure this class exists in the specified namespace
-use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ClientManagementController;
 use App\Http\Controllers\ProjectManagementController;
 use App\Http\Controllers\Settings;
@@ -50,13 +49,15 @@ use App\Http\Middleware\UpdateLastSeen;
 use App\Http\Controllers\BookingsController;
 use App\Http\Controllers\EmployeeController;
 use App\Models\Client;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CostsController;
 use App\Http\Controllers\BudgetsController;
 use App\Http\Controllers\ProductQuickCreateController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserSearchController;
-
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\Admin\ProjectCommentController;
 
 Route::get('/', function () {
     return view('main');
@@ -85,6 +86,8 @@ Route::middleware(['auth', UpdateLastSeen::class])->group(function () {
     //for saving the client
     Route::post('/clients/store', [ClientManagementController::class, 'store'])->name('clients.store');
     Route::get('/clients', [ClientManagementController::class, 'index'])->name('clients.index'); // Ensure this route exists for listing clients
+    Route::get('/admin/dashboard/metrics', [DashboardController::class, 'metrics'])->name('admin.dashboard.metrics');
+    Route::get('/admin/dashboard/pipeline', [DashboardController::class, 'pipeline'])->name('admin.dashboard.pipeline');
 
         Route::get('/admin/Employee', [EmployeeController::class, 'index'])->name('admin.employee');
 // routes/web.php
@@ -110,6 +113,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::middleware(['web','auth'])->prefix('admin')->group(function () {
     Route::get('/ProjectManagement', [ProjectManagementController::class, 'index'])
         ->name('admin.ProjectManagement');
+    Route::get('/ProjectManagement/filter', [ProjectManagementController::class, 'filterColumns'])
+        ->name('admin.ProjectManagement.filter');
 
 });
 
@@ -222,17 +227,7 @@ Route::middleware(['web','auth'])
 
                Route::post('/products/{product}/sink-tap', [ProjectController::class, 'updateProductSinkTap'])
             ->name('products.updateSinkTap');
-
-        //          // List current accessories for a product (JSON)
-        // Route::get('/products/{product}/accessories', [ProjectController::class, 'listProductAccessories'])
-        //     ->name('products.accessories.list');
-
-
-
     });
-
-
-                 // NEW: attach brand-new accessories to a product
 
 Route::middleware(['web','auth'])
     ->prefix('admin')
@@ -256,75 +251,32 @@ Route::middleware(['web','auth'])
 
     });
 
+Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(function () {
 
-    // routes/web.php
+    // COMMENTS — list
+    Route::get('/projects/{project}/comments', [ProjectCommentController::class, 'index'])
+        ->name('projects.comments.index');
 
-Route::middleware(['web', 'auth'])
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
+    // COMMENTS — create
+    Route::post('/projects/{project}/comments', [ProjectCommentController::class, 'store'])
+        ->name('projects.comments.store');
 
-        // LIST comments (GET)
-        Route::get('/projects/{project}/comments',
-            [ProjectController::class, 'commentsIndex']
-        )->name('projects.comments.index');
+    // COMMENTS — unread badge
+    Route::get('/projects/{project}/comments/unread-count', [ProjectCommentController::class, 'unreadCount'])
+        ->name('projects.comments.unread');
 
-        // MARK SEEN (POST)
-        Route::post('/projects/{project}/comments/seen',
-            [ProjectController::class, 'commentsMarkSeen']
-        )->name('projects.comments.seen');
-
-        // UNREAD COUNT (GET)
-        Route::get('/projects/{project}/comments/unread_count',
-            [ProjectController::class, 'commentsUnreadCount']
-        )->name('projects.comments.unread');
-
-        // (optional) DELETE single comment
-        Route::delete('/comments/{comment}',
-            [ProjectController::class, 'commentsDestroy']
-        )->name('comments.destroy');
-    });
+    // COMMENTS — mark seen when the drawer opens
+    Route::post('/projects/{project}/comments/mark-seen', [ProjectCommentController::class, 'markSeen'])
+        ->name('projects.comments.markSeen');
+});
 
 
-
-        Route::post('/projects/{project}/comments',
-            [ProjectController::class, 'commentsStore']
-        )->name('admin.projects.comments.store');
-
-
-
-        // routes/api.php (or web.php if you prefer)
+//inbox start
+// routes/api.php
 
 Route::middleware('auth')->group(function () {
     Route::get('/conversations', [ConversationController::class, 'index'])
         ->name('conversations.index');
-});
-
-// routes/api.php
-
-Route::middleware('auth')->group(function () {
-    Route::get('/conversations/{conversation}/messages', [MessageController::class, 'index'])
-        ->name('messages.index');
-});
-
-// routes/api.php
-
-Route::middleware('auth')->group(function () {
-    Route::post('/conversations/{conversation}/read', [ConversationController::class, 'markRead'])
-        ->name('conversations.read');
-});
-
-// routes/api.php
-
-Route::middleware('auth')->group(function () {
-    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store'])
-        ->name('messages.store');
-});
-
-// routes/api.php
-
-
-Route::middleware('auth')->group(function () {
     // Create chats
     Route::post('/conversations/direct', [ConversationController::class, 'storeDirect'])
         ->name('conversations.storeDirect');
@@ -336,6 +288,38 @@ Route::middleware('auth')->group(function () {
         ->name('users.search');
 });
 
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/conversations/{conversation}/messages', [MessageController::class, 'index'])
+        ->name('messages.index');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/conversations/{conversation}/read', [ConversationController::class, 'markRead'])
+        ->name('conversations.read');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store'])
+        ->name('messages.store');
+});
+
+
+// Route::middleware('auth')->group(function () {
+//     // Create chats
+//     Route::post('/conversations/direct', [ConversationController::class, 'storeDirect'])
+//         ->name('conversations.storeDirect');
+//     Route::post('/conversations/group',  [ConversationController::class, 'storeGroup'])
+//         ->name('conversations.storeGroup');
+
+//     // User search for the modal
+//     Route::get('/users/search', [UserSearchController::class, 'index'])
+//         ->name('users.search');
+// });
+
+// routes/api.php
 // routes/api.php
 
 Route::middleware('auth')->group(function () {
@@ -343,19 +327,24 @@ Route::middleware('auth')->group(function () {
     Route::delete('/messages/{message}/hide', [MessageController::class, 'unhide'])->name('messages.unhide');
 });
 
-
-
-
+// Route::middleware('auth')->group(function () {
+//     Route::post('/messages/{message}/hide',   [MessageController::class, 'hide'])->name('messages.hide');
+//     Route::delete('/messages/{message}/hide', [MessageController::class, 'unhide'])->name('messages.unhide');
+// });
+//inbox end
 
 Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(function () {
-    Route::post('/projects/{project}/duplicate', [ProductQuickCreateController::class, 'duplicate'])
-        ->name('projects.duplicate');
+    // ...your existing routes...
+
+    // Client → Projects page
+    Route::get('/clients/{client}/projects', [ClientManagementController::class, 'projects'])
+        ->name('clients.projects');
 });
 
     //deleting project from the dashboard
     Route::delete('admin/dashboard/projects/{id}', [ProjectManagementController::class, 'destroy'])->name('projects.destroy');
     //storing comment
-    Route::post('/admin/projects/{project}/comments', [CommentController::class, 'store'])->name('project.comment.store');
+    // Route::post('/admin/projects/{project}/comments', [CommentController::class, 'store'])->name('project.comment.store');
 
     // Route::post('/clients', [ClientManagementController::class, 'store'])->name('clients.store');
     Route::get('/admin/settings', [Settings::class, 'showUsers'])
@@ -419,6 +408,12 @@ Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(functi
     Route::patch('/installations/{installation}', [InstallationCalendarController::class, 'update'])
         ->name('installations.update'); // NEW
 
+  // Update an installation
+    // Route::patch('/installations/{installation}', [InstallationsController::class, 'update'])
+    //     ->name('installations.update');
+
+
+
     Route::post('/installations/{installation}/done', [InstallationCalendarController::class, 'markDone'])
         ->name('installations.done');
 
@@ -474,9 +469,9 @@ Route::middleware(['web','auth'])->prefix('admin')->name('admin.')->group(functi
 
     // routes/web.php
 
-    Route::get('/clients/{client}/projects', function (Client $client) {
-        return $client->projects()->select('id', 'name')->orderByDesc('created_at')->get();
-    })->name('clients.projects');
+    // Route::get('/clients/{client}/projects', function (Client $client) {
+    //     return $client->projects()->select('id', 'name')->orderByDesc('created_at')->get();
+    // })->name('clients.projects');
 // routes/web.php
 
 
@@ -489,13 +484,12 @@ Route::middleware(['web','auth'])->prefix('admin')->name('admin.')->group(functi
     Route::get('/tech/ClientManagement', [techClientController::class, 'index'])->name('tech.ClientManagement');
     Route::get('/tech/ProjectManagement', [techProjectManagementController::class, 'index'])->name('tech.ProjectManagement');
     // Route::get('/tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'index'])->name('tech.ReportsandAnalytics');
-    //Route::get('/tech/ScheduleMeasurement', [MeasurementScheduleController::class, 'index'])->name('tech.ScheduleMeasurement');
-    Route::prefix('tech/ScheduleMeasurement')->group(function () {
-        Route::get('/', [MeasurementScheduleController::class, 'index'])->name('tech.ScheduleMeasurement');
-        Route::get('/events', [MeasurementScheduleController::class, 'events'])->name('tech.ScheduleMeasurement.events');
-        Route::post('/store', [MeasurementScheduleController::class, 'store']);
-        Route::put('/{id}', [MeasurementScheduleController::class, 'update']);
-        Route::delete('/{id}', [MeasurementScheduleController::class, 'destroy']);
+    Route::middleware(['auth'])->prefix('tech')->name('tech.')->group(function () {
+        Route::get('/ScheduleMeasurement', [techScheduleMeasurementController::class, 'index'])->name('ScheduleMeasurement');
+        Route::get('/measurements/calendar', [techScheduleMeasurementController::class, 'feed'])->name('measurements.feed');
+        Route::post('/measurements', [techScheduleMeasurementController::class, 'store'])->name('measurements.store');
+        Route::patch('/measurements/{measurement}', [techScheduleMeasurementController::class, 'update'])->name('measurements.update');
+        Route::delete('/measurements/{measurement}', [techScheduleMeasurementController::class, 'destroy'])->name('measurements.destroy');
     });
 
     Route::get('/tech/Settings', [techSettingsController::class, 'index'])->name('tech.Settings');
@@ -522,7 +516,7 @@ Route::middleware(['web','auth'])->prefix('admin')->name('admin.')->group(functi
     // Route::post('/tech/project/{id}/update-due-date', [ProjectController::class, 'updateDueDate']);
 
     // comments
-    Route::post('/tech/projects/{project}/comments', [CommentController::class, 'store'])->name('techproject.comment.store');
+    // Route::post('/tech/projects/{project}/comments', [CommentController::class, 'store'])->name('techproject.comment.store');
 
     Route::get('tech/ClientManagement', [techClientController::class, 'clientProjects'])->name('tech.ClientManagement');
 
@@ -544,7 +538,6 @@ Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(functi
 
     // Assign designer to project
     Route::post('tech/AssignDesigners', [techAssignDesignersController::class, 'assignDesigner'])->name('assign.designer');
-    Route::get('/tech/ScheduleMeasurement/events', [techScheduleMeasurementController::class, 'calendarEvents'])->name('tech.ScheduleInstallations.events');
     Route::middleware(['auth', 'verified'])
         ->prefix('tech')
         ->group(function () {
@@ -605,7 +598,7 @@ Route::get('/invoices/create', [designerProjectDesignController::class, 'create'
         });
 
     // comments
-    Route::post('/designer/projects/{project}/comments', [CommentController::class, 'store'])->name('designer.project.comment.store');
+    // Route::post('/designer/projects/{project}/comments', [CommentController::class, 'store'])->name('designer.project.comment.store');
     Route::get('/designer/AssignedProjects', [designerAssignDesigners::class, 'clientProjects'])->name('designer.AssignedProjects');
 
 
@@ -629,17 +622,6 @@ Route::get('/invoices/create', [designerProjectDesignController::class, 'create'
             Route::get('/uploads', [DesignerUploadController::class, 'allUploads'])->name('uploads');
             Route::get('/uploads/{project}', [DesignerUploadController::class, 'viewProjectUploads'])->name('upload.view');
         });
-
-
-
-
-
-
-
-
-
-
-
 
 
     Route::get('/admin/Dashboard2', [ProjectController::class, 'index'])->name('admin.Dashboard2');

@@ -210,8 +210,10 @@ public function show(Request $request, Project $project)
             'project_id' => (int) $project->id,
         ],
     ];
+            $projects = Project::all();
 
-    return view('admin.projectInfo', ['project' => $vm]);
+
+    return view('admin.projectInfo', ['project' => $vm, 'projects' => $projects]);
 }
 
 
@@ -627,460 +629,54 @@ public function togglePhase(Request $request, Project $project, PhaseTemplate $t
     }
 
 
-// GET /projects/{project}/comments?limit=25&after_id=&before_id=
-    public function index(Request $request, Project $project)
-    {
-
-        $this->authorize('view', $project);
-
-        $limit    = (int) min(max($request->integer('limit', 25), 1), 100);
-        $afterId  = $request->integer('after_id');
-        $beforeId = $request->integer('before_id');
-
-        $q = Comment::with([
-                'user:id,name,employee_id,profile_pic,role',
-                'user.employee:id,user_id,full_name,photo_path'
-            ])
-            ->where('project_id', $project->id)
-            ->when($afterId,  fn($qq) => $qq->where('id', '>', $afterId))
-            ->when($beforeId, fn($qq) => $qq->where('id', '<', $beforeId))
-            ->orderBy('id', 'asc'); // stable append
-
-        // For initial load (no after/before), return latest page
-        if (!$afterId && !$beforeId) {
-            $lastId = Comment::where('project_id', $project->id)->max('id');
-            // If there are many, fetch the last N efficiently
-            $q->when($lastId, fn($qq) => $qq->where('id', '>', max(0, $lastId - 1000))); // soft window
-        }
-
-        $rows = $q->limit($limit)->get();
-
-        // compute has_more flags
-        $hasMoreBefore = false;
-        $hasMoreAfter  = false;
-        if ($rows->count()) {
-            $minId = $rows->min('id');
-            $maxId = $rows->max('id');
-            $hasMoreBefore = Comment::where('project_id', $project->id)->where('id','<',$minId)->exists();
-            $hasMoreAfter  = Comment::where('project_id', $project->id)->where('id','>',$maxId)->exists();
-        }
-
-        $me = Auth::id();
-        $payload = $rows->map(fn($c) => $this->serialize($c, $me));
-
-        return response()->json([
-            'ok' => true,
-            'comments' => $payload,
-            'has_more_before' => $hasMoreBefore,
-            'has_more_after'  => $hasMoreAfter,
-        ]);
-    }
-
-    // POST /projects/{project}/comments
-    public function store_old(Request $request, Project $project)
-    {
-        $this->authorize('view', $project); // or dedicated policy 'comment'
-
-        $data = $request->validate([
-            'comment' => ['required','string','max:5000'],
-        ]);
-
-        $c = Comment::create([
-            'project_id' => $project->id,
-            'user_id'    => Auth::id(),
-            'comment'    => $data['comment'],
-        ])->load([
-            'user:id,name,employee_id,profile_pic,role',
-            'user.employee:id,user_id,full_name,photo_path'
-        ]);
-
-        // Mark the author's own comment as seen by them
-        CommentView::firstOrCreate([
-            'comment_id' => $c->id,
-            'user_id'    => Auth::id(),
-        ]);
-
-        return response()->json(['ok'=>true,'comment'=>$this->serialize($c, Auth::id())], 201);
-    }
-
-    public function store(Request $request, Project $project)
-{
-    $this->authorize('update', $project);
-
-    $request->validate([
-        'comment' => 'required|string|max:2000',
-    ]);
-
-    $comment = new Comment();
-    $comment->project_id = $project->id;
-    $comment->user_id = Auth::id();
-    $comment->body = $request->input('comment');
-    $comment->save();
-
-    // load user relationship so Alpine gets user details
-    $comment->load(['user:id,name,profile_pic,role']);
-
-    // return structured payload
-    return response()->json([
-        'ok' => true,
-        'comment' => [
-            'id'         => $comment->id,
-            'body'       => $comment->body,
-            'created_at' => $comment->created_at->toISOString(),
-            'user'       => [
-                'id'     => $comment->user->id,
-                'name'   => $comment->user->name,
-                'avatar' => $comment->user->profile_pic ? asset('storage/'.$comment->user->profile_pic) : null,
-                'role'   => $comment->user->role,
-            ],
-        ],
-    ]);
-}
-
-
-    // POST /projects/{project}/comments/seen  { comment_ids: [1,2,...] }
-    public function markSeen(Request $request, Project $project)
-    {
-        $this->authorize('view', $project);
-
-        $ids = collect($request->input('comment_ids', []))
-            ->filter(fn($x) => is_numeric($x))
-            ->map(fn($x) => (int)$x)
-            ->unique()
-            ->values();
-
-        if ($ids->isEmpty()) return response()->json(['ok'=>true]);
-
-        $userId = Auth::id();
-
-        // Ensure all belong to the project (avoid cross-project leakage)
-        $validIds = Comment::where('project_id', $project->id)
-            ->whereIn('id', $ids)->pluck('id');
-
-        $now = now();
-        $insert = $validIds->map(fn($cid) => [
-            'comment_id' => $cid,
-            'user_id'    => $userId,
-            'created_at' => $now,
-            'updated_at' => $now,
-        ])->values()->all();
-
-        // Upsert (unique user_id+comment_id)
-        CommentView::upsert($insert, ['user_id','comment_id'], ['updated_at']);
-
-        return response()->json(['ok'=>true]);
-    }
-
-    // GET /projects/{project}/comments/unread_count
-    public function unreadCount(Request $request, Project $project)
-    {
-        $this->authorize('view', $project);
-
-        $userId = Auth::id();
-        $count = DB::table('comments as c')
-            ->where('c.project_id', $project->id)
-            ->whereNotExists(function($q) use ($userId) {
-                $q->select(DB::raw(1))
-                  ->from('comment_views as v')
-                  ->whereColumn('v.comment_id', 'c.id')
-                  ->where('v.user_id', $userId);
-            })
-            ->count();
-
-        return response()->json(['ok'=>true,'unread'=>$count]);
-    }
-
-    // DELETE /comments/{comment}  (owner/admin)
-    public function destroy(Comment $comment)
-    {
-        $project = $comment->project;
-        $this->authorize('delete', $comment); // define policy or use a gate
-
-        $comment->delete();
-        return response()->json(['ok'=>true]);
-    }
-
-    // -------- serializer for FE --------
-    private function serialize(Comment $c, int $me): array
-    {
-        $u = $c->user;
-        $emp = $u?->employee;
-
-        $name = $emp?->full_name ?: $u?->name ?: 'User';
-        $avatar = $emp?->photo_path ?: $u?->profile_pic ?: null;
-
-        return [
-            'id'         => (int)$c->id,
-            'project_id' => (int)$c->project_id,
-            'body'       => (string)$c->comment,
-            'created_at' => $c->created_at?->toIso8601String(),
-            'is_own'     => $u && $u->id === $me,
-            'user' => [
-                'id'     => (int)($u?->id ?? 0),
-                'name'   => $name,
-                'avatar' => $avatar,
-                'role'   => $u?->role,
-            ],
-        ];
-    }
-
-
-
-public function commentsIndex(Request $request, Project $project)
-{
-    $limit    = (int) min(max($request->integer('limit', 25), 1), 100);
-    $afterId  = $request->integer('after_id');
-    $beforeId = $request->integer('before_id');
-
-    $q = Comment::with([
-            // do NOT request 'name' if your users table doesn't have it
-            'user:id,employee_id,profile_pic,role',
-            'user.employee:id,user_id,full_name,photo_path'
-        ])
-        ->where('project_id', $project->id)
-        ->when($afterId,  fn($qq) => $qq->where('id', '>', $afterId))
-        ->when($beforeId, fn($qq) => $qq->where('id', '<', $beforeId))
-        ->orderBy('id', 'asc');
-
-    if (!$afterId && !$beforeId) {
-        $lastId = Comment::where('project_id', $project->id)->max('id');
-        $q->when($lastId, fn($qq) => $qq->where('id', '>', max(0, $lastId - 1000)));
-    }
-
-    $rows = $q->limit($limit)->get();
-
-    $hasMoreBefore = false;
-    $hasMoreAfter  = false;
-    if ($rows->count()) {
-        $minId = $rows->min('id');
-        $maxId = $rows->max('id');
-        $hasMoreBefore = Comment::where('project_id', $project->id)->where('id','<',$minId)->exists();
-        $hasMoreAfter  = Comment::where('project_id', $project->id)->where('id','>',$maxId)->exists();
-    }
-
-    // Build payload explicitly (no dependency on users.name)
-    $payload = $rows->map(function ($c) {
-        $u = $c->user;
-        $emp = $u?->employee;
-
-        $displayName = $emp?->full_name
-            ?? (property_exists($u, 'name') ? $u->name : 'User #'.$u->id);
-
-        $avatar = $emp?->photo_path
-            ?: ($u?->profile_pic ?: null);
-
-        return [
-            'id'         => (int) $c->id,
-            'project_id' => (int) $c->project_id,
-            'body'       => (string) $c->comment, // your column is 'comment'
-            'created_at' => optional($c->created_at)->toIso8601String(),
-            'user'       => [
-                'id'     => (int) ($u?->id ?? 0),
-                'name'   => $displayName,
-                'avatar' => $avatar ? (str_starts_with($avatar,'http') ? $avatar : Storage::url($avatar)) : null,
-                'role'   => $u?->role,
-            ],
-        ];
-    })->values();
-
-    return response()->json([
-        'ok' => true,
-        'comments' => $payload,
-        'has_more_before' => $hasMoreBefore,
-        'has_more_after'  => $hasMoreAfter,
-    ]);
-}
-
-public function commentsIndex_old(Request $request, Project $project)
-{
-    // If you have policies, keep this. For quick test, comment it out:
-    $this->authorize('view', $project);
-
-    $limit    = (int) min(max($request->integer('limit', 25), 1), 100);
-    $afterId  = $request->integer('after_id');
-    $beforeId = $request->integer('before_id');
-
-    $q = Comment::with([
-            'user:id,employee_id,profile_pic,role',
-            'user.employee:id,usename,photo_path'
-        ])
-        ->where('project_id', $project->id)
-        ->when($afterId,  fn($qq) => $qq->where('id', '>', $afterId))
-        ->when($beforeId, fn($qq) => $qq->where('id', '<', $beforeId))
-        ->orderBy('id', 'asc');
-
-    if (!$afterId && !$beforeId) {
-        $lastId = Comment::where('project_id', $project->id)->max('id');
-        $q->when($lastId, fn($qq) => $qq->where('id', '>', max(0, $lastId - 1000)));
-    }
-
-    $rows = $q->limit($limit)->get();
-
-    $hasMoreBefore = false;
-    $hasMoreAfter  = false;
-    if ($rows->count()) {
-        $minId = $rows->min('id');
-        $maxId = $rows->max('id');
-        $hasMoreBefore = Comment::where('project_id', $project->id)->where('id','<',$minId)->exists();
-        $hasMoreAfter  = Comment::where('project_id', $project->id)->where('id','>',$maxId)->exists();
-    }
-
-    $me = Auth::id();
-    $payload = $rows->map(fn($c) => $this->serializeComment($c, $me));
-
-    return response()->json([
-        'ok' => true,
-        'comments' => $payload,
-        'has_more_before' => $hasMoreBefore,
-        'has_more_after'  => $hasMoreAfter,
-    ]);
-}
-
-public function commentsStore(Request $request, Project $project)
-{
-    // For quick test, you can remove this line, but restore it once policies are fixed
-    // $this->authorize('update', $project);
-
-    $data = $request->validate([
-        'comment' => ['required','string','max:5000'],
-    ]);
-
-    $me = Auth::id();
-
-    $row = Comment::create([
-        'project_id' => $project->id,
-        'user_id'    => $me,
-        'comment'    => $data['comment'],
-    ]);
-
-// BEFORE (broken): selects users.profile_pic and employees.user_id (doesn't exist)
-$row->load([
-    // 'user:id,employee_id,profile_pic,role',
-    // 'user.employee:id,user_id,name,photo_path'
-]);
-
-// AFTER (fixed):
-$row->load([
-    'user:id,employee_id,role',
-    // IMPORTANT: employees has 'id' (PK), not 'user_id'
-    // include every column you will use in the response/UI
-    'user.employee:id,name,designation,avatar_path'
-]);
-
-
-    // author has "seen" their own comment
-    CommentView::firstOrCreate([
-        'user_id'    => $me,
-        'comment_id' => $row->id,
-    ]);
-
-    // return response()->json([
-    //     'ok'      => true,
-    //     'comment' => $this->serializeComment($row, $me),
-    // ]);
-
-    // Example mapping inside controller or API Resource
-$comment = $row; // your Comment model instance after ->load()
-
-return [
-    'id' => $comment->id,
-    'body' => $comment->body,
-    'created_at' => $comment->created_at,
-    'created_for_humans' => optional($comment->created_at)->diffForHumans(),
-
-    'user' => [
-        'id' => $comment->user?->id,
-        'role' => $comment->user?->role,
-
-        // Pulling person info from the linked employee:
-        'name' => $comment->user?->employee?->name,
-        'designation' => $comment->user?->employee?->designation,
-
-        // Use the accessor; falls back to placeholder
-        'avatar_url' => $comment->user?->employee?->avatar_url,
-    ],
-];
-
-}
-
-public function commentsMarkSeen(Request $request, Project $project)
-{
-    // $this->authorize('view', $project);
-
-    $ids = array_unique(array_filter((array)($request->input('comment_ids') ?? [])));
-    $me  = Auth::id();
-    if (!$ids) return response()->json(['ok'=>true]);
-
-    $existIds = Comment::where('project_id', $project->id)
-        ->whereIn('id', $ids)->pluck('id')->all();
-
-    $now = now();
-    $insert = [];
-    foreach ($existIds as $id) {
-        $insert[] = [
-            'user_id'    => $me,
-            'comment_id' => $id,
-            'created_at' => $now,
-            'updated_at' => $now,
-        ];
-    }
-
-    if ($insert) {
-        CommentView::upsert($insert, ['user_id','comment_id'], ['updated_at']);
-    }
-
-    return response()->json(['ok'=>true]);
-}
-
-public function commentsUnreadCount(Request $request, Project $project)
-{
-    // $this->authorize('view', $project);
-
-    $me = Auth::id();
-
-    $unread = Comment::where('project_id', $project->id)
-        ->where('user_id','<>',$me)
-        ->whereDoesntHave('views', fn($q) => $q->where('user_id',$me))
-        ->count();
-
-    return response()->json(['ok'=>true,'unread'=>$unread]);
-}
-
-/** OPTIONAL: delete (owner/admin) */
-public function commentsDestroy(Comment $comment)
-{
-    // $this->authorize('delete', $comment);
-    $comment->delete();
-    return response()->json(['ok'=>true]);
-}
-
-/** Helper to shape response for FE */
-protected function serializeComment(Comment $c, $meId)
-{
-    $u   = $c->user;
-    $emp = $u?->employee;
-
-    $displayName = $emp?->name
-        ?: ($u?->name ?? 'User'); // will work even if users.name doesn’t exist
-
-    $avatar = $emp?->photo_path
-        ? Storage::url($emp->photo_path)
-        : ($u?->profile_pic ? Storage::url($u->profile_pic) : url('/images/avatar-placeholder.png'));
-
-    return [
-        'id'         => (int) $c->id,
-        'project_id' => (int) $c->project_id,
-        'body'       => (string) ($c->comment ?? ''),
-        'created_at' => optional($c->created_at)->toIso8601String(),
-        'is_own'     => (int)$c->user_id === (int)$meId,
-        'user'       => [
-            'id'     => (int) ($u->id ?? 0),
-            'name'   => $displayName,
-            'avatar' => $avatar,
-            'role'   => $u->role ?? null,
-        ],
-    ];
-}
+// // GET /projects/{project}/comments?limit=25&after_id=&before_id=
+//     public function index(Request $request, Project $project)
+//     {
+
+//         $this->authorize('view', $project);
+
+//         $limit    = (int) min(max($request->integer('limit', 25), 1), 100);
+//         $afterId  = $request->integer('after_id');
+//         $beforeId = $request->integer('before_id');
+
+//         $q = Comment::with([
+//                 'user:id,name,employee_id,profile_pic,role',
+//                 'user.employee:id,user_id,full_name,photo_path'
+//             ])
+//             ->where('project_id', $project->id)
+//             ->when($afterId,  fn($qq) => $qq->where('id', '>', $afterId))
+//             ->when($beforeId, fn($qq) => $qq->where('id', '<', $beforeId))
+//             ->orderBy('id', 'asc'); // stable append
+
+//         // For initial load (no after/before), return latest page
+//         if (!$afterId && !$beforeId) {
+//             $lastId = Comment::where('project_id', $project->id)->max('id');
+//             // If there are many, fetch the last N efficiently
+//             $q->when($lastId, fn($qq) => $qq->where('id', '>', max(0, $lastId - 1000))); // soft window
+//         }
+
+//         $rows = $q->limit($limit)->get();
+
+//         // compute has_more flags
+//         $hasMoreBefore = false;
+//         $hasMoreAfter  = false;
+//         if ($rows->count()) {
+//             $minId = $rows->min('id');
+//             $maxId = $rows->max('id');
+//             $hasMoreBefore = Comment::where('project_id', $project->id)->where('id','<',$minId)->exists();
+//             $hasMoreAfter  = Comment::where('project_id', $project->id)->where('id','>',$maxId)->exists();
+//         }
+
+//         $me = Auth::id();
+//         $payload = $rows->map(fn($c) => $this->serialize($c, $me));
+
+//         return response()->json([
+//             'ok' => true,
+//             'comments' => $payload,
+//             'has_more_before' => $hasMoreBefore,
+//             'has_more_after'  => $hasMoreAfter,
+//         ]);
+//     }
 
 }
 

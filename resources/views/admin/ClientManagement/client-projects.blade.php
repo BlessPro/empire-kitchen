@@ -5,7 +5,7 @@
 
     @include('admin.layouts.header')
 
-    <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+    <main class="ml-[280px] mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
         <!--head begins-->
 
             <div class="p-6 bg-[#F9F7F7]">
@@ -32,151 +32,318 @@
     </div>
 
    {{-- navigation bar --}}
-
-        <!-- Columns (Pending, Ongoing, Completed)  begins-->
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-
-            <!-- Pending Column begins-->
-            <div class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
-                <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#F59E0B]">
-                    <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $pending->count() }}</h5></span> Pending
-                </div>
-                <div class="pt-5 space-y-5 ">
-
-                    <!-- Card Item  begins-->
-                    @foreach ($pending as $project)
-                    {{-- <a href="{{ route('admin.clients.projects2
-                    ', $project->id) }}"> --}}
-
-<a href="{{ route('admin.projects.info', $project->id) }}">
-
-                    <div  class="p-5 bg-white rounded-[20px] mb-[20px] shadow hover:bg-gray-100">
-                        <h3 class="mb-3 font-semibold text-gray-800">{{ $project->name }}</h3>
-                        <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
-                            <i data-feather="calendar"
-                            class="mr-3 text-black feather-icon group "></i> <p class="text-sm">{{ $project->created_at->format('F j, Y') }}</p>
-
-                        </div>
-                        <div class="flex items-center justify-between mt-4">
-                            <div class="flex items-center gap-3">
-                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-8 h-8 rounded-full">
-                                <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->techSupervisor?->name ?? 'Not Assigned' }}</p>
-                                </span>
-                            </div>
-                                                       @php
-    $unreadCount = $project->comments->filter(fn($c) => $c->unread_by_admin === 0)->count();
-@endphp
-
-<div class="text-sm text-gray-500">
-     💬 {{ $unreadCount }}
-</div>
-                        </div>
+            {{-- Columns --}}
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
+                {{-- Measurement --}}
+                <div class="pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px]">
+                    <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#F59E0B]">
+                        <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px]">
+                            <h5 class="px-[10px] py-[10px] text-black">{{ ($measurements ?? collect())->count() }}</h5>
+                        </span>
+                        Measurement
                     </div>
-                </a>
-                    @endforeach
-    <!--another text-semibold-->
+                    <div class="pt-2 space-y-5">
+                        @forelse(($measurements ?? collect()) as $project)
+                            <div class="relative p-5 mb-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
 
-                    <!-- Card Item  begins-->
+                                {{-- makes the whole card clickable --}}
+                                {{-- <a href="{{ route('admin.projectInfo') }}" class="absolute inset-0 z-10"
+                                    aria-label="Open project info"></a> --}}
+                                <a href="{{ route('admin.projects.show', $project->id) }}" class="absolute inset-0 z-10"
+                                    aria-label="Open {{ $project->name }}"></a>
+
+                                {{-- card content sits above background but below menu --}}
+                                <div class="relative z-20">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="font-normal text-gray-800 text-[15px]">{{ $project->name }}</h3>
+
+                                        {{-- 3-dot menu stays above the stretched link --}}
+                                        <div class="relative z-30">
+                                            <div class="relative" data-no-nav>
+                                                <button class="p-3 more-trigger" data-project="{{ $project->id }}"
+                                                    aria-haspopup="menu" aria-expanded="false">
+                                                    <iconify-icon icon="mingcute:more-2-line" width="22"
+                                                        style="color:#5A0562;"></iconify-icon>
+                                                </button>
+
+                                                <div class="more-menu absolute right-0 z-50 hidden w-48 mt-2 bg-white border border-gray-100 shadow-lg rounded-xl"
+                                                    data-project="{{ $project->id }}" role="menu">
+                                                    <ul class="py-2 text-[15px] text-gray-700">
+                                                        <li>
+                                                            <a href="#"
+                                                                class="assign-trigger block px-4 py-2 hover:bg-gray-100"
+                                                                data-project-id="{{ $project->id }}"
+                                                                data-project-name="{{ $project->name }}"
+                                                                data-current-id="{{ $project->tech_supervisor_id ?? '' }}"
+                                                                data-no-nav onclick="event.preventDefault();">
+                                                                Assign Supervisor
+                                                            </a>
+                                                        </li>
+
+
+                                                      
+
+                                                        <li>
+ <a href="#"
+   class="add-product-trigger block px-4 py-2 hover:bg-gray-100"
+   data-project-id="{{ $project->id }}"
+   data-project-name="{{ $project->name }}"
+   onclick="event.preventDefault();">
+  Add new product
+</a>
+
+</li>
+
+
+                                                        <li>
+
+                                                            <button type="button"
+                                                                class="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                                                                onclick="duplicateProject({{ $project->id }})">
+                                                                Duplicate project
+                                                            </button>
+
+                                                            {{-- <button type="button"
+                                                                class="duplicate-project-trigger block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
+                                                                data-project-id="{{ $project->id }}" data-no-nav>
+                                                                Duplicate project
+                                                            </button> --}}
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                            {{-- your dropdown… --}}
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
+                                        <iconify-icon icon="uis:calender" width="22"
+                                            style="color:#5A0562;"></iconify-icon>
+                                        {{ $project->due_date }}
+                                    </div>
+
+                                    <div class="flex items-center justify-between mt-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://randomuser.me/api/portraits/women/44.jpg"
+                                                class="w-8 h-8 rounded-full" alt="">
+                                            <span class="text-sm text-gray-700">
+                                                {{ $project->client?->title . ' ' . $project->client?->firstname . ' ' . $project->client?->lastname }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-5 mb-5 bg-white rounded-[20px] shadow">
+                                <h3 class="font-semibold text-gray-800">No project is currently under measurement</h3>
+                            </div>
+                        @endforelse
+
+                    </div>
+
                 </div>
-            </div>
 
-            <!-- Pen2
-                0
-
-                g Column begins-->
-
-
-            <!-- Ongoing Column begins-->
-            <div>
-                <div  class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
+                {{-- Design --}}
+                <div class="pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px]">
                     <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#4F46E5]">
-                        <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $ongoing->count() }}</h5></span> Ongoing
+                        <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px]">
+                            <h5 class="px-[10px] py-[10px] text-black">{{ ($designs ?? collect())->count() }}</h5>
+                        </span>
+                        Design
                     </div>
-                    <div class="pt-5 space-y-5 ">
+                    <div class="pt-2 space-y-5">
+                        @forelse(($designs ?? collect()) as $project)
+                            <div class="relative p-5 mb-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
 
-                        <!-- Card Item -->
-                        @foreach ($ongoing as $project)
-                        <a href="{{ route('admin.projects.info', $project->id) }}">
-                        <div class="p-5 bg-white rounded-[20px] mb-[20px] shadow hover:bg-gray-100">
-                            <h3 class="mb-3 font-semibold text-gray-800">{{ $project->name }}</h3>
-                            <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
-                                <i data-feather="calendar"
-                                class="mr-3 text-black feather-icon group "></i> <p class="text-sm">{{ $project->created_at->format('F j, Y') }}</p>
+                                {{-- makes the whole card clickable --}}
+                                {{-- <a href="{{ route('admin.projectInfo') }}" class="absolute inset-0 z-10"
+                                    aria-label="Open project info"></a> --}}
+                                <a href="{{ route('admin.projects.show', $project->id) }}" class="absolute inset-0 z-10"
+                                    aria-label="Open {{ $project->name }}"></a>
 
-                            </div>
-                            <div class="flex items-center justify-between mt-4">
-                                <div class="flex items-center gap-3">
-                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="w-8 h-8 rounded-full">
-                                    <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->techSupervisor?->name ?? 'Not Assigned' }}</p>
-                                    </span>
+                                {{-- card content sits above background but below menu --}}
+                                <div class="relative z-20">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="font-normal text-gray-800 text-[15px]">{{ $project->name }}</h3>
+
+                                        {{-- 3-dot menu stays above the stretched link --}}
+                                        <div class="relative z-30">
+                                            <div class="relative" data-no-nav>
+                                                <button class="p-3 more-trigger" data-project="{{ $project->id }}"
+                                                    aria-haspopup="menu" aria-expanded="false">
+                                                    <iconify-icon icon="mingcute:more-2-line" width="22"
+                                                        style="color:#5A0562;"></iconify-icon>
+                                                </button>
+
+                                            </div>
+
+                                            {{-- your dropdown… --}}
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
+                                        <iconify-icon icon="uis:calender" width="22"
+                                            style="color:#5A0562;"></iconify-icon>
+                                        {{ $project->due_date }}
+                                    </div>
+
+                                    <div class="flex items-center justify-between mt-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://randomuser.me/api/portraits/women/44.jpg"
+                                                class="w-8 h-8 rounded-full" alt="">
+                                            <span class="text-sm text-gray-700">
+                                                {{ $project->client?->title . ' ' . $project->client?->firstname . ' ' . $project->client?->lastname }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                                                         @php
-    $unreadCount = $project->comments->filter(fn($c) => $c->unread_by_admin === 0)->count();
-@endphp
-
-<div class="text-sm text-gray-500">
-     💬 {{ $unreadCount }}
-</div>
                             </div>
-                        </div>
-                        </a>
-                        @endforeach
-                             <!-- Card Item ends-->
-
+                        @empty
+                            <div class="p-5 mb-5 bg-white rounded-[20px] shadow">
+                                <h3 class="font-semibold text-gray-800">No project is currently under measurement</h3>
+                            </div>
+                        @endforelse
 
                     </div>
                 </div>
-            </div>
-            <!-- Ongoing Column begins-->
 
-            <!-- Completed Column begins-->
-            <div>
-                <div class=" pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px] ">
+                {{-- Production --}}
+                <div class="pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px]">
                     <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#22C55E]">
-                        <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px] items-center"><h5 class="items-center rounded-full px-[10px] py-[10px] text-black">{{ $completed->count() }}</h5></span> Completed
+                        <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px]">
+                            <h5 class="px-[10px] py-[10px] text-black">{{ ($productions ?? collect())->count() }}</h5>
+                        </span>
+                        Production
                     </div>
-                    <div class="pt-5 space-y-5 ">
 
-                        <!-- Card Item begins-->
-                        @foreach ($completed as $project)
-                        <a href="{{ route('admin.projects.info', $project->id) }}">
-                        <div class="p-5 bg-white rounded-[20px] mb-[20px] shadow hover:bg-gray-100">
-                            <h3 class="mb-3 font-semibold text-gray-800">{{ $project->name }}</h3>
-                            <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
-                                <i data-feather="calendar"
-                                class="mr-3 text-black feather-icon group "></i> <p class="text-sm">{{ $project->created_at->format('F j, Y') }}</p>
 
-                            </div>
-                            <div class="flex items-center justify-between mt-4">
-                                <div class="flex items-center gap-3">
-                                    <img
 
-                                     alt="technical supervisor" class="w-8 h-8 rounded-full">
-                                    <span class="text-sm text-gray-700"> <p class="text-sm">{{ $project->techSupervisor?->name ?? 'Not Assigned' }}</p>
-                                    </span>
+                <div class="pt-2 space-y-5">
+                        @forelse(($productions ?? collect()) as $project)
+                            <div class="relative p-5 mb-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
+
+                                {{-- makes the whole card clickable --}}
+                                {{-- <a href="{{ route('admin.projectInfo') }}" class="absolute inset-0 z-10"
+                                    aria-label="Open project info"></a> --}}
+                                <a href="{{ route('admin.projects.show', $project->id) }}" class="absolute inset-0 z-10"
+                                    aria-label="Open {{ $project->name }}"></a>
+
+                                {{-- card content sits above background but below menu --}}
+                                <div class="relative z-20">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="font-normal text-gray-800 text-[15px]">{{ $project->name }}</h3>
+
+                                        {{-- 3-dot menu stays above the stretched link --}}
+                                        <div class="relative z-30">
+                                            <div class="relative" data-no-nav>
+                                                <button class="p-3 more-trigger" data-project="{{ $project->id }}"
+                                                    aria-haspopup="menu" aria-expanded="false">
+                                                    <iconify-icon icon="mingcute:more-2-line" width="22"
+                                                        style="color:#5A0562;"></iconify-icon>
+                                                </button>
+
+                                            </div>
+
+                                            {{-- your dropdown… --}}
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
+                                        <iconify-icon icon="uis:calender" width="22"
+                                            style="color:#5A0562;"></iconify-icon>
+                                        {{ $project->due_date }}
+                                    </div>
+
+                                    <div class="flex items-center justify-between mt-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://randomuser.me/api/portraits/women/44.jpg"
+                                                class="w-8 h-8 rounded-full" alt="">
+                                            <span class="text-sm text-gray-700">
+                                                {{ $project->client?->title . ' ' . $project->client?->firstname . ' ' . $project->client?->lastname }}
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                                                         @php
-    $unreadCount = $project->comments->filter(fn($c) => $c->unread_by_admin === 0)->count();
-@endphp
-
-<div class="text-sm text-gray-500">
-     💬 {{ $unreadCount }}
-</div>
                             </div>
-                        </div>
-                    </a>
-                        @endforeach
-                         <!-- Card Item ends-->
-
+                        @empty
+                            <div class="p-5 mb-5 bg-white rounded-[20px] shadow">
+                                <h3 class="font-semibold text-gray-800">No project is currently under measurement</h3>
+                            </div>
+                        @endforelse
 
                     </div>
+
+                </div>
+
+                {{-- Installation --}}
+                <div class="pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px]">
+                    <div class="flex items-center py-2 pl-2 pr-5 text-white rounded-full bg-fuchsia-500">
+                        <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px]">
+                            <h5 class="px-[10px] py-[10px] text-black">{{ ($installations ?? collect())->count() }}
+                            </h5>
+                        </span>
+                        Installation
+                    </div>
+
+
+                <div class="pt-2 space-y-5">
+                        @forelse(($installations ?? collect()) as $project)
+                            <div class="relative p-5 mb-5 bg-white rounded-[20px] shadow hover:bg-gray-100">
+
+                                {{-- makes the whole card clickable --}}
+                                {{-- <a href="{{ route('admin.projectInfo') }}" class="absolute inset-0 z-10"
+                                    aria-label="Open project info"></a> --}}
+                                <a href="{{ route('admin.projects.show', $project->id) }}" class="absolute inset-0 z-10"
+                                    aria-label="Open {{ $project->name }}"></a>
+
+                                {{-- card content sits above background but below menu --}}
+                                <div class="relative z-20">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="font-normal text-gray-800 text-[15px]">{{ $project->name }}</h3>
+
+                                        {{-- 3-dot menu stays above the stretched link --}}
+                                        <div class="relative z-30">
+                                            <div class="relative" data-no-nav>
+                                                <button class="p-3 more-trigger" data-project="{{ $project->id }}"
+                                                    aria-haspopup="menu" aria-expanded="false">
+                                                    <iconify-icon icon="mingcute:more-2-line" width="22"
+                                                        style="color:#5A0562;"></iconify-icon>
+                                                </button>
+
+                                            </div>
+
+                                            {{-- your dropdown… --}}
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center gap-3 mt-2 text-sm text-gray-500">
+                                        <iconify-icon icon="uis:calender" width="22"
+                                            style="color:#5A0562;"></iconify-icon>
+                                        {{ $project->due_date }}
+                                    </div>
+
+                                    <div class="flex items-center justify-between mt-4">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://randomuser.me/api/portraits/women/44.jpg"
+                                                class="w-8 h-8 rounded-full" alt="">
+                                            <span class="text-sm text-gray-700">
+                                                {{ $project->client?->title . ' ' . $project->client?->firstname . ' ' . $project->client?->lastname }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-5 mb-5 bg-white rounded-[20px] shadow">
+                                <h3 class="font-semibold text-gray-800">No project is currently under measurement</h3>
+                            </div>
+                        @endforelse
+
+                    </div>
+
                 </div>
             </div>
-            <!-- Completed Column ends-->
-
-        </div>
-        <!-- Columns (Pending, Ongoing, Completed)  ends-->
-
 <!-- ADD CLIENT MODAL -->
 <div id="addClientModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
     <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">

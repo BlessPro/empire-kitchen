@@ -35,7 +35,7 @@ class InboxController extends Controller
             })->orderBy('created_at', 'asc')->get();
         }
 
-        return view('admin.inbox', compact('users', 'messages', 'userId'));
+        return view('admin.Inbox', compact('users', 'messages', 'userId'));
     }
 
     public function sendMessage(Request $request)

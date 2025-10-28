@@ -33,6 +33,94 @@ public function index()
     {
         $adminId = Auth::id();
 
+        $stageData = $this->loadStageData($adminId);
+
+        $projects = Project::all();
+        $clients  = Client::all();
+        $projectLocations = Project::query()
+            ->select('location')
+            ->whereNotNull('location')
+            ->where('location', '!=', '')
+            ->distinct()
+            ->orderBy('location')
+            ->pluck('location');
+
+        $supervisors = User::where('role', 'tech_supervisor')
+            ->join('employees', 'employees.id', '=', 'users.employee_id')
+            ->orderBy('employees.name')
+            ->get([
+                'users.id',
+                DB::raw('employees.name as name'),
+                DB::raw('employees.avatar_path as profile_pic'),
+            ]);
+
+        $techSupervisors = User::where('role', 'tech_supervisor')
+            ->leftJoin('employees', 'employees.id', '=', 'users.employee_id')
+            ->orderBy('employees.name')
+            ->get([
+                'users.id',
+                'users.employee_id',
+                DB::raw('COALESCE(employees.name, CONCAT("User #", users.id)) as display_name'),
+                DB::raw('employees.avatar_path as avatar_path'),
+            ]);
+
+        $supervisorAssignments = Project::whereNotNull('tech_supervisor_id')
+            ->pluck('name', 'tech_supervisor_id');
+
+        return view('admin.ProjectManagement', [
+            'measurements' => $stageData['measurement'],
+            'designs' => $stageData['design'],
+            'installations' => $stageData['installation'],
+            'productions' => $stageData['production'],
+            'clients' => $clients,
+            'projects' => $projects,
+            'projectLocations' => $projectLocations,
+            'supervisors' => $supervisors,
+            'techSupervisors' => $techSupervisors,
+            'supervisorAssignments' => $supervisorAssignments,
+        ]);
+    }
+
+    public function filterColumns(Request $request): JsonResponse
+    {
+        $adminId = Auth::id();
+
+        $search = trim((string) $request->query('search', ''));
+        $location = trim((string) $request->query('location', ''));
+
+        $search = $search !== '' ? $search : null;
+        $location = $location !== '' ? $location : null;
+
+        $stageData = $this->loadStageData($adminId, $search, $location);
+
+        return response()->json([
+            'measurement' => view('admin.partials.project-stage-cards', [
+                'projects' => $stageData['measurement'],
+                'emptyMessage' => 'No project is currently under measurement',
+            ])->render(),
+            'design' => view('admin.partials.project-stage-cards', [
+                'projects' => $stageData['design'],
+                'emptyMessage' => 'No project is currently in design',
+            ])->render(),
+            'production' => view('admin.partials.project-stage-cards', [
+                'projects' => $stageData['production'],
+                'emptyMessage' => 'No project is currently in production',
+            ])->render(),
+            'installation' => view('admin.partials.project-stage-cards', [
+                'projects' => $stageData['installation'],
+                'emptyMessage' => 'No project is currently in installation',
+            ])->render(),
+            'counts' => [
+                'measurement' => $stageData['measurement']->count(),
+                'design' => $stageData['design']->count(),
+                'production' => $stageData['production']->count(),
+                'installation' => $stageData['installation']->count(),
+            ],
+        ]);
+    }
+
+    private function loadStageData(int $adminId, ?string $search = null, ?string $location = null): array
+    {
         $withUnreadComments = function ($query) use ($adminId) {
             $query->withCount([
                 'views as unread_by_admin' => function ($subQuery) use ($adminId) {
@@ -43,82 +131,60 @@ public function index()
 
         $withCommon = [
             'client:id,firstname,email,phone_number',
-
             'admin.employee:id,name,avatar_path',
             'techSupervisor.employee:id,name,avatar_path',
             'designer.employee:id,name,avatar_path',
             'productionOfficer.employee:id,name,avatar_path',
             'installationOfficer.employee:id,name,avatar_path',
-
             'products:id,project_id,name,product_type,type_of_finish,finish_color_hex,worktop_type,worktop_color_hex,handle,notes',
         ];
 
-        $measurements = Project::with(array_merge($withCommon, ['measurement', 'comments' => $withUnreadComments]))
-            ->whereRaw('LOWER(current_stage) = ?', ['measurement'])
-            ->latest()->get();
+        $stageRelations = [
+            'measurement' => 'measurement',
+            'design' => 'design',
+            'production' => 'production',
+            'installation' => 'installation',
+        ];
 
-        $designs = Project::with(array_merge($withCommon, ['design', 'comments' => $withUnreadComments]))
-            ->whereRaw('LOWER(current_stage) = ?', ['design'])
-            ->latest()->get();
+        return [
+            'measurement' => $this->buildStageCollection('measurement', $withCommon, $withUnreadComments, $stageRelations, $search, $location),
+            'design' => $this->buildStageCollection('design', $withCommon, $withUnreadComments, $stageRelations, $search, $location),
+            'production' => $this->buildStageCollection('production', $withCommon, $withUnreadComments, $stageRelations, $search, $location),
+            'installation' => $this->buildStageCollection('installation', $withCommon, $withUnreadComments, $stageRelations, $search, $location),
+        ];
+    }
 
-        $installations = Project::with(array_merge($withCommon, ['installation', 'comments' => $withUnreadComments]))
-            ->whereRaw('LOWER(current_stage) = ?', ['installation'])
-            ->latest()->get();
+    private function buildStageCollection(
+        string $stage,
+        array $withCommon,
+        callable $withUnreadComments,
+        array $stageRelations,
+        ?string $search,
+        ?string $location
+    ) {
+        $relations = $withCommon;
+        if (isset($stageRelations[$stage])) {
+            $relations[] = $stageRelations[$stage];
+        }
+        $relations['comments'] = $withUnreadComments;
 
-        $productions = Project::with(array_merge($withCommon, ['production', 'comments' => $withUnreadComments]))
-            ->whereRaw('LOWER(current_stage) = ?', ['production'])
-            ->latest()->get();
+        $query = Project::with($relations)
+            ->whereRaw('LOWER(current_stage) = ?', [strtolower($stage)]);
 
-        // you already used these in your view
-        $projects = Project::all();
-        $clients  = Client::all();
+        if ($search) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
 
-        // present, but we’ll load “assign-state” via ajax per project
-        $supervisors = User::where('role', 'tech_supervisor')
-            ->join('employees', 'employees.id', '=', 'users.employee_id')
-            ->orderBy('employees.name')
-            ->get([
-                'users.id',
-                DB::raw('employees.name as name'),
-                DB::raw('employees.avatar_path as profile_pic'),
-            ]);
+        if ($location) {
+            $query->whereRaw('LOWER(location) = ?', [strtolower($location)]);
+        }
 
-// ...
-$techSupervisors = User::where('role', 'tech_supervisor')
-    ->leftJoin('employees', 'employees.id', '=', 'users.employee_id')
-    ->orderBy('employees.name')                 // sort by employee name
-    ->get([
-        'users.id',
-        'users.employee_id',
-        DB::raw('COALESCE(employees.name, CONCAT("User #", users.id)) as display_name'),
-        DB::raw('employees.avatar_path as avatar_path'),
-    ]);
-
-
-
-
-    // Map supervisor_id => a project name they’re assigned to (for the badge)
-    $supervisorAssignments = Project::whereNotNull('tech_supervisor_id')
-        ->pluck('name', 'tech_supervisor_id'); // [user_id => project_name]
+        return $query->latest()->get();
+    }
 
 
 
-    return view('admin.ProjectManagement', [
-        'measurements' => $measurements,
-        'designs' => $designs,
-        'installations' => $installations,
-        'productions' => $productions,
-        'clients' => $clients,
-        'projects' => $projects,
-        'supervisors' => $supervisors,
-        'techSupervisors' => $techSupervisors,
-        'supervisorAssignments' => $supervisorAssignments,
-    ]);
-
-
-}
-
-public function supervisorsForProject(Project $project)
+    public function supervisorsForProject(Project $project)
 {
     // Grab all supervisors with display name/avatar
     $rows = User::query()

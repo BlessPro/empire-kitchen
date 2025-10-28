@@ -187,7 +187,9 @@
 
                                             {{-- <tr onclick="window.location='{{ route('admin.clients.projects', $client->id) }}'" class="cursor-pointer hover:bg-gray-100"> --}}
 
-                                        <tr class="cursor-pointer items-right hover:bg-gray-100">
+                                            {{-- <tr class="cursor-pointer items-right hover:bg-gray-100"> --}}
+                                        <tr class="cursor-pointer items-right hover:bg-gray-100"
+                                            data-client-id="{{ $client->id }}">
                                             <td class="p-4 font-normal text-[15px]  items-center">
                                                 {{ $client->title . ' ' . $client->firstname . ' ' . $client->lastname }}
                                             </td>
@@ -350,6 +352,27 @@
         </script>
 
         @vite(['resources/js/app.js'])
+        <script>
+            (function() {
+                // Base for /admin/clients/{id}/projects
+                const clientProjectsBase = "{{ url('/admin/clients') }}";
+
+                document.addEventListener('click', function(e) {
+                    // Ignore clicks inside elements marked data-no-nav
+                    if (e.target.closest('[data-no-nav]')) return;
+
+                    // Find the nearest row with a client id
+                    const row = e.target.closest('tr[data-client-id]');
+                    if (!row) return;
+
+                    const id = row.dataset.clientId;
+                    if (!id) return;
+
+                    // Navigate
+                    window.location.href = `${clientProjectsBase}/${id}/projects`;
+                });
+            })();
+        </script>
 
     </x-slot>
 

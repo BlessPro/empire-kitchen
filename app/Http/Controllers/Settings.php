@@ -319,10 +319,15 @@ class Settings extends Controller
     // }
     public function showUsers()
     {
-        // $employees = Employee::select('staff_id','name')->orderBy('name')->get();
-        $employees = Employee::select('id', 'name', 'staff_id')->orderBy('name')->get();
+        $employees = Employee::select('id', 'name', 'staff_id')
+            ->orderBy('name')
+            ->get();
 
-        $users = DB::table('users')->join('employees', 'employees.id', '=', 'users.employee_id')->select('users.id', 'employees.name', 'employees.email', DB::raw('employees.avatar_path as profile_pic'), 'users.role', 'users.last_seen_at', 'users.created_at')->orderByDesc('users.created_at')->paginate(10);
+        $users = User::with(['employee' => function ($query) {
+                $query->select('id', 'name', 'email', 'phone', 'avatar_path', 'staff_id');
+            }])
+            ->orderByDesc('created_at')
+            ->paginate(10);
 
         return view('admin.settings', compact('users', 'employees'));
     }
