@@ -107,7 +107,7 @@
             </button>
         </div>
 
-        <form id="addUserForm" action="{{ route('users.store') }}" method="POST" class="space-y-4">
+        <form id="addUserForm" action="{{ route('admin.users.store') }}" method="POST" class="space-y-4">
             @csrf
 
             {{-- Show validation errors --}}
@@ -416,7 +416,7 @@
         const form = e.target;
         const formData = new FormData(form);
 
-        fetch("{{ route('users.store') }}", {
+        fetch("{{ route('admin.users.store') }}", {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',

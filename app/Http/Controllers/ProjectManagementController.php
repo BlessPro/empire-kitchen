@@ -60,7 +60,7 @@ public function index()
             ->get([
                 'users.id',
                 'users.employee_id',
-                DB::raw('COALESCE(employees.name, CONCAT("User #", users.id)) as display_name'),
+                DB::raw("COALESCE(employees.name, CONCAT('User #', users.id)) as display_name"),
                 DB::raw('employees.avatar_path as avatar_path'),
             ]);
 

@@ -57,46 +57,36 @@ class UserController extends Controller
     // }
 
 
-
-// Admin/UsersController.php
-// public function update(Request $request, \App\Models\User $user)
-// {
-//     $data = $request->validate([
-//         'name'  => ['required','string','max:150'],
-//         'role'  => ['required','in:admin,accountant,designer,tech_supervisor,production_officer,installation_officer'],
-//         'password' => ['nullable','confirmed','min:8'],
-//     ]);
-
-//     $user->name = $data['name'];
-//     $user->role = $data['role'];
-
-//     if (!empty($data['password'])) {
-//         $user->password = bcrypt($data['password']);
-//     }
-
-//     $user->save();
-
-//     // return back()->with('success', 'User updated successfully.');
-
-// return redirect()
-//     ->route('admin.Settings')   // <- your settings route name
-//     ->with('success', 'User updated successfully.');
-
-
-// }
-// app/Http/Controllers/UserController.php
 public function update(Request $request, \App\Models\User $user)
 {
     $data = $request->validate([
         'name'     => ['required','string','max:150'],
-        'role'     => ['required','in:admin,accountant,designer,tech_supervisor,production_officer,installation_officer'],
+        'role'     => ['required', Rule::in([
+            'administrator',
+            'admin',
+            'tech_supervisor',
+            'designer',
+            'accountant',
+            'sales_account',
+            'sales_accountant',
+            'production_officer',
+            'installation_officer',
+        ])],
         'password' => ['nullable','confirmed','min:8'],
     ]);
 
-    // If your users table uses firstname/lastname instead of name,
-    // replace the next line with $user->firstname / $user->lastname accordingly.
-    $user->name = $data['name'];
     $user->role = $data['role'];
+
+    $employee = $user->employee;
+    if ($employee) {
+        $employee->name = $data['name'];
+        $employee->save();
+    } else {
+        $employee = Employee::create([
+            'name'  => $data['name'],
+        ]);
+        $user->employee_id = $employee->id;
+    }
 
     if (!empty($data['password'])) {
         $user->password = bcrypt($data['password']);
@@ -244,3 +234,4 @@ public function update(Request $request, \App\Models\User $user)
         return redirect()->back()->with('success', 'Profile picture updated successfully.');
     }
 }
+

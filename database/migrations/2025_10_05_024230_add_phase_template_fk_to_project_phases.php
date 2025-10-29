@@ -31,26 +31,48 @@ return new class extends Migration
         // 3) BACKFILL phase_template_id
         $hasProductType = Schema::hasColumn('projects', 'product_type');
 
+        $driver = DB::getDriverName();
         if ($hasProductType) {
-            // match by name + product_type
-            DB::statement("
-                UPDATE project_phases AS pp
-                JOIN projects AS p ON p.id = pp.project_id
-                JOIN phase_templates AS pt
-                  ON LOWER(TRIM(pt.name)) = LOWER(TRIM(pp.name))
-                 AND (pt.product_type IS NULL OR pt.product_type = p.product_type)
-                SET pp.phase_template_id = pt.id
-                WHERE pp.phase_template_id IS NULL
-            ");
+            if ($driver === 'pgsql') {
+                DB::statement("
+                    UPDATE project_phases AS pp
+                    SET phase_template_id = pt.id
+                    FROM projects AS p
+                    JOIN phase_templates AS pt
+                      ON LOWER(TRIM(pt.name)) = LOWER(TRIM(pp.name))
+                     AND (pt.product_type IS NULL OR pt.product_type = p.product_type)
+                    WHERE p.id = pp.project_id
+                      AND pp.phase_template_id IS NULL
+                ");
+            } else {
+                DB::statement("
+                    UPDATE project_phases AS pp
+                    JOIN projects AS p ON p.id = pp.project_id
+                    JOIN phase_templates AS pt
+                      ON LOWER(TRIM(pt.name)) = LOWER(TRIM(pp.name))
+                     AND (pt.product_type IS NULL OR pt.product_type = p.product_type)
+                    SET pp.phase_template_id = pt.id
+                    WHERE pp.phase_template_id IS NULL
+                ");
+            }
         } else {
-            // match by name only
-            DB::statement("
-                UPDATE project_phases AS pp
-                JOIN phase_templates AS pt
-                  ON LOWER(TRIM(pt.name)) = LOWER(TRIM(pp.name))
-                SET pp.phase_template_id = pt.id
-                WHERE pp.phase_template_id IS NULL
-            ");
+            if ($driver === 'pgsql') {
+                DB::statement("
+                    UPDATE project_phases AS pp
+                    SET phase_template_id = pt.id
+                    FROM phase_templates AS pt
+                    WHERE LOWER(TRIM(pt.name)) = LOWER(TRIM(pp.name))
+                      AND pp.phase_template_id IS NULL
+                ");
+            } else {
+                DB::statement("
+                    UPDATE project_phases AS pp
+                    JOIN phase_templates AS pt
+                      ON LOWER(TRIM(pt.name)) = LOWER(TRIM(pp.name))
+                    SET pp.phase_template_id = pt.id
+                    WHERE pp.phase_template_id IS NULL
+                ");
+            }
         }
 
         // 4) Add unique constraint (if not present)

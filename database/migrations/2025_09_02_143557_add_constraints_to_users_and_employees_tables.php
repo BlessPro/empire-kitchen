@@ -9,25 +9,48 @@ return new class extends Migration {
     /** Helpers */
     private function indexExists(string $table, string $index): bool
     {
-        $db = DB::getDatabaseName();
-        $row = DB::selectOne(
-            "SELECT COUNT(1) AS c
-             FROM information_schema.statistics
-             WHERE table_schema = ? AND table_name = ? AND index_name = ?",
-            [$db, $table, $index]
-        );
+        $driver = DB::getDriverName();
+        if ($driver === 'pgsql') {
+            $row = DB::selectOne(
+                "SELECT COUNT(1) AS c
+                 FROM pg_indexes
+                 WHERE schemaname = current_schema() AND tablename = ? AND indexname = ?",
+                [$table, $index]
+            );
+        } else {
+            $db = DB::getDatabaseName();
+            $row = DB::selectOne(
+                "SELECT COUNT(1) AS c
+                 FROM information_schema.statistics
+                 WHERE table_schema = ? AND table_name = ? AND index_name = ?",
+                [$db, $table, $index]
+            );
+        }
         return (int)($row->c ?? 0) > 0;
     }
 
     private function foreignKeyExists(string $table, string $fkName): bool
     {
-        $db = DB::getDatabaseName();
-        $row = DB::selectOne(
-            "SELECT COUNT(1) AS c
-             FROM information_schema.table_constraints
-             WHERE constraint_schema = ? AND table_name = ? AND constraint_name = ? AND constraint_type = 'FOREIGN KEY'",
-            [$db, $table, $fkName]
-        );
+        $driver = DB::getDriverName();
+        if ($driver === 'pgsql') {
+            $row = DB::selectOne(
+                "SELECT COUNT(1) AS c
+                 FROM information_schema.table_constraints
+                 WHERE constraint_schema = current_schema()
+                   AND table_name = ?
+                   AND constraint_name = ?
+                   AND constraint_type = 'FOREIGN KEY'",
+                [$table, $fkName]
+            );
+        } else {
+            $db = DB::getDatabaseName();
+            $row = DB::selectOne(
+                "SELECT COUNT(1) AS c
+                 FROM information_schema.table_constraints
+                 WHERE constraint_schema = ? AND table_name = ? AND constraint_name = ? AND constraint_type = 'FOREIGN KEY'",
+                [$db, $table, $fkName]
+            );
+        }
         return (int)($row->c ?? 0) > 0;
     }
 

@@ -14,7 +14,9 @@
     window.ASSIGNED_PROJECTS = @json($projects);
   </script>
 
-  <main class="flex-1 w-full min-h-screen bg-[#F9F7F7] pt-24 pb-12 overflow-x-hidden">
+  {{-- <main class="flex-1  min-h-screen bg-[#F9F7F7] pt-24 pb-12 overflow-x-hidden"> --}}
+        <main class="ml-[280px] mt-[90px] flex-1 bg-[#F9F7F7] pt-4 min-h-screen  items-center">
+
     <div class="px-4 sm:px-6 lg:px-8">
       <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>

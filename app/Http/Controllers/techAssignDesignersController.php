@@ -248,7 +248,7 @@ public function assignDesigner(Request $request)
         // Allow same designer on many projects
         $project->forceFill([
             'designer_id'   => $validated['designer_id'],
-            'current_stage' => 'design',
+            'current_stage' => 'DESIGN',
         ])->save();
 
         // Only dedupe per (project, date)
@@ -286,7 +286,7 @@ public function assignDesigner_old(Request $request)
         // 1) Set designer on the project (this does NOT prevent same designer on other projects)
         $project->update([
             'designer_id'   => $validated['designer_id'],
-            'current_stage' => 'design',
+            'current_stage' => 'DESIGN',
         ]);
 
         // 2) Create a design row for this project/date (dedupe per project+date only)

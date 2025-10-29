@@ -54,9 +54,19 @@ class EmployeeSeeder extends Seeder
     /** Generate the next available staff code like EMP-0007 */
     private function nextStaffId(): string
     {
-        $last = Employee::where('staff_id', 'like', 'EMP-%')
-            ->select(DB::raw("MAX(CAST(SUBSTRING(staff_id, 5) AS UNSIGNED)) as n"))
-            ->value('n');
+        $driver = DB::getDriverName();
+
+        if ($driver === 'pgsql') {
+            $last = DB::table('employees')
+                ->where('staff_id', 'like', 'EMP-%')
+                ->selectRaw("MAX(CAST(SUBSTRING(staff_id FROM 5) AS INTEGER)) as n")
+                ->value('n');
+        } else {
+            $last = DB::table('employees')
+                ->where('staff_id', 'like', 'EMP-%')
+                ->select(DB::raw("MAX(CAST(SUBSTRING(staff_id, 5) AS UNSIGNED)) as n"))
+                ->value('n');
+        }
 
         $n = (int) $last + 1;
         return 'EMP-'.str_pad((string)$n, 4, '0', STR_PAD_LEFT);

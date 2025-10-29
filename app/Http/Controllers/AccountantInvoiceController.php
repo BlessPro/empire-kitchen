@@ -3,8 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-  use App\Models\Client;
+use Illuminate\\Http\\Request;\nuse Illuminate\\Support\\Facades\\Auth;\n  use App\\Models\\Client;
   use App\Models\Project;
   use App\Models\InvoiceSummary;
   use App\Models\Invoice;
@@ -114,3 +113,5 @@ public function getProjectsByClient($client_id)
 
 
 }
+
+

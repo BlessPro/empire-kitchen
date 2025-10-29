@@ -28,13 +28,24 @@ return new class extends Migration {
         ");
 
         // Backfill install_date/time from start_time
-        DB::statement("
-            UPDATE installations
-            SET install_date = COALESCE(install_date, DATE(start_time)),
-                install_time = COALESCE(install_time, TIME(start_time))
-            WHERE start_time IS NOT NULL
-              AND (install_date IS NULL OR install_time IS NULL)
-        ");
+        $driver = DB::getDriverName();
+        if ($driver === 'pgsql') {
+            DB::statement("
+                UPDATE installations
+                SET install_date = COALESCE(install_date, DATE(start_time)),
+                    install_time = COALESCE(install_time, CAST(start_time AS time))
+                WHERE start_time IS NOT NULL
+                  AND (install_date IS NULL OR install_time IS NULL)
+            ");
+        } else {
+            DB::statement("
+                UPDATE installations
+                SET install_date = COALESCE(install_date, DATE(start_time)),
+                    install_time = COALESCE(install_time, TIME(start_time))
+                WHERE start_time IS NOT NULL
+                  AND (install_date IS NULL OR install_time IS NULL)
+            ");
+        }
 
         // Add indexes (safe even if table is large)
         Schema::table('installations', function (Blueprint $t) {

@@ -8,6 +8,26 @@ return new class extends Migration
 {
     public function up(): void
     {
+        $foreignKeyMap = [
+            'measurements'           => ['column' => 'project_id', 'action' => 'cascade'],
+            'designs'                => ['column' => 'project_id', 'action' => 'cascade'],
+            'installations'          => ['column' => 'project_id', 'action' => 'cascade'],
+            'comments'               => ['column' => 'project_id', 'action' => 'cascade'],
+            'expenses'               => ['column' => 'project_id', 'action' => 'cascade'],
+            'incomes'                => ['column' => 'project_id', 'action' => 'cascade'],
+            'invoices'               => ['column' => 'project_id', 'action' => 'cascade'],
+            'follow_ups'             => ['column' => 'project_id', 'action' => 'null'],
+            'measurement_schedules'  => ['column' => 'project_id', 'action' => 'cascade'],
+        ];
+
+        foreach ($foreignKeyMap as $tableName => $config) {
+            if (Schema::hasTable($tableName) && Schema::hasColumn($tableName, $config['column'])) {
+                Schema::table($tableName, function (Blueprint $table) use ($config) {
+                    $table->dropForeign([$config['column']]);
+                });
+            }
+        }
+
         // 1) Turn off FK checks so we can drop in any order
         Schema::disableForeignKeyConstraints();
 
@@ -109,6 +129,19 @@ return new class extends Migration
 
             $table->unique(['product_id','accessory_id']); // prevent duplicates per product
         });
+
+        foreach ($foreignKeyMap as $tableName => $config) {
+            if (Schema::hasTable($tableName) && Schema::hasColumn($tableName, $config['column'])) {
+                Schema::table($tableName, function (Blueprint $table) use ($config) {
+                    $foreign = $table->foreign($config['column'])->references('id')->on('projects');
+                    if ($config['action'] === 'null') {
+                        $foreign->nullOnDelete();
+                    } else {
+                        $foreign->cascadeOnDelete();
+                    }
+                });
+            }
+        }
     }
 
     public function down(): void

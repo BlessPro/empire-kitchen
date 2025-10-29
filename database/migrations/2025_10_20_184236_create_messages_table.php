@@ -6,36 +6,47 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
- public function up()
-{
-    // If other tables have FKs to messages (or vice-versa), disable FKs first
-    Schema::disableForeignKeyConstraints();
-    Schema::dropIfExists('messages');   // ⚠️ deletes existing data
-    Schema::enableForeignKeyConstraints();
+    public function up(): void
+    {
+        if (Schema::hasTable('conversations') && Schema::hasColumn('conversations', 'last_message_id')) {
+            Schema::table('conversations', function (Blueprint $table) {
+                try { $table->dropForeign(['last_message_id']); } catch (\Throwable $e) {}
+            });
+        }
 
-    Schema::create('messages', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('conversation_id')->constrained('conversations')->onDelete('cascade');
-        $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
-        $table->enum('type', ['text', 'file', 'system']);
-        $table->text('body')->nullable();
-        $table->json('metadata')->nullable();
-        $table->foreignId('reply_to_message_id')->nullable()->constrained('messages')->nullOnDelete();
-        $table->timestamps();
-        $table->index(['conversation_id', 'created_at']);
-    });
-}
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('messages');
+        Schema::enableForeignKeyConstraints();
 
+        Schema::create('messages', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('conversation_id')->constrained('conversations')->onDelete('cascade');
+            $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
+            $table->enum('type', ['text', 'file', 'system']);
+            $table->text('body')->nullable();
+            $table->json('metadata')->nullable();
+            $table->foreignId('reply_to_message_id')->nullable()->constrained('messages')->nullOnDelete();
+            $table->timestamps();
+            $table->index(['conversation_id', 'created_at']);
+        });
 
+        if (Schema::hasTable('conversations') && Schema::hasColumn('conversations', 'last_message_id')) {
+            Schema::table('conversations', function (Blueprint $table) {
+                $table->foreign('last_message_id')
+                    ->references('id')->on('messages')
+                    ->nullOnDelete();
+            });
+        }
+    }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
+        if (Schema::hasTable('conversations') && Schema::hasColumn('conversations', 'last_message_id')) {
+            Schema::table('conversations', function (Blueprint $table) {
+                try { $table->dropForeign(['last_message_id']); } catch (\Throwable $e) {}
+            });
+        }
+
         Schema::dropIfExists('messages');
     }
 };

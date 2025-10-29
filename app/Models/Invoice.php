@@ -4,11 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\InvoiceItem;
+use App\Models\User;
 
 class Invoice extends Model
 {
-  
-        protected $fillable = ['invoice_code', 'due_date', 'client_id', 'project_id', 'send_email'];
+    protected $fillable = [
+        'invoice_code',
+        'due_date',
+        'client_id',
+        'project_id',
+        'user_id',
+        'invoice_type',
+        'send_email',
+    ];
 // app/Models/Invoice.php
 
 protected $casts = [
@@ -59,6 +67,11 @@ public function invoiceSummary() {
     return $this->hasOne(InvoiceSummary::class);
 }
 
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
 
 
 
@@ -69,3 +82,4 @@ public function invoiceSummary() {
 
 
 }
+

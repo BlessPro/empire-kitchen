@@ -30,6 +30,7 @@ use App\Http\Controllers\TechDashboardController;
 use App\Http\Controllers\designerProjectDesignController;
 use App\Http\Controllers\DesignerTimeManagementController;
 use App\Http\Controllers\DesignerUploadController;
+use App\Http\Controllers\DesignerInvoiceController;
 use App\Http\Controllers\AccountantInvoiceController;
 use App\Http\Controllers\accountantSettingsController;
 use App\Http\Controllers\accountantExpensesController;
@@ -358,14 +359,16 @@ Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(functi
     // Route::post('/admin/users/{id}', [UserController::class, 'update'])->name('admin.update');
 
 // routes/web.php
-Route::middleware(['auth','role:admin'])
-    ->prefix('admin')->as('admin.')
+Route::middleware(['auth','role:administrator'])
+    ->prefix('admin')
+    ->as('admin.')
     ->group(function () {
-        Route::post('/users/{user}', [\App\Http\Controllers\UserController::class, 'update'])
+        Route::post('/users/{user}', [UserController::class, 'update'])
             ->name('users.update');   // POST for updates
-    });
 
-    Route::post('/users', [settings::class, 'store'])->name('users.store');
+        Route::post('/users', [Settings::class, 'store'])
+            ->name('users.store');
+    });
     // Route::post('/userss', [Settings::class, 'settings'])->name('');
 // 1
     //for rditing logged user
@@ -481,15 +484,16 @@ Route::middleware(['web','auth'])->prefix('admin')->name('admin.')->group(functi
         ->name('admin.Employee')
         ->middleware('auth');
     //navigate tech tabs page
-    Route::get('/tech/ClientManagement', [techClientController::class, 'index'])->name('tech.ClientManagement');
-    Route::get('/tech/ProjectManagement', [techProjectManagementController::class, 'index'])->name('tech.ProjectManagement');
-    // Route::get('/tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'index'])->name('tech.ReportsandAnalytics');
-    Route::middleware(['auth'])->prefix('tech')->name('tech.')->group(function () {
-        Route::get('/ScheduleMeasurement', [techScheduleMeasurementController::class, 'index'])->name('ScheduleMeasurement');
-        Route::get('/measurements/calendar', [techScheduleMeasurementController::class, 'feed'])->name('measurements.feed');
-        Route::post('/measurements', [techScheduleMeasurementController::class, 'store'])->name('measurements.store');
-        Route::patch('/measurements/{measurement}', [techScheduleMeasurementController::class, 'update'])->name('measurements.update');
-        Route::delete('/measurements/{measurement}', [techScheduleMeasurementController::class, 'destroy'])->name('measurements.destroy');
+Route::get('/tech/ClientManagement', [techClientController::class, 'index'])->name('tech.ClientManagement');
+// Route::get('/tech/ReportsandAnalytics', [techReportsandAnalyticsController::class, 'index'])->name('tech.ReportsandAnalytics');
+Route::middleware(['auth'])->prefix('tech')->name('tech.')->group(function () {
+    Route::get('/ProjectManagement', [techProjectManagementController::class, 'index'])->name('ProjectManagement');
+    Route::get('/ProjectManagement/filter', [techProjectManagementController::class, 'filterColumns'])->name('ProjectManagement.filter');
+    Route::get('/ScheduleMeasurement', [techScheduleMeasurementController::class, 'index'])->name('ScheduleMeasurement');
+    Route::get('/measurements/calendar', [techScheduleMeasurementController::class, 'feed'])->name('measurements.feed');
+    Route::post('/measurements', [techScheduleMeasurementController::class, 'store'])->name('measurements.store');
+    Route::patch('/measurements/{measurement}', [techScheduleMeasurementController::class, 'update'])->name('measurements.update');
+    Route::delete('/measurements/{measurement}', [techScheduleMeasurementController::class, 'destroy'])->name('measurements.destroy');
     });
 
     Route::get('/tech/Settings', [techSettingsController::class, 'index'])->name('tech.Settings');
@@ -577,11 +581,19 @@ Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(functi
     Route::get('/designer/projects/{project}/info', [designerAssignDesigners::class, 'showProjectname'])->name('designer.projects.info');
     // for project design page
     // Show form
-    Route::get('/designer/ProjectDesign', [designerProjectDesignController::class, 'showUploadForm'])->name('designer.ProjectDesign');
-Route::get('/invoices/create', [designerProjectDesignController::class, 'create'])
-     ->name('invoices.create');
-    // Handle submission
-    Route::post('/designer/ProjectDesign', [designerProjectDesignController::class, 'store'])->name('design.store');
+    Route::get('/designer/ProjectDesign', [designerProjectDesignController::class, 'showUploadForm'])
+        ->name('designer.ProjectDesign');
+    Route::post('/designer/ProjectDesign', [designerProjectDesignController::class, 'store'])
+        ->name('design.store');
+
+Route::middleware(['auth','role:designer'])
+    ->prefix('designer')->name('designer.')
+    ->group(function () {
+        Route::get('/invoices/create', [DesignerInvoiceController::class, 'create'])->name('invoices.create');
+        Route::post('/invoices', [DesignerInvoiceController::class, 'store'])->name('invoices.store');
+        Route::get('/invoices/{invoice}', [DesignerInvoiceController::class, 'show'])->name('invoices.show');
+        Route::get('/invoices/{client}/projects', [DesignerInvoiceController::class, 'projects'])->name('invoices.projects');
+    });
     Route::get('/designer/dashboard', [DashboardController::class, 'index'])->name('designer.dashboard');
     //handle the viewed comment
     Route::post('/comments/{comment}/mark-as-viewed', [DesignerDashboardController::class, 'markAsViewed']);
@@ -752,3 +764,7 @@ Route::delete('/budgets/{project}',      [BudgetsController::class, 'destroy'])-
 });
 
 require __DIR__ . '/auth.php';
+
+
+
+

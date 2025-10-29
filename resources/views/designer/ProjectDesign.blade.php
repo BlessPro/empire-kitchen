@@ -170,7 +170,7 @@
                                 </button>
 
                                 {{-- You will wire this link to your real invoice route --}}
-                                <a href="{{ route('invoices.create') }}"
+                                <a id="designer-invoice-link" href="{{ route('designer.invoices.create') }}"
                                     class="px-4 py-2 text-white rounded-xl bg-fuchsia-900 hover:bg-purple-800">
                                     Create Invoice
                                 </a>
@@ -262,6 +262,8 @@
                 const invoiceModal = document.getElementById('invoiceModal');
                 const invoiceCancelBtn = document.getElementById('invoiceCancelBtn');
                 const invoiceCloseBtn = document.getElementById('invoiceCloseBtn');
+                const invoiceLink = document.getElementById('designer-invoice-link');
+                const invoiceUrlTemplate = "{{ route('designer.invoices.create', ['project' => '__PROJECT__']) }}";
 
                 // Show/hide helpers
                 const showBlock = el => {
@@ -380,6 +382,9 @@
 
                     xhr.onload = function() {
                         if (xhr.status >= 200 && xhr.status < 300) {
+                            if (invoiceLink && projectIn.value) {
+                                invoiceLink.href = invoiceUrlTemplate.replace('__PROJECT__', projectIn.value);
+                            }
                             showFlex(invoiceModal); // only popup after successful submit
                         } else {
                             // fallback to normal submit to preserve original behavior on non-2xx
@@ -401,3 +406,4 @@
 
 
 </x-Designer-layout>
+

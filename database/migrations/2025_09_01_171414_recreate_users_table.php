@@ -35,24 +35,45 @@ return new class extends Migration {
          * If you don’t have email/phone on employees, you can match by name or staff_id, etc.
          */
         // Example backfill by email:
+        $driver = DB::getDriverName();
+
         if (Schema::hasColumn('users','email') && Schema::hasColumn('employees','email')) {
-            // MySQL-only update join
-            DB::statement("
-                UPDATE users
-                JOIN employees ON employees.email = users.email
-                SET users.employee_id = employees.id
-                WHERE users.employee_id IS NULL
-            ");
+            if ($driver === 'pgsql') {
+                DB::statement("
+                    UPDATE users
+                    SET employee_id = employees.id
+                    FROM employees
+                    WHERE employees.email = users.email
+                      AND users.employee_id IS NULL
+                ");
+            } else {
+                DB::statement("
+                    UPDATE users
+                    JOIN employees ON employees.email = users.email
+                    SET users.employee_id = employees.id
+                    WHERE users.employee_id IS NULL
+                ");
+            }
         }
 
         // Example backfill by phone:
         if (Schema::hasColumn('users','phone_number') && Schema::hasColumn('employees','phone')) {
-            DB::statement("
-                UPDATE users
-                JOIN employees ON employees.phone = users.phone_number
-                SET users.employee_id = employees.id
-                WHERE users.employee_id IS NULL
-            ");
+            if ($driver === 'pgsql') {
+                DB::statement("
+                    UPDATE users
+                    SET employee_id = employees.id
+                    FROM employees
+                    WHERE employees.phone = users.phone_number
+                      AND users.employee_id IS NULL
+                ");
+            } else {
+                DB::statement("
+                    UPDATE users
+                    JOIN employees ON employees.phone = users.phone_number
+                    SET users.employee_id = employees.id
+                    WHERE users.employee_id IS NULL
+                ");
+            }
         }
 
         // If you prefer to backfill by staff_id stored temporarily somewhere, write another UPDATE ... JOIN here.

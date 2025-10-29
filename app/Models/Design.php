@@ -1,31 +1,29 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Design extends Model
 {
-
     protected $fillable = [
-    'project_id',
-    'designer_id',
-    'images', // ✅ This was missing!
-    'notes',  // ✅ If you're saving notes too
-    'uploaded_at',
-    'design_date',
-    'scheduled_date',
-];
-
-protected $casts = [
-    'images' => 'array',
-    'design_date' => 'datetime',
-    'scheduled_date' => 'datetime',
-
-];
-
-    protected $dates = [
-        'uploaded_at',
+        'project_id',
+        'designer_id',
+        'images',
+        'notes',
+        'design_date',
+        'schedule_date',
+        'start_time',
+        'end_time',
     ];
+
+    protected $casts = [
+        'images'        => 'array',
+        'design_date'   => 'datetime',
+        'schedule_date' => 'datetime',
+    ];
+
     public function project()
     {
         return $this->belongsTo(Project::class);
@@ -35,6 +33,4 @@ protected $casts = [
     {
         return $this->belongsTo(User::class, 'designer_id');
     }
-
-
 }

@@ -41,49 +41,62 @@
 <script>
 
 document.addEventListener('DOMContentLoaded', function () {
-    var calendarEl = document.getElementById('calendar');
+    const calendarEl = document.getElementById('calendar');
+    if (!calendarEl) return;
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+    let activePopover = null;
+
+    function closePopover() {
+        if (activePopover) {
+            activePopover.remove();
+            activePopover = null;
+        }
+    }
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,listWeek'
         },
-        events: '/designer/TimeManagement/events',
-        eventColor: '#0036BF',
+        events: "{{ route('designer.TimeManagement.events') }}",
         height: 'auto',
+        eventColor: '#4F46E5',
         eventClick: function (info) {
-            const { extendedProps, title, start } = info.event;
+            info.jsEvent.preventDefault();
+            closePopover();
 
-            const popup = document.createElement('div');
-            popup.className = 'bg-white shadow-md rounded p-4 border border-gray-300 fixed z-50';
-            popup.style.position = 'fixed';
-            popup.style.width = '260px';
-            popup.style.top = `${info.jsEvent.clientY + 10}px`;
-            popup.style.left = `${info.jsEvent.clientX}px`;
+            const { extendedProps, title } = info.event;
 
-            popup.innerHTML = `
-                <div class="mb-2 font-bold text-gray-800">${title}</div>
-                <div class="mb-1 text-sm"><strong>Design Date:</strong> ${extendedProps.design_date ?? 'N/A'}</div>
-                <div class="text-sm"><strong>Notes:</strong> ${extendedProps.notes ?? 'None'}</div>
-            `;
+            const pop = document.createElement('div');
+            pop.className = 'designer-event-pop fixed z-50 w-72 rounded-2xl border border-slate-200 bg-white shadow-xl p-4 text-sm text-slate-700';
+            pop.style.top = `${info.jsEvent.clientY + 12}px`;
+            pop.style.left = `${info.jsEvent.clientX - 150}px`;
 
-            document.body.appendChild(popup);
+            const rows = [
+                `<div class="text-sm font-semibold text-slate-900 mb-1">${title}</div>`,
+                extendedProps.project_name ? `<div class="text-xs text-slate-500 mb-2">${extendedProps.project_name}</div>` : '',
+                extendedProps.client_name ? `<div class="mb-2"><span class="font-medium text-slate-600">Client:</span> ${extendedProps.client_name}</div>` : '',
+                `<div class="mb-1"><span class="font-medium text-slate-600">Design Date:</span> ${extendedProps.design_date_label ?? '—'}</div>`,
+                extendedProps.schedule_date_label ? `<div class="mb-1"><span class="font-medium text-slate-600">Scheduled:</span> ${extendedProps.schedule_date_label}</div>` : '',
+                (extendedProps.start_time_label || extendedProps.end_time_label)
+                    ? `<div class="mb-1"><span class="font-medium text-slate-600">Time:</span> ${[extendedProps.start_time_label, extendedProps.end_time_label].filter(Boolean).join(' - ')}</div>`
+                    : '',
+                `<div class="mt-2"><span class="font-medium text-slate-600">Notes:</span><br><span class="text-slate-600">${extendedProps.notes ?? 'No notes added'}</span></div>`
+            ].join('');
 
-            function removePopup() {
-                popup.remove();
-                document.removeEventListener('click', outsideClickListener);
-            }
-
-            function outsideClickListener(e) {
-                if (!popup.contains(e.target)) {
-                    removePopup();
-                }
-            }
+            pop.innerHTML = rows;
+            document.body.appendChild(pop);
+            activePopover = pop;
 
             setTimeout(() => {
-                document.addEventListener('click', outsideClickListener);
+                document.addEventListener('click', function handleOutside(e) {
+                    if (activePopover && !activePopover.contains(e.target)) {
+                        closePopover();
+                        document.removeEventListener('click', handleOutside);
+                    }
+                });
             }, 0);
         }
     });
