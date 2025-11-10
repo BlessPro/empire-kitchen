@@ -19,7 +19,7 @@ return new class extends Migration
 
             if (!Schema::hasColumn('invoices', 'invoice_type')) {
                 $table->string('invoice_type', 50)
-                    ->default('accounting')
+                    ->default('invoice')
                     ->after('user_id');
             }
         });

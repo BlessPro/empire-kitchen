@@ -5,10 +5,10 @@
 <!-- Table Card -->
 <div class="p-6 bg-white shadow rounded-2xl">
     <div class="flex items-center justify-between mb-4">
-        <h3 class="font-semibold text-md">My Team</h3>
+        <h3 class="text-base font-semibold">My Team</h3>
 
         <button id="openAddUserModal"
-            class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
+            class="px-6 py-2 text-semibold text-sm text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
             Create
         </button>
     </div>
@@ -39,9 +39,9 @@
                         $online = $lastSeen && $lastSeen->gt(now()->subMinutes(5));
                     @endphp
                     <tr class="border-t">
-                        <td class="flex items-center py-3 space-x-2">
+                        <td class="flex items-center text-[15px] py-3 space-x-2">
                             <img src="{{ $avatar }}" class="object-cover w-8 h-8 rounded-full" alt="">
-                            <span>{{ $employee?->name ?? 'Unknown User' }}</span>
+                            <span class="text-[15px]">{{ $employee?->name ?? 'Unknown User' }}</span>
                         </td>
                         <td>
                             @if ($online)
@@ -55,7 +55,7 @@
                             {{ $lastSeen ? $lastSeen->diffForHumans() : 'Never active' }}
                         </td>
 
-                        <td>{{ $user->role }}</td>
+                        <td class="text-[15px]">{{ $user->role }}</td>
                         <td class="flex space-x-2">
                             <form action="{{ route('settings.destroy', $user->id) }}" method="POST"
                                 onsubmit="return confirm('Are you sure?');">
@@ -71,8 +71,7 @@
                                 class="text-gray-500 hover:text-fuchsia-700 btn btn-primary editUserBtn"
                                 data-id="{{ $user->id }}"
                                 data-name="{{ $employee?->name ?? '' }}"
-                                data-role="{{ $user->role }}"
-                            >
+                                data-role="{{ $user->role }}">
                                 <i data-feather="edit-3" class="mr-3"></i>
                             </button>
                         </td>
@@ -101,7 +100,7 @@
 <div id="addUserModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/50">
     <div class="bg-white rounded-lg p-6 w-[600px] relative">
         <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-semibold">Create Account</h2>
+            <h2 class="text-lg font-semibold">Create Account</h2>
             <button type="button" id="cancelAddUser" class="p-2 rounded hover:bg-gray-100">
                 <i data-feather="x" class="feather-icon"></i>
             </button>
@@ -158,7 +157,7 @@
                             <option value="admin">Admin</option>
                             <option value="tech_supervisor">Technical Supervisor</option>
                             <option value="designer">Designer</option>
-                            <option value="sales_accountant">Sales Accountant</option>
+                            <option value="sales_account">Sales Account</option>
                             <option value="accountant">Accountant</option>
                             <option value="production_officer">Production Officer</option>
                             <option value="installation_officer">Installation Officer</option>
@@ -255,7 +254,7 @@
           <option value="admin">Admin</option>
           <option value="tech_supervisor">Technical Supervisor</option>
           <option value="designer">Designer</option>
-          <option value="sales_accountant">Sales Accountant</option>
+          <option value="sales_account">Sales Account</option>
           <option value="accountant">Accountant</option>
           <option value="production_officer">Production Officer</option>
           <option value="installation_officer">Installation Officer</option>

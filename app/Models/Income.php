@@ -15,6 +15,7 @@ class Income extends Model
     'date',
     'project_stage',
     'payment_method',
+    'transaction_id',
      'notes',
      'status'
 

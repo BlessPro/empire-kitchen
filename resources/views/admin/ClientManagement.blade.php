@@ -2,10 +2,10 @@
     <x-slot name="header">
         <!--written on 26.04.2025-->
         @include('admin.layouts.header')
-        <main class="ml-[280px] mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+        <main>
             <!--head begins-->
 
-            <div class="p-6 bg-[#F9F7F7]">
+            <div class="p-3 sm:p-4 bg-[#F9F7F7]">
                 <div class="mb-[20px]"> <!---->
                     <div class="flex items-center justify-between mb-6">
                         <h1 class="text-2xl font-bold">Clients Management</h1>
@@ -21,7 +21,7 @@
                     <!-- ADD CLIENT MODAL -->
                     <div id="addClientModal"
                         class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
-                        <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
+                        <div class="bg-white rounded-lg p-6 w-full max-w-[600px] items-center justify-center relative">
                             <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
                                 <h2 class="mb-4 text-xl font-semibold">Add New Client</h2>
                                 <button type="button" id="cancelAddClient" class="px-4 py-2 text-black">
@@ -33,13 +33,13 @@
                                 @csrf
 
                                 <!-- First & Last Name -->
-                                <div class="flex flex-col gap-4 sm:flex-row">
+                                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                     <div class="mb-4">
                                         <label for="firstName"
                                             class="block mb-3 text-sm font-medium text-gray-700">First Name</label>
                                         <input id="firstName" name="firstname" type="text"
                                             placeholder="Enter first name"
-                                            class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
 
                                     <div class="mb-4">
@@ -47,7 +47,7 @@
                                             Name</label>
                                         <input id="lastName" name="lastname" type="text"
                                             placeholder="Enter last name"
-                                            class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
                                 </div>
 
@@ -58,7 +58,7 @@
                                             Number</label>
                                         <input id="phone" name="phone_number" type="tel"
                                             placeholder="Enter phone number"
-                                            class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
 
                                     <div class="mb-4">
@@ -66,7 +66,7 @@
                                             Phone</label>
                                         <input id="otherPhone" name="other_phone" type="tel"
                                             placeholder="Enter other phone"
-                                            class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
                                 </div>
 
@@ -92,7 +92,7 @@
                                             Person</label>
                                         <input id="contactPerson" name="contact_person" type="text"
                                             placeholder="Enter contact person"
-                                            class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
 
                                     <div class="mb-4">
@@ -100,7 +100,7 @@
                                             Phone</label>
                                         <input id="contactPhone" name="contact_phone" type="tel"
                                             placeholder="Enter contact phone"
-                                            class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     </div>
                                 </div>
 
@@ -203,6 +203,7 @@
                     <iconify-icon icon="mingcute:more-2-line" width="24" style="color: #5A0562;"></iconify-icon>
                       </td> --}}
                                             <td class="p-4 font-normal text-[15px] cursor-pointer relative"
+                                                data-no-nav="true"
                                                 x-data="{ open: false }">
                                                 <!-- Trigger -->
                                                 <button @click="open = !open" class="focus:outline-none">
@@ -215,15 +216,15 @@
                                                     class="absolute right-0 z-50 w-48 mt-2 bg-white border border-gray-100 shadow-lg rounded-xl">
                                                     <ul class="py-2 text-[15px] text-gray-700">
                                                         <li>
-                                                            <a href="{{ route('clients.show', $client->id) }}"
+                                                            <a href="{{ route('admin.clients.projects', ['client' => $client->id]) }}"
                                                                 class="block px-4 py-2 rounded-t-lg hover:bg-gray-100">
-                                                                View Client details
+                                                                View Projects
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="{{ route('admin.clients.projects', ['client' => $client->id]) }}"
+                                                            <a href="{{ route('clients.edit', $client->id) }}"
                                                                 class="block px-4 py-2 hover:bg-gray-100">
-                                                                View Projects
+                                                                Edit Client Details
                                                             </a>
                                                         </li>
                                                         <li>

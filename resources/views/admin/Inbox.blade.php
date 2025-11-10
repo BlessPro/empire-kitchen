@@ -1,16 +1,13 @@
 {{-- resources/views/inbox.blade.php --}}
 <x-layouts.app>
-    <x-slot name="header">
-        @include('admin.layouts.header')
+    
+ {{-- <body class=\"h-screen bg-neutral-50 text-neutral-800\"> --}}
+ <div class="bg-[#F9F7F7]">
+        <div class="p-4 sm:p-6 h-[calc(100vh-80px)] overflow-hidden">
 
-    </x-slot>
-{{-- <body class="h-screen bg-neutral-50 text-neutral-800"> --}}
- <main class="ml-[260px] mt-[60px] bg-[#F9F7F7]">
-        <div class="p-6 h-[calc(100vh-80px)] overflow-hidden">
-
-  <div class="grid h-full grid-cols-12 gap-0">
+  <div class="grid h-full grid-cols-1 md:grid-cols-12 gap-0">
     <!-- Left: Conversation List -->
-    <aside class="flex flex-col h-full col-span-4 overflow-hidden bg-white border-r border-neutral-200">
+    <aside class="flex flex-col h-full col-span-12 md:col-span-4 overflow-hidden bg-white border-r border-neutral-200">
       <!-- Top bar with search + New button -->
       <div class="flex items-center gap-2 p-3 border-b border-neutral-200">
         <div class="relative flex-1">
@@ -28,7 +25,7 @@
     </aside>
 
     <!-- Right: Conversation Thread -->
-    <main class="flex flex-col h-full col-span-8 overflow-hidden bg-white">
+    <div class="flex flex-col h-full col-span-12 md:col-span-8 overflow-hidden bg-white">
       <!-- Header: selected conversation info -->
       <div id="threadHeader" class="h-[56px] border-b border-neutral-200 px-4 flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -58,11 +55,11 @@
             <span id="fileName" class="text-neutral-500"></span>
           </label>
           <textarea id="msgInput" rows="1" placeholder="Type a message" class="flex-1 px-3 py-2 text-sm bg-white border resize-none rounded-xl border-neutral-300 focus:outline-none focus:ring-2 focus:ring-fuchsia-500"></textarea>
-          <button id="btnSend" class="px-4 py-2 text-sm text-white rounded-xl bg-fuchsia-800 hover:bg-fuchsia-900">Send</button>
+          <button type="submit" id="btnSend" class="px-4 py-2 text-sm text-white rounded-xl bg-fuchsia-800 hover:bg-fuchsia-900">Send</button>
         </form>
         <div id="composerHint" class="mt-1 text-xs text-neutral-400">Files: images, PDF, DOCX • Max 25MB • 1 file</div>
       </div>
-    </main>
+    </div>
   </div>
 
   <!-- Modal: New (choose direct/group) -->
@@ -145,6 +142,8 @@
       cursors: { before: null, after: null },
       pollingTimers: { list: null, thread: null },
       pendingFile: null,
+      messageIds: new Set(),
+      isSending: false,
     };
 
     // ======= Helpers =======
@@ -242,6 +241,8 @@
       // We render newest at bottom -> we keep state.messages in ascending order of time.
       // API returns newest-first; so prepend in reverse by unshifting.
       state.messages = [...list.reverse(), ...state.messages];
+      // rebuild message id set
+      state.messageIds = new Set(state.messages.map(m => m.id));
       state.cursors.before = json.meta?.next_before_id || null;
       state.cursors.after  = json.meta?.next_after_id  || state.cursors.after;
       renderMessages();
@@ -258,8 +259,13 @@
       const json = await res.json();
       const list = json.data || [];
       if(list.length){
-        // list is newest-first; we want to append in chronological order
-        list.reverse().forEach(m => state.messages.push(m));
+        // list is newest-first; append in chronological order, de-duplicating by id
+        list.reverse().forEach(m => {
+          if (!state.messageIds.has(m.id)) {
+            state.messages.push(m);
+            state.messageIds.add(m.id);
+          }
+        });
         state.cursors.after = json.meta?.next_after_id || state.cursors.after;
         renderMessages();
         const box = document.getElementById('messagesScroll');
@@ -310,6 +316,7 @@
       await fetch(ROUTES.hide(messageId), { method:'POST', headers:{ 'X-CSRF-TOKEN': CSRF, 'Accept':'application/json' } });
       // remove locally
       state.messages = state.messages.filter(x => x.id !== messageId);
+      state.messageIds.delete(messageId);
       renderMessages();
     }
 
@@ -322,32 +329,65 @@
 
     document.getElementById('composer').addEventListener('submit', async (e)=>{
       e.preventDefault();
-      if(!state.selected) return;
+      if(!state.selected || state.isSending) return;
+      state.isSending = true;
       const convId = state.selected.id;
-
-      if(state.pendingFile){
-        // validate 25MB
-        if(state.pendingFile.size > 25*1024*1024){
-          alert('File too large. Max 25MB.');
+      const sendBtn = document.getElementById('btnSend');
+      sendBtn.disabled = true;
+      try {
+        if(state.pendingFile){
+          // validate 25MB
+          if(state.pendingFile.size > 25*1024*1024){
+            alert('File too large. Max 25MB.');
+            return;
+          }
+          const fd = new FormData();
+          fd.append('type', 'file');
+          fd.append('file', state.pendingFile);
+          const res = await fetch(ROUTES.sendMessage(convId), { method:'POST', headers:{ 'X-CSRF-TOKEN': CSRF }, body: fd });
+          const json = await res.json();
+          if(json?.data){
+            const m = json.data;
+            if(!state.messageIds.has(m.id)){
+              state.messages.push(m);
+              state.messageIds.add(m.id);
+            }
+            state.cursors.after = m.id;
+            renderMessages();
+            document.getElementById('messagesScroll').scrollTop = document.getElementById('messagesScroll').scrollHeight;
+          }
+          state.pendingFile = null; document.getElementById('fileInput').value=''; document.getElementById('fileName').textContent='';
           return;
         }
-        const fd = new FormData();
-        fd.append('type', 'file');
-        fd.append('file', state.pendingFile);
-        const res = await fetch(ROUTES.sendMessage(convId), { method:'POST', headers:{ 'X-CSRF-TOKEN': CSRF }, body: fd });
-        const json = await res.json();
-        if(json?.data){ state.messages.push(json.data); renderMessages(); document.getElementById('messagesScroll').scrollTop = document.getElementById('messagesScroll').scrollHeight; }
-        state.pendingFile = null; document.getElementById('fileInput').value=''; document.getElementById('fileName').textContent='';
-        return;
-      }
 
-      const body = document.getElementById('msgInput').value.trim();
-      if(!body) return;
-      const payload = { type:'text', body };
-      const res = await fetch(ROUTES.sendMessage(convId), { method:'POST', headers:{ 'Content-Type':'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept':'application/json' }, body: JSON.stringify(payload) });
-      const json = await res.json();
-      if(json?.data){ state.messages.push(json.data); renderMessages(); document.getElementById('messagesScroll').scrollTop = document.getElementById('messagesScroll').scrollHeight; }
-      document.getElementById('msgInput').value='';
+        const body = document.getElementById('msgInput').value.trim();
+        if(!body) return;
+        const payload = { type:'text', body };
+        const res = await fetch(ROUTES.sendMessage(convId), { method:'POST', headers:{ 'Content-Type':'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept':'application/json' }, body: JSON.stringify(payload) });
+        const json = await res.json();
+        if(json?.data){
+          const m = json.data;
+          if(!state.messageIds.has(m.id)){
+            state.messages.push(m);
+            state.messageIds.add(m.id);
+          }
+          state.cursors.after = m.id;
+          renderMessages();
+          document.getElementById('messagesScroll').scrollTop = document.getElementById('messagesScroll').scrollHeight;
+        }
+        document.getElementById('msgInput').value='';
+      } finally {
+        state.isSending = false;
+        sendBtn.disabled = false;
+      }
+    });
+
+    // Enter to send (Shift+Enter for newline)
+    document.getElementById('msgInput').addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' && !e.shiftKey){
+        e.preventDefault();
+        document.getElementById('composer').requestSubmit();
+      }
     });
 
     // ======= New Buttons & Modals =======
@@ -491,7 +531,7 @@
     })();
   </script>
   </div>
-</main>
+</div>
 
 
 </x-layouts.app>

@@ -12,11 +12,13 @@ class LoginResponse implements LoginResponseContract
         $role = Auth::user()->role;
 
         return match ($role) {
-            'admin' => redirect()->intended('/admin/dashboard'),
+            'admin', 'administrator' => redirect()->intended('/admin/dashboard'),
             'tech_supervisor' => redirect()->intended('/tech/dashboard'),
             'designer' => redirect()->intended('/designer/dashboard'),
             'accountant' => redirect()->intended('/accountant/dashboard'),
             'sales_account' => redirect()->intended('/sales/dashboard'),
+            'production_officer' => redirect()->intended(route('production.projects')),
+            'installation_officer' => redirect()->intended(route('installation.projects')),
             default => redirect('/dashboard'),
         };
     }

@@ -10,6 +10,7 @@ class FollowUp extends Model
 {
     protected $fillable = [
         'client_id',
+        'client_name',
         'project_id',
         'follow_up_date',
         'follow_up_time',

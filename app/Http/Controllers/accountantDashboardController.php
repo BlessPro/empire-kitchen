@@ -61,6 +61,20 @@ public function index()
     $totalExpense = Expense::sum('amount');
     $netProfit    = $totalIncome - $totalExpense;
 
+    // Monthly income series for the revenue chart
+    $monthlyIncomeQuery = Income::selectRaw("EXTRACT(MONTH FROM date) as month, SUM(amount) as total")
+        ->groupByRaw("EXTRACT(MONTH FROM date)")
+        ->orderByRaw("EXTRACT(MONTH FROM date)")
+        ->get();
+
+    $monthlyIncomeChartData = array_fill(0, 12, 0.0);
+    foreach ($monthlyIncomeQuery as $incomeRow) {
+        $index = (int) $incomeRow->month - 1;
+        if ($index >= 0 && $index < 12) {
+            $monthlyIncomeChartData[$index] = (float) $incomeRow->total;
+        }
+    }
+
     if ($totalExpense > 0) {
         $percentageChangeD = ($netProfit / $totalExpense) * 100;
     }
@@ -83,7 +97,8 @@ public function index()
         'percentageChangeD',
         'RecentIncomes',
         'DashboardIncomeTables',
-        'clients'
+        'clients',
+        'monthlyIncomeChartData'
     ));
 }
 

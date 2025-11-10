@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Redirect;
 use App\Models\Budget;
 use App\Models\BudgetCategory;
 use App\Models\BudgetAllocation;
-use Illuminate\Validation\Rule;
 
 class accountantProjectFinancialController extends Controller
 {
@@ -265,108 +264,6 @@ $projectSummary->getCollection()->transform(function ($row) {
 
     return view('accountant.Project-Financials', $viewDataMerged);
 }
-
-
- // Render the accountant page with the wizard data (you can also return JSON if you prefer populating via fetch)
-    public function createWizard(Request $request)
-    {
-        // Projects that don't have a budget yet
-        $projects = Project::doesntHave('budget')
-            ->select('id','name')
-            ->orderBy('name')
-            ->paginate(20);
-
-        // Default categories we want steps for
-        $defaultStepCats = ['Measurement','Design','Production','Installation'];
-
-        return view('accountant.Project-Financials', compact('projects', 'defaultStepCats'));
-
-
-    }
-
-    public function storeWizard(Request $request)
-    {
-        // Validate basic fields
-        $validated = $request->validate([
-            'project_id' => ['required', 'exists:projects,id',
-                // ensure the project doesn't already have a budget
-                Rule::unique('budgets','project_id'),
-            ],
-            'main_amount' => ['required','numeric','min:0'],
-
-            // the four core steps (allow 0 or missing)
-            'amounts.Measurement'  => ['nullable','numeric','min:0'],
-            'amounts.Design'       => ['nullable','numeric','min:0'],
-            'amounts.Production'   => ['nullable','numeric','min:0'],
-            'amounts.Installation' => ['nullable','numeric','min:0'],
-
-            // extras: arrays of names + amounts
-            'extras'               => ['array'],
-            'extras.*.name'        => ['required_with:extras.*.amount','string','max:100'],
-            'extras.*.amount'      => ['required_with:extras.*.name','numeric','min:0'],
-        ], [
-            'project_id.unique' => 'This project already has a budget.',
-        ]);
-
-        $projectId  = (int) $validated['project_id'];
-        $mainAmount = (float) $validated['main_amount'];
-        $amounts    = $validated['amounts'] ?? [];     // keyed by category name
-        $extras     = $validated['extras'] ?? [];      // [{name, amount}, ...]
-
-        // Compute total allocations
-        $coreTotal  = collect($amounts)->filter(fn($v)=>$v!==null && $v!=='')->sum(function($v){ return (float)$v; });
-        $extrasTotal= collect($extras)->sum(function($row){ return (float)($row['amount'] ?? 0); });
-        $allocTotal = $coreTotal + $extrasTotal;
-
-        if ($allocTotal > $mainAmount) {
-            return back()
-                ->withInput()
-                ->withErrors(['main_amount' => 'Allocations ('.$allocTotal.') exceed the main budget ('.$mainAmount.'). Reduce some amounts.']);
-        }
-
-        DB::transaction(function () use ($projectId, $mainAmount, $amounts, $extras) {
-            // Create the budget
-            $budget = Budget::create([
-                'project_id'    => $projectId,
-                'main_amount'   => $mainAmount,
-                'currency'      => 'GHS',
-                'effective_date'=> now()->toDateString(),
-            ]);
-
-            // Upsert helper
-            $upsertAlloc = function(string $catName, float $amount) use ($budget) {
-                if ($amount <= 0) return;
-                $cat = BudgetCategory::firstOrCreate(
-                    ['name' => $catName],
-                    ['description' => null, 'is_default' => in_array($catName, ['Measurement','Design','Installation','Production'])]
-                );
-                BudgetAllocation::updateOrCreate(
-                    ['budget_id' => $budget->id, 'budget_category_id' => $cat->id],
-                    ['amount' => $amount]
-                );
-            };
-
-            // Core four steps
-            foreach (['Measurement','Design','Production','Installation'] as $name) {
-                $amt = (float) ($amounts[$name] ?? 0);
-                $upsertAlloc($name, $amt);
-            }
-
-            // Extra items
-            foreach ($extras as $row) {
-                $name = trim($row['name'] ?? '');
-                $amt  = (float) ($row['amount'] ?? 0);
-                if ($name !== '' && $amt > 0) {
-                    $upsertAlloc($name, $amt);
-                }
-            }
-        });
-
-        return redirect()
-            ->route('accountant.Project-Financials', ['project_id' => $projectId])
-            ->with('success', 'Budget created successfully.');
-    }
-
 
 
 }

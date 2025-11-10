@@ -29,7 +29,7 @@ class salesReportsAndAnalyticsController extends Controller
     $totalRevenue = Income::sum('amount');
 
     // 3. Count of completed follow-ups
-    $completedFollowUps = FollowUp::where('status', 'Completed')->count();
+    $completedFollowUps = FollowUp::where('status', 'Sold')->count();
 
     return view('sales.ReportsandAnalytics', compact('closedDeals', 'totalRevenue', 'completedFollowUps', 'projects'));
         // return view('sales.ReportsandAnalytics', compact('projects'));
@@ -37,7 +37,7 @@ class salesReportsAndAnalyticsController extends Controller
 
     public function updateStatus(Request $request, $id)
 {
-    $request->validate(['status' => 'required|string']);
+    $request->validate(['status' => 'required|in:Sold,Unsold']);
 
     $followUp = FollowUp::findOrFail($id);
     $followUp->status = $request->status;

@@ -1,14 +1,8 @@
 <x-layouts.app>
-    <x-slot name="header">
-<!--written on 30.04.2025 @ 9:45-->
     <!-- Main Content -->
-
-    @include('admin.layouts.header')
-
-    <main class="ml-[280px] mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
         <!--head begins-->
 
-            <div class="p-6 bg-[#F9F7F7]">
+            <div class="p-4 sm:p-6">
              <div class="mb-[20px]">
 
    {{-- navigation bar --}}
@@ -33,7 +27,7 @@
 
    {{-- navigation bar --}}
             {{-- Columns --}}
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {{-- Measurement --}}
                 <div class="pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px]">
                     <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#F59E0B]">
@@ -345,8 +339,8 @@
                 </div>
             </div>
 <!-- ADD CLIENT MODAL -->
-<div id="addClientModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
-    <div class="bg-white rounded-lg p-6 w-[600px] items-center justify-center relative">
+    <div id="addClientModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg p-6 w-full max-w-[600px] items-center justify-center relative">
         <div class="flex flex-col justify-between gap-4 mb-4 sm:flex-row">
         <h2 class="mb-4 text-xl font-semibold">Add New Client</h2>
         <button type="button" id="cancelAddClient" class="px-4 py-2 text-black "> <i data-feather="x"
@@ -363,7 +357,7 @@
                 id="firstName" name="firstname"
                   type="text"
                   placeholder="Enter first name"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="w-full md:w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
               </div>
 
@@ -373,7 +367,7 @@
                 <input
                 id="lastName" name="lastname"  id="lastName"
                   placeholder="Enter last name"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="w-full md:w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
               </div>
             </div>
@@ -386,7 +380,7 @@
                 <input
                   type="text"
                   id="otherNames" name="othernames"                  placeholder="Enter other name"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="w-full md:w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
               </div>
 
@@ -395,7 +389,7 @@
                 <label for="title" class="block mb-3 text-sm font-medium text-gray-700">Title</label>
                 <select name="title"
                   id="title"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="w-full md:w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="" disabled selected>Select Title</option>
                   <option value="Mr">Mr</option>
@@ -413,7 +407,7 @@
                 <input
                   type="tel"
                   id="phone" name="phone_number" placeholder="Enter phone number"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none text-gray-200 focus:ring-2 focus:ring-blue-500"
+                  class="w-full md:w-[270px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none text-gray-200 focus:ring-2 focus:ring-blue-500"
                 >
               </div>
 
@@ -424,7 +418,7 @@
                   type="text"
                   id="location" name="location"
                   placeholder="Enter location"
-                  class="w-[270px] px-3 py-2 border border-gray-300 rounded-md text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="w-full md:w-[270px] px-3 py-2 border border-gray-300 rounded-md text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
               </div>
               </div>
@@ -435,7 +429,7 @@
             </div>
               {{-- <button
                 type="submit"
-                class="w-[270px] bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                class="w-full md:w-[270px] bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Save Client
               </button> --}}
@@ -461,7 +455,7 @@
     </div>
     </div>
 </div>
-</main>
+ 
 <script>
      // //for the pop up and error handling
     // Open the modal when the button is clicked
@@ -529,11 +523,8 @@ document.getElementById('closeSuccessModal').addEventListener('click', function 
         location.reload(); // refresh to update the table
     });</script>
 
-    @vite(['resources/js/app.js'])
-
-</x-slot>
+ 
 
 
 
 </x-layouts.app>
-

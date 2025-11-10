@@ -64,6 +64,21 @@ public function getIsOnlineAttribute(): bool
 
 public function employee() { return $this->belongsTo(Employee::class); }
 
+    public function getEmailAttribute($value)
+    {
+        return $value ?? $this->employee?->email;
+    }
+
+    public function getEmailForPasswordReset()
+    {
+        return $this->email;
+    }
+
+    public function routeNotificationForMail($notification)
+    {
+        return $this->email;
+    }
+
 
     public function measurements()
 {

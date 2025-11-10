@@ -1,15 +1,16 @@
  <x-accountant-layout>
-     <div class="p-6 text-gray-900">Welcome designer!</div>
-
      <x-slot name="header">
-         <h2 class="text-xl font-semibold leading-tight text-gray-800">
-             {{ __('Designer Dashboard') }}
-         </h2>
+   
      </x-slot>
 
-     <main class="ml-64 flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+     {{-- <main class="ml-64 flex-1 bg-[#F9F7F7] min-h-screen  items-center">
 
-         <div class=" pb-[24px] pr-[24px] pl-[24px] bg-[#F9F7F7]">
+         <div class=" pb-[24px] pr-[24px] pl-[24px] bg-[#F9F7F7]"> --}}
+            
+
+
+                <main class="bg-[#F9F7F7] min-h-screen">
+        <div class="p-3 space-y-2 sm:p-4">
              <div class="">
                  <div class="flex items-center justify-between mb-6">
 

@@ -1,17 +1,12 @@
 {{-- resources/views/inbox.blade.php --}}
-<sales-layout>
+<x-sales-layout>
 
-    <x-slot name="header">
-        @include('admin.layouts.header')
+ <main>
+        <div class="p-4 sm:p-6 h-[calc(100vh-80px)] overflow-hidden">
 
-    </x-slot>
-{{-- <body class="h-screen bg-neutral-50 text-neutral-800"> --}}
- <main class="ml-[260px] mt-[60px] bg-[#F9F7F7]">
-        <div class="p-6 h-[calc(100vh-80px)] overflow-hidden">
-
-  <div class="grid h-full grid-cols-12 gap-0">
+  <div class="grid h-full grid-cols-1 lg:grid-cols-12 gap-0">
     <!-- Left: Conversation List -->
-    <aside class="flex flex-col h-full col-span-4 overflow-hidden bg-white border-r border-neutral-200">
+    <aside class="flex flex-col h-full col-span-12 lg:col-span-4 overflow-hidden bg-white border-r border-neutral-200">
       <!-- Top bar with search + New button -->
       <div class="flex items-center gap-2 p-3 border-b border-neutral-200">
         <div class="relative flex-1">
@@ -29,7 +24,7 @@
     </aside>
 
     <!-- Right: Conversation Thread -->
-    <main class="flex flex-col h-full col-span-8 overflow-hidden bg-white">
+    <main class="flex flex-col h-full col-span-12 lg:col-span-8 overflow-hidden bg-white">
       <!-- Header: selected conversation info -->
       <div id="threadHeader" class="h-[56px] border-b border-neutral-200 px-4 flex items-center justify-between">
         <div class="flex items-center gap-3">
@@ -412,7 +407,7 @@
             }
           };
           row.addEventListener('click', (e) => {
-            if (e.target !== checkbox) { 
+            if (e.target !== checkbox) {
               checkbox.checked = !checkbox.checked;
               refresh();
             }
@@ -495,5 +490,5 @@
 </main>
 
 
-</sales-layout>
+</x-sales-layout>
 

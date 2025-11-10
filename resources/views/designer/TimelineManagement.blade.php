@@ -27,9 +27,9 @@
         </style>
     </x-slot>
 
-    <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen items-center">
-        <div class="p-6 bg-[#F9F7F7]">
-            <div class="p-6 bg-white shadow-md rounded-xl">
+    <main>
+        <div class="p-4 sm:p-6 bg-[#F9F7F7]">
+            <div class="p-4 sm:p-6 bg-white shadow-md rounded-xl">
                 <div id="calendar"></div>
             </div>
         </div>

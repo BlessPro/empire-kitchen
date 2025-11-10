@@ -228,7 +228,7 @@
 
       <div class="flex items-center justify-end gap-3 mt-8">
         <a href="{{ route('admin.employee') }}" class="px-4 py-2 text-gray-700 rounded-lg hover:bg-gray-100">Cancel</a>
-        <button type="submit" class="rounded-lg bg-brandPurple px-5 py-2.5 font-semibold text-white hover:brightness-110">
+        <button type="submit" class="rounded-lg px-5 py-2.5 font-semibold text-white bg-[#5A0562] hover:bg-[#430349]">
           {{ $isEdit ? 'Save Changes' : 'Save Employee' }}
         </button>
       </div>

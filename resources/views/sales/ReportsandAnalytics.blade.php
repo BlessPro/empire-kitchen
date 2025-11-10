@@ -48,10 +48,10 @@
     </div>
   </div>
 
-  <!-- Completed Follow-ups -->
+  <!-- Sold Follow-ups -->
   <div class="flex justify-between items-center bg-white shadow rounded-[20px] p-6">
     <div>
-      <p class="mb-6 text-sm text-gray-700">Completed Follow-ups</p>
+      <p class="mb-6 text-sm text-gray-700">Sold Follow-ups</p>
       <h2 class="text-3xl font-semibold text-black">{{ $completedFollowUps }}</h2>
     </div>
     <div class="flex items-center justify-center w-10 h-10 bg-red-100 rounded-full">
@@ -93,3 +93,4 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 </x-sales-layout>
+

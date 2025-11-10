@@ -51,6 +51,7 @@ use App\Http\Controllers\BookingsController;
 use App\Http\Controllers\EmployeeController;
 use App\Models\Client;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CostsController;
 use App\Http\Controllers\BudgetsController;
 use App\Http\Controllers\ProductQuickCreateController;
@@ -59,13 +60,24 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserSearchController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\Admin\ProjectCommentController;
+use App\Http\Controllers\Auth\SendResetLinkAuthenticatedController;
 
 Route::get('/', function () {
     return view('main');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $role = Auth::user()->role ?? null;
+    return match ($role) {
+        'admin', 'administrator' => redirect()->route('admin.dashboard'),
+        'tech_supervisor' => redirect()->route('tech.dashboard'),
+        'designer' => redirect()->route('designer.dashboard'),
+        'accountant' => redirect()->route('accountant.dashboard'),
+        'sales_account' => redirect()->route('sales.dashboard'),
+        'production_officer' => redirect()->route('production.projects'),
+        'installation_officer' => redirect()->route('installation.projects'),
+        default => redirect('/'),
+    };
 })
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -89,6 +101,9 @@ Route::middleware(['auth', UpdateLastSeen::class])->group(function () {
     Route::get('/clients', [ClientManagementController::class, 'index'])->name('clients.index'); // Ensure this route exists for listing clients
     Route::get('/admin/dashboard/metrics', [DashboardController::class, 'metrics'])->name('admin.dashboard.metrics');
     Route::get('/admin/dashboard/pipeline', [DashboardController::class, 'pipeline'])->name('admin.dashboard.pipeline');
+
+    Route::post('/account/password/email', SendResetLinkAuthenticatedController::class)
+        ->name('account.password.email');
 
         Route::get('/admin/Employee', [EmployeeController::class, 'index'])->name('admin.employee');
 // routes/web.php
@@ -146,6 +161,8 @@ Route::middleware(['auth']) // your guards here
 
     Route::middleware(['web', 'auth'])->group(function () {
         // Clients
+        Route::get('/clients/{client}/edit', [ClientManagementController::class, 'edit'])->name('clients.edit'); // Edit client form
+        Route::put('/clients/{client}', [ClientManagementController::class, 'update'])->name('clients.update'); // Update client
         Route::get('/clients/{client}', [ClientManagementController::class, 'show'])->name('clients.show'); // View Client details
 
         Route::delete('/clients/{client}', [ClientManagementController::class, 'destroy'])->name('clients.destroy'); // Delete client
@@ -308,31 +325,13 @@ Route::middleware('auth')->group(function () {
 });
 
 
-// Route::middleware('auth')->group(function () {
-//     // Create chats
-//     Route::post('/conversations/direct', [ConversationController::class, 'storeDirect'])
-//         ->name('conversations.storeDirect');
-//     Route::post('/conversations/group',  [ConversationController::class, 'storeGroup'])
-//         ->name('conversations.storeGroup');
-
-//     // User search for the modal
-//     Route::get('/users/search', [UserSearchController::class, 'index'])
-//         ->name('users.search');
-// });
-
-// routes/api.php
-// routes/api.php
 
 Route::middleware('auth')->group(function () {
     Route::post('/messages/{message}/hide',   [MessageController::class, 'hide'])->name('messages.hide');
     Route::delete('/messages/{message}/hide', [MessageController::class, 'unhide'])->name('messages.unhide');
 });
 
-// Route::middleware('auth')->group(function () {
-//     Route::post('/messages/{message}/hide',   [MessageController::class, 'hide'])->name('messages.hide');
-//     Route::delete('/messages/{message}/hide', [MessageController::class, 'unhide'])->name('messages.unhide');
-// });
-//inbox end
+
 
 Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(function () {
     // ...your existing routes...
@@ -411,20 +410,12 @@ Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(functi
     Route::patch('/installations/{installation}', [InstallationCalendarController::class, 'update'])
         ->name('installations.update'); // NEW
 
-  // Update an installation
-    // Route::patch('/installations/{installation}', [InstallationsController::class, 'update'])
-    //     ->name('installations.update');
-
-
-
     Route::post('/installations/{installation}/done', [InstallationCalendarController::class, 'markDone'])
         ->name('installations.done');
 
     Route::delete('/installations/{installation}', [InstallationCalendarController::class, 'destroy'])
         ->name('installations.destroy');
 });
-
-
 
 Route::middleware(['web','auth'])->prefix('admin')->name('admin.')->group(function () {
     // Show the page with the simple form
@@ -438,8 +429,6 @@ Route::middleware(['web','auth'])->prefix('admin')->name('admin.')->group(functi
 
 
     Route::get('/TimeManagement/events', [MeasurementController::class, 'events'])->name('measurements.events');
-
-    // Route::delete('/admin/Installation/{id}', [InstallationController::class, 'destroy']);
 
     //delete user
     Route::delete('admin/dashboard/user/{id}', [settings::class, 'destroy'])->name('settings.destroy');
@@ -460,8 +449,6 @@ Route::middleware(['web','auth'])->prefix('admin')->name('admin.')->group(functi
         ->middleware('auth');
     Route::get('/admin/export-csv', [ReportsandAnalytics::class, 'exportCSV'])->name('admin.export-csv');
 
-
-
     //navigating with bookings
     Route::get('/admin/Bookings', [BookingsController::class, 'index'])
         ->name('admin.Bookings')
@@ -471,11 +458,6 @@ Route::middleware(['web','auth'])->prefix('admin')->name('admin.')->group(functi
     Route::post('/measurements', [MeasurementController::class, 'store'])->name('measurements.store');
 
     // routes/web.php
-
-    // Route::get('/clients/{client}/projects', function (Client $client) {
-    //     return $client->projects()->select('id', 'name')->orderByDesc('created_at')->get();
-    // })->name('clients.projects');
-// routes/web.php
 
 
     // Route::post('/measurements/store', [MeasurementController::class, 'store'])->name('measurements.store');
@@ -548,8 +530,8 @@ Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(functi
             Route::get('/dashboard', [TechDashboardController::class, 'index'])->name('tech.dashboard');
         });
 
-    //navigating with sales accountant  user login
-    Route::get('/sales/dashboard', [SalesController::class, 'index'])->middleware(middleware: 'RoleMiddleware:sales_accountant');
+    //navigating with sales account  user login
+    Route::get('/sales/dashboard', [SalesController::class, 'index'])->middleware(middleware: 'RoleMiddleware:sales_account');
     //displayinig the users on the settings page
     Route::get('/admin/ProjectManagement', [ProjectManagementController::class, 'index'])->name('admin.ProjectManagement');
     //for the looping card on the project management page
@@ -696,7 +678,8 @@ Route::middleware(['auth','role:accountant'])
         // fetch projects that don't have a budget (used by the wizard)
         // Route::get('/budgets/wizard', [accountantProjectFinancialController::class, 'createWizard'])->name('budgets.createWizard');
         // submit wizard
-        Route::post('/budgets/wizard', [accountantProjectFinancialController::class, 'storeWizard'])->name('budgets.storeWizard');
+        Route::get('/budgets/create', [BudgetsController::class, 'create'])->name('budgets.create');
+        Route::post('/budgets', [BudgetsController::class, 'store'])->name('budgets.store');
 
     });
 
@@ -733,6 +716,8 @@ Route::delete('/budgets/{project}',      [BudgetsController::class, 'destroy'])-
 
     //for the client drop down in the project
     Route::get('/projects/by-client/{clientId}', [accountantPayController::class, 'getByClient']);
+    Route::get('/accountant/projects/{project}/financial-summary', [accountantPayController::class, 'projectFinancialSummary'])
+        ->name('accountant.projects.financial-summary');
     // Route::get('/projects/by-client/{id}', [accountantPayController::class, 'getByClient']);
     // Route::get('/admin/projects/filter', [AdminController::class, 'filter'])->name('projects.filter');
     Route::post('/income/store', [accountantPayController::class, 'store'])->name('income.store');
@@ -754,6 +739,8 @@ Route::delete('/budgets/{project}',      [BudgetsController::class, 'destroy'])-
         Route::get('/sales/FollowupManagement', [salesFollowUpController::class, 'index'])->name('sales.FollowupManagement');
         Route::post('/sales/FollowupManagement', [salesFollowUpController::class, 'store'])->name('sales.followup.store');
         Route::get('/sales/followups/filter', [SalesFollowUpController::class, 'filter'])->name('sales.followups.filter');
+        Route::get('/sales/followups/{followUp}', [SalesFollowUpController::class, 'show'])->name('sales.followups.show');
+        Route::put('/sales/followups/{followUp}', [SalesFollowUpController::class, 'update'])->name('sales.followups.update');
         Route::get('/sales/client/{id}/projects', [salesFollowUpController::class, 'getClientProjects']);
         Route::get('/sales/ClientManagement', [salesClientController::class, 'index'])->name('sales.ClientManagement');
         Route::get('/sales/ClientManagement/filter', [salesClientController::class, 'filter'])->name('sales.ClientManagement.filter');
@@ -764,7 +751,5 @@ Route::delete('/budgets/{project}',      [BudgetsController::class, 'destroy'])-
 });
 
 require __DIR__ . '/auth.php';
-
-
 
 

@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\\Http\\Request;\nuse Illuminate\\Support\\Facades\\Auth;\n  use App\\Models\\Client;
-  use App\Models\Project;
-  use App\Models\InvoiceSummary;
-  use App\Models\Invoice;
-  use App\Models\InvoiceItem;
-  use Illuminate\Support\Facades\Storage;
+use App\Models\Client;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
+use App\Models\InvoiceSummary;
+use App\Models\Project;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class AccountantInvoiceController extends Controller
@@ -72,8 +73,10 @@ public function getProjectsByClient($client_id)
         'invoice_code' => $validated['invoice_code'],
         'client_id' => $validated['client_id'],
         'project_id' => $validated['project_id'],
+        'user_id' => Auth::id(),
+        'invoice_type' => 'invoice',
         'due_date' => $validated['due_date'],
-        'send_email' => $request->has('send_email'),
+        'send_email' => $request->boolean('send_email'),
     ]);
 
     // 2. Save items and calculate subtotal

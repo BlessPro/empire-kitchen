@@ -17,6 +17,7 @@
       <script src="https://unpkg.com/feather-icons"></script>
 
       <script src="https://cdn.tailwindcss.com"></script>
+      <style>[x-cloak]{display:none!important;}</style>
 
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
       <script src="https://unpkg.com/alpinejs" defer></script>

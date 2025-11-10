@@ -1,14 +1,11 @@
 <!-- Example for designer -->
 <x-Designer-layout>
-    <div class="p-6 text-gray-900">Welcome designer!</div>
 
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Designer Dashboard') }}
-        </h2>
+       
     </x-slot>
 
-    <main class="ml-64 flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+    <main>
 
         <div class=" pb-[24px] pr-[24px] pl-[24px] bg-[#F9F7F7]">
             <div class="">
@@ -60,7 +57,7 @@
 
 
 
-                <div class="flex flex-col gap-6 font-sans text-black lg:flex-row ">
+                <div class="flex flex-col gap-6 font-sans text-black lg:flex-row">
                     <!-- Upcoming Deadlines -->
                     <div class="w-full p-6 bg-white shadow-md rounded-2xl lg:w-1/2">
                         <h2 class="mb-4 text-2xl font-semibold">Upcoming Deadlines</h2>
@@ -158,7 +155,8 @@
 </form>
 
                         </div>
-                    <table class="min-w-full mt-6 text-left bg-white rounded-2">
+                    <div class="mt-6 overflow-x-auto">
+                    <table class="min-w-full text-left bg-white rounded-2">
                         <thead class="text-sm text-gray-600 bg-gray-100">
                             <tr>
 
@@ -187,6 +185,7 @@
 
                         </tbody>
                     </table>
+                    </div>
 
                     <div class="mt-4 mb-5 ml-5 mr-5">
                         {{ $projects->links('pagination::tailwind') }}

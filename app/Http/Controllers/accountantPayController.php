@@ -2,69 +2,153 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Income;
-use App\Models\Project;
-use App\Models\Client;
 use App\Models\Category;
+use App\Models\Client;
+use App\Models\Income;
+use App\Models\Invoice;
+use App\Models\InvoiceSummary;
+use App\Models\Project;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class accountantPayController extends Controller
 {
-
     public function index()
-{
-     $clients = Client::all(); // Add this line
-    $incomes = Income::with(['client', 'project', 'category'])->latest()->get();
-    // return view('accountant.Payment.Pay', compact('incomes'));
+    {
+        $clients             = Client::orderBy('firstname')->get();
+        $projects            = Project::with('client')->orderBy('name')->get();
+        $incomes             = Income::with(['client', 'project', 'category'])->latest()->get();
+        $categories          = Category::orderBy('name')->get();
+        $nextTransactionId   = $this->supportsTransactionId()
+            ? $this->generateTransactionId()
+            : null;
 
-     $projects = Project::all();
-     $categories = Category::all();
-    // $Income = Income::orderBy('name')->get();
-    // return view('accountant.Expenses.Category', compact('categories'));
+        return view('accountant.Payment.Pay', compact(
+            'clients',
+            'projects',
+            'categories',
+            'incomes',
+            'nextTransactionId'
+        ));
+    }
 
-    return view('accountant.Payment.Pay', compact('clients','projects', 'categories','incomes'));
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'project_id'     => ['required', 'exists:projects,id'],
+            'amount'         => ['required', 'numeric', 'min:0.01'],
+            'date'           => ['required', 'date'],
+            'payment_method' => ['required', 'string', 'in:Cash,Bank Transfer,Mobile Money'],
+            'transaction_id' => ['nullable', 'string', 'max:255'],
+        ]);
 
-}
+        $project = Project::with('client')->findOrFail($validated['project_id']);
 
-public function store(Request $request)
-{
-    $validated = $request->validate([
-        'client_id' => 'required|exists:clients,id',
-        'project_id' => 'required|exists:projects,id',
-        'category_id' => 'required|exists:categories,id',
-        'amount' => 'required|numeric',
-        'date' => 'required|date',
-        'project_stage' => 'required|string|in:Measurement,Design,Production,Installation',
-        'payment_method' => 'required|string|in:Cash,Mobile Money,Bank Transfer',
-    ]);
+        $category = Category::firstOrCreate(['name' => 'General Payments']);
 
-    Income::create($validated);
+        $transactionId = null;
 
-if ($request->ajax()) {
-    return response()->json(['message' => 'Income saved!']);
-}
+        if ($this->supportsTransactionId()) {
+            $transactionId = $request->filled('transaction_id')
+                ? $request->input('transaction_id')
+                : $this->generateTransactionId();
+        }
 
-return redirect()->back()->with('success', 'Income added successfully!');
-}
+        $attributes = [
+            'client_id'      => $project->client_id,
+            'project_id'     => $project->id,
+            'category_id'    => $category->id,
+            'amount'         => $validated['amount'],
+            'date'           => $validated['date'],
+            'project_stage'  => null,
+            'payment_method' => $validated['payment_method'],
+        ];
 
-// IncomeController.php
+        if ($transactionId !== null) {
+            $attributes['transaction_id'] = $transactionId;
+        }
 
+        $income = Income::create([
+            ...$attributes,
+        ]);
 
-public function getProjectsByClient1($client_id)
-{
-     $clients = Project::where('client_id', $client_id)->get();
-    // return response()->json($projects); // return projects as JSON
-    return view('accountant.Payment.Pay', compact('clients'));
-    // return view('accountant.Expenses', compact('expenses'));
-}
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'message' => 'Payment recorded successfully.',
+                'income'  => $income->only([
+                    'id',
+                    'project_id',
+                    'amount',
+                    'date',
+                    'payment_method',
+                    'transaction_id',
+                ]),
+            ]);
+        }
 
+        return redirect()->back()->with('success', 'Payment recorded successfully!');
+    }
 
+    public function getProjectsByClient1($clientId)
+    {
+        $clients = Project::where('client_id', $clientId)->get();
 
-public function getByClient($id)
-{
-    $projects = Project::where('client_id', $id)->get();
-    return response()->json($projects);
-}
+        return view('accountant.Payment.Pay', compact('clients'));
+    }
 
+    public function getByClient($id)
+    {
+        $projects = Project::where('client_id', $id)->get();
+
+        return response()->json($projects);
+    }
+
+    public function projectFinancialSummary(Project $project)
+    {
+        $invoiceIds = Invoice::where('project_id', $project->id)->pluck('id');
+
+        $invoiceTotal = $invoiceIds->isEmpty()
+            ? 0
+            : InvoiceSummary::whereIn('invoice_id', $invoiceIds)->sum('total_amount');
+
+        $totalPaid = Income::where('project_id', $project->id)->sum('amount');
+
+        $balance = max($invoiceTotal - $totalPaid, 0);
+
+        return response()->json([
+            'client_id'    => $project->client_id,
+            'project_cost' => (float) $invoiceTotal,
+            'total_paid'   => (float) $totalPaid,
+            'balance'      => (float) $balance,
+        ]);
+    }
+
+    protected function supportsTransactionId(): bool
+    {
+        static $supports = null;
+
+        if ($supports === null) {
+            $supports = Schema::hasColumn('incomes', 'transaction_id');
+        }
+
+        return $supports;
+    }
+
+    protected function generateTransactionId(): string
+    {
+        $latest = Income::whereNotNull('transaction_id')
+            ->where('transaction_id', 'like', 'T-%')
+            ->orderByDesc('transaction_id')
+            ->value('transaction_id');
+
+        $nextNumber = 1;
+
+        if ($latest) {
+            $numeric = (int) Str::after($latest, 'T-');
+            $nextNumber = $numeric + 1;
+        }
+
+        return sprintf('T-%03d', $nextNumber);
+    }
 }

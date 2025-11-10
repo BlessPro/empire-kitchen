@@ -9,38 +9,32 @@
         @include('admin.layouts.header')
     </x-slot>
 
-    <main class="ml-[280px] mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen items-center">
-        <div class="p-6 bg-[#F9F7F7]">
+    <main class="bg-[#F9F7F7] min-h-screen">
+        <div class="p-3 space-y-3 sm:p-4">
 
-                    <div class="flex items-center justify-between mb-6">
-                        <h1 class="text-2xl font-bold">Bookings</h1>
-                        {{-- <button class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">+ Add Project</button> --}}
-                        <!-- ADD CLIENT BUTTON -->
-                        <button
-                        id="openModal"
-                         @click="open = true"
-                            class="px-6 py-2 text-semibold text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
-                            + Set Measurement
-                        </button>
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h1 class="text-2xl font-bold text-gray-900">Bookings</h1>
+                <button
+                    id="openModal"
+                    class="self-start px-5 py-2 text-sm font-semibold text-white transition rounded-full bg-fuchsia-900 hover:bg-[#F59E0B] sm:self-auto">
+                    + Set Measurement
+                </button>
+            </div>
 
-
-                    </div>
             <div class="bg-white rounded-[20px] shadow">
 
 
-                <div class="flex items-center justify-between pt-5 pb-1 pl-6 pr-6">
-                    <p class="text-gray-600 text-[18px] font-normal"> Manage all your Bookings here</p>
+                <div class="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:pr-6 sm:pl-6 sm:pt-5">
+                    <p class="text-base font-medium text-gray-600">Manage all your bookings here</p>
 
                     <form id="filterForm" method="GET" action="{{ route('admin.Bookings') }}"
-                        class="flex flex-wrap items-center gap-3 mb-4">
+                        class="flex flex-wrap items-center gap-2 sm:gap-3">
                         <input type="text" name="search" value="{{ $search ?? '' }}"
                             placeholder="Search by client name..."
-                            class="pt-2 pb-2 pl-5 pr-5 border border-gray-300 rounded-full focus:outline-none
-                             focus:ring-2 focus:ring-[#5A0562]/20"/>
+                            class="px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#5A0562]/20" />
 
                         <select name="booked_status"
-                            class="pt-2 pb-2 pl-5 pr-5 border border-gray-300 rounded-full
-                             focus:outline-none focus:ring-2 focus:ring-[#5A0562]/20">
+                            class="px-4 py-2 text-sm border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#5A0562]/20">
                             <option value="">All</option>
                             <option value="BOOKED" {{ ($booked_status ?? '') === 'BOOKED' ? 'selected' : '' }}>BOOKED
                             </option>
@@ -65,19 +59,13 @@
                 <div class="overflow-x-auto">
                     @include('partials.bookings-table', ['projects' => $projects])
 
-                    <div class="mt-4 mb-5 ml-5 mr-5">
+                    <div class="px-4 py-4">
                         {{ $projects->links('pagination::tailwind') }}
                     </div>
                 </div>
             </div>
 
-
 {{-- another --}}
-
-
-
-
-
 
 <!-- Measure / Booking Modal (vanilla JS version) -->
 <div id="measureModal"
@@ -174,7 +162,7 @@
 <!-- Override Booking Modal -->
 <div id="overrideModal"
      class="fixed inset-0 z-[120] hidden flex items-center justify-center bg-black/40">
-  <div class="w-full max-w-sm p-5 bg-white rounded-xl shadow-xl" onclick="event.stopPropagation()">
+  <div class="w-full max-w-sm p-5 bg-white shadow-xl rounded-xl" onclick="event.stopPropagation()">
     <div class="flex items-center justify-between mb-3">
       <h3 class="text-lg font-semibold">Override Booking Process</h3>
       <button type="button" onclick="overrideClose()" class="text-gray-500 hover:text-gray-700">✕</button>

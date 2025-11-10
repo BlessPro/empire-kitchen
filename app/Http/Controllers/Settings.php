@@ -14,6 +14,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use App\Models\Employee;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewUserCredentialsMail;
 
 class Settings extends Controller
 {
@@ -122,11 +124,20 @@ class Settings extends Controller
             'password' => ['required','string','min:8','confirmed'],
         ]);
 
-        User::create([
+        $plainPassword = $data['password'];
+        $employee = Employee::find($data['employee_id']);
+
+        $user = User::create([
             'employee_id' => $data['employee_id'],      // <-- FK to employees.id
+            'email'       => $employee?->email,
             'role'        => $data['role'],
             'password'    => Hash::make($data['password']),
         ]);
+
+        if ($employee && $employee->email) {
+            $user->setRelation('employee', $employee);
+            Mail::to($employee->email)->send(new NewUserCredentialsMail($user, $plainPassword));
+        }
 
         // If your form expects JSON (AJAX):
         if ($request->wantsJson()) {

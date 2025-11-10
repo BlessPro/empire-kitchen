@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
-use Laravel\Fortify\Contracts\LoginResponse; // Import the correct LoginResponse interface
-use App\Http\Responses\CustomLoginResponse;  // Import the CustomLoginResponse class
+use Laravel\Fortify\Contracts\LoginResponse; // Fortify's LoginResponse contract
+use App\Http\Responses\LoginResponse as AppLoginResponse;  // Our concrete LoginResponse
  use App\Models\Project;
 use App\Policies\ProjectPolicy;
 
@@ -23,7 +23,8 @@ protected $policies = [
     public function register(): void
     {
         //
-        $this->app->singleton(LoginResponse::class, CustomLoginResponse::class);
+        // Bind Fortify's LoginResponse to our implementation
+        $this->app->singleton(LoginResponse::class, AppLoginResponse::class);
 
     }
 

@@ -18,7 +18,7 @@ class CreateFollowUpsTable extends Migration
             $table->time('follow_up_time');
 
             $table->enum('priority', ['Low', 'Medium', 'High']);
-            $table->enum('status', ['Pending', 'Completed', 'Rescheduled']);
+            $table->enum('status', ['Sold', 'Unsold'])->default('Unsold');
 
             $table->text('notes')->nullable();
 

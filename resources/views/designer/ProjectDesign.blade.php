@@ -2,13 +2,10 @@
 <x-Designer-layout>
 
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Designer Dashboard') }}
-        </h2>
-        @include('admin.layouts.header')
+        
     </x-slot>
 
-    <main class="ml-64 mt-[50px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+    <main>
         <div class="p-6 bg-[#F9F7F7]">
             <div class="mb-[20px]">
 
@@ -26,7 +23,7 @@
                     </a> --}}
                 </div>
 
-                <div class="w-[450px] items-center justify-center mx-auto">
+                <div class="items-center justify-center w-full max-w-md mx-auto">
 
                     @if (session('success'))
                         <div class="px-3 py-2 mb-3 text-sm text-green-700 bg-green-100 border border-green-200 rounded">

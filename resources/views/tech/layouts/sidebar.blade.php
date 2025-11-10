@@ -1,12 +1,17 @@
 
     <!-- Sidebar -->
-    <aside class="fixed top-0 left-0 z-50 flex flex-col justify-between w-64 h-screen text-white shadow-lg bg-fuchsia-950">
+    <aside x-cloak
+           class="fixed top-0 left-0 z-50 flex flex-col justify-between w-64 h-screen text-white transition-transform duration-200 ease-in-out transform bg-fuchsia-950 shadow-lg -translate-x-full lg:translate-x-0"
+           :class="{ 'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen }">
 
             {{-- <aside class="flex flex-col justify-between text-white bg-fuchsia-950"> --}}
 
       <div class="pl-20px">
-        <div class="flex items-center justify-center h-20 pt-8 pb-8 pl-8 pr-8 border-purple-700 mt-7 mb-7">
+        <div class="flex items-center justify-between h-20 pt-8 pb-8 pl-8 pr-8 border-purple-700 mt-7 mb-7">
             <img src="/empire-kitchengold-icon.png" alt="Logo" class="w-[190px] h-[160px]" />
+            <button type="button" class="p-2 rounded-md lg:hidden hover:bg-white/10" x-on:click="sidebarOpen = false">
+                <i data-feather="x" class="w-5 h-5"></i>
+            </button>
           </div>
 
           <!--dashboard-->

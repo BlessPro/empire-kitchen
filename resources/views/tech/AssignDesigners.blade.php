@@ -1,7 +1,6 @@
    <x-tech-layout>
-       <x-slot name="header">
-           <!--written on 16.05.2025-->
-           @include('admin.layouts.header')
+       <x-slot name="header"></x-slot>
+
            @php
                $statusClasses = [
                    'ON_GOING' =>
@@ -11,9 +10,10 @@
                ];
                $defaultClass = 'bg-gray-100 text-gray-800';
            @endphp
-           <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+
+           <main>
                <!--head begins-->
-               <div class="]">
+               <div class="p-3 sm:p-4">
                    <div class="mb-[20px]">
                        <h2 class="mb-6 text-2xl font-bold">Assign Designers </h2>
                        <div class="mb-20 bg-white shadow rounded-2xl">

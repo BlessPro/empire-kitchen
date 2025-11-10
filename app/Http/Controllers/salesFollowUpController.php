@@ -7,6 +7,7 @@ use App\Models\Client;
 use Illuminate\Http\Request;
 use App\Models\FollowUp;
 use App\Models\Project;
+use Illuminate\Support\Str;
 
 class SalesFollowUpController extends Controller
 {
@@ -53,6 +54,24 @@ public function filter(Request $request)
     return view('sales.partials.followup-table', compact('followUps'))->render();
 }
 
+    public function show(FollowUp $followUp)
+{
+    $followUp->load(['client', 'project']);
+
+    return response()->json([
+        'id' => $followUp->id,
+        'client_name' => $followUp->client_name
+            ?? trim(($followUp->client->firstname ?? '') . ' ' . ($followUp->client->lastname ?? '')),
+        'client_id' => $followUp->client_id,
+        'follow_up_date' => $followUp->follow_up_date,
+        'follow_up_time' => $followUp->follow_up_time,
+        'priority' => $followUp->priority,
+        'status' => $followUp->status,
+        'notes' => $followUp->notes,
+        'project' => $followUp->project ? $followUp->project->name : null,
+    ]);
+}
+
 
 // public function index()
 // {
@@ -64,25 +83,64 @@ public function filter(Request $request)
 
     public function store(Request $request)
 {
-    $validated = $request->validate([
-        'client_id' => 'required|exists:clients,id',
-        'project_id' => 'nullable|exists:projects,id',
-        'follow_up_date' => 'required|date',
-        'follow_up_time' => 'required',
-        'priority' => 'required|in:Low,Medium,High',
-        'status' => 'required|in:Pending,Completed,Rescheduled',
-        'notes' => 'nullable|string',
-    ]);
+    $data = $this->validateData($request);
 
-    FollowUp::create($validated);
+    FollowUp::create($data);
 
     return redirect()->back()->with('success', 'Follow-up added successfully.');
+}
+
+    public function update(Request $request, FollowUp $followUp)
+{
+    $data = $this->validateData($request);
+
+    $followUp->update($data);
+
+    return redirect()->back()->with('success', 'Follow-up updated successfully.');
 }
 
 public function getClientProjects($id)
 {
     $projects = Project::where('client_id', $id)->get(['id', 'name']);
     return response()->json($projects);
+}
+
+    protected function validateData(Request $request): array
+{
+    $validated = $request->validate([
+        'client_name' => ['required', 'string', 'max:255'],
+        'client_id' => ['nullable', 'exists:clients,id'],
+        'follow_up_date' => ['required', 'date'],
+        'follow_up_time' => ['required'],
+        'priority' => ['required', 'in:Low,Medium,High'],
+        'status' => ['required', 'in:Sold,Unsold'],
+        'notes' => ['nullable', 'string'],
+    ]);
+
+    $clientId = $validated['client_id'] ?? null;
+
+    if (!$clientId) {
+        $normalized = Str::lower(trim($validated['client_name']));
+        $matchedClient = Client::all()->first(function ($client) use ($normalized) {
+            $fullName = Str::lower(trim(($client->firstname ?? '') . ' ' . ($client->lastname ?? '')));
+            return $fullName === $normalized;
+        });
+
+        if ($matchedClient) {
+            $clientId = $matchedClient->id;
+        }
+    }
+
+    return [
+        'client_id' => $clientId,
+        'client_name' => $validated['client_name'],
+        'follow_up_date' => $validated['follow_up_date'],
+        'follow_up_time' => $validated['follow_up_time'],
+        'priority' => $validated['priority'],
+        'status' => $validated['status'],
+        'notes' => $validated['notes'],
+        'project_id' => null,
+    ];
 }
 
 

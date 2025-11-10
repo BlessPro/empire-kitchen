@@ -1,18 +1,15 @@
    <x-designer-layout>
-   <x-slot name="header">
-<!--written on 16.05.2025-->
-        @include('admin.layouts.header')
-         </x-slot>
-        <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+        <main>
         <!--head begins-->
 
-            <div class="">
+            <div class="p-3 sm:p-4">
              <div class="mb-[20px]">
 
 
 
                 <!-- Tabs -->
-<div class="flex mb-6 border-b">
+<div class="overflow-x-auto">
+<div class="flex mb-6 border-b min-w-max">
 
      <button class="px-4 py-2 text-[19px] font-medium text-gray-600 border-b-2 border-transparent tab-btn focus:outline-none hover:text-fuchsia-900 hover:border-fuchsia-900 flex" data-tab="account">
         <i data-feather="user"
@@ -20,6 +17,7 @@
     <button class="px-4 py-2 text-[19px] font-medium text-gray-600 border-b-2 border-transparent tab-btn focus:outline-none hover:border-fuchsia-900 flex hover:text-fuchsia-900" data-tab="notification"> <i data-feather="bell"
         class="w-[17.7px] h-[17.7px] mt-[7px] mr-[7px] text-black hover:text-fuchsia-900 feather-icon group "></i>Notification</button>
 
+</div>
 </div>
 
 <!-- Tab Contents -->

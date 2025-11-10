@@ -1,7 +1,6 @@
 <x-tech-layout>
     <x-slot name="header">
         <!--written on 15.05.2025-->
-        @include('admin.layouts.header')
     </x-slot>
 
 
@@ -13,7 +12,7 @@
     {{-- <main class="flex-1  min-h-screen bg-[#F9F7F7] pt-24 pb-12 overflow-x-hidden"> --}}
 
 
-    <main class="ml-[280px] mt-[90px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+    <main>
 
         <div class=" max-w-7xl px-4 py-4 sm:px-6 lg:px-8 xl:px-10 mx-auto">
             <div class="grid grid-cols-1 gap-6 xl:grid-cols-3 xl:gap-8">

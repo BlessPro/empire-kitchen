@@ -73,7 +73,7 @@
                 <select name="project[client_id]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
                   <option value="">— choose client —</option>
                   @foreach($clients ?? [] as $c)
-                    <option value="{{ $c->id }}">{{ $c->firstname }}</option>
+                    <option value="{{ $c->id }}"> {{ trim($c->firstname . ' ' . ($c->lastname ?? '')) }}</option>
                   @endforeach
                 </select>
               </div>

@@ -1,8 +1,4 @@
    <x-designer-layout>
-       <x-slot name="header">
-           <!--written on 16.05.2025-->
-           @include('admin.layouts.header')
-       </x-slot>
 
        @php
            $statusClasses = [
@@ -13,29 +9,28 @@
 
            $defaultClass = 'bg-gray-100 text-gray-800';
        @endphp
-       <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+       <main>
            <!--head begins-->
 
 
-           <div class="]">
+           <div class="p-3 sm:p-4 space-y-4">
                <div class="mb-[20px]">
 
                    <h2 class="mb-6 text-2xl font-bold">Assigned Projects </h2>
                    <div class="mb-20 bg-white shadow rounded-2xl">
 
 
+                       <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
-                       <div class="flex items-center justify-between">
 
-
-                           <div class="pt-6 pb-5 pl-6 border-b border-gray-200 ">
+                           <div class="pt-6 pb-5 pl-6">
 
                                <h2 class="font-normal text-gray-900 text-normal">Manage your clients here</h2>
                            </div>
 
-                           <div class="pt-4 pr-4">
+                           <div class="px-4 pb-4 sm:pt-4 sm:pr-4">
                                <form method="GET" action="{{ url('designer/AssignedProjects') }}"
-                                   class="flex flex-wrap gap-3 mb-4">
+                                   class="flex flex-wrap items-center gap-3">
                                    {{-- Client search --}}
                                    <input type="text" name="q" value="{{ request('q') }}"
                                        placeholder="Search client name…"

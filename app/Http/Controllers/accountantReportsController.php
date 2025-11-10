@@ -87,9 +87,9 @@ public function index(Request $request)
 public function getMonthlyChartData()
 {
     $expenses = DB::table('expenses')
-        ->select(DB::raw('MONTH(date) as month'), DB::raw('SUM(amount) as total'))
-        ->groupBy(DB::raw('MONTH(date)'))
-        ->orderBy(DB::raw('MONTH(date)'))
+        ->selectRaw("EXTRACT(MONTH FROM date) as month, SUM(amount) as total")
+        ->groupByRaw("EXTRACT(MONTH FROM date)")
+        ->orderByRaw("EXTRACT(MONTH FROM date)")
         ->get();
 
     // Format: [0, 0, 500, 1000, ...] (January = index 0)
@@ -107,9 +107,9 @@ public function getMonthlyChartData()
 public function getMonthlyIncomeChartData()
 {
     $incomes = DB::table('incomes')
-        ->select(DB::raw('MONTH(date) as month'), DB::raw('SUM(amount) as total'))
-        ->groupBy(DB::raw('MONTH(date)'))
-        ->orderBy(DB::raw('MONTH(date)'))
+        ->selectRaw("EXTRACT(MONTH FROM date) as month, SUM(amount) as total")
+        ->groupByRaw("EXTRACT(MONTH FROM date)")
+        ->orderByRaw("EXTRACT(MONTH FROM date)")
         ->get();
 
     // Format: [0, 0, 500, 1000, ...] (January = index 0)

@@ -35,20 +35,20 @@
     .btn-ghost{ border:1px solid #e5e7eb; border-radius:10px; padding:6px 10px; background:#fff; }
   </style>
 
-  <main class="ml-[280px] mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen">
+  <main>
 
     <script>
       window.BOOKED_PROJECTS = @json($bookedProjects ?? []);
     </script>
 
-    <div class="mb-3 flex items-center justify-between">
+    <div class="mb-3 flex items-center justify-between px-3 sm:px-4">
       <h2 class="text-lg font-semibold text-gray-900">Installations</h2>
       <button id="btn-open-create" class="px-4 py-2 rounded-full bg-fuchsia-700 text-white text-sm hover:bg-fuchsia-800">
         + New Installation
       </button>
     </div>
 
-    <div class="p-6">
+    <div class="p-3 sm:p-4">
       <div class="rounded-[20px] border border-gray-200 bg-white shadow-sm p-4">
         <div id="calendar"></div>
       </div>
@@ -57,7 +57,7 @@
     {{-- Create Installation Modal --}}
     <div id="install-modal" class="fixed inset-0 z-[10000] hidden">
       <div class="absolute inset-0 bg-black/30"></div>
-      <div class="absolute left-1/2 top-1/2 w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white shadow-xl p-5">
+      <div class="absolute left-1/2 top-1/2 w-full max-w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white shadow-xl p-5">
         <div class="flex items-center justify-between mb-3">
           {{-- <h3 class="text-base font-semibold text-gray-900">New Installation</h3> --}}
           <h3 class="text-base font-semibold text-gray-900" id="install-modal-title">New Installation</h3>

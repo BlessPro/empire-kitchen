@@ -9,9 +9,8 @@
         </style>
         @include('admin.layouts.header')
     </x-slot>
-
-    <main class="ml-[280px] mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen items-center">
-        <div class="p-6 bg-[#F9F7F7]">
+    <main class="bg-[#F9F7F7] min-h-screen">
+        <div class="p-3 space-y-2 sm:p-4">
 
             <div class="flex items-center justify-between mb-6">
                 <h1 class="text-2xl font-bold">Bookings</h1>

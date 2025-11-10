@@ -9,6 +9,7 @@ use App\Models\BudgetAllocation;
 use App\Models\BudgetCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class BudgetsController extends Controller
 {
@@ -53,6 +54,90 @@ class BudgetsController extends Controller
             'main_amount'  => (float) $project->budget->main_amount,
             'currency'     => $project->budget->currency ?? 'GHS',
         ]);
+    }
+
+    public function create()
+    {
+        $projects = Project::doesntHave('budget')
+            ->with(['client:id,firstname,lastname,title'])
+            ->select('id','name','client_id')
+            ->orderBy('name')
+            ->get();
+
+        $defaults = collect(['Measurement','Design','Production','Installation'])
+            ->map(fn($name) => ['name' => $name, 'amount' => 0]);
+
+        return view('accountant.Project-Financial.create-budget', [
+            'projects'  => $projects,
+            'defaults'  => $defaults,
+            'currency'  => 'GHS',
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'project_id'                 => ['required','exists:projects,id', Rule::unique('budgets','project_id')],
+            'main_amount'                => ['required','numeric','min:0'],
+            'currency'                   => ['nullable','string','max:3'],
+            'defaults'                   => ['array'],
+            'defaults.*.name'            => ['required','string','max:255'],
+            'defaults.*.amount'          => ['nullable','numeric','min:0'],
+            'extras'                     => ['array'],
+            'extras.*.name'              => ['required_with:extras.*.amount','string','max:255'],
+            'extras.*.amount'            => ['required_with:extras.*.name','numeric','min:0'],
+        ], [
+            'project_id.unique' => 'This project already has a budget.',
+        ]);
+
+        $mainAmount = (float) $validated['main_amount'];
+        $defaults   = collect($validated['defaults'] ?? []);
+        $extras     = collect($validated['extras'] ?? []);
+
+        $allocTotal = $defaults->sum(fn($row) => (float) ($row['amount'] ?? 0))
+            + $extras->sum(fn($row) => (float) ($row['amount'] ?? 0));
+
+        if ($allocTotal > $mainAmount) {
+            return back()
+                ->withInput()
+                ->withErrors(['main_amount' => 'Allocations ('.$allocTotal.') exceed the main budget ('.$mainAmount.'). Reduce some amounts.']);
+        }
+
+        DB::transaction(function () use ($validated, $defaults, $extras, $mainAmount) {
+            $budget = Budget::create([
+                'project_id'    => $validated['project_id'],
+                'main_amount'   => $mainAmount,
+                'currency'      => $validated['currency'] ?? 'GHS',
+                'effective_date'=> now()->toDateString(),
+            ]);
+
+            $rows = $defaults->merge($extras)->filter(fn($row) => !empty(trim($row['name'] ?? '')));
+
+            foreach ($rows as $row) {
+                $name = trim($row['name']);
+                $amount = (float) ($row['amount'] ?? 0);
+                if ($amount <= 0) {
+                    continue;
+                }
+
+                $category = BudgetCategory::firstOrCreate(
+                    ['name' => $name],
+                    [
+                        'description' => $name.' (custom)',
+                        'is_default'  => in_array($name, ['Measurement','Design','Production','Installation'], true),
+                    ]
+                );
+
+                BudgetAllocation::updateOrCreate(
+                    ['budget_id' => $budget->id, 'budget_category_id' => $category->id],
+                    ['amount' => $amount]
+                );
+            }
+        });
+
+        return redirect()
+            ->route('accountant.Project-Financials', ['tab' => 'Project-Budget'])
+            ->with('success', 'Budget created successfully.');
     }
 
     // Update budget: main amount + allocations (defaults + extras)

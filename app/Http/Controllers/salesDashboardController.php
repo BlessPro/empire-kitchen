@@ -8,43 +8,43 @@ use Illuminate\Http\Request;
 use App\Models\Client;
 use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+
 
 class salesDashboardController extends Controller
 {
 
-public function index(Request $request)
+public function index()
 {
-       // Fetch chart data counts
-    $newClientsCount = Client::count();
-    $inProgressProjects = Project::where('status', 'in progress')->count();
-    $closedProjects = Project::whereIn('status', ['completed', 'closed'])->count();
-    $followUpsCount = FollowUp::whereIn('status', ['Pending', 'Rescheduled'])->count();
+    $today = Carbon::today();
 
-    $chartData = [
-        'newClients' => $newClientsCount,
-        'inProgress' => $inProgressProjects,
-        'followUps' => $followUpsCount,
-        'closed' => $closedProjects,
-    ];
+    // ---- Stats Summary ----
+    $soldFollowUpsCount = FollowUp::where('status', 'Sold')->count();
+
+    $startOfWeek = $today->copy()->startOfWeek();
+    $endOfWeek   = $today->copy()->endOfWeek();
+
+    $dueThisWeekCount = FollowUp::whereBetween('follow_up_date', [$startOfWeek, $endOfWeek])->count();
+
+    $overdueCount = FollowUp::where('follow_up_date', '<', $today)
+        ->where('status', '!=', 'Sold')
+        ->count();
+
+    // ---- Table Data ----
+    // Show latest or upcoming follow-ups with client name, due date, priority, and status
+    $recentFollowUps = FollowUp::select('client_name', 'follow_up_date', 'priority', 'status')
+        ->orderBy('follow_up_date', 'asc')
+        ->limit(10)
+        ->get();
 
 
-    // Fetch latest follow-ups with clients
-    // Use 'with' to eager load the client relationship
-    $followUps = FollowUp::with(['client']) // load only client
-        ->latest()
-        ->paginate(5);
-
-    if ($request->ajax()) {
-        return view('sales.partials.dashboard-table', compact('followUps'))->render();
-    }
-
-    return view('sales.dashboard', compact('followUps','chartData'));
+    return view('sales.dashboard', [
+        'soldFollowUpsCount' => $soldFollowUpsCount,
+        'dueThisWeekCount'   => $dueThisWeekCount,
+        'overdueCount'       => $overdueCount,
+        'recentFollowUps'    => $recentFollowUps,
+    ]);
 }
 
 
-
-
-
-
 }
-

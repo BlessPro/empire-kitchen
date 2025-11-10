@@ -14,6 +14,12 @@ use App\Http\Controllers\TechDashboardController;
 use App\Http\Controllers\DesignerDashboardController;
 use App\Http\Controllers\accountantDashboardController;
 use App\Http\Controllers\salesDashboardController;
+use App\Http\Controllers\ProductionSettingsController;
+use App\Http\Controllers\ProductionProjectManagementController;
+use App\Http\Controllers\InstallationSettingsController;
+use App\Http\Controllers\InstallationProjectManagementController;
+use App\Http\Controllers\ProductionClientController;
+use App\Http\Controllers\InstallationClientController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -35,6 +41,10 @@ Route::middleware('guest')->group(function () {
 
     Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
         ->name('password.reset');
+
+    Route::get('reset-password/success', function () {
+        return view('auth.reset-success');
+    })->name('password.reset.success');
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
@@ -86,8 +96,27 @@ Route::middleware(['auth', 'role:accountant', UpdateLastSeen::class])->group(fun
         ->name('accountant.dashboard');
 });
 
-Route::middleware(['auth', 'role:sales_accountant', UpdateLastSeen::class])->group(function () {
+Route::middleware(['auth', 'role:sales_account', UpdateLastSeen::class])->group(function () {
     Route::get('/sales/dashboard', [salesDashboardController::class, 'index'])
         ->name('sales.dashboard');
 });
 
+// Production Officer
+Route::middleware(['auth', 'role:production_officer', UpdateLastSeen::class])->group(function () {
+    Route::get('/production/settings', [ProductionSettingsController::class, 'index'])
+        ->name('production.settings');
+    Route::get('/production/projects', [ProductionProjectManagementController::class, 'index'])
+        ->name('production.projects');
+    Route::get('/production/projects/{project}/info', [ProductionClientController::class, 'showProjectname'])
+        ->name('production.projects.info');
+});
+
+// Installation Officer
+Route::middleware(['auth', 'role:installation_officer', UpdateLastSeen::class])->group(function () {
+    Route::get('/installation/settings', [InstallationSettingsController::class, 'index'])
+        ->name('installation.settings');
+    Route::get('/installation/projects', [InstallationProjectManagementController::class, 'index'])
+        ->name('installation.projects');
+    Route::get('/installation/projects/{project}/info', [InstallationClientController::class, 'showProjectname'])
+        ->name('installation.projects.info');
+});

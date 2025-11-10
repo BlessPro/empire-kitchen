@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator; // Import the Validator facade
 use Illuminate\Support\Facades\Auth; // Import the Auth facade
 use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class ClientManagementController extends Controller
 {
@@ -52,6 +53,34 @@ public function index(Request $request)
         }]);
 
         return view('clients.show', compact('client'));
+    }
+
+    public function edit(Client $client): View
+    {
+        return view('admin.editclient', compact('client'));
+    }
+
+    public function update(Request $request, Client $client): RedirectResponse
+    {
+        $validated = $request->validate([
+            'firstname'      => 'required|string|max:50',
+            'lastname'       => 'required|string|max:50',
+            'phone_number'   => 'required|numeric|digits_between:10,15',
+            'other_phone'    => 'nullable|numeric|digits_between:10,15',
+            'contact_person' => 'nullable|string|max:100',
+            'contact_phone'  => 'nullable|numeric|digits_between:10,15',
+            'location'       => 'required|string|max:100',
+            'email'          => 'nullable|email|max:255',
+            'title'          => 'nullable|string|max:10',
+            'othernames'     => 'nullable|string|max:100',
+            'address'        => 'nullable|string|max:255',
+        ]);
+
+        $client->update($validated);
+
+        return redirect()
+            ->route('admin.ClientManagement')
+            ->with('success', 'Client updated successfully.');
     }
 
     // DELETE /clients/{client}

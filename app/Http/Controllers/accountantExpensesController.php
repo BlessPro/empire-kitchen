@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Expense;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 
 class accountantExpensesController extends Controller
@@ -50,16 +51,27 @@ public function index()
 public function store(Request $request)
 {
     $validated = $request->validate([
-        'expense_name' => 'required|string|max:255',
-        'amount' => 'required|numeric',
-        'date' => 'required|date',
-        'project_id' => 'required|exists:projects,id',
-        'category_id' => 'required|exists:categories,id',
-        'notes' => 'nullable|string',
-        'accountant_id' => 'required|exists:users,id', // Ensure the accountant ID is valid
+        'expense_type' => ['required', 'in:project,other'],
+        'expense_name' => ['required', 'string', 'max:255'],
+        'amount' => ['required', 'numeric'],
+        'date' => ['required', 'date'],
+        'project_id' => [
+            Rule::requiredIf(fn () => $request->input('expense_type') === 'project'),
+            'nullable',
+            'exists:projects,id',
+        ],
+        'category_id' => ['required', 'exists:categories,id'],
+        'notes' => ['nullable', 'string'],
+        'accountant_id' => ['nullable', 'exists:users,id'],
     ]);
-        $validated['accountant_id'] = Auth::id();
 
+    $validated['accountant_id'] = Auth::id();
+
+    if ($request->input('expense_type') !== 'project') {
+        $validated['project_id'] = null;
+    }
+
+    unset($validated['expense_type']);
 
     Expense::create($validated);
 
@@ -83,14 +95,18 @@ public function store(Request $request)
 public function update(Request $request, Expense $expense)
 {
     $validated = $request->validate([
-        'expense_name' => 'required|string|max:255',
-        'amount' => 'required|numeric',
-        'date' => 'required|date',
-        'project_id' => 'required|exists:projects,id',
-        'category_id' => 'required|exists:categories,id',
-        'notes' => 'nullable|string',
-        'accountant_id' => 'required|exists:users,id',
+        'expense_name' => ['required', 'string', 'max:255'],
+        'amount' => ['required', 'numeric'],
+        'date' => ['required', 'date'],
+        'project_id' => ['nullable', 'exists:projects,id'],
+        'category_id' => ['required', 'exists:categories,id'],
+        'notes' => ['nullable', 'string'],
+        'accountant_id' => ['nullable', 'exists:users,id'],
     ]);
+
+    if (empty($validated['project_id'])) {
+        $validated['project_id'] = null;
+    }
 
     $expense->update($validated);
 

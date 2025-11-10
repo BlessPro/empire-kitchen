@@ -1,13 +1,7 @@
 {{-- resources/views/inbox.blade.php --}}
 <x-accountant-layout>
-
-    <x-slot name="header">
-        @include('admin.layouts.header')
-
-    </x-slot>
-{{-- <body class="h-screen bg-neutral-50 text-neutral-800"> --}}
- <main class="ml-[260px] mt-[60px] bg-[#F9F7F7]">
-        <div class="pl-6 pr-2 pb-6 pt-6 h-[calc(100vh-80px)] overflow-hidden">
+    <main>
+        <div class="p-1 h-[calc(100vh-60px)] overflow-hidden">
 
   <div class="grid h-full grid-cols-12 gap-0">
     <!-- Left: Conversation List -->
@@ -412,7 +406,7 @@
             }
           };
           row.addEventListener('click', (e) => {
-            if (e.target !== checkbox) { 
+            if (e.target !== checkbox) {
               checkbox.checked = !checkbox.checked;
               refresh();
             }
@@ -493,6 +487,7 @@
   </script>
   </div>
 </main>
+
 
 
 </x-accountant-layout>

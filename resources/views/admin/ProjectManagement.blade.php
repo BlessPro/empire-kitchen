@@ -10,8 +10,8 @@
 
     </x-slot>
 
-    <main class="ml-[280px] mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen">
-        <div class="p-6">
+    <main>
+        <div class="p-3 sm:p-4">
             {{-- Top bar --}}
             <div class="flex items-center justify-between mb-6">
                 <h1 class="text-2xl font-bold">Project Management</h1>

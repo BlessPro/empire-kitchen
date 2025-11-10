@@ -23,7 +23,7 @@ class UserController extends Controller
             'tech_supervisor' => redirect()->route('tech.dashboard'),
             'designer' => redirect()->route('designer.dashboard'),
             'accountant' => redirect()->route('accountant.dashboard'),
-            'sales_accountant' => redirect()->route('sales.dashboard'),
+            'sales_account' => redirect()->route('sales.dashboard'),
             default => redirect()->route('login'),
         };
     }
@@ -45,7 +45,7 @@ class UserController extends Controller
     //     ->name('accountant.dashboard');
 
     // Route::get('/sales/dashboard', [SalesController::class, 'index'])
-    //     ->middleware('role:sales_accountant')
+    //     ->middleware('role:sales_account')
     //     ->name('sales.dashboard');
 
     // }
@@ -68,7 +68,6 @@ public function update(Request $request, \App\Models\User $user)
             'designer',
             'accountant',
             'sales_account',
-            'sales_accountant',
             'production_officer',
             'installation_officer',
         ])],
@@ -172,7 +171,7 @@ public function update(Request $request, \App\Models\User $user)
                     'admin',
                     'tech_supervisor',
                     'designer',
-                    'sales_accountant',
+                    'sales_account',
                     'accountant',
                     'production_officer',
                     'installation_officer',
