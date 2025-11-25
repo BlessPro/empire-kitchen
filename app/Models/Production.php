@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 // app/Models/Production.php
 class Production extends Model
 {
-    protected $table = 'production'; // <-- change to your actual table name
+    // Use default Laravel pluralization: 'productions' table
+    // protected $table = 'productions';
     // public function project() { return $this->belongsTo(Project::class); }
 
 

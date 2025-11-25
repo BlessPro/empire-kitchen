@@ -7,15 +7,15 @@
 
     </x-slot>
 
-    <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen  items-center">
+    <div class="p-4 sm:p-6">
         <!--head begins-->
 
         <div class="">
             <div class="mb-[20px]">
 
                 {{-- navigation bar --}}
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center justify-between mb-6">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
                         <span><i data-feather="home" class="w-[20px] h-[20px] text-fuchsia-900 ml-[3px]"></i></span>
                         <span><i data-feather="chevron-right" class="w-[4] h-[3] text-fuchsia-900 ml-[3px]"></i></span>
                         <a href="{{ route('accountant.Expenses') }}">
@@ -38,7 +38,7 @@
                             New Category </button>
                         <!-- Modal -->
                         <div x-show="open" x-transition
-                            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 px-4">
                             <div class="relative w-full max-w-md p-6 bg-white rounded-xl">
 
                                 <!-- Close Button -->
@@ -77,7 +77,8 @@
                 </div>
                 {{-- end of navigation bar --}}
                 <div class="shadow-md rounded-[15px] ">
-                    <table class=" min-w-full mt-6 pl-6 text-left bg-white rounded-[20px]">
+                    <div class="overflow-x-auto">
+                    <table class="min-w-full mt-6 pl-6 text-left bg-white rounded-[20px]">
                         <thead class="text-sm text-gray-600 bg-gray-100">
                             <tr>
                                 <th class="p-4 font-medium text-[15px] w-1/2">Category</th>
@@ -109,10 +110,11 @@
                             @endforelse
                         </tbody>
                     </table>
+                    </div>
                 </div>
                 <div class="mt-4 mb-5 ml-5 mr-5">
                     {{ $categories->links('pagination::tailwind') }}
                 </div>
             </div>
-    </main>
+    </div>
 </x-accountant-layout>

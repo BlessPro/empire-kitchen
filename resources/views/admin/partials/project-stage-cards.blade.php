@@ -22,8 +22,8 @@
                                 <iconify-icon icon="mingcute:more-2-line" width="22" style="color:#5A0562;"></iconify-icon>
                             </button>
 
-                            <div class="absolute right-0 z-50 hidden w-48 mt-2 bg-white border border-gray-100 shadow-lg more-menu rounded-xl"
-                                data-project="{{ $project->id }}" role="menu">
+                            <div class="absolute right-0 bottom-full z-50 hidden w-48 mb-2 bg-white border border-gray-100 shadow-lg more-menu rounded-xl"
+                                data-project="{{ $project->id }}" role="menu" data-no-nav>
                                 <ul class="py-2 text-[15px] text-gray-700">
                                     <li>
                                         <a href="#" class="block px-4 py-2 assign-trigger hover:bg-gray-100"
@@ -48,6 +48,20 @@
                                             class="block w-full px-4 py-2 text-left hover:bg-gray-100"
                                             onclick="duplicateProject({{ $project->id }})">
                                             Duplicate project
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button"
+                                            class="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                                            onclick="renameProject({{ $project->id }}, @js($project->name))">
+                                            Rename project
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button"
+                                            class="block w-full px-4 py-2 text-left text-red-600 hover:bg-gray-100"
+                                            onclick="deleteProject({{ $project->id }})">
+                                            Delete project
                                         </button>
                                     </li>
                                 </ul>

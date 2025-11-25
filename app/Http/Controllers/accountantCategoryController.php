@@ -23,7 +23,8 @@ public function store(Request $request)
 
 public function index()
 {
-    $categories = Category::orderBy('name')->get();
+    // Use pagination so the view can call links()
+    $categories = Category::orderBy('name')->paginate(10);
     return view('accountant.Expenses.Category', compact('categories'));
 }
 

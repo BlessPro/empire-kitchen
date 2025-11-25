@@ -57,10 +57,10 @@
                    value="********"
                    readonly
                    class="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-700 cursor-not-allowed">
-            <p class="mt-2 text-sm text-fuchsia-900">
-                <a href="{{ route('password.request') }}" class="hover:underline">Reset password</a>
-            </p>
+            <form method="POST" action="{{ route('account.password.email') }}" class="mt-2">
+                @csrf
+                <button type="submit" class="text-sm font-medium text-fuchsia-900 hover:underline">Reset password</button>
+            </form>
         </div>
     </div>
 </div>
-

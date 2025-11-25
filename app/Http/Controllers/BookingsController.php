@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Activity;
 
 class BookingsController extends Controller
 {
@@ -107,6 +108,12 @@ class BookingsController extends Controller
         // Only update if not already booked
         if ($project->booked_status !== 'BOOKED') {
             $project->update(['booked_status' => 'BOOKED']);
+            Activity::log([
+                'project_id' => $project->id,
+                'type'       => 'booking.booked',
+                'message'    => "{$project->name} booked status is now BOOKED",
+                'meta'       => ['status' => 'BOOKED'],
+            ]);
         }
 
         return back()->with('success', 'Project set as BOOKED.');
@@ -117,13 +124,20 @@ class BookingsController extends Controller
     {
         if ($project->booked_status !== 'UNBOOKED') {
             $project->update(['booked_status' => 'UNBOOKED']);
+            Activity::log([
+                'project_id' => $project->id,
+                'type'       => 'booking.unbooked',
+                'message'    => "{$project->name} booked status is now UNBOOKED",
+                'meta'       => ['status' => 'UNBOOKED'],
+            ]);
         }
         return back()->with('success', 'Project set as UNBOOKED.');
     }
 
     public function booked(Request $request)
     {
-        $projects = Project::with('client:id,firstname,lastname,name')
+        // load only existing client columns to avoid SQL errors (no "name" column)
+        $projects = Project::with('client:id,firstname,lastname')
             ->where('booked_status', 'BOOKED')
             ->orderByDesc('id')
             ->get(['id', 'name', 'client_id']);
@@ -161,6 +175,13 @@ class BookingsController extends Controller
         }
 
         $project->update(['booked_status' => 'BOOKED']);
+
+        Activity::log([
+            'project_id' => $project->id,
+            'type'       => 'booking.override',
+            'message'    => "{$project->name} booked status is now BOOKED (override)",
+            'meta'       => ['status' => 'BOOKED'],
+        ]);
 
         return response()->json(['ok' => true]);
     }

@@ -114,11 +114,10 @@
     <div class="px-4 py-6 text-center border-t border-white/10">
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();"
-                class="inline-flex items-center text-sm transition hover:text-purple-300">
+            <button type="submit" class="inline-flex items-center text-sm transition hover:text-purple-300">
                 <i data-feather="log-out" class="w-5 h-5 mr-3"></i>
                 Log out
-        </a>
+            </button>
         </form>
     </div>
     <!--Logout-->

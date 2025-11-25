@@ -11,6 +11,7 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use App\Models\Activity;
 
 class accountantPayController extends Controller
 {
@@ -86,6 +87,13 @@ class accountantPayController extends Controller
                 ]),
             ]);
         }
+
+        Activity::log([
+            'project_id' => $project->id,
+            'type'       => 'payment.created',
+            'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " recorded payment on '{$project->name}' (" . number_format($validated['amount'], 2) . ")",
+            'meta'       => ['amount' => $validated['amount'], 'method' => $validated['payment_method'] ?? null],
+        ]);
 
         return redirect()->back()->with('success', 'Payment recorded successfully!');
     }

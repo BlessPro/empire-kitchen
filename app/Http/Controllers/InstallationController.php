@@ -10,6 +10,7 @@ use App\Models\Client;
 use App\Models\Project;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use App\Models\Activity;
 
 
 class InstallationController extends Controller
@@ -42,6 +43,16 @@ class InstallationController extends Controller
         $project = Project::find($request->project_id);
         $project->current_stage = 'installation';
         $project->save();
+
+        Activity::log([
+            'project_id' => $project->id,
+            'type'       => 'installation.scheduled',
+            'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " scheduled installation for '{$project->name}'",
+            'meta'       => [
+                'start' => $request->start_time,
+                'end'   => $request->end_time,
+            ],
+        ]);
 
         return response()->json(['success' => true, 'data' => $installation]);
     }
@@ -112,6 +123,13 @@ public function update(Request $request, $id)
 
     $installation->save();
 
+    Activity::log([
+        'project_id' => $installation->project_id,
+        'type'       => 'installation.updated',
+        'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " updated installation for '" . optional($installation->project)->name . "'",
+        'meta'       => [ 'start' => $installation->start_time, 'end' => $installation->end_time ],
+    ]);
+
     return response()->json(['success' => true, 'message' => 'Installation updated successfully']);
 }
 
@@ -124,6 +142,11 @@ public function destroy($id)
     }
 
     $installation->delete();
+    Activity::log([
+        'project_id' => $installation->project_id,
+        'type'       => 'installation.deleted',
+        'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " deleted an installation for '" . optional($installation->project)->name . "'",
+    ]);
     Log::info("Installation deleted: $id");
 
     return response()->json(['success' => true, 'message' => 'Installation deleted successfully']);

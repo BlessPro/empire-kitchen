@@ -4,43 +4,7 @@
             <h1 class="text-2xl font-bold">Project Management</h1>
         </div>
 
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
-            <!-- Measurement -->
-            <div class="pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px]">
-                <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#F59E0B]">
-                    <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px]">
-                        <h5 class="px-[10px] py-[10px] text-black">{{ ($measurements ?? collect())->count() }}</h5>
-                    </span>
-                    Measurement
-                </div>
-                <div class="pt-2 space-y-5">
-                    @include('admin.partials.project-stage-cards', [
-                        'projects' => $measurements ?? collect(),
-                        'emptyMessage' => 'No project is currently under measurement',
-                        'projectRouteName' => 'installation.projects.info',
-                        'showActions' => false,
-                    ])
-                </div>
-            </div>
-
-            <!-- Design -->
-            <div class="pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px]">
-                <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#4F46E5]">
-                    <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px]">
-                        <h5 class="px-[10px] py-[10px] text-black">{{ ($designs ?? collect())->count() }}</h5>
-                    </span>
-                    Design
-                </div>
-                <div class="pt-2 space-y-5">
-                    @include('admin.partials.project-stage-cards', [
-                        'projects' => $designs ?? collect(),
-                        'emptyMessage' => 'No project is currently in design',
-                        'projectRouteName' => 'installation.projects.info',
-                        'showActions' => false,
-                    ])
-                </div>
-            </div>
-
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <!-- Production -->
             <div class="pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px]">
                 <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#22C55E]">
@@ -61,7 +25,7 @@
 
             <!-- Installation -->
             <div class="pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px]">
-                <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#F59E0B]">
+                <div class="flex items-center pl-2 pr-5 py-2 text-white rounded-full bg-[#5A0562]">
                     <span class="mr-2 font-semibold bg-white rounded-full px-[10px] py-[0px]">
                         <h5 class="px-[10px] py-[10px] text-black">{{ ($installations ?? collect())->count() }}</h5>
                     </span>

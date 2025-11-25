@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Design;
 use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Activity;
 
 class DesignController extends Controller
 {
@@ -41,6 +42,12 @@ public function store(Request $request)
     // ✅ Update project current_stage
     $project = Project::find($request->project_id);
     $project->update(['current_stage' => 'design']);
+    Activity::log([
+        'project_id' => $project->id,
+        'type'       => 'design.uploaded',
+        'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " uploaded designs for '{$project->name}'",
+        'meta'       => ['count' => is_array($request->images ?? null) ? count($request->images) : null],
+    ]);
 
     return redirect()->back()->with('success', 'Design added and stage updated.');
 }

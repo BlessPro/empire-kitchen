@@ -3,9 +3,8 @@
         @include('sales.layouts.header')
     </x-slot>
 
-    <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen">
-        <div class="px-6 pb-12">
-            <div class="mb-8 flex items-center justify-between">
+    <div class="p-4 sm:p-6">
+            <div class="mb-6 sm:mb-8 flex flex-wrap items-center justify-between gap-3">
                 <h1 class="text-2xl font-bold">Follow-up</h1>
                 <button id="followup-create-btn"
                     class="flex items-center gap-2 rounded-full border border-fuchsia-800 bg-fuchsia-900 px-4 py-2 text-sm font-semibold text-white hover:bg-fuchsia-800">
@@ -14,7 +13,7 @@
                 </button>
             </div>
 
-            <div class="filter-controls mb-4 flex gap-2" data-filter-target="#my-table-id">
+            <div class="filter-controls mb-4 flex flex-wrap gap-2" data-filter-target="#my-table-id">
                 <button data-status="all" class="filter-btn rounded px-3 py-1 text-sm font-medium text-gray-700 ring-transparent">
                     All
                 </button>
@@ -41,8 +40,7 @@
                     @include('sales.partials.followup-table', ['followUps' => $followUps])
                 </div>
             </div>
-        </div>
-    </main>
+    </div>
 
     <!-- Create / Edit Modal -->
     <div id="followup-form-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 px-4">
@@ -476,5 +474,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 </x-sales-layout>
-
 

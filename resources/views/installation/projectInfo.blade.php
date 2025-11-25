@@ -103,14 +103,22 @@
                         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
 
 
+                            @php
+                                $role = auth()->user()->role ?? '';
+                                $limitPhases = in_array($role, ['production_officer', 'installation_officer']);
+                            @endphp
                             @foreach ($project->phases as $p)
-                                <label class="flex items-start gap-3 px-3 py-2 border border-gray-200 rounded-lg">
+                                @php $canToggle = !$limitPhases || ($loop->remaining <= 1); @endphp
+                                <label class="flex items-start gap-3 px-3 py-2 border border-gray-200 rounded-lg {{ $canToggle ? '' : 'opacity-50 cursor-not-allowed' }}">
                                     <input type="checkbox"
                                         class="mt-0.5 h-4 w-4 rounded border-gray-300 text-fuchsia-700 phase-toggle"
-                                        data-url="{{ route('admin.projects.phases.toggle', [
-                                            'project' => $project->__meta['project_id'],
-                                            'template' => $p['template_id'],
-                                        ]) }}"
+                                        @if($canToggle)
+                                            data-url="{{ route('admin.projects.phases.toggle', [
+                                                'project' => $project->__meta['project_id'],
+                                                'template' => $p['template_id'],
+                                            ]) }}"
+                                        @endif
+                                        @disabled(!$canToggle)
                                         @checked($p['done'])>
                                     <span class="text-sm text-gray-800">{{ $p['name'] }}</span>
                                 </label>
@@ -2921,6 +2929,7 @@
         (function() {
             const csrf = '{{ csrf_token() }}';
             document.querySelectorAll('.phase-toggle').forEach(cb => {
+                if (cb.disabled) return;
                 cb.addEventListener('change', async (e) => {
                     const el = e.currentTarget;
                     el.disabled = true;

@@ -10,6 +10,7 @@ use App\Models\BudgetCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Models\Activity;
 
 class BudgetsController extends Controller
 {
@@ -109,6 +110,12 @@ class BudgetsController extends Controller
                 'main_amount'   => $mainAmount,
                 'currency'      => $validated['currency'] ?? 'GHS',
                 'effective_date'=> now()->toDateString(),
+            ]);
+            $project = Project::find($validated['project_id']);
+            Activity::log([
+                'project_id' => $project->id,
+                'type'       => 'budget.created',
+                'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " created budget for '{$project->name}'",
             ]);
 
             $rows = $defaults->merge($extras)->filter(fn($row) => !empty(trim($row['name'] ?? '')));

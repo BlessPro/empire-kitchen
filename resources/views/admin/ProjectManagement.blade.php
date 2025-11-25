@@ -205,24 +205,173 @@
 
 @include('admin.partials.add-product')
 
+    <!-- Project action modal -->
+    <div id="projectActionModal"
+         class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+        <div class="w-full max-w-sm p-5 bg-white rounded-xl shadow-lg">
+            <h3 id="projectActionTitle" class="mb-2 text-lg font-semibold text-gray-800">Confirm</h3>
+            <p id="projectActionMessage" class="mb-4 text-sm text-gray-600"></p>
+            <input id="projectActionInput"
+                   type="text"
+                   class="hidden w-full mb-4 px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5A0562]" />
+            <div class="flex justify-end gap-3">
+                <button type="button"
+                        id="projectActionCancel"
+                        class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">
+                    Cancel
+                </button>
+                <button type="button"
+                        id="projectActionConfirm"
+                        class="px-4 py-2 text-sm text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        async function duplicateProject(id) {
-            if (!confirm('Duplicate this project?')) return;
-            const res = await fetch(`{{ url('/admin/projects') }}/${id}/duplicate`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'text/html'
-                },
-                credentials: 'same-origin'
-            });
-            if (res.redirected) {
-                window.location = res.url;
-            } else {
-                // fallback if not redirected server-side
-                location.reload();
+        (function () {
+            const modal = document.getElementById('projectActionModal');
+            const titleEl = document.getElementById('projectActionTitle');
+            const msgEl = document.getElementById('projectActionMessage');
+            const inputEl = document.getElementById('projectActionInput');
+            const cancelBtn = document.getElementById('projectActionCancel');
+            const confirmBtn = document.getElementById('projectActionConfirm');
+            let resolver = null;
+
+            function openModal(options) {
+                const opts = options || {};
+                titleEl.textContent = opts.title || 'Confirm';
+                msgEl.textContent = opts.message || '';
+
+                if (opts.showInput) {
+                    inputEl.classList.remove('hidden');
+                    inputEl.value = opts.defaultValue || '';
+                    setTimeout(() => {
+                        inputEl.focus();
+                        inputEl.select();
+                    }, 0);
+                } else {
+                    inputEl.classList.add('hidden');
+                    inputEl.value = '';
+                }
+
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+
+                return new Promise((resolve) => {
+                    resolver = resolve;
+                });
             }
-        }
+
+            function closeModal() {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                resolver = null;
+            }
+
+            cancelBtn?.addEventListener('click', () => {
+                if (resolver) resolver({ confirmed: false, value: null });
+                closeModal();
+            });
+
+            confirmBtn?.addEventListener('click', () => {
+                const value = inputEl.value;
+                if (resolver) resolver({ confirmed: true, value });
+                closeModal();
+            });
+
+            modal?.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    if (resolver) resolver({ confirmed: false, value: null });
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    if (resolver) resolver({ confirmed: false, value: null });
+                    closeModal();
+                }
+            });
+
+            window.duplicateProject = async function (id) {
+                const { confirmed } = await openModal({
+                    title: 'Duplicate project',
+                    message: 'Create a copy of this project and all its products?',
+                });
+                if (!confirmed) return;
+
+                const res = await fetch(`{{ url('/admin/projects') }}/${id}/duplicate`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'text/html',
+                    },
+                    credentials: 'same-origin',
+                });
+                if (res.redirected) {
+                    window.location = res.url;
+                } else {
+                    location.reload();
+                }
+            };
+
+            window.renameProject = async function (id, currentName) {
+                const { confirmed, value } = await openModal({
+                    title: 'Rename project',
+                    message: 'Enter a new name for this project.',
+                    showInput: true,
+                    defaultValue: currentName || '',
+                });
+
+                const newName = (value || '').trim();
+                if (!confirmed || !newName || newName === currentName) return;
+
+                const res = await fetch(`{{ url('/admin/projects') }}/${id}/name`, {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify({ name: newName }),
+                });
+
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    await openModal({
+                        title: 'Error',
+                        message: 'Could not rename project.',
+                    });
+                }
+            };
+
+            window.deleteProject = async function (id) {
+                const { confirmed } = await openModal({
+                    title: 'Delete project',
+                    message: 'Are you sure you want to delete this project? This action cannot be undone.',
+                });
+                if (!confirmed) return;
+
+                const res = await fetch(`{{ url('/admin/dashboard/projects') }}/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'text/html',
+                    },
+                    credentials: 'same-origin',
+                });
+
+                if (res.redirected) {
+                    window.location = res.url;
+                } else {
+                    location.reload();
+                }
+            };
+        })();
     </script>
 @include('admin.partials.add-products-js')
 

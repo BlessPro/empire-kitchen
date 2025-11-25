@@ -8,7 +8,7 @@
 @endphp
 
 
-<div>
+<div class="overflow-x-auto w-full">
     <table id="my-table-id" class="min-w-full text-sm text-left rounded-[20px]">
         <thead class="text-sm text-gray-600 bg-gray-100">
             <tr>
@@ -73,5 +73,4 @@
         {{ $followUps->links('pagination::tailwind') }}
     </div>
 @endif
-
 

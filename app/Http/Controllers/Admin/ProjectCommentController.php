@@ -10,6 +10,7 @@ use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Project;
 use App\Models\ProjectCommentView;
+use App\Models\Activity;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\JsonResponse;
@@ -77,6 +78,13 @@ class ProjectCommentController extends Controller
         $comment->user_id = $user->id;
         $comment->comment = $request->validated('body');
         $comment->save();
+
+        Activity::log([
+            'project_id' => $project->id,
+            'type'       => 'comment.created',
+            'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " commented on '{$project->name}'",
+            'meta'       => ['comment_id' => $comment->id],
+        ]);
 
         $comment->load(['user.employee']);
 

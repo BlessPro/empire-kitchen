@@ -35,6 +35,7 @@ use App\Http\Controllers\AccountantInvoiceController;
 use App\Http\Controllers\accountantSettingsController;
 use App\Http\Controllers\accountantExpensesController;
 use App\Http\Controllers\accountantPayController;
+use App\Http\Controllers\Admin\NotificationsController as AdminNotificationsController;
 use App\Http\Controllers\accountantPaymentController;
 use App\Http\Controllers\accountantProjectFinancialController;
 use App\Http\Controllers\accountantReportsController;
@@ -208,6 +209,13 @@ Route::middleware(['auth']) // + your admin/role middleware if any
     ->group(function () {
         Route::post('/projects/{project}/phases/{template}/toggle', [ProjectController::class, 'togglePhase'])
             ->name('projects.phases.toggle');
+        // Update current stage
+        Route::post('/projects/{project}/stage', [ProjectController::class, 'updateStage'])
+            ->name('projects.stage.update');
+
+        // Notifications feed (admin topbar)
+        Route::get('/notifications/feed', [AdminNotificationsController::class, 'feed'])
+            ->name('notifications.feed');
     });
 
 Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(function () {
@@ -266,6 +274,14 @@ Route::middleware(['web','auth'])
      // Bulk edit existing (update pivot fields, or detach if marked deleted)
         Route::post('/products/{product}/accessories/bulk', [ProjectController::class, 'bulkUpdateProductAccessories'])
             ->name('products.accessories.bulk');
+
+        // Duplicate a project (and its products)
+        Route::post('/projects/{project}/duplicate', [ProjectController::class, 'duplicate'])
+            ->name('projects.duplicate');
+
+        // Rename a project
+        Route::patch('/projects/{project}/name', [ProjectController::class, 'rename'])
+            ->name('projects.rename');
 
     });
 
@@ -751,5 +767,3 @@ Route::delete('/budgets/{project}',      [BudgetsController::class, 'destroy'])-
 });
 
 require __DIR__ . '/auth.php';
-
-

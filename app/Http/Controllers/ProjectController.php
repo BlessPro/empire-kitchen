@@ -388,6 +388,15 @@ public function togglePhase(Request $request, Project $project, PhaseTemplate $t
         ->count();
 
     $pct = $total > 0 ? (int) round(($done / $total) * 100) : 0;
+    // Log activity (optional: only when checked)
+    if ((bool) $data['checked'] === true) {
+        \App\Models\Activity::log([
+            'project_id' => $project->id,
+            'type'       => 'phase.checked',
+            'message'    => (optional($request->user()->employee)->name ?? $request->user()->name ?? 'Someone') . " completed phase '" . ($template->name ?? 'Phase') . "' on '{$project->name}'",
+            'meta'       => ['template_id' => $template->id],
+        ]);
+    }
 
     return response()->json(['done'=>$done,'total'=>$total,'pct'=>$pct]);
 }
@@ -586,6 +595,45 @@ public function togglePhase(Request $request, Project $project, PhaseTemplate $t
     }
 
     /**
+     * Update a project's current_stage (Measurement, Design, Production, Installation).
+     * Accepts case-insensitive stage via 'stage' field. Returns JSON for AJAX or redirects back.
+     */
+    public function updateStage(Request $request, Project $project)
+    {
+        $data = $request->validate([
+            'stage' => ['required','string']
+        ]);
+
+        $map = [
+            'measurement' => 'MEASUREMENT',
+            'design'      => 'DESIGN',
+            'production'  => 'PRODUCTION',
+            'installation'=> 'INSTALLATION',
+        ];
+
+        $key = strtolower(trim($data['stage']));
+        if (!array_key_exists($key, $map)) {
+            return $request->wantsJson()
+                ? response()->json(['ok'=>false,'message'=>'Invalid stage'], 422)
+                : back()->withErrors(['stage' => 'Invalid stage']);
+        }
+
+        $project->update(['current_stage' => $map[$key]]);
+
+        \App\Models\Activity::log([
+            'project_id' => $project->id,
+            'type'       => 'stage.updated',
+            'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " moved '{$project->name}' to " . ucfirst(strtolower($map[$key])),
+            'meta'       => ['stage' => $map[$key]],
+        ]);
+
+        if ($request->wantsJson()) {
+            return response()->json(['ok'=>true, 'current_stage'=>$project->current_stage]);
+        }
+        return back()->with('success', 'Project stage updated to '.$map[$key]);
+    }
+
+    /**
      * Create a new accessory + optional type options (csv).
      * Payload: { name, types_csv? }
      * Returns: { id, name, types[] }
@@ -626,6 +674,103 @@ public function togglePhase(Request $request, Project $project, PhaseTemplate $t
             'name'  => $acc->name,
             'types' => $types,
         ]);
+    }
+
+    /**
+     * Duplicate a project (and its products + accessories).
+     *
+     * POST /admin/projects/{project}/duplicate
+     */
+    public function duplicate(Request $request, Project $project)
+    {
+        DB::beginTransaction();
+
+        try {
+            $project->loadMissing(['products.accessories']);
+
+            $clone = $project->replicate();
+            $baseName = $project->name ?? 'Project';
+            $clone->name = Str::limit($baseName . ' (Copy)', 150, '');
+            $clone->save();
+
+            foreach ($project->products as $product) {
+                $newProduct = $product->replicate();
+                $newProduct->project_id = $clone->id;
+                $newProduct->save();
+
+                $pivot = [];
+                foreach ($product->accessories as $accessory) {
+                    $pivot[$accessory->id] = [
+                        'quantity' => $accessory->pivot->quantity,
+                        'notes'    => $accessory->pivot->notes,
+                        'size'     => $accessory->pivot->size,
+                        'type'     => $accessory->pivot->type,
+                    ];
+                }
+
+                if (!empty($pivot)) {
+                    $newProduct->accessories()->attach($pivot);
+                }
+            }
+
+            \App\Models\Activity::log([
+                'project_id' => $clone->id,
+                'type'       => 'project.duplicated',
+                'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone')
+                    . " duplicated project '{$project->name}'",
+                'meta'       => ['source_project_id' => $project->id],
+            ]);
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            if ($request->wantsJson()) {
+                return response()->json(['ok' => false, 'message' => 'Could not duplicate project.'], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->with('error', 'Could not duplicate project.');
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json(['ok' => true, 'project_id' => $clone->id]);
+        }
+
+        return redirect()
+            ->route('admin.ProjectManagement')
+            ->with('success', 'Project duplicated successfully.');
+    }
+
+    /**
+     * Rename a project (admin board quick action).
+     *
+     * PATCH /admin/projects/{project}/name
+     */
+    public function rename(Request $request, Project $project)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:150'],
+        ]);
+
+        $project->update(['name' => $data['name']]);
+
+        \App\Models\Activity::log([
+            'project_id' => $project->id,
+            'type'       => 'project.renamed',
+            'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone')
+                . " renamed project to '{$project->name}'",
+            'meta'       => ['name' => $project->name],
+        ]);
+
+        if ($request->wantsJson()) {
+            return response()->json(['ok' => true, 'name' => $project->name]);
+        }
+
+        return redirect()
+            ->route('admin.ProjectManagement')
+            ->with('success', 'Project renamed successfully.');
     }
 
 

@@ -88,8 +88,42 @@
                             </span>
                         </div>
                     </div>
-                    <span
-                        class="px-3 py-1 text-xs font-medium rounded-full bg-fuchsia-100 text-fuchsia-800">Installation</span>
+                    @php
+                        $pid = data_get($project, '__meta.project_id', $project->id ?? null);
+                        $stageRaw = (string) ($project->current_stage ?? '');
+                        $stageKey = strtoupper(trim($stageRaw));
+                        $stageLabels = [
+                            'MEASUREMENT' => 'Measurement',
+                            'DESIGN' => 'Design',
+                            'PRODUCTION' => 'Production',
+                            'INSTALLATION' => 'Installation',
+                        ];
+                        $stageClasses = [
+                            'MEASUREMENT' => 'bg-orange-100 text-orange-700',
+                            'DESIGN' => 'bg-blue-100 text-blue-700',
+                            'PRODUCTION' => 'bg-green-100 text-green-700',
+                            'INSTALLATION' => 'bg-fuchsia-100 text-fuchsia-900',
+                        ];
+                        $stageLabel = $stageLabels[$stageKey] ?? ($stageRaw ?: '—');
+                        $stageClass = $stageClasses[$stageKey] ?? 'bg-gray-100 text-gray-700';
+                    @endphp
+
+                    <div class="relative" id="stage-control">
+                        <button type="button" id="stage-chip"
+                                class="px-3 py-1 text-xs font-medium rounded-full {{ $stageClass }}">
+                            {{ $stageLabel }}
+                        </button>
+                        <div id="stage-menu" class="absolute right-0 z-20 hidden mt-2 bg-white border border-gray-200 rounded-lg shadow-lg w-44">
+                            <button type="button" data-stage="MEASUREMENT" class="block w-full px-3 py-2 text-sm text-left hover:bg-gray-50">Measurement</button>
+                            <button type="button" data-stage="DESIGN" class="block w-full px-3 py-2 text-sm text-left hover:bg-gray-50">Design</button>
+                            <button type="button" data-stage="PRODUCTION" class="block w-full px-3 py-2 text-sm text-left hover:bg-gray-50">Production</button>
+                            <button type="button" data-stage="INSTALLATION" class="block w-full px-3 py-2 text-sm text-left hover:bg-gray-50">Installation</button>
+                        </div>
+                        <form id="stage-form" class="hidden" method="POST" action="{{ route('admin.projects.stage.update', $pid) }}">
+                            @csrf
+                            <input type="hidden" name="stage" id="stage-input" />
+                        </form>
+                    </div>
                 </div>
 
                 @php
@@ -209,17 +243,20 @@
                                     class="inline-flex items-center h-6 rounded-full bg-gray-100 px-2.5 text-xs text-gray-800 ring-1 ring-gray-200">
                                     {{ $project->selected_product_type ?? '—' }}
                                 </span>
-
+                                
+                                {{-- 
                                 <button
                                     class="ml-2 inline-flex items-center h-7 rounded-[10px] bg-[#5A0562] px-3 text-xs font-medium text-white">+
-                                    Add Product</button>
+                                    Add Product</button> --}}
 
-                                <a href="#" class="block px-4 py-2 add-product-trigger hover:bg-gray-100"
+                                     <button
+                                    class="ml-2 inline-flex items-center h-7 rounded-[10px] bg-[#5A0562] px-3 text-xs font-medium text-white">
+                                <a href="#" class="block px-4 py-2 add-product-trigger "
                                     data-project-id="{{ $project->id }}" data-project-name="{{ $project->name }}"
                                     onclick="event.preventDefault();">
                                     Add new product
                                 </a>
-
+                            </button>
 
                             </div>
                         </div>
@@ -3242,5 +3279,67 @@
     @include('admin.partials.comments-drawer-script')
 
     @include('admin.partials.add-products-js', ['project' => $project])
+
+    <script>
+        (function(){
+            const chip = document.getElementById('stage-chip');
+            const menu = document.getElementById('stage-menu');
+            const form = document.getElementById('stage-form');
+            const input = document.getElementById('stage-input');
+            const control = document.getElementById('stage-control');
+
+            if (!chip || !menu || !control) return;
+
+            function closeMenu(){ menu.classList.add('hidden'); }
+            function openMenu(){ menu.classList.remove('hidden'); }
+
+            chip.addEventListener('click', (e)=>{
+                e.stopPropagation();
+                menu.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e)=>{
+                if (!control.contains(e.target)) closeMenu();
+            });
+
+            menu.querySelectorAll('button[data-stage]')?.forEach(btn => {
+                btn.addEventListener('click', async ()=>{
+                    const stage = btn.dataset.stage;
+                    if (!stage) return;
+                    // Prefer AJAX to avoid full reload
+                    try {
+                        const url = form.getAttribute('action');
+                        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                        const res = await fetch(url, {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': token, 'Accept': 'application/json', 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                            body: new URLSearchParams({ stage })
+                        });
+                        const json = await res.json().catch(()=>null);
+                        if (res.ok && json && json.ok) {
+                            // Update chip label + color
+                            const labelMap = { MEASUREMENT:'Measurement', DESIGN:'Design', PRODUCTION:'Production', INSTALLATION:'Installation' };
+                            const classMap = {
+                                MEASUREMENT: 'bg-orange-100 text-orange-700',
+                                DESIGN: 'bg-blue-100 text-blue-700',
+                                PRODUCTION: 'bg-green-100 text-green-700',
+                                INSTALLATION: 'bg-fuchsia-100 text-fuchsia-900'
+                            };
+                            chip.textContent = labelMap[stage] || stage;
+                            chip.className = 'px-3 py-1 text-xs font-medium rounded-full ' + (classMap[stage] || 'bg-gray-100 text-gray-700');
+                            closeMenu();
+                        } else {
+                            // fallback: submit form standard way
+                            input.value = stage;
+                            form.submit();
+                        }
+                    } catch (err) {
+                        input.value = stage;
+                        form.submit();
+                    }
+                });
+            });
+        })();
+    </script>
 
 </x-layouts.app>

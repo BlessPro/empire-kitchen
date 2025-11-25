@@ -1,73 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- Tailwind CDN (for quick prototype) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Optional: custom Tailwind config for brand color
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: "#5A0562", // deep purple
+            },
+            borderRadius: {
+              "3xl": "1.75rem",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="min-h-screen bg-[#f7f7fb] flex items-center justify-center p-4">
+    <main
+      class="w-full max-w-6xl bg-white rounded-3xl md:rounded-[2rem] shadow-sm border border-gray-100 px-6 py-8 md:px-14 md:py-12"
+    >
+      <div
+        class="grid gap-10 md:gap-16 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] items-start"
+      >
+        <!-- Left side: title & description -->
+        <section class="max-w-xl">
+          <h1
+            class="text-[20px]  font-semibold tracking-tight text-gray-900 mb-3"
+          >
+            Email Notifications
+          </h1>
+          <p class="text-sm leading-relaxed text-gray-600 md:text-base">
+            Stay informed with real-time updates delivered straight to your
+            inbox. Customize notifications to keep track of what matters most.
+          </p>
+        </section>
 
-
-
-      <!-- Notifications Section -->
-      <div class="p-8 bg-white shadow rounded-2xl">
-        <h2 class="mb-1 text-lg font-semibold">Reminders and Alerts</h2>
-        <p class="mb-6 text-[20px] text-gray-500">Get notified on what’s happening.</p>
-
-        <!-- Email Notifications -->
-        <div class="pb-6 mb-6 border-b">
-          <h3 class="mb-2 font-semibold text-[20px] text-gray-800">Email Notifications</h3>
-          <p class="mb-4 text-sm text-gray-500">Stay informed with real-time updates delivered straight to your inbox. Customize notifications to keep track of what matters most.</p>
-
-          <div class="space-y-4">
-            <!-- Item -->
-            <div class="flex items-center justify-between">
-              <span class="text-[20px]">News and Updates</span>
-              <label class="inline-flex items-center cursor-pointer">
-                {{-- <input type="checkbox" checked class="sr-only peer"> --}}
-                <div class="w-11 h-6 bg-purple-600 rounded-full peer peer-checked:bg-purple-800 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
-              </label>
-            </div>
-
-            <div class="flex items-center justify-between">
-              <span>Client Feedbacks</span>
-              <label class="inline-flex items-center cursor-pointer">
-                {{-- <input type="checkbox" checked class="sr-only peer"> --}}
-                <div class="w-11 h-6 bg-purple-600 rounded-full peer peer-checked:bg-purple-800 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
-              </label>
-            </div>
-
-         
-
-            <div class="flex items-center justify-between">
-              <span>Reminders and Alerts</span>
-              <label class="inline-flex items-center cursor-pointer">
-                {{-- <input type="checkbox" checked class="sr-only peer"> --}}
-                <div class="w-11 h-6 bg-purple-600 rounded-full peer peer-checked:bg-purple-800 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
-              </label>
+        <!-- Right side: toggles -->
+        <section class="space-y-8">
+          <!-- Toggle row -->
+          <div class="flex items-start gap-4">
+            <!-- Switch (ON state) -->
+            <button
+              type="button"
+              class="relative inline-flex items-center flex-shrink-0 w-16 h-10 transition rounded-full cursor-pointer bg-brand"
+              aria-pressed="true"
+            >
+              <span
+                class="inline-block w-8 h-8 transition transform translate-x-6 bg-white rounded-full shadow-md"
+              ></span>
+            </button>
+            <!-- Text -->
+            <div>
+              <p class="text-sm font-medium text-gray-900">
+                Enable all notifications
+              </p>
+              <p class="mt-1 text-xs text-gray-500 md:text-sm">
+                Updates on everything going on in the system.
+              </p>
             </div>
           </div>
-        </div>
 
-        <!-- Push Notifications -->
-        <div>
-          <h3 class="mb-2 font-semibold text-gray-800">Push Notifications</h3>
-          <p class="mb-4 text-sm text-gray-500">Get instant updates and stay on track with real-time alerts directly in the system.</p>
-
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <span>Messaging</span>
-              <label class="inline-flex items-center cursor-pointer">
-                <div class="w-11 h-6 bg-purple-600 rounded-full peer peer-checked:bg-purple-800 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
-              </label>
-            </div>
-
-            <div class="flex items-center justify-between">
-              <span>Reminders and Alerts</span>
-              <label class="inline-flex items-center cursor-pointer">
-                <div class="w-11 h-6 bg-purple-600 rounded-full peer peer-checked:bg-purple-800 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-5"></div>
-              </label>
+          <!-- Toggle row -->
+          <div class="flex items-start gap-4">
+            <button
+              type="button"
+              class="relative inline-flex items-center flex-shrink-0 w-16 h-10 transition rounded-full cursor-pointer bg-brand"
+              aria-pressed="true"
+            >
+              <span
+                class="inline-block w-8 h-8 transition transform translate-x-6 bg-white rounded-full shadow-md"
+              ></span>
+            </button>
+            <div>
+              <p class="text-sm font-medium text-gray-900">Messages</p>
+              <p class="mt-1 text-xs text-gray-500 md:text-sm">
+                Receive messages on ongoing projects.
+              </p>
             </div>
           </div>
-        </div>
 
-        <!-- Save Changes Button -->
-        <div class="mt-8 text-right">
-          <button class="px-4 py-2 font-semibold text-white bg-purple-700 rounded shadow hover:bg-purple-800">Save Changes</button>
-        </div>
-    </div>
- 
-
-
+          <!-- Toggle row -->
+          <div class="flex items-start gap-4">
+            <button
+              type="button"
+              class="relative inline-flex items-center flex-shrink-0 w-16 h-10 transition rounded-full cursor-pointer bg-brand"
+              aria-pressed="true"
+            >
+              <span
+                class="inline-block w-8 h-8 transition transform translate-x-6 bg-white rounded-full shadow-md"
+              ></span>
+            </button>
+            <div>
+              <p class="text-sm font-medium text-gray-900">
+                Project Comments
+              </p>
+              <p class="mt-1 text-xs text-gray-500 md:text-sm">
+                Receive comments on ongoing projects.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

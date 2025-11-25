@@ -10,6 +10,7 @@ use App\Models\Expense;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Models\Activity;
 
 
 class accountantExpensesController extends Controller
@@ -43,6 +44,11 @@ public function index()
  {
         $expense = Expense::findOrFail($id);
         $expense->delete();
+        Activity::log([
+            'project_id' => $expense->project_id,
+            'type'       => 'expense.deleted',
+            'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " deleted expense on '" . optional($expense->project)->name . "'",
+        ]);
 
         return redirect()->back()->with('success', 'Expense successfully! deleted ');
     }
@@ -73,7 +79,13 @@ public function store(Request $request)
 
     unset($validated['expense_type']);
 
-    Expense::create($validated);
+    $expense = Expense::create($validated);
+    Activity::log([
+        'project_id' => $expense->project_id,
+        'type'       => 'expense.created',
+        'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " added expense to '" . optional($expense->project)->name . "' (" . number_format($expense->amount, 2) . ")",
+        'meta'       => ['amount' => $expense->amount, 'category_id' => $expense->category_id],
+    ]);
 
     return redirect()->back()->with('success', 'Expense added successfully!');
 }
@@ -109,6 +121,12 @@ public function update(Request $request, Expense $expense)
     }
 
     $expense->update($validated);
+    Activity::log([
+        'project_id' => $expense->project_id,
+        'type'       => 'expense.updated',
+        'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " updated expense for '" . optional($expense->project)->name . "' (" . number_format($expense->amount, 2) . ")",
+        'meta'       => ['amount' => $expense->amount, 'category_id' => $expense->category_id],
+    ]);
 
     return redirect()->back()->with('success', 'Expense updated successfully!');
 }
