@@ -28,7 +28,10 @@ class BookingsController extends Controller
 
 
         $clients = Client::all();
-        $q = Project::query()->with('client');
+        $q = Project::query()->with([
+            'client',
+            'measurements:id,project_id,scheduled_date',
+        ]);
 
         // Filter: client name (case-insensitive, partial)
         if ($search !== '') {
@@ -65,7 +68,10 @@ class BookingsController extends Controller
 
         $clients = Client::all();
 
-        $q = Project::query()->with('client');
+        $q = Project::query()->with([
+            'client',
+            'measurements:id,project_id,scheduled_date',
+        ]);
 
         if ($search !== '') {
             $like = '%' . str_replace(' ', '%', $search) . '%';
@@ -107,7 +113,10 @@ class BookingsController extends Controller
 
         // Only update if not already booked
         if ($project->booked_status !== 'BOOKED') {
-            $project->update(['booked_status' => 'BOOKED']);
+            $project->update([
+                'booked_status' => 'BOOKED',
+                'status'        => 'ON_GOING',
+            ]);
             Activity::log([
                 'project_id' => $project->id,
                 'type'       => 'booking.booked',
@@ -137,8 +146,15 @@ class BookingsController extends Controller
     public function booked(Request $request)
     {
         // load only existing client columns to avoid SQL errors (no "name" column)
-        $projects = Project::with('client:id,firstname,lastname')
-            ->where('booked_status', 'BOOKED')
+        $projects = Project::with([
+                'client:id,firstname,lastname',
+                'measurements:id,project_id,scheduled_date',
+            ])
+            ->whereRaw("UPPER(COALESCE(booked_status,'')) = 'BOOKED'")
+            // exclude projects that already have a scheduled measurement
+            ->whereDoesntHave('measurements', function ($q) {
+                $q->whereNotNull('scheduled_date');
+            })
             ->orderByDesc('id')
             ->get(['id', 'name', 'client_id']);
 

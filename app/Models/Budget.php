@@ -7,7 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Budget extends Model
 {
-    protected $fillable = ['project_id','main_amount','currency','effective_date'];
+    protected $fillable = [
+        'project_id',
+        'name',
+        'main_amount',
+        'currency',
+        'effective_date',
+        'start_date',
+        'end_date',
+    ];
+
+    protected $casts = [
+        'start_date'     => 'date',
+        'end_date'       => 'date',
+        'effective_date' => 'date',
+    ];
 
     public function project() {
         return $this->belongsTo(Project::class);

@@ -6,6 +6,7 @@
                                 <th class="p-4 font-medium text-[15px]">Project</th>
                                 <th class="p-4 font-medium text-[15px]">Location</th>
                                 <th class="p-4 font-medium text-[15px]">Status</th>
+                                <th class="p-4 font-medium text-[15px]">Measurement Status</th>
                                 <th class="p-4 font-mediumt  font-medium text-[15px]">Action</th>
                             </tr>
                         </thead>
@@ -43,6 +44,21 @@
                                         </span>
                                     </td>
 
+                                    @php
+                                        $hasMeasurement = ($p->measurements ?? collect())->contains(function ($m) {
+                                            return !empty($m->scheduled_date);
+                                        });
+                                        $msLabel = $hasMeasurement ? 'Setted' : 'Not Set';
+                                        $msClass = $hasMeasurement
+                                            ? 'bg-fuchsia-100 text-fuchsia-700'
+                                            : 'bg-red-100 text-red-700';
+                                    @endphp
+                                    <td class="p-4">
+                                        <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold {{ $msClass }}">
+                                            {{ $msLabel }}
+                                        </span>
+                                    </td>
+
 
 <td class="p-4" x-data="{open:false}">
   <button @click="open = !open" class="p-2 rounded hover:bg-gray-100">
@@ -57,6 +73,10 @@
       $bookedStatus = strtoupper($p->booked_status ?? '');
     @endphp
 
+    @php
+        $scheduledDate = optional(($p->measurements ?? collect())->sortByDesc('scheduled_date')->first())->scheduled_date;
+    @endphp
+
     @if ($bookedStatus === 'BOOKED')
       <button class="w-full px-4 py-2 text-left hover:bg-gray-50"
           @click="
@@ -66,9 +86,10 @@
               productName: `{{ $p->products()->latest('id')->value('name') ?? 'Product' }}`,
               clientId: {{ $p->client_id }},
               clientName: `{{ $p->client?->name ?? trim(($p->client?->firstname.' '.$p->client?->lastname)) }}`,
+              scheduledDate: `{{ $scheduledDate ? \Illuminate\Support\Carbon::parse($scheduledDate)->toDateString() : '' }}`
             })
           ">
-        Set measurement
+        {{ $hasMeasurement ? 'Edit measurement' : 'Set measurement' }}
       </button>
     @else
       <button class="w-full px-4 py-2 text-left hover:bg-gray-50"
@@ -78,6 +99,18 @@
               ">
         Override Booking Process
       </button>
+    @endif
+
+    @if ($bookedStatus === 'BOOKED')
+      <form method="POST" action="{{ route('accountant.bookings.unbook', $p) }}"
+            onsubmit="return confirm('Mark this booking as UNBOOKED?');">
+          @csrf
+          @method('PATCH')
+          <button type="submit"
+              class="w-full px-4 py-2 text-left text-red-600 hover:bg-red-50 text-sm">
+              Unbook
+          </button>
+      </form>
     @endif
   </div>
 </td>

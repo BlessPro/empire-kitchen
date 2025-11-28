@@ -15,12 +15,14 @@
                         <h1 class="mb-6 text-2xl font-bold">Upload Designs</h1>
                     </div>
 
-                    {{-- <a href="{{ route('designer.designs.viewuploads') }}">
-                        <button
-                            class="px-6 py-2 text-semibold text-[15px] text-white rounded-[10px] bg-fuchsia-900 hover:bg-[#F59E0B]">
-                            View Upload
-                        </button>
-                    </a> --}}
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('designer.invoice.area') }}">
+                            <button
+                                class="px-5 py-2 text-sm font-semibold text-white rounded-[10px] bg-amber-600 hover:bg-amber-700">
+                                Invoice
+                            </button>
+                        </a>
+                    </div>
                 </div>
 
                 <div class="items-center justify-center w-full max-w-md mx-auto">

@@ -491,6 +491,7 @@ Route::middleware(['auth'])->prefix('tech')->name('tech.')->group(function () {
     Route::get('/measurements/calendar', [techScheduleMeasurementController::class, 'feed'])->name('measurements.feed');
     Route::post('/measurements', [techScheduleMeasurementController::class, 'store'])->name('measurements.store');
     Route::patch('/measurements/{measurement}', [techScheduleMeasurementController::class, 'update'])->name('measurements.update');
+    Route::patch('/measurements/{measurement}/done', [techScheduleMeasurementController::class, 'markDone'])->name('measurements.done');
     Route::delete('/measurements/{measurement}', [techScheduleMeasurementController::class, 'destroy'])->name('measurements.destroy');
     });
 
@@ -587,11 +588,12 @@ Route::prefix('admin')->name('admin.')->middleware(['web','auth'])->group(functi
 Route::middleware(['auth','role:designer'])
     ->prefix('designer')->name('designer.')
     ->group(function () {
-        Route::get('/invoices/create', [DesignerInvoiceController::class, 'create'])->name('invoices.create');
-        Route::post('/invoices', [DesignerInvoiceController::class, 'store'])->name('invoices.store');
-        Route::get('/invoices/{invoice}', [DesignerInvoiceController::class, 'show'])->name('invoices.show');
-        Route::get('/invoices/{client}/projects', [DesignerInvoiceController::class, 'projects'])->name('invoices.projects');
-    });
+    Route::get('/invoices/create', [DesignerInvoiceController::class, 'create'])->name('invoices.create');
+    Route::post('/invoices', [DesignerInvoiceController::class, 'store'])->name('invoices.store');
+    Route::get('/invoices/{invoice}', [DesignerInvoiceController::class, 'show'])->name('invoices.show');
+    Route::get('/invoices/{client}/projects', [DesignerInvoiceController::class, 'projects'])->name('invoices.projects');
+    Route::get('/invoice-area', [\App\Http\Controllers\DesignerInvoiceAreaController::class, 'index'])->name('invoice.area');
+});
     Route::get('/designer/dashboard', [DashboardController::class, 'index'])->name('designer.dashboard');
     //handle the viewed comment
     Route::post('/comments/{comment}/mark-as-viewed', [DesignerDashboardController::class, 'markAsViewed']);
@@ -640,6 +642,8 @@ Route::middleware(['auth','role:designer'])
     Route::middleware(['auth', UpdateLastSeen::class])->group(function () {
         //navigating the accountant user role
         Route::get('/accountant/Payments', [accountantPaymentController::class, 'index'])->name('accountant.Payments');
+        Route::delete('/accountant/payments/{income}', [accountantPayController::class, 'destroy'])->name('accountant.payments.destroy');
+        Route::get('/accountant/payments/{income}/receipt', [accountantPayController::class, 'receipt'])->name('accountant.payments.receipt');
         Route::get('/accountant/Reports&Analytics', [accountantReportsController::class, 'index'])->name('accountant.Reports&Analytics');
         Route::get('/accountant/Settings', [accountantSettingsController::class, 'index'])->name('accountant.Settings');
         Route::get('/accountant/Inbox', [accountantInboxController::class, 'index'])->name('accountant.Inbox');
@@ -650,6 +654,7 @@ Route::middleware(['auth','role:designer'])
         Route::get('/accountant/Invoice', [accountantInvoiceController::class, 'index'])->name('accountant.Invoice');
         Route::post('/accountant/Invoice', [accountantInvoiceController::class, 'store'])->name('accountant.Invoice.store');
         Route::get('/accountant/Invoice/Invoiceview/{id}', [accountantInvoiceController::class, 'invoiceview'])->name('accountant.Invoice.Invoiceview');
+        Route::get('/accountant/Invoice/other', [accountantInvoiceController::class, 'other'])->name('accountant.Invoice.other');
         // For the MessageSending
         Route::get('/accountant/Inbox/{userId?}', [AccountantInboxController::class, 'index'])->name('accountant.inbox');
         Route::post('/accountant/Inbox/send', [AccountantInboxController::class, 'sendMessage'])->name('accountant.inbox.send');
@@ -694,6 +699,7 @@ Route::middleware(['auth','role:accountant'])
         // fetch projects that don't have a budget (used by the wizard)
         // Route::get('/budgets/wizard', [accountantProjectFinancialController::class, 'createWizard'])->name('budgets.createWizard');
         // submit wizard
+        Route::get('/budgets', [BudgetsController::class, 'index'])->name('budgets.index');
         Route::get('/budgets/create', [BudgetsController::class, 'create'])->name('budgets.create');
         Route::post('/budgets', [BudgetsController::class, 'store'])->name('budgets.store');
 
@@ -717,14 +723,14 @@ Route::middleware(['auth','role:accountant'])
 Route::middleware(['auth','role:accountant'])
     ->prefix('accountant')->as('accountant.')
     ->group(function () {
-        // Route::get   ('/budgets/{project}/edit', [BudgetsController::class, 'edit'])->name('budgets.edit');
-        // Route::put   ('/budgets/{project}',      [BudgetsController::class, 'update'])->name('budgets.update');
-        // Route::delete('/budgets/{project}',      [BudgetsController::class, 'destroy'])->name('budgets.destroy');
+        // Route::get   ('/budgets/{budget}/edit', [BudgetsController::class, 'edit'])->name('budgets.edit');
+        // Route::put   ('/budgets/{budget}',      [BudgetsController::class, 'update'])->name('budgets.update');
+        // Route::delete('/budgets/{budget}',      [BudgetsController::class, 'destroy'])->name('budgets.destroy');
 
-    // routes/web.php (inside accountant group)
-Route::get   ('/budgets/{project}/edit', [BudgetsController::class, 'edit'])->name('budgets.edit');
-Route::put   ('/budgets/{project}',      [BudgetsController::class, 'update'])->name('budgets.update');
-Route::delete('/budgets/{project}',      [BudgetsController::class, 'destroy'])->name('budgets.destroy');
+        // routes/web.php (inside accountant group)
+        Route::get   ('/budgets/{budget}/edit', [BudgetsController::class, 'edit'])->name('budgets.edit');
+        Route::put   ('/budgets/{budget}',      [BudgetsController::class, 'update'])->name('budgets.update');
+        Route::delete('/budgets/{budget}',      [BudgetsController::class, 'destroy'])->name('budgets.destroy');
 
     });
 

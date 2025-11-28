@@ -8,7 +8,7 @@
   <table class="min-w-full mt-6 text-left bg-white rounded-[20px]">
     <thead class="text-sm text-gray-600 bg-gray-100">
       <tr>
-        <th class="p-4 font-medium text-[15px]">Project Name</th>
+        <th class="p-4 font-medium text-[15px]">Budget Name</th>
         <th class="p-4 font-medium text-[15px]">Total Budget</th>
         <th class="p-4 font-medium text-[15px]">Total Expense</th>
         <th class="p-4 font-medium text-[15px]">Net Profit</th>
@@ -36,4 +36,3 @@
     {{ $projectSummary->links('pagination::tailwind') }}
   </div>
 </div>
-

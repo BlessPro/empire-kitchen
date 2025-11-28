@@ -4,34 +4,12 @@
         <style>[x-cloak]{display:none!important}</style>
     </x-slot>
 
-    <main class="flex-1  min-h-screen bg-[#F9F7F7] pt-24 pb-12 lg:ml-64">
-        <div class="px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between mb-6">
+    <main class="bg-[#F9F7F7] min-h-screen">
+        <div class="p-3 space-y-3 sm:p-4">
+            <div class="flex items-center justify-between mb-3 sm:mb-6">
                 <h1 class="text-2xl font-bold text-slate-900">Project Management</h1>
             </div>
 
-            {{-- <div class="flex items-center justify-between mb-6">
-                <form id="filterForm" method="GET" action="{{ route('tech.ProjectManagement.filter') }}" class="flex flex-wrap gap-3">
-                    <input
-                        type="text"
-                        name="search"
-                        id="searchInput"
-                        value="{{ request('search') }}"
-                        placeholder="Search projects..."
-                        class="pt-2 pb-2 pl-5 pr-5 border border-gray-300 rounded-full focus:border-fuchsia-700 focus:ring-2 focus:ring-fuchsia-700"
-                    />
-                    <select
-                        name="location"
-                        id="locationSelect"
-                        class="pt-2 pb-2 pl-5 pr-5 border border-gray-300 rounded-full focus:border-fuchsia-700 focus:ring-2 focus:ring-fuchsia-700"
-                    >
-                        <option value="">All Locations</option>
-                        @foreach (($projectLocations ?? collect()) as $location)
-                            <option value="{{ $location }}">{{ $location }}</option>
-                        @endforeach
-                    </select>
-                </form>
-            </div> --}}
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-4">
                 <div class="pt-3.5 pr-3 pb-4 pl-3 bg-[#F8FAFC] rounded-[40px]">

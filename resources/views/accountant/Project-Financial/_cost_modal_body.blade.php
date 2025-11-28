@@ -1,34 +1,33 @@
-@if(!$projectBudget)
-  <div class="p-4 text-sm text-gray-600">Select a project to view its budget.</div>
-@elseif(!$projectBudget->budget)
-  <div class="p-4 text-sm text-gray-600">This project has no budget yet.</div>
+@if(!$budget)
+  <div class="p-4 text-sm text-gray-600">Select a budget to view its allocations.</div>
 @else
   {{-- SUMMARY --}}
   @php
-    $main = $projectBudget->budget->main_amount ?? 0;
-    $allocated = $projectBudget->budget->allocations->sum('amount') ?? 0;
-    $spentAll = $projectBudget->budget->allocations->flatMap->costEntries->sum('amount') ?? 0;
+    $main = $budget->main_amount ?? 0;
+    $allocated = $budget->allocations->sum('amount') ?? 0;
+    $spentAll = $budget->allocations->flatMap->costEntries->sum('amount') ?? 0;
+    $currency = $budget->currency ?? 'GHS';
   @endphp
 
   <div class="grid grid-cols-3 gap-3 mb-4 text-sm">
     <div class="p-3 rounded-xl bg-gray-50">
       <div class="text-gray-500">Main Budget</div>
-      <div class="font-semibold">₵{{ number_format($main,2) }}</div>
+      <div class="font-semibold">{{ $currency }} {{ number_format($main,2) }}</div>
     </div>
     <div class="p-3 rounded-xl bg-gray-50">
       <div class="text-gray-500">Allocated Total</div>
-      <div class="font-semibold">₵{{ number_format($allocated,2) }}</div>
+      <div class="font-semibold">{{ $currency }} {{ number_format($allocated,2) }}</div>
     </div>
     <div class="p-3 rounded-xl bg-gray-50">
       <div class="text-gray-500">Spent to Date</div>
-      <div class="font-semibold">₵{{ number_format($spentAll,2) }}</div>
+      <div class="font-semibold">{{ $currency }} {{ number_format($spentAll,2) }}</div>
     </div>
   </div>
 
   {{-- POST form to save costs --}}
   <form method="POST" action="{{ route('accountant.costs.store') }}">
     @csrf
-    <input type="hidden" name="project_id" value="{{ $projectBudget->id }}">
+    <input type="hidden" name="budget_id" value="{{ $budget->id }}">
 
     <div class="overflow-x-auto">
       <table class="min-w-full text-left">
@@ -44,7 +43,7 @@
           </tr>
         </thead>
         <tbody class="divide-y">
-        @foreach($projectBudget->budget->allocations as $a)
+        @foreach($budget->allocations as $a)
           @php
             $budgeted = (float) $a->amount;
             $spent    = (float) ($a->costEntries->sum('amount'));
@@ -52,12 +51,12 @@
           @endphp
           <tr x-data="{ amt: 0, remain: {{ $remain }} }"
               x-init="$watch('amt', v => { remain = ({{ $remain }} - Number(v||0)); })">
-            <td class="p-3">{{ $a->category?->name ?? '—' }}</td>
-            <td class="p-3">₵{{ number_format($budgeted,2) }}</td>
-            <td class="p-3">₵{{ number_format($spent,2) }}</td>
+            <td class="p-3">{{ $a->category?->name ?? '-' }}</td>
+            <td class="p-3">{{ $currency }} {{ number_format($budgeted,2) }}</td>
+            <td class="p-3">{{ $currency }} {{ number_format($spent,2) }}</td>
             <td class="p-3">
               <span :class="remain < 0 ? 'text-red-600 font-semibold' : ''"
-                    x-text="`₵${(remain).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`">
+                    x-text="`${@js($currency)} ${Number(remain).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`">
               </span>
             </td>
             <td class="p-3">
@@ -103,11 +102,11 @@
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const sel = form.querySelector('select[name="project_id"]');
-    const projectId = sel ? sel.value : '';
+    const sel = form.querySelector('select[name="budget_id"]');
+    const budgetId = sel ? sel.value : '';
 
     const fragURL = new URL("{{ route('accountant.costs.fragment') }}", window.location.origin);
-    if (projectId) fragURL.searchParams.set('project_id', projectId);
+    if (budgetId) fragURL.searchParams.set('budget_id', budgetId);
 
     const res = await fetch(fragURL.toString(), { headers: { 'X-Requested-With': 'XMLHttpRequest' }});
     if (!res.ok) return;
@@ -116,8 +115,8 @@
     body.innerHTML = html;
 
     const pageURL = new URL(window.location.href);
-    if (projectId) pageURL.searchParams.set('project_id', projectId);
-    pageURL.searchParams.set('tab', pageURL.searchParams.get('tab') || 'Cost-Tracking');
+    if (budgetId) pageURL.searchParams.set('budget_id', budgetId);
+    pageURL.searchParams.set('tab', pageURL.searchParams.get('tab') || 'cost-tracking');
     history.replaceState({}, '', pageURL.toString());
   });
 })();

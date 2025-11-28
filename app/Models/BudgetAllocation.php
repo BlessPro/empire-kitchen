@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BudgetAllocation extends Model
 {
-    protected $fillable = ['budget_id','budget_category_id','amount'];
+    protected $fillable = ['budget_id','budget_category_id','amount','note'];
 
     public function budget() {
         return $this->belongsTo(Budget::class);

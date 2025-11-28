@@ -6,19 +6,20 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Laravel\Fortify\Contracts\LoginResponse; // Fortify's LoginResponse contract
 use App\Http\Responses\LoginResponse as AppLoginResponse;  // Our concrete LoginResponse
- use App\Models\Project;
+use App\Models\Project;
 use App\Policies\ProjectPolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\URL;
+use App\Models\Measurement;
+use App\Observers\MeasurementObserver;
+use App\Observers\ProjectObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
-
-   
-protected $policies = [
-    Project::class => ProjectPolicy::class,
-];
+    protected $policies = [
+        Project::class => ProjectPolicy::class,
+    ];
 
     /**
      * Register any application services.
@@ -37,6 +38,9 @@ protected $policies = [
     public function boot(): void
     {
         //
+
+        Project::observe(ProjectObserver::class);
+        Measurement::observe(MeasurementObserver::class);
 
         Paginator::useTailwind();
         Paginator::useBootstrap();

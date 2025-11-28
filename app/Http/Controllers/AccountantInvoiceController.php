@@ -21,6 +21,11 @@ public function index()
     return view('accountant.Invoice', compact('clients'));
 }
 
+public function other()
+{
+    return view('accountant.Invoice.other');
+}
+
 
 public function invoiceview($id)
 {
@@ -57,8 +62,8 @@ public function getProjectsByClient($client_id)
 {
     $validated = $request->validate([
         'invoice_code' => 'required|string|unique:invoices,invoice_code',
-        'client_id' => 'required|exists:clients,id',
-        'project_id' => 'required|exists:projects,id',
+        'client_id' => 'nullable|exists:clients,id',
+        'project_id' => 'nullable|exists:projects,id',
         'due_date' => 'required|date',
         'items' => 'required|array|min:1',
         'items.*.item_name' => 'required|string',
@@ -71,8 +76,8 @@ public function getProjectsByClient($client_id)
     // 1. Save invoice
     $invoice = Invoice::create([
         'invoice_code' => $validated['invoice_code'],
-        'client_id' => $validated['client_id'],
-        'project_id' => $validated['project_id'],
+        'client_id' => $validated['client_id'] ?? null,
+        'project_id' => $validated['project_id'] ?? null,
         'user_id' => Auth::id(),
         'invoice_type' => 'invoice',
         'due_date' => $validated['due_date'],

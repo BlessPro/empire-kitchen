@@ -10,16 +10,16 @@
 
     </x-slot>
 
+    <div x-data="{ addOpen: false }">
     <main>
         <div class="p-3 sm:p-4">
             {{-- Top bar --}}
             <div class="flex items-center justify-between mb-6">
                 <h1 class="text-2xl font-bold">Project Management</h1>
-                <a href="{{ route('admin.addproject') }}">
-                    <button class="px-6 py-2 text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
-                        + Add Project
-                    </button>
-                </a>
+                <button @click="addOpen = true"
+                        class="px-6 py-2 text-[15px] text-white rounded-full bg-fuchsia-900 hover:bg-[#F59E0B]">
+                    + Add Project
+                </button>
             </div>
 
             {{-- Simple filter row (optional – uses $clients) --}}
@@ -127,6 +127,65 @@
             </div>
         </div>
     </main>
+
+    {{-- Quick add project modal --}}
+    <div x-show="addOpen" x-cloak
+         class="fixed inset-0 z-[120] flex items-center justify-center bg-black/50"
+         @keydown.escape.window="addOpen = false">
+        <div class="w-full max-w-md px-5 py-6 bg-white rounded-2xl shadow-xl"
+             @click.stop>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-gray-900">Add Project</h2>
+                <button type="button" class="text-xl text-gray-500 hover:text-gray-700"
+                        @click="addOpen = false">&times;</button>
+            </div>
+
+            <form method="POST" action="{{ route('projects.store') }}">
+                @csrf
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Project name</label>
+                        <input type="text" name="project[name]" required
+                               class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-fuchsia-200 focus:border-fuchsia-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Client</label>
+                        <select name="project[client_id]" required
+                                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-fuchsia-200 focus:border-fuchsia-500">
+                            <option value="">Select client</option>
+                            @foreach($clients as $c)
+                                <option value="{{ $c->id }}">{{ trim($c->firstname . ' ' . ($c->lastname ?? '')) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                        <input type="text" name="project[location]"
+                               class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-fuchsia-200 focus:border-fuchsia-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
+                        <input type="date" name="project[due_date]"
+                               class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-fuchsia-200 focus:border-fuchsia-500">
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button"
+                            class="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-50"
+                            @click="addOpen = false">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            class="px-5 py-2 text-white rounded-lg bg-fuchsia-900 hover:bg-[#F59E0B]">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    </div>
 
 
     <style>
@@ -852,5 +911,11 @@
 
         })();
     </script>
+
+    {{-- Floating Completed Projects button --}}
+    <a href="{{ route('admin.ProjectManagement', ['status' => 'COMPLETED']) }}"
+       class="fixed right-6 bottom-6 z-20 px-4 py-3 rounded-full bg-fuchsia-900 text-white text-sm font-semibold shadow-lg hover:bg-fuchsia-800">
+        Completed Projects
+    </a>
 
 </x-layouts.app>

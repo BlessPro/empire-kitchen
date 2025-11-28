@@ -3,100 +3,70 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
+use App\Models\Activity;
 use App\Models\Budget;
 use App\Models\BudgetAllocation;
 use App\Models\BudgetCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use App\Models\Activity;
 
 class BudgetsController extends Controller
 {
-    // Show edit page for a project's budget (or redirect if none)
-    public function edit(Project $project)
+    // optional landing page -> send users to create form
+    public function index()
     {
-        $project->load([
-            'client:id,firstname,lastname,title',
-            'budget.allocations.category',
-            'budget.allocations.costEntries:id,budget_allocation_id,amount'
+        return redirect()->route('accountant.budgets.create');
+    }
+
+    public function edit(Budget $budget)
+    {
+        $budget->load([
+            'allocations.category',
+            'allocations.costEntries:id,budget_allocation_id,amount',
         ]);
 
-        if (!$project->budget) {
-            return redirect()
-                ->route('accountant.Project-Financials')
-                ->with('info', 'This project has no budget yet. Use “Create Budget”.');
-        }
-
-        // map allocations by category name for defaults
-        $byName = collect($project->budget->allocations)->keyBy(fn($a) => $a->category?->name ?? 'Uncategorized');
-
-        $defaults = ['Measurement','Design','Production','Installation'];
-        $defaultRows = collect($defaults)->map(fn($n) => [
-            'name'   => $n,
-            'amount' => (float) optional($byName->get($n))->amount ?? 0,
-            'category_id' => optional($byName->get($n))->budget_category_id,
-        ]);
-
-        // extras = anything not in defaults
-        $extras = $byName->reject(fn($a, $name) => in_array($name, $defaults, true))
-            ->values()
-            ->map(fn($a) => [
-                'name'        => $a->category?->name ?? 'Uncategorized',
-                'amount'      => (float) $a->amount,
-                'category_id' => $a->budget_category_id,
-            ]);
+        $extras = $budget->allocations->map(fn($allocation) => [
+            'name'        => $allocation->category?->name ?? '',
+            'amount'      => (float) $allocation->amount,
+            'category_id' => $allocation->budget_category_id,
+            'note'        => $allocation->note,
+        ])->values();
 
         return view('accountant.edit-budget', [
-            'project'      => $project,
-            'defaults'     => $defaultRows,
-            'extras'       => $extras,
-            'main_amount'  => (float) $project->budget->main_amount,
-            'currency'     => $project->budget->currency ?? 'GHS',
+            'budget'      => $budget,
+            'extras'      => $extras,
+            'main_amount' => (float) $budget->main_amount,
+            'currency'    => $budget->currency ?? 'GHS',
         ]);
     }
 
     public function create()
     {
-        $projects = Project::doesntHave('budget')
-            ->with(['client:id,firstname,lastname,title'])
-            ->select('id','name','client_id')
-            ->orderBy('name')
-            ->get();
-
-        $defaults = collect(['Measurement','Design','Production','Installation'])
-            ->map(fn($name) => ['name' => $name, 'amount' => 0]);
-
         return view('accountant.Project-Financial.create-budget', [
-            'projects'  => $projects,
-            'defaults'  => $defaults,
-            'currency'  => 'GHS',
+            'currency' => 'GHS',
         ]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'project_id'                 => ['required','exists:projects,id', Rule::unique('budgets','project_id')],
-            'main_amount'                => ['required','numeric','min:0'],
-            'currency'                   => ['nullable','string','max:3'],
-            'defaults'                   => ['array'],
-            'defaults.*.name'            => ['required','string','max:255'],
-            'defaults.*.amount'          => ['nullable','numeric','min:0'],
-            'extras'                     => ['array'],
-            'extras.*.name'              => ['required_with:extras.*.amount','string','max:255'],
-            'extras.*.amount'            => ['required_with:extras.*.name','numeric','min:0'],
-        ], [
-            'project_id.unique' => 'This project already has a budget.',
+            'name'              => ['required', 'string', 'max:255', Rule::unique('budgets', 'name')],
+            'start_date'        => ['required', 'date'],
+            'end_date'          => ['required', 'date', 'after_or_equal:start_date'],
+            'main_amount'       => ['required', 'numeric', 'min:0'],
+            'currency'          => ['nullable', 'string', 'max:3'],
+            'extras'            => ['array'],
+            'extras.*.name'     => ['required_with:extras.*.amount', 'string', 'max:255'],
+            'extras.*.amount'   => ['required_with:extras.*.name', 'numeric', 'min:0'],
+            'extras.*.note'     => ['nullable','string','max:2000'],
         ]);
 
+        $name = trim($validated['name']);
         $mainAmount = (float) $validated['main_amount'];
-        $defaults   = collect($validated['defaults'] ?? []);
         $extras     = collect($validated['extras'] ?? []);
 
-        $allocTotal = $defaults->sum(fn($row) => (float) ($row['amount'] ?? 0))
-            + $extras->sum(fn($row) => (float) ($row['amount'] ?? 0));
+        $allocTotal = $extras->sum(fn($row) => (float) ($row['amount'] ?? 0));
 
         if ($allocTotal > $mainAmount) {
             return back()
@@ -104,40 +74,44 @@ class BudgetsController extends Controller
                 ->withErrors(['main_amount' => 'Allocations ('.$allocTotal.') exceed the main budget ('.$mainAmount.'). Reduce some amounts.']);
         }
 
-        DB::transaction(function () use ($validated, $defaults, $extras, $mainAmount) {
+        DB::transaction(function () use ($validated, $extras, $mainAmount, $name) {
             $budget = Budget::create([
-                'project_id'    => $validated['project_id'],
-                'main_amount'   => $mainAmount,
-                'currency'      => $validated['currency'] ?? 'GHS',
-                'effective_date'=> now()->toDateString(),
-            ]);
-            $project = Project::find($validated['project_id']);
-            Activity::log([
-                'project_id' => $project->id,
-                'type'       => 'budget.created',
-                'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " created budget for '{$project->name}'",
+                'name'           => $name,
+                'project_id'     => null,
+                'main_amount'    => $mainAmount,
+                'currency'       => $validated['currency'] ?? 'GHS',
+                'effective_date' => $validated['start_date'],
+                'start_date'     => $validated['start_date'],
+                'end_date'       => $validated['end_date'],
             ]);
 
-            $rows = $defaults->merge($extras)->filter(fn($row) => !empty(trim($row['name'] ?? '')));
+            // Log after commit so any failures do not poison this transaction (Postgres 25P02)
+            DB::afterCommit(function () use ($budget) {
+                Activity::log([
+                    'project_id' => null,
+                    'type'       => 'budget.created',
+                    'message'    => (optional(auth()->user()->employee)->name ?? auth()->user()->name ?? 'Someone') . " created budget '{$budget->name}'",
+                ]);
+            });
+
+            $rows = $extras->filter(fn($row) => !empty(trim($row['name'] ?? '')) && (float) ($row['amount'] ?? 0) > 0);
 
             foreach ($rows as $row) {
-                $name = trim($row['name']);
+                $name   = trim($row['name']);
                 $amount = (float) ($row['amount'] ?? 0);
-                if ($amount <= 0) {
-                    continue;
-                }
+                $note   = $row['note'] ?? null;
 
                 $category = BudgetCategory::firstOrCreate(
                     ['name' => $name],
                     [
                         'description' => $name.' (custom)',
-                        'is_default'  => in_array($name, ['Measurement','Design','Production','Installation'], true),
+                        'is_default'  => false,
                     ]
                 );
 
                 BudgetAllocation::updateOrCreate(
                     ['budget_id' => $budget->id, 'budget_category_id' => $category->id],
-                    ['amount' => $amount]
+                    ['amount' => $amount, 'note' => $note]
                 );
             }
         });
@@ -147,55 +121,59 @@ class BudgetsController extends Controller
             ->with('success', 'Budget created successfully.');
     }
 
-    // Update budget: main amount + allocations (defaults + extras)
-    public function update(Request $request, Project $project)
+    public function update(Request $request, Budget $budget)
     {
         $validated = $request->validate([
-            'main_amount'                 => ['required','numeric','min:0'],
-            'currency'                    => ['nullable','string','max:3'],
-            'defaults'                    => ['array'],
-            'defaults.*.name'             => ['required','string','max:255'],
-            'defaults.*.amount'           => ['nullable','numeric','min:0'],
-            'extras'                      => ['array'],
-            'extras.*.name'               => ['required','string','max:255'],
-            'extras.*.amount'             => ['nullable','numeric','min:0'],
+            'name'              => ['required', 'string', 'max:255', Rule::unique('budgets', 'name')->ignore($budget->id)],
+            'start_date'        => ['required', 'date'],
+            'end_date'          => ['required', 'date', 'after_or_equal:start_date'],
+            'main_amount'       => ['required', 'numeric', 'min:0'],
+            'currency'          => ['nullable', 'string', 'max:3'],
+            'extras'            => ['array'],
+            'extras.*.name'     => ['required_with:extras.*.amount', 'string', 'max:255'],
+            'extras.*.amount'   => ['required_with:extras.*.name', 'numeric', 'min:0'],
+            'extras.*.note'     => ['nullable','string','max:2000'],
         ]);
 
-        DB::transaction(function () use ($project, $validated) {
-            // ensure budget exists
-            $budget = $project->budget ?: Budget::create([
-                'project_id'   => $project->id,
-                'main_amount'  => 0,
-                'currency'     => $validated['currency'] ?? 'GHS',
-            ]);
+        $name = trim($validated['name']);
+        $extras = collect($validated['extras'] ?? []);
+        $mainAmount = (float) $validated['main_amount'];
 
-            // update main amount/currency
+        $allocTotal = $extras->sum(fn($row) => (float) ($row['amount'] ?? 0));
+        if ($allocTotal > $mainAmount) {
+            return back()
+                ->withInput()
+                ->withErrors(['main_amount' => 'Allocations ('.$allocTotal.') exceed the main budget ('.$mainAmount.'). Reduce some amounts.']);
+        }
+
+        DB::transaction(function () use ($budget, $validated, $extras, $mainAmount, $name) {
             $budget->update([
-                'main_amount' => (float) $validated['main_amount'],
-                'currency'    => $validated['currency'] ?? $budget->currency,
+                'name'           => $name,
+                'main_amount'    => $mainAmount,
+                'currency'       => $validated['currency'] ?? $budget->currency,
+                'start_date'     => $validated['start_date'],
+                'end_date'       => $validated['end_date'],
+                'effective_date' => $validated['start_date'],
             ]);
 
-            $rows = collect($validated['defaults'] ?? [])
-                ->merge($validated['extras'] ?? [])
-                ->filter(fn($r) => ($r['name'] ?? '') !== '');
+            $rows = $extras->filter(fn($row) => !empty(trim($row['name'] ?? '')));
 
-            // Build/lookup categories (create if not exists for extras)
             $catIdsByName = BudgetCategory::query()
                 ->whereIn('name', $rows->pluck('name')->unique()->values())
-                ->pluck('id','name');
+                ->pluck('id', 'name');
 
             $toUpsert = [];
-            foreach ($rows as $r) {
-                $name   = trim($r['name']);
-                $amount = (float) ($r['amount'] ?? 0);
+            foreach ($rows as $row) {
+                $name   = trim($row['name']);
+                $amount = (float) ($row['amount'] ?? 0);
+                $note   = $row['note'] ?? null;
 
-                // resolve/create category
                 $catId = $catIdsByName[$name] ?? null;
                 if (!$catId) {
                     $cat = BudgetCategory::create([
                         'name'        => $name,
                         'description' => $name.' (custom)',
-                        'is_default'  => in_array($name, ['Measurement','Design','Production','Installation'], true) ? 1 : 0,
+                        'is_default'  => false,
                     ]);
                     $catId = $cat->id;
                     $catIdsByName[$name] = $catId;
@@ -205,24 +183,22 @@ class BudgetsController extends Controller
                     'budget_id'          => $budget->id,
                     'budget_category_id' => $catId,
                     'amount'             => $amount,
+                    'note'               => $note,
                     'updated_at'         => now(),
                     'created_at'         => now(),
                 ];
             }
 
-            // Upsert allocations by (budget_id, budget_category_id)
-            // If you don’t have a unique index on that pair, consider adding one.
             foreach ($toUpsert as $row) {
                 BudgetAllocation::updateOrCreate(
                     [
                         'budget_id'          => $row['budget_id'],
                         'budget_category_id' => $row['budget_category_id'],
                     ],
-                    ['amount' => $row['amount']]
+                    ['amount' => $row['amount'], 'note' => $row['note']]
                 );
             }
 
-            // Optionally remove allocations that were deleted in the form
             $keepCatIds = collect($toUpsert)->pluck('budget_category_id')->unique()->all();
             BudgetAllocation::where('budget_id', $budget->id)
                 ->whereNotIn('budget_category_id', $keepCatIds)
@@ -234,20 +210,14 @@ class BudgetsController extends Controller
             ->with('success', 'Budget updated successfully.');
     }
 
-    // Delete budget (and children)
-    public function destroy(Project $project)
+    public function destroy(Budget $budget)
     {
-        if (!$project->budget) {
-            return back()->with('info', 'This project has no budget to delete.');
-        }
-
-        DB::transaction(function () use ($project) {
-            // If FK cascades are not set, delete children manually:
-            foreach ($project->budget->allocations as $alloc) {
+        DB::transaction(function () use ($budget) {
+            foreach ($budget->allocations as $alloc) {
                 $alloc->costEntries()->delete();
             }
-            $project->budget->allocations()->delete();
-            $project->budget()->delete();
+            $budget->allocations()->delete();
+            $budget->delete();
         });
 
         return redirect()

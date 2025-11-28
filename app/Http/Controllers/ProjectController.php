@@ -388,6 +388,21 @@ public function togglePhase(Request $request, Project $project, PhaseTemplate $t
         ->count();
 
     $pct = $total > 0 ? (int) round(($done / $total) * 100) : 0;
+
+    // If all active phases are done, mark project as COMPLETED (best-effort; don't break toggle)
+    if ($total > 0 && $done >= $total) {
+        try {
+            $project->update(['status' => 'COMPLETED']);
+            \App\Models\Activity::log([
+                'project_id' => $project->id,
+                'type'       => 'project.completed',
+                'message'    => (optional($request->user()->employee)->name ?? $request->user()->name ?? 'Someone') . " marked '{$project->name}' as completed",
+                'meta'       => ['phase_template_id' => $template->id],
+            ]);
+        } catch (\Throwable $e) {
+            // swallow to keep toggle response successful
+        }
+    }
     // Log activity (optional: only when checked)
     if ((bool) $data['checked'] === true) {
         \App\Models\Activity::log([

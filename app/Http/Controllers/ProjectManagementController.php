@@ -410,9 +410,9 @@ public function store(Request $request)
     // 5) Transaction: create Project, upload files, create Product, attach accessories
     return DB::transaction(function () use ($request, $projectData, $productData, $selected) {
 
-        // Defaults for project
-        $projectData['status']        = $projectData['status']        ?? 'ON_GOING';
-        $projectData['booked_status'] = $projectData['booked_status'] ?? 'UNBOOKED';
+        // Defaults for project (normalize to uppercase)
+        $projectData['status']        = strtoupper($projectData['status']        ?? 'IN_REVIEW');
+        $projectData['booked_status'] = strtoupper($projectData['booked_status'] ?? 'UNBOOKED');
 
         // 5a) Create Project
         $project = Project::create($projectData);

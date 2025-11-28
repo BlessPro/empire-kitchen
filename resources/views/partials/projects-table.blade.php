@@ -5,8 +5,9 @@
           <input type="checkbox" id="selectAll" />
         </th> --}}
         <th class="p-4 font-mediumt text-[15px]">Client Name</th>
+        <th class="p-4 font-mediumt text-[15px]">Project</th>
         <th class="p-4 font-mediumt text-[15px]">Location</th>
-        <th class="p-4 font-mediumt text-[15px]">status</th>
+        <th class="p-4 font-mediumt text-[15px]">Status</th>
       </tr>
     </thead>
 <!-- Add other columns as needed -->
@@ -18,9 +19,11 @@
    {{-- <td class="p-4"><input type="checkbox" class="child-checkbox" /></td> --}}
    {{-- <td class="p-4 font-normal text-[15px]">{{ $project->name }}</td> --}}
       <td  class="px-3 py-1 text-sm ">{{ $project->client->firstname . ' ' . $project->client->lastname}}</td>
+      <td  class="px-3 py-1 text-sm ">{{ $project->name }}</td>
       <td  class="px-3 py-1 text-sm ">{{ $project->client->location}}</td>
+      @php $statusKey = strtoupper((string) $project->status); @endphp
       <td class="p-4">
-       <span class="px-3 py-1 text-sm {{ $statusClasses[$project->status] ?? $defaultClass }}">{{ $project->status }}</span>
+       <span class="px-3 py-1 text-sm {{ $statusClasses[$statusKey] ?? $defaultClass }}">{{ $statusKey }}</span>
    </td>
 
 </tr>

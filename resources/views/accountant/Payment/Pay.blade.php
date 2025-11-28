@@ -1,8 +1,6 @@
 <x-accountant-layout>
     <x-slot name="header">
-        <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('Payments & Invoice') }}
-        </h2>
+       
         <script src="//unpkg.com/alpinejs" defer></script>
     </x-slot>
 
@@ -36,9 +34,10 @@
                                 <th class="p-4 font-medium text-[15px]">Amount Paid</th>
                                 <th class="p-4 font-medium text-[15px]">Transaction ID</th>
                                 <th class="p-4 font-medium text-[15px]">Date</th>
+                                <th class="p-4 font-medium text-[15px] text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
+                                                <tbody class="divide-y divide-gray-100">
                             @forelse ($incomes as $income)
                                 <tr class="border-t">
                                     <td class="p-4 font-normal text-[15px]">
@@ -56,15 +55,38 @@
                                         GHS {{ number_format($income->amount ?? 0, 2) }}
                                     </td>
                                     <td class="p-4 font-normal text-[15px]">
-                                        {{ $income->transaction_id ?? '—' }}
+                                        {{ $income->transaction_id ?? '-' }}
                                     </td>
                                     <td class="p-4 font-normal text-[15px]">
-                                        {{ optional($income->date)->format('d M Y') ?? '—' }}
+                                        {{ optional($income->date)->format('d M Y') ?? '-' }}
+                                    </td>
+                                    <td class="p-4 text-right">
+                                        <div x-data="{ open: false }" class="relative inline-block text-left">
+                                            <button type="button" @click="open = !open"
+                                                class="p-2 rounded hover:bg-gray-100 focus:outline-none">
+                                                <i data-feather="more-vertical" class="w-5 h-5"></i>
+                                            </button>
+                                            <div x-cloak x-show="open" @click.away="open = false"
+                                                class="absolute right-0 z-20 mt-2 w-44 rounded-lg border bg-white shadow-lg">
+                                                <a href="{{ route('accountant.payments.receipt', $income->id) }}"
+                                                    class="block px-4 py-2 text-sm hover:bg-gray-100">
+                                                    Generate Receipt
+                                                </a>
+                                                <form method="POST" action="{{ route('accountant.payments.destroy', $income) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="block w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="p-6 text-center text-sm text-gray-500">
+                                    <td colspan="7" class="p-6 text-sm text-center text-gray-500">
                                         No payments recorded yet.
                                     </td>
                                 </tr>
@@ -82,10 +104,10 @@
         <div id="incomeModal"
             class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
             <div class="relative w-[620px] rounded-lg bg-white p-6">
-                <div class="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex flex-col gap-4 mb-4 sm:flex-row sm:items-center sm:justify-between">
                     <h2 class="text-xl font-semibold">Record Payment</h2>
                     <button type="button" id="closeEditModal" class="flex items-center text-gray-500 hover:text-black">
-                        <i data-feather="x" class="h-5 w-5"></i>
+                        <i data-feather="x" class="w-5 h-5"></i>
                     </button>
                 </div>
 
@@ -93,11 +115,11 @@
                     @csrf
 
                     <div class="mb-4">
-                        <label class="mb-2 block text-sm font-medium text-gray-700" for="projectSelect">
+                        <label class="block mb-2 text-sm font-medium text-gray-700" for="projectSelect">
                             Project
                         </label>
                         <select id="projectSelect" name="project_id"
-                            class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-900"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-900"
                             required>
                             <option value="">-- Select Project --</option>
                             @foreach ($projects as $project)
@@ -112,37 +134,37 @@
                         </select>
                     </div>
 
-                    <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
                         <div>
-                            <label class="mb-2 block text-sm font-medium text-gray-700" for="projectCost">
+                            <label class="block mb-2 text-sm font-medium text-gray-700" for="projectCost">
                                 Project Cost
                             </label>
                             <input id="projectCost" type="text" readonly value="GHS 0.00"
-                                class="w-full rounded-md border border-gray-300 px-3 py-2 bg-gray-100 text-gray-700 focus:outline-none">
+                                class="w-full px-3 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-md focus:outline-none">
                         </div>
                         <div>
-                            <label class="mb-2 block text-sm font-medium text-gray-700" for="projectBalance">
+                            <label class="block mb-2 text-sm font-medium text-gray-700" for="projectBalance">
                                 Balance
                             </label>
                             <input id="projectBalance" type="text" readonly value="GHS 0.00"
-                                class="w-full rounded-md border border-gray-300 px-3 py-2 bg-gray-100 text-gray-700 focus:outline-none">
+                                class="w-full px-3 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-md focus:outline-none">
                         </div>
                     </div>
 
-                    <div class="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div class="grid grid-cols-1 gap-4 mb-4 sm:grid-cols-2">
                         <div>
-                            <label class="mb-2 block text-sm font-medium text-gray-700" for="amountInput">
+                            <label class="block mb-2 text-sm font-medium text-gray-700" for="amountInput">
                                 Amount Paid
                             </label>
                             <input id="amountInput" type="number" step="0.01" min="0" name="amount" required
-                                class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-900">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-900">
                         </div>
                         <div>
-                            <label class="mb-2 block text-sm font-medium text-gray-700" for="payment_method">
+                            <label class="block mb-2 text-sm font-medium text-gray-700" for="payment_method">
                                 Payment Method
                             </label>
                             <select id="payment_method" name="payment_method" required
-                                class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-900">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-900">
                                 <option value="">-- Select Payment Method --</option>
                                 <option value="Cash">Cash</option>
                                 <option value="Bank Transfer">Bank Transfer</option>
@@ -151,21 +173,21 @@
                         </div>
                     </div>
 
-                    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2">
                         <div>
-                            <label class="mb-2 block text-sm font-medium text-gray-700" for="payment_date">
+                            <label class="block mb-2 text-sm font-medium text-gray-700" for="payment_date">
                                 Date of Payment
                             </label>
                             <input id="payment_date" type="date" name="date" required
-                                class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-900">
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-900">
                         </div>
                         <div>
-                            <label class="mb-2 block text-sm font-medium text-gray-700" for="transaction_id">
+                            <label class="block mb-2 text-sm font-medium text-gray-700" for="transaction_id">
                                 Transaction ID
                             </label>
                             <input id="transaction_id" type="text" name="transaction_id" maxlength="255"
                                 value="{{ $nextTransactionId ?? '' }}"
-                                class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-900"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-900"
                                 placeholder="{{ $nextTransactionId ? '' : 'Optional reference' }}">
                         </div>
                     </div>
@@ -175,7 +197,7 @@
                     </p>
 
                     <button type="submit"
-                        class="w-full rounded-xl bg-fuchsia-900 py-2 text-white hover:bg-fuchsia-800">
+                        class="w-full py-2 text-white rounded-xl bg-fuchsia-900 hover:bg-fuchsia-800">
                         Save Payment
                     </button>
                 </form>
@@ -307,3 +329,4 @@
         });
     </script>
 </x-accountant-layout>
+

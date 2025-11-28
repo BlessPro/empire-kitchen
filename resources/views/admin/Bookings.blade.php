@@ -145,7 +145,7 @@
 
       <div class="mb-4">
         <label class="block mb-1 text-sm font-medium">Measurement Date & Time</label>
-        <input type="date" name="scheduled_date" class="w-full px-3 py-2 border rounded-lg" required />
+        <input type="date" name="scheduled_date" id="sm_scheduled_date" class="w-full px-3 py-2 border rounded-lg" required />
       </div>
 
       <div class="flex justify-end gap-2 mt-6">
@@ -310,12 +310,16 @@
   const smClientIdEl    = document.getElementById('sm_client_id');
   const smClientNameEl  = document.getElementById('sm_client_name');
 
-  function singleOpenModal({ projectId, productName = '', clientId = '', clientName = '' }) {
+  function singleOpenModal({ projectId, productName = '', clientId = '', clientName = '', scheduledDate = '' }) {
     // fill fields
     smProjectIdEl.value   = projectId || '';
     smProductNameEl.value = productName || '';
     smClientIdEl.value    = clientId || '';
     smClientNameEl.value  = clientName || '';
+    const dateInput = document.getElementById('sm_scheduled_date');
+    if (dateInput) {
+      dateInput.value = scheduledDate || '';
+    }
 
     // show modal
     singleModalEl.classList.remove('hidden');

@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <section class="p-3 space-y-4 sm:p-4">
+    <section class="p-4 sm:p-6 lg:p-8 space-y-4">
         @php
             $statusClasses = [
                 'ON_GOING' => 'bg-yellow-100 text-yellow-700 px-3 py-1 border border-yellow-500 rounded-full text-xs',

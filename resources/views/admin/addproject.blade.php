@@ -6,7 +6,7 @@
     @include('admin.layouts.header')
   </x-slot>
 
-  <main class="ml-[290px] mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen items-center">
+  <main class="bg-[#F9F7F7] min-h-screen flex-1 pt-24 sm:pt-28 px-4 sm:px-6 lg:ml-[290px]">
     <div class="p-6 bg-[#F9F7F7]">
       {{-- breadcrumbs … --}}
 {{-- navigation bar --}}
@@ -65,12 +65,15 @@
 
           <!-- STEP 0: Basic -->
           <div x-show="step === 0" x-transition x-cloak>
-            <div class="p-4 mx-auto w-[450px]">
+            <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
 
               <div class="mt-4">
                 {{-- Select client (from clients table) --}}
                 <label class="block text-[15px] mb-2 font-semibold text-gray-900">Select Client</label>
-                <select name="project[client_id]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
+                <select name="project[client_id]"
+                        x-model="form.project.client_id"
+                        x-ref="clientSelect"
+                        class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
                   <option value="">— choose client —</option>
                   @foreach($clients ?? [] as $c)
                     <option value="{{ $c->id }}"> {{ trim($c->firstname . ' ' . ($c->lastname ?? '')) }}</option>
@@ -81,13 +84,19 @@
               <div class="mt-4">
                 {{-- Project Name --}}
                 <label class="block text-[15px] mb-2 font-semibold text-gray-900">Project Name</label>
-                <input type="text" name="project[name]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
+                <input type="text"
+                       name="project[name]"
+                       x-model="form.project.name"
+                       class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
               </div>
 
               <div class="mt-4">
                 {{-- Product type (select) --}}
                 <label class="block text-[15px] mb-2 font-semibold text-gray-900">Product Type</label>
-                <select name="product[product_type]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
+                <select name="product[product_type]"
+                        x-model="form.product.product_type"
+                        x-ref="productTypeSelect"
+                        class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
                   <option value="">— choose type —</option>
                   @foreach($productTypes ?? [] as $t)
                     <option value="{{ $t }}">{{ $t }}</option>
@@ -97,34 +106,47 @@
  <div class="mt-4">
                 {{-- location --}}
                 <label class="block text-[15px] mb-2 font-semibold text-gray-900">Location</label>
-                <input type="text" name="project[location]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
+                <input type="text"
+                       name="project[location]"
+                       x-model="form.project.location"
+                       class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
               </div>
             </div>
           </div>
 
           <!-- STEP 1: Finish -->
           <div x-show="step === 1" x-transition x-cloak>
-            <div class="p-4 mx-auto w-[450px]">
+            <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
               <div class="mt-4">
                 {{-- type of finish (select) --}}
                 <label class="block text-[15px] mb-2 font-semibold text-gray-900">Type of Finish</label>
-                <select name="product[type_of_finish]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
+                <select name="product[type_of_finish]"
+                        x-model="form.product.type_of_finish"
+                        x-ref="finishSelect"
+                        class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
                   <option value="">— select finish —</option>
                   @foreach($finishTypes ?? [] as $f)
                     <option value="{{ $f }}">{{ $f }}</option>
                   @endforeach
                 </select>
               </div>
-              <div class="flex justify-between gap-3 mt-4">
+              <div class="flex flex-col gap-3 mt-4 sm:flex-row">
                 {{-- color of finish (hex) --}}
                 <div class="flex-1">
                   <label class="block text-[15px] mb-2 font-semibold text-gray-900">Finish Color</label>
-                  <input type="color" name="product[finish_color_hex]" class="w-full h-[44px] border rounded-lg">
+                  <input type="color"
+                         name="product[finish_color_hex]"
+                         x-model="form.product.finish_color_hex"
+                         class="w-full h-[44px] border rounded-lg">
                 </div>
                 {{-- sample finish image (file) --}}
                 <div class="flex-1">
                   <label class="block text-[15px] mb-2 font-semibold text-gray-900">Sample Finish Image</label>
-                  <input type="file" name="product[sample_finish_image]" accept="image/*" class="w-full px-3 py-2 bg-white border rounded-lg">
+                  <input type="file"
+                         name="product[sample_finish_image]"
+                         accept="image/*"
+                         class="w-full px-3 py-2 bg-white border rounded-lg"
+                         @change="form.product.sample_finish_image = $event.target.files[0]?.name || ''">
                 </div>
 
               </div>
@@ -133,10 +155,13 @@
 
           <!-- STEP 2: Glassdoor -->
           <div x-show="step === 2" x-transition x-cloak>
-            <div class="p-4 mx-auto w-[450px]">
+            <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
               {{-- Type of glass door (select) --}}
               <label class="block text-[15px] mb-2 font-semibold text-gray-900">Type of Glass Door</label>
-              <select name="product[glass_door_type]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
+              <select name="product[glass_door_type]"
+                      x-model="form.product.glass_door_type"
+                      x-ref="glassSelect"
+                      class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
                 <option value="">— select glass —</option>
                 @foreach($glassTypes ?? [] as $g)
                   <option value="{{ $g }}">{{ $g }}</option>
@@ -147,69 +172,92 @@
 
           <!-- STEP 3: Worktop -->
           <div x-show="step === 3" x-transition x-cloak>
-            <div class="p-4 mx-auto w-[450px]">
+            <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
               {{-- Type of worktop (select) --}}
               <label class="block text-[15px] mb-2 font-semibold text-gray-900">Type of Worktop</label>
-              <select name="product[worktop_type]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
+              <select name="product[worktop_type]"
+                      x-model="form.product.worktop_type"
+                      x-ref="worktopSelect"
+                      class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
                 <option value="">— select worktop —</option>
                 @foreach($worktopTypes ?? [] as $w)
                   <option value="{{ $w }}">{{ $w }}</option>
                 @endforeach
               </select>
             </div>
-            <div class="flex justify-between mt-4 gap-3 p-4 mx-auto w-[450px]">
+            <div class="flex flex-col w-full max-w-xl gap-3 p-4 mx-auto mt-4 bg-white shadow-sm rounded-2xl sm:flex-row">
               {{-- color of worktop --}}
               <div class="flex-1">
                 <label class="block text-[15px] mb-2 font-semibold text-gray-900">Worktop Color</label>
-                <input type="color" name="product[worktop_color_hex]" class="w-full h-[44px] border rounded-lg">
+                <input type="color"
+                       name="product[worktop_color_hex]"
+                       x-model="form.product.worktop_color_hex"
+                       class="w-full h-[44px] border rounded-lg">
               </div>
               {{-- sample worktop image --}}
               <div class="flex-1">
                 <label class="block text-[15px] mb-2 font-semibold text-gray-900">Sample Worktop Image</label>
-                <input type="file" name="product[sample_worktop_image]" accept="image/*" class="w-full px-3 py-2 bg-white border rounded-lg">
+                <input type="file"
+                       name="product[sample_worktop_image]"
+                       accept="image/*"
+                       class="w-full px-3 py-2 bg-white border rounded-lg"
+                       @change="form.product.sample_worktop_image = $event.target.files[0]?.name || ''">
               </div>
             </div>
           </div>
 
           <!-- STEP 4: Sink & Top -->
           <div x-show="step === 4" x-transition x-cloak>
-            <div class="p-4 mx-auto w-[450px]">
+            <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
               {{-- Type of sink & top --}}
               <label class="block text-[15px] mb-2 font-semibold text-gray-900">Sink & Top Type</label>
-              <select name="product[sink_top_type]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
+              <select name="product[sink_top_type]"
+                      x-model="form.product.sink_top_type"
+                      x-ref="sinkTopSelect"
+                      class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
                 <option value="">— select type —</option>
                 @foreach($sinkTopTypes ?? [] as $s)
                   <option value="{{ $s }}">{{ $s }}</option>
                 @endforeach
               </select>
             </div>
-            <div class="p-4 mx-auto w-[450px]">
+            <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
               {{-- Handle type --}}
               <label class="block text-[15px] mb-2 font-semibold text-gray-900">Handle Type</label>
-              <select name="product[handle]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
+              <select name="product[handle]"
+                      x-model="form.product.handle"
+                      x-ref="handleSelect"
+                      class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
                 <option value="">— select handle —</option>
                 @foreach($handleTypes ?? [] as $h)
                   <option value="{{ $h }}">{{ $h }}</option>
                 @endforeach
               </select>
             </div>
-            <div class="flex justify-between mt-4 gap-3 p-4 mx-auto w-[450px]">
+            <div class="flex flex-col w-full max-w-xl gap-3 p-4 mx-auto mt-4 bg-white shadow-sm rounded-2xl sm:flex-row">
               {{-- color of sink --}}
               <div class="flex-1">
                 <label class="block text-[15px] mb-2 font-semibold text-gray-900">Sink Color</label>
-                <input type="color" name="product[sink_color_hex]" class="w-full h-[44px] border rounded-lg">
+                <input type="color"
+                       name="product[sink_color_hex]"
+                       x-model="form.product.sink_color_hex"
+                       class="w-full h-[44px] border rounded-lg">
               </div>
               {{-- sample sink image --}}
               <div class="flex-1">
                 <label class="block text-[15px] mb-2 font-semibold text-gray-900">Sample Sink Image</label>
-                <input type="file" name="product[sample_sink_image]" accept="image/*" class="w-full px-3 py-2 bg-white border rounded-lg">
+                <input type="file"
+                       name="product[sample_sink_image]"
+                       accept="image/*"
+                       class="w-full px-3 py-2 bg-white border rounded-lg"
+                       @change="form.product.sample_sink_image = $event.target.files[0]?.name || ''">
               </div>
             </div>
           </div>
 
           <!-- STEP 5: Appliances -->
           <div x-show="step === 5" x-transition x-cloak>
-            <div class="p-4 mx-auto w-[450px]">
+            <div class="w-full max-w-5xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
               {{-- 10 paginated appliances with checkbox to select --}}
 
 
@@ -246,6 +294,7 @@
     initialRows: @js($initialRows),
     storeUrl: '{{ route('accessories.ajax.store') }}',
   })"
+  x-ref="accessoriesComponent"
   class="p-4 space-y-4 border rounded-2xl"
 >
   <div class="flex items-center justify-between">
@@ -269,25 +318,22 @@
 
   <template x-for="(row, i) in rows" :key="i">
     <div class="p-3 space-y-3 border rounded-xl">
-      {{-- Name pills --}}
-      <fieldset>
-        <legend class="block mb-2 text-sm font-medium text-gray-700">Name</legend>
-        <div class="flex flex-wrap gap-2">
+      {{-- Name select --}}
+      <div>
+        <label class="block mb-2 text-sm font-medium text-gray-700">Accessory</label>
+        
+        <select class="w-full px-3 py-2 border rounded-lg"
+                :name="`accessories[${i}][id]`"
+                x-model="row.accessory_id"
+                @change="selectAccessory(i, catalog.find(c => String(c.id) === String($event.target.value)) || {id:null})">
+          <option value="">Select accessory</option>
           <template x-for="item in catalog" :key="item.id">
-            <label class="cursor-pointer">
-              <input type="radio" class="sr-only peer"
-                     :name="`accessories[${i}][id]`"
-                     :value="item.id"
-                     :checked="row.accessory_id===item.id"
-                     @change="selectAccessory(i, item)">
-              <span class="inline-flex items-center px-3 py-1.5 rounded-full border text-sm
-                           border-gray-300 text-gray-700 bg-white
-                           peer-checked:bg-fuchsia-50 peer-checked:border-fuchsia-700 peer-checked:text-fuchsia-800
-                           hover:bg-gray-50 transition" x-text="item.name"></span>
-            </label>
+            <option :value="item.id" x-text="item.name"></option>
           </template>
-        </div>
-      </fieldset>
+        </select>
+
+
+      </div>
 
       <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
         {{-- Size --}}
@@ -378,27 +424,142 @@
 
           <!-- STEP 6: Information -->
           <div x-show="step === 6" x-transition x-cloak>
-            <div class="p-4 mx-auto w-[450px]">
+            <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
               {{-- Notes --}}
             <label class="block text-[15px] mb-2 font-semibold text-gray-900">Deadline</label>
-            <input type="date" name="project[due_date]" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
+            <input type="date"
+                   name="project[due_date]"
+                   x-model="form.project.due_date"
+                   class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#5A0562]">
 
               <label class="block text-[15px] mb-2 font-semibold text-gray-900">Notes</label>
-              <textarea name="product[notes]" class="w-full px-3 py-2 border rounded-lg min-h-[120px]"></textarea>
+              <textarea name="product[notes]"
+                        x-model="form.product.notes"
+                        class="w-full px-3 py-2 border rounded-lg min-h-[120px]"></textarea>
             </div>
 
           </div>
 
           <!-- STEP 7: Summary / Preview -->
           <div x-show="step === 7" x-transition x-cloak>
-            {{-- A summary of all the selected options (optional to render now) --}}
-            <div class="p-4 mx-auto w-[450px] text-sm text-gray-700">
-              Review your entries, then Submit.
+            <div class="w-full max-w-2xl p-4 mx-auto space-y-4 text-sm text-gray-800">
+              <div class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl">
+                <div class="text-base font-semibold text-gray-900">Project</div>
+                <dl class="mt-2 space-y-1">
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Client</dt>
+                    <dd class="text-right" x-text="getSelectLabel($refs.clientSelect, form.project.client_id) || 'Not set'"></dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Project name</dt>
+                    <dd class="text-right" x-text="form.project.name || 'Not set'"></dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Location</dt>
+                    <dd class="text-right" x-text="form.project.location || 'Not set'"></dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Deadline</dt>
+                    <dd class="text-right" x-text="form.project.due_date || 'Not set'"></dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl">
+                <div class="text-base font-semibold text-gray-900">Product</div>
+                <dl class="mt-2 space-y-1">
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Type</dt>
+                    <dd class="text-right" x-text="getSelectLabel($refs.productTypeSelect, form.product.product_type) || 'Not set'"></dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Finish</dt>
+                    <dd class="text-right" x-text="getSelectLabel($refs.finishSelect, form.product.type_of_finish) || 'Not set'"></dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Finish color</dt>
+                    <dd class="flex items-center gap-2 text-right">
+                      <span class="inline-block w-4 h-4 border rounded-full"
+                            :style="`background:${form.product.finish_color_hex || '#fff'}`"></span>
+                      <span x-text="form.product.finish_color_hex || 'Not set'"></span>
+                    </dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Finish sample</dt>
+                    <dd class="text-right" x-text="form.product.sample_finish_image || 'Not uploaded'"></dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Glass door</dt>
+                    <dd class="text-right" x-text="getSelectLabel($refs.glassSelect, form.product.glass_door_type) || 'Not set'"></dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Worktop</dt>
+                    <dd class="text-right" x-text="getSelectLabel($refs.worktopSelect, form.product.worktop_type) || 'Not set'"></dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Worktop color</dt>
+                    <dd class="flex items-center gap-2 text-right">
+                      <span class="inline-block w-4 h-4 border rounded-full"
+                            :style="`background:${form.product.worktop_color_hex || '#fff'}`"></span>
+                      <span x-text="form.product.worktop_color_hex || 'Not set'"></span>
+                    </dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Worktop sample</dt>
+                    <dd class="text-right" x-text="form.product.sample_worktop_image || 'Not uploaded'"></dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Sink & Top</dt>
+                    <dd class="text-right" x-text="getSelectLabel($refs.sinkTopSelect, form.product.sink_top_type) || 'Not set'"></dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Handle</dt>
+                    <dd class="text-right" x-text="getSelectLabel($refs.handleSelect, form.product.handle) || 'Not set'"></dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Sink color</dt>
+                    <dd class="flex items-center gap-2 text-right">
+                      <span class="inline-block w-4 h-4 border rounded-full"
+                            :style="`background:${form.product.sink_color_hex || '#fff'}`"></span>
+                      <span x-text="form.product.sink_color_hex || 'Not set'"></span>
+                    </dd>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <dt class="text-gray-600">Sink sample</dt>
+                    <dd class="text-right" x-text="form.product.sample_sink_image || 'Not uploaded'"></dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl">
+                <div class="text-base font-semibold text-gray-900">Accessories</div>
+                <template x-if="getAccessoryRows().length">
+                  <ul class="mt-3 space-y-2">
+                    <template x-for="(row, i) in getAccessoryRows()" :key="i">
+                      <li class="flex items-start justify-between gap-3">
+                        <div>
+                          <div class="font-semibold text-gray-900" x-text="getAccessoryName(row.accessory_id) || `Accessory ${i+1}`"></div>
+                          <div class="text-xs text-gray-600">
+                            <span x-text="row.size || 'Size not set'"></span>
+                            <span x-text="row.type ? '• ' + row.type : ''"></span>
+                          </div>
+                        </div>
+                      </li>
+                    </template>
+                  </ul>
+                </template>
+                <p class="mt-2 text-sm text-gray-500" x-show="!getAccessoryRows().length">No accessories added.</p>
+              </div>
+
+              <div class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl">
+                <div class="text-base font-semibold text-gray-900">Notes</div>
+                <p class="mt-2 text-sm text-gray-700 whitespace-pre-line" x-text="form.product.notes || 'No notes added.'"></p>
+              </div>
             </div>
           </div>
 
           {{-- Controls --}}
-          <div class="grid w-[450px] grid-cols-1 gap-5 p-4 mx-auto mt-8 md:grid-cols-2">
+          <div class="grid w-full max-w-xl grid-cols-1 gap-5 p-4 mx-auto mt-8 md:grid-cols-2">
             <button type="button"
                     class="w-full rounded-[15px] px-[28px] py-[10px] text-fuchsia-900 bg-transparent border-2 border-[#5A0562] text-[17px] font-semibold hover:bg-[#5A0562]/10 focus:outline-none focus:ring-2 focus:ring-[#5A0562]/50"
                     :disabled="step === 0"
@@ -452,16 +613,15 @@ document.addEventListener('alpine:init', () => {
     },
 
     addRow() {
-      this.rows.push({ accessory_id: this.catalog[0]?.id ?? null,
-                       size: this.sizes[0] ?? '',
-                       type: (this.catalog[0]?.types?.[0] ?? '') });
+      this.rows.push({ accessory_id: '', size: '', type: '' });
     },
     removeRow(i) { this.rows.splice(i,1); },
 
     selectAccessory(i, item) {
-      this.rows[i].accessory_id = item.id;
+      const id = item?.id ?? '';
+      this.rows[i].accessory_id = id;
       // reset type to first allowed for this accessory (if any)
-      this.rows[i].type = (this.typesMap[item.id]?.[0] ?? '');
+      this.rows[i].type = id ? (this.typesMap[id]?.[0] ?? '') : '';
     },
 
     openNewAccessoryModal() {
@@ -561,8 +721,48 @@ document.getElementById('accessoryForm').addEventListener('submit', async functi
               steps: ['Basic','Finish','Glassdoor','Worktop','Sink & Top','Appliances','Information','Summary'],
               step: 0,
               submitting: false,
+              form: {
+                project: {
+                  client_id: '',
+                  name: '',
+                  location: '',
+                  due_date: '',
+                },
+                product: {
+                  product_type: '',
+                  type_of_finish: '',
+                  finish_color_hex: '',
+                  sample_finish_image: '',
+                  glass_door_type: '',
+                  worktop_type: '',
+                  worktop_color_hex: '',
+                  sample_worktop_image: '',
+                  sink_top_type: '',
+                  handle: '',
+                  sink_color_hex: '',
+                  sample_sink_image: '',
+                  notes: '',
+                },
+              },
               next(){ this.step = Math.min(this.step + 1, this.steps.length - 1); },
               prev(){ this.step = Math.max(this.step - 1, 0); },
+              getSelectLabel(ref, value) {
+                if (!ref) return value || 'Not set';
+                const opt = Array.from(ref.options || []).find(o => String(o.value) === String(value));
+                return opt ? (opt.textContent || opt.innerText || value || 'Not set') : (value || 'Not set');
+              },
+              getAccessoryRows() {
+                const comp = this.$refs.accessoriesComponent?._x_dataStack?.[0]
+                          || this.$refs.accessoriesComponent?.__x?.$data;
+                return comp?.rows ?? [];
+              },
+              getAccessoryName(id) {
+                const comp = this.$refs.accessoriesComponent?._x_dataStack?.[0]
+                          || this.$refs.accessoriesComponent?.__x?.$data;
+                if (!comp) return '';
+                const found = comp.catalog?.find(c => String(c.id) === String(id));
+                return found?.name || '';
+              },
               submit(){ this.submitting = true; this.$el.submit(); } // native submit
             }
           }

@@ -125,6 +125,7 @@
         <button class="icon-btn text-red-500" data-action="delete" title="Delete">
           <span class="iconify text-xl" data-icon="ph:trash-simple"></span>
         </button>
+        <button class="btn-ghost text-green-600" data-action="done">Done</button>
       </div>
     </div>
   </div>
@@ -247,6 +248,10 @@
             duration: ext.duration_minutes || 60,
             notes: ext.notes || ''
           });
+          closePopover();
+        });
+        popEl.querySelector('[data-action=\"done\"]').addEventListener('click', () => {
+          if (window.__completeMeasurement) window.__completeMeasurement(event.id);
           closePopover();
         });
 
@@ -441,7 +446,6 @@
       form?.addEventListener('submit', submitForm);
 
       async function deleteMeasurement(id){
-        if (!confirm('Delete this measurement slot?')) return;
         try {
           const url = '{{ route('tech.measurements.destroy', ['measurement' => '__ID__']) }}'.replace('__ID__', id);
           const res = await fetch(url, {
@@ -455,15 +459,36 @@
           });
           if (!res.ok){
             const text = await res.text();
-            throw new Error(text || `HTTP ${res.status}`);
+            console.error(text || `HTTP ${res.status}`);
+            return;
           }
           window.__measurementCalendar?.refetchEvents();
-        } catch (err){
-          alert(err.message || 'Failed to delete measurement.');
-        }
+        } catch (err){}
       }
 
       window.__deleteMeasurement = deleteMeasurement;
+
+      async function completeMeasurement(id){
+        try {
+          const url = '{{ route('tech.measurements.done', ['measurement' => '__ID__']) }}'.replace('__ID__', id);
+          const res = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+              'X-CSRF-TOKEN': csrf,
+              'X-Requested-With': 'XMLHttpRequest',
+              'Accept': 'application/json'
+            },
+            credentials: 'same-origin'
+          });
+          if (!res.ok){
+            const text = await res.text();
+            console.error(text || `HTTP ${res.status}`);
+            return;
+          }
+          window.__measurementCalendar?.refetchEvents();
+        } catch (err){}
+      }
+      window.__completeMeasurement = completeMeasurement;
     })();
   </script>
 </x-tech-layout>

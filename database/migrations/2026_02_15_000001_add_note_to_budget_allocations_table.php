@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::table('budget_allocations', function (Blueprint $table) {
+            if (!Schema::hasColumn('budget_allocations', 'note')) {
+                $table->text('note')->nullable()->after('amount');
+            }
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('budget_allocations', function (Blueprint $table) {
+            if (Schema::hasColumn('budget_allocations', 'note')) {
+                $table->dropColumn('note');
+            }
+        });
+    }
+};

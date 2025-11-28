@@ -42,6 +42,7 @@ class techScheduleMeasurementController extends Controller
                 'project.client:id,firstname,lastname',
             ])
             ->whereHas('project', fn ($q) => $q->where('tech_supervisor_id', $techId))
+            ->where('done', false)
             ->orderByDesc('scheduled_date')
             ->orderByDesc('start_time');
 
@@ -131,6 +132,7 @@ class techScheduleMeasurementController extends Controller
             'start_time'     => $start,
             'end_time'       => $end,
             'notes'          => $data['notes'] ?? null,
+            'done'           => false,
         ]);
 
         return response()->json([
@@ -175,6 +177,23 @@ class techScheduleMeasurementController extends Controller
         ]);
 
         $model->save();
+
+        return response()->json(['ok' => true]);
+    }
+
+    /**
+     * Mark a measurement as done (removes it from calendar feed).
+     */
+    public function markDone(int $measurement)
+    {
+        $techId = Auth::id();
+
+        $model = Measurement::query()
+            ->where('id', $measurement)
+            ->whereHas('project', fn ($q) => $q->where('tech_supervisor_id', $techId))
+            ->firstOrFail();
+
+        $model->update(['done' => true]);
 
         return response()->json(['ok' => true]);
     }

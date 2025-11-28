@@ -8,6 +8,7 @@ use App\Models\Income;
 use App\Models\Invoice;
 use App\Models\InvoiceSummary;
 use App\Models\Project;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -158,5 +159,19 @@ class accountantPayController extends Controller
         }
 
         return sprintf('T-%03d', $nextNumber);
+    }
+
+    public function destroy(Income $income)
+    {
+        $income->delete();
+        return back()->with('success', 'Payment deleted.');
+    }
+
+    public function receipt($incomeId)
+    {
+        $income = Income::with(['client','project'])
+            ->findOrFail($incomeId);
+
+        return view('accountant.Payment.receipt', compact('income'));
     }
 }

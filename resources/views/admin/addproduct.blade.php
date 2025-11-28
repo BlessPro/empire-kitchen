@@ -10,8 +10,8 @@
         @include('admin.layouts.header')
     </x-slot>
 
-    <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen items-center">
-        <div class="p-6 bg-[#F9F7F7]">
+    <main class="bg-[#F9F7F7] min-h-screen">
+        <div class="p-3 space-y-3 sm:p-4">
             {{-- breadcrumbs … --}}
             {{-- navigation bar --}}
             <div class="flex items-center justify-between mb-6">
@@ -72,12 +72,12 @@
                 <!-- STEP 1: Basics (READ-ONLY) -->
 
                 <div x-show="step === 0" x-transition x-cloak>
-                    <div class="p-4 mx-auto w-[450px] space-y-4">
+                    <div class="w-full max-w-xl p-4 mx-auto space-y-4 bg-white shadow-sm rounded-2xl">
 
                         <div>
                             <label class="block text-[15px] mb-2 font-semibold text-gray-900">Product Name</label>
                             <input type="text" value="{{ old('product[name]', $product->name) }}" readonly
-                                class="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-700">
+                                class="w-full px-3 py-2 text-gray-700 bg-gray-100 border rounded-lg">
                             <!-- submit the value even though it's readonly -->
                             <input type="hidden" name="product[name]"
                                 value="{{ old('product[name]', $product->name) }}">
@@ -86,7 +86,7 @@
                         <div>
                             <label class="block text-[15px] mb-2 font-semibold text-gray-900">Product Type</label>
                             <input type="text" value="{{ $product->product_type }}" readonly
-                                class="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-700">
+                                class="w-full px-3 py-2 text-gray-700 bg-gray-100 border rounded-lg">
                             <!-- submit the value even though it's readonly -->
                             <input type="hidden" name="product[product_type]" value="{{ $product->product_type }}">
                         </div>
@@ -98,7 +98,7 @@
 
                 <!-- STEP 1: Finish -->
                 <div x-show="step === 1" x-transition x-cloak>
-                    <div class="p-4 mx-auto w-[450px]">
+                    <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
                         <div class="mt-4">
                             {{-- type of finish (select) --}}
                             <label class="block text-[15px] mb-2 font-semibold text-gray-900">Type of Finish</label>
@@ -110,7 +110,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="flex justify-between gap-3 mt-4">
+                        <div class="flex flex-col gap-3 mt-4 sm:flex-row">
                             {{-- color of finish (hex) --}}
                             <div class="flex-1">
                                 <label class="block text-[15px] mb-2 font-semibold text-gray-900">Finish Color</label>
@@ -130,7 +130,7 @@
 
                 <!-- STEP 2: Glassdoor -->
                 <div x-show="step === 2" x-transition x-cloak>
-                    <div class="p-4 mx-auto w-[450px]">
+                    <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
                         {{-- Type of glass door (select) --}}
                         <label class="block text-[15px] mb-2 font-semibold text-gray-900">Type of Glass Door</label>
                         <select name="product[glass_door_type]"
@@ -145,7 +145,7 @@
 
                 <!-- STEP 3: Worktop -->
                 <div x-show="step === 3" x-transition x-cloak>
-                    <div class="p-4 mx-auto w-[450px]">
+                    <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
                         {{-- Type of worktop (select) --}}
                         <label class="block text-[15px] mb-2 font-semibold text-gray-900">Type of Worktop</label>
                         <select name="product[worktop_type]"
@@ -156,7 +156,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="flex justify-between mt-4 gap-3 p-4 mx-auto w-[450px]">
+                    <div class="flex flex-col w-full max-w-xl gap-3 p-4 mx-auto mt-4 bg-white shadow-sm rounded-2xl sm:flex-row">
                         {{-- color of worktop --}}
                         <div class="flex-1">
                             <label class="block text-[15px] mb-2 font-semibold text-gray-900">Worktop Color</label>
@@ -175,7 +175,7 @@
 
                 <!-- STEP 4: Sink & Top -->
                 <div x-show="step === 4" x-transition x-cloak>
-                    <div class="p-4 mx-auto w-[450px]">
+                    <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
                         {{-- Type of sink & top --}}
                         <label class="block text-[15px] mb-2 font-semibold text-gray-900">Sink & Top Type</label>
                         <select name="product[sink_top_type]"
@@ -186,7 +186,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="p-4 mx-auto w-[450px]">
+                    <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
                         {{-- Handle type --}}
                         <label class="block text-[15px] mb-2 font-semibold text-gray-900">Handle Type</label>
                         <select name="product[handle]"
@@ -197,7 +197,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="flex justify-between mt-4 gap-3 p-4 mx-auto w-[450px]">
+                    <div class="flex flex-col w-full max-w-xl gap-3 p-4 mx-auto mt-4 bg-white shadow-sm rounded-2xl sm:flex-row">
                         {{-- color of sink --}}
                         <div class="flex-1">
                             <label class="block text-[15px] mb-2 font-semibold text-gray-900">Sink Color</label>
@@ -215,7 +215,7 @@
 
                 <!-- STEP 5: Appliances -->
                 <div x-show="step === 5" x-transition x-cloak>
-                    <div class="p-4 mx-auto w-[450px]">
+                    <div class="w-full max-w-5xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
                         {{-- 10 paginated appliances with checkbox to select --}}
 
 
@@ -285,26 +285,19 @@
 
                             <template x-for="(row, i) in rows" :key="i">
                                 <div class="p-3 space-y-3 border rounded-xl">
-                                    {{-- Name pills --}}
-                                    <fieldset>
-                                        <legend class="block mb-2 text-sm font-medium text-gray-700">Name</legend>
-                                        <div class="flex flex-wrap gap-2">
+                                    {{-- Name select --}}
+                                    <div>
+                                        <label class="block mb-2 text-sm font-medium text-gray-700">Accessory</label>
+                                        <select class="w-full px-3 py-2 border rounded-lg"
+                                                :name="`accessories[${i}][id]`"
+                                                x-model="row.accessory_id"
+                                                @change="selectAccessory(i, catalog.find(c => String(c.id) === String($event.target.value)) || {id:null})">
+                                            <option value="">Select accessory</option>
                                             <template x-for="item in catalog" :key="item.id">
-                                                <label class="cursor-pointer">
-                                                    <input type="radio" class="sr-only peer"
-                                                        :name="`accessories[${i}][id]`" :value="item.id"
-                                                        :checked="row.accessory_id === item.id"
-                                                        @change="selectAccessory(i, item)">
-                                                    <span
-                                                        class="inline-flex items-center px-3 py-1.5 rounded-full border text-sm
-                           border-gray-300 text-gray-700 bg-white
-                           peer-checked:bg-fuchsia-50 peer-checked:border-fuchsia-700 peer-checked:text-fuchsia-800
-                           hover:bg-gray-50 transition"
-                                                        x-text="item.name"></span>
-                                                </label>
+                                                <option :value="item.id" x-text="item.name"></option>
                                             </template>
-                                        </div>
-                                    </fieldset>
+                                        </select>
+                                    </div>
 
                                     <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                                         {{-- Size --}}
@@ -395,7 +388,7 @@
 
                 <!-- STEP 6: Information -->
                 <div x-show="step === 6" x-transition x-cloak>
-                    <div class="p-4 mx-auto w-[450px]">
+                    <div class="w-full max-w-xl p-4 mx-auto bg-white shadow-sm rounded-2xl">
                         {{-- Notes --}}
                         <label class="block text-[15px] mb-2 font-semibold text-gray-900">Deadline</label>
                         <input type="date" name="project[due_date]"
@@ -410,13 +403,13 @@
                 <!-- STEP 7: Summary / Preview -->
                 <div x-show="step === 7" x-transition x-cloak>
                     {{-- A summary of all the selected options (optional to render now) --}}
-                    <div class="p-4 mx-auto w-[450px] text-sm text-gray-700">
+                    <div class="w-full max-w-2xl p-4 mx-auto text-sm text-gray-700">
                         Review your entries, then Submit.
                     </div>
                 </div>
 
                 {{-- Controls --}}
-                <div class="grid w-[450px] grid-cols-1 gap-5 p-4 mx-auto mt-8 md:grid-cols-2">
+                <div class="grid w-full max-w-xl grid-cols-1 gap-5 p-4 mx-auto mt-8 md:grid-cols-2">
                     <button type="button"
                         class="w-full rounded-[15px] px-[28px] py-[10px] text-fuchsia-900 bg-transparent border-2 border-[#5A0562] text-[17px] font-semibold hover:bg-[#5A0562]/10 focus:outline-none focus:ring-2 focus:ring-[#5A0562]/50"
                         :disabled="step === 0" @click="prev">
@@ -479,9 +472,9 @@
 
                     addRow() {
                         this.rows.push({
-                            accessory_id: this.catalog[0]?.id ?? null,
-                            size: this.sizes[0] ?? '',
-                            type: (this.catalog[0]?.types?.[0] ?? '')
+                            accessory_id: '',
+                            size: '',
+                            type: ''
                         });
                     },
                     removeRow(i) {
@@ -489,9 +482,10 @@
                     },
 
                     selectAccessory(i, item) {
-                        this.rows[i].accessory_id = item.id;
+                        const id = item?.id ?? '';
+                        this.rows[i].accessory_id = id;
                         // reset type to first allowed for this accessory (if any)
-                        this.rows[i].type = (this.typesMap[item.id]?.[0] ?? '');
+                        this.rows[i].type = id ? (this.typesMap[id]?.[0] ?? '') : '';
                     },
 
                     openNewAccessoryModal() {

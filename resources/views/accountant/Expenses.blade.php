@@ -1,10 +1,10 @@
 <x-accountant-layout>
     <x-slot name="header">
         <style>[x-cloak]{display:none!important;}</style>
-    
+
     </x-slot>
 
-    <div class="space-y-4 p-3 sm:p-4">
+    <div class="p-3 space-y-4 sm:p-4">
 
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h1 class="text-2xl font-bold text-gray-900">Expenses</h1>
@@ -217,8 +217,8 @@
 
         <div class="bg-white rounded-[20px] shadow">
             <div class="overflow-x-auto">
-                <table class="min-w-full text-left text-sm text-gray-600">
-                    <thead class="bg-gray-100 text-gray-700">
+                <table class="min-w-full text-sm text-left text-gray-600">
+                    <thead class="text-gray-700 bg-gray-100">
                         <tr>
                             <th class="px-4 py-3 font-semibold">Expense Name</th>
                             <th class="px-4 py-3 font-semibold">Category</th>
@@ -238,14 +238,14 @@
                                 <td class="px-4 py-3">{{ number_format($expense->amount, 2) }}</td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center gap-2">
-                                        <form action="{{ route('expenses.destroy', $expense->id) }}" method="POST"
+                                        {{-- <form action="{{ route('expenses.destroy', $expense->id) }}" method="POST"
                                             onsubmit="return confirm('Are you sure?');">
                                             @csrf
                                             @method('DELETE')
                                             <button class="text-gray-500 transition hover:text-red-500">
                                                 <i data-feather="trash" class="w-5 h-5"></i>
                                             </button>
-                                        </form>
+                                        </form> --}}
 
                                         <button data-id="{{ $expense->id }}"
                                             class="text-gray-500 transition hover:text-fuchsia-900 editExpenseBtn">

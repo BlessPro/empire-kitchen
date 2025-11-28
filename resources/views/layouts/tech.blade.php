@@ -8,9 +8,9 @@
  @include('admin.layouts.header')
 
 <body class="bg-[#F9F7F7]"
-      x-data="{ sidebarOpen: window.innerWidth >= 1024 }"
+      x-data="{ sidebarOpen: true }"
+      x-init="sidebarOpen = window.innerWidth >= 1024; window.addEventListener('resize', () => sidebarOpen = window.innerWidth >= 1024)"
       x-on:keydown.window.escape="sidebarOpen = false"
-      x-init="window.addEventListener('resize', () => sidebarOpen = window.innerWidth >= 1024)"
       x-effect="document.body.classList.toggle('overflow-hidden', sidebarOpen && window.innerWidth < 1024)">
 
     {{-- Sidebar --}}

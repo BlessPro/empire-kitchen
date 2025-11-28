@@ -81,7 +81,7 @@
             <i data-feather="calendar"
                 class="w-5 h-5 mr-3
                               {{ request()->routeIs('accountant.Project-Financials') ? 'stroke-yellow-300' : 'stroke-white group-hover:stroke-yellow-300' }}"></i>
-            <span>Project Financials</span>
+            <span>P and L Account</span>
         </a>
 
 

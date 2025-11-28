@@ -15,14 +15,24 @@
         $initialLocation = optional($prefilledClient)->location;
     @endphp
 
-    <main class="ml-64 mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen items-center">
-        <div class="bg-[#F9F7F7]">
+    <main class="bg-[#F9F7F7] min-h-screen pt-24 px-4 sm:px-6">
+        <div class="max-w-5xl mx-auto bg-[#F9F7F7]">
             <div class="mb-[20px]">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-2 text-sm text-slate-600">
                         <i data-feather="home" class="w-4 h-4 text-fuchsia-900"></i>
                         <i data-feather="chevron-right" class="w-4 h-4 text-fuchsia-900"></i>
                         <span class="font-semibold text-fuchsia-900">Create Design Invoice</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('designer.invoice.area') }}"
+                           class="px-4 py-2 text-sm font-semibold text-white rounded-md bg-[#5A0562] hover:bg-[#4a044c]">
+                            Invoice
+                        </a>
+                        <a href="{{ route('designer.invoices.show', $invoice ?? ($invoiceId ?? 0)) }}?download=pdf"
+                           class="inline-flex items-center gap-1 px-4 py-2 text-sm font-semibold text-white rounded-md bg-emerald-600 hover:bg-emerald-700">
+                            Download
+                        </a>
                     </div>
                 </div>
 

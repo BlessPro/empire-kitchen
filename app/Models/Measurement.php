@@ -20,7 +20,8 @@ protected $fillable = [
     'images',
     'start_time',
     'end_time',
-    'scheduled_date'
+    'scheduled_date',
+    'done',
 ];
 
 
@@ -30,6 +31,7 @@ protected $fillable = [
     'start_time' => 'datetime',
     'end_time' => 'datetime',
     'scheduled_date' => 'date',
+    'done' => 'boolean',
 
 ];
 

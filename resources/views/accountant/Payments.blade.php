@@ -1,13 +1,7 @@
  <x-accountant-layout>
      <x-slot name="header">
-   
+
      </x-slot>
-
-     {{-- <main class="ml-64 flex-1 bg-[#F9F7F7] min-h-screen  items-center">
-
-         <div class=" pb-[24px] pr-[24px] pl-[24px] bg-[#F9F7F7]"> --}}
-            
-
 
                 <main class="bg-[#F9F7F7] min-h-screen">
         <div class="p-3 space-y-2 sm:p-4">
@@ -15,7 +9,6 @@
                  <div class="flex items-center justify-between mb-6">
 
                      <!-- Top Navbar -->
-                     <h1 class="text-2xl font-bold">Payments & Invoice</h1>
 
                      <div class="flex items-center space-x-4">
                          <a href="{{ route('accountant.Payment.Pay') }}">
@@ -25,15 +18,28 @@
                                  Payment
                              </button>
                          </a>
-                         <button onclick="window.location='{{ route('accountant.Invoice') }}'" id="openMeasurementModal"
-                             class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white border border-purple-800 rounded-full bg-fuchsia-900">
-                             <i data-feather="plus" class="text-white"> </i>
-                             New Invoice
-                         </button>
+
+                             <div class="flex items-center justify-between">
+            <h2 class="text-xl font-semibold leading-tight text-gray-800">
+                {{ __('Payments & Invoice') }}
+            </h2>
+            <div x-data="{ open:false }" class="relative">
+                <button @click="open = !open"
+                    class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white border rounded-full bg-fuchsia-900 border-fuchsia-800 hover:bg-fuchsia-800">
+                    <i data-feather="plus"></i>
+                    New Invoice
+                </button>
+                <div x-cloak x-show="open" @click.away="open = false"
+                    class="absolute right-0 z-20 mt-2 bg-white border rounded-lg shadow w-44">
+                    <a href="{{ route('accountant.Invoice') }}"
+                       class="block px-4 py-2 text-sm hover:bg-gray-100">Project Invoice</a>
+                    <a href="{{ route('accountant.Invoice.other') }}"
+                       class="block px-4 py-2 text-sm hover:bg-gray-100">Other Invoice</a>
+                </div>
+            </div>
+        </div>
                      </div>
                  </div>
-
-
                  {{-- table --}}
                  <div class="shadow-md rounded-[15px]">
 
