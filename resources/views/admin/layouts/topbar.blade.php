@@ -58,7 +58,6 @@
       </div>
       <!--Profile bar ends-->
 
-      @if(auth()->user()?->role === 'administrator')
       <script>
         (function(){
           const btn = document.getElementById('notifBtn');
@@ -67,10 +66,12 @@
           const empty = document.getElementById('notifEmpty');
           const badge = document.getElementById('notifBadge');
           const wrap = document.getElementById('notif-wrap');
+          const feedUrl = '{{ route('admin.notifications.feed') }}';
+          let autoCloseTimer = null;
 
           async function fetchFeed(){
             try{
-              const res = await fetch('{{ route('admin.notifications.feed') }}', { headers: { 'Accept':'application/json' } });
+              const res = await fetch(feedUrl, { headers: { 'Accept':'application/json' } });
               const json = await res.json();
               const items = json?.data || [];
               list.innerHTML = '';
@@ -85,10 +86,33 @@
                 `;
                 list.appendChild(row);
               });
-              // Badge: simple count of items as a hint
-              if(items.length>0){ badge.textContent = Math.min(items.length, 9); badge.classList.remove('hidden'); }
-              else { badge.classList.add('hidden'); }
-            }catch(e){ console.error('notif feed', e); }
+              updateBadge(items);
+            }catch(e){
+              console.error('notif feed', e);
+              panel.classList.add('hidden');
+            }
+          }
+
+          async function fetchBadge(){
+            try{
+              const res = await fetch(feedUrl, { headers: { 'Accept':'application/json' } });
+              const json = await res.json();
+              const items = json?.data || [];
+              updateBadge(items);
+            }catch(e){
+              // swallow badge errors
+              badge?.classList.add('hidden');
+            }
+          }
+
+          function updateBadge(items){
+            if(!badge) return;
+            if(items.length>0){
+              badge.textContent = Math.min(items.length, 9);
+              badge.classList.remove('hidden');
+            } else {
+              badge.classList.add('hidden');
+            }
           }
 
           function escapeHtml(text){
@@ -99,9 +123,18 @@
           btn?.addEventListener('click', (e)=>{
             e.stopPropagation();
             panel.classList.toggle('hidden');
-            if(!panel.classList.contains('hidden')) fetchFeed();
+            if(!panel.classList.contains('hidden')) {
+              fetchFeed();
+              if(autoCloseTimer) clearTimeout(autoCloseTimer);
+              autoCloseTimer = setTimeout(()=>{
+                panel.classList.add('hidden');
+              }, 7000); // auto-hide after 7s
+            }
           });
           document.addEventListener('click', (e)=>{ if(!wrap.contains(e.target)) panel.classList.add('hidden'); });
+
+          // poll badge so it updates even before clicking
+          fetchBadge();
+          setInterval(fetchBadge, 15000);
         })();
       </script>
-      @endif

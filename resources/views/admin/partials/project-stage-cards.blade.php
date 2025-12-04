@@ -46,13 +46,6 @@
                                     <li>
                                         <button type="button"
                                             class="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                                            onclick="duplicateProject({{ $project->id }})">
-                                            Duplicate project
-                                        </button>
-                                    </li>
-                                    <li>
-                                        <button type="button"
-                                            class="block w-full px-4 py-2 text-left hover:bg-gray-100"
                                             onclick="renameProject({{ $project->id }}, @js($project->name))">
                                             Rename project
                                         </button>

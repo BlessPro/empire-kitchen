@@ -14,9 +14,17 @@ class FollowUp extends Model
         'project_id',
         'follow_up_date',
         'follow_up_time',
+        'reminder_at',
+        'reminder_status',
         'priority',
         'status',
         'notes',
+    ];
+
+    protected $casts = [
+        'follow_up_date' => 'date',
+        'follow_up_time' => 'string',
+        'reminder_at'   => 'datetime',
     ];
 
     public function client()

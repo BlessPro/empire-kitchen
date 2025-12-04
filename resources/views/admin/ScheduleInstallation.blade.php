@@ -71,11 +71,11 @@
 
             <label class="block text-sm font-medium text-gray-700">Project</label>
             <select id="install-project" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-fuchsia-600 focus:border-fuchsia-600" required>
-              <option value="" selected disabled>Choose a booked project…</option>
+              <option value="" selected disabled>Choose a project in Installation stage…</option>
               @forelse($bookedProjects as $p)
                 <option value="{{ $p->id }}"> {{ $p->name }} (ID: {{ $p->id }})</option>
               @empty
-                <option value="" disabled>No BOOKED projects found</option>
+                <option value="" disabled>No projects in Installation stage</option>
               @endforelse
             </select>
           </div>
@@ -197,8 +197,18 @@ function buildInstallPopover({ anchorEl, title, dateStr, notes, figma_url, image
         ${figma_url ? `<a href="${figma_url}" target="_blank" class="btn-ghost" style="text-decoration:none">Open Figma</a>` : ''}
       </div>
       <div style="display:flex; gap:8px">
-        <button class="icon-btn" id="btn-edit" title="Edit"><span class="iconify" data-icon="ph:pencil-simple-line"></span></button>
-        <button class="icon-btn" id="btn-del" title="Delete"><span class="iconify" data-icon="ph:trash-simple"></span></button>
+        <button class="icon-btn" id="btn-done" title="Mark done"
+          style="background:#10B981; border-color:#10B981; color:#fff">
+          <span class="iconify" data-icon="ph:check-circle"></span>
+        </button>
+        <button class="icon-btn" id="btn-edit" title="Edit"
+          style="background:#5A0562; border-color:#5A0562; color:#fff">
+          <span class="iconify" data-icon="ph:pencil-simple-line"></span>
+        </button>
+        <button class="icon-btn" id="btn-del" title="Delete"
+          style="background:#EF4444; border-color:#EF4444; color:#fff">
+          <span class="iconify" data-icon="ph:trash-simple"></span>
+        </button>
       </div>
     </div>
   `;
@@ -209,6 +219,26 @@ function buildInstallPopover({ anchorEl, title, dateStr, notes, figma_url, image
   popEl.style.left = Math.min(window.scrollX + rect.left, window.scrollX + window.innerWidth - 380) + 'px';
 
   popEl.querySelector('#btn-close')?.addEventListener('click', closePop);
+
+  popEl.querySelector('#btn-done')?.addEventListener('click', async () => {
+    if (!confirm('Mark this installation as done?')) return;
+    try {
+      await fetch(`{{ route('admin.installations.done', ['installation' => 'ID']) }}`.replace('ID', id), {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+          'X-Requested-With':'XMLHttpRequest',
+          'Accept':'application/json'
+        },
+        credentials: 'same-origin'
+      });
+      closePop();
+      window.__installCalendar?.refetchEvents();
+    } catch (e) {
+      console.error(e);
+      alert('Failed to mark done.');
+    }
+  });
 
   popEl.querySelector('#btn-del')?.addEventListener('click', async ()=>{
     if (!confirm('Delete this installation?')) return;

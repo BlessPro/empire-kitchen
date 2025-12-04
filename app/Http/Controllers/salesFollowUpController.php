@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\FollowUp;
 use App\Models\Project;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class SalesFollowUpController extends Controller
 {
@@ -54,7 +55,7 @@ public function filter(Request $request)
     return view('sales.partials.followup-table', compact('followUps'))->render();
 }
 
-    public function show(FollowUp $followUp)
+public function show(FollowUp $followUp)
 {
     $followUp->load(['client', 'project']);
 
@@ -69,6 +70,8 @@ public function filter(Request $request)
         'status' => $followUp->status,
         'notes' => $followUp->notes,
         'project' => $followUp->project ? $followUp->project->name : null,
+        'reminder_at' => $followUp->reminder_at ? $followUp->reminder_at->toIso8601String() : null,
+        'reminder_status' => $followUp->reminder_status,
     ]);
 }
 
@@ -90,7 +93,7 @@ public function filter(Request $request)
     return redirect()->back()->with('success', 'Follow-up added successfully.');
 }
 
-    public function update(Request $request, FollowUp $followUp)
+public function update(Request $request, FollowUp $followUp)
 {
     $data = $this->validateData($request);
 
@@ -98,6 +101,86 @@ public function filter(Request $request)
 
     return redirect()->back()->with('success', 'Follow-up updated successfully.');
 }
+
+    public function setReminder(Request $request, FollowUp $followUp)
+    {
+        $data = $request->validate([
+            'reminder_at' => ['required', 'date'],
+        ]);
+
+        $reminderAt = Carbon::parse($data['reminder_at']);
+
+        $followUp->update([
+            'reminder_at' => $reminderAt,
+            'reminder_status' => 'scheduled',
+        ]);
+
+        return response()->json([
+            'ok' => true,
+            'reminder_at' => $reminderAt->toIso8601String(),
+            'reminder_status' => 'scheduled',
+        ]);
+    }
+
+    public function reminderFeed(Request $request)
+    {
+        $now = Carbon::now();
+        $threshold = $now->copy()->addMinutes(3);
+
+        $toDueIds = FollowUp::query()
+            ->whereNotNull('reminder_at')
+            ->where('reminder_status', 'scheduled')
+            ->where('reminder_at', '<=', $now)
+            ->pluck('id');
+
+        if ($toDueIds->isNotEmpty()) {
+            FollowUp::whereIn('id', $toDueIds)->update(['reminder_status' => 'due']);
+        }
+
+        $due = FollowUp::query()
+            ->whereNotNull('reminder_at')
+            ->where('reminder_status', 'due')
+            ->where('reminder_at', '<=', $now)
+            ->with('client')
+            ->get()
+            ->map(fn ($f) => [
+                'id' => $f->id,
+                'client_name' => $f->client_name
+                    ?? trim(($f->client->firstname ?? '') . ' ' . ($f->client->lastname ?? '')),
+                'reminder_at' => $f->reminder_at?->toIso8601String(),
+            ])
+            ->values();
+
+        $upcoming = FollowUp::query()
+            ->whereNotNull('reminder_at')
+            ->where('reminder_status', 'scheduled')
+            ->whereBetween('reminder_at', [$now, $threshold])
+            ->with('client')
+            ->get()
+            ->map(fn ($f) => [
+                'id' => $f->id,
+                'client_name' => $f->client_name
+                    ?? trim(($f->client->firstname ?? '') . ' ' . ($f->client->lastname ?? '')),
+                'reminder_at' => $f->reminder_at?->toIso8601String(),
+                'seconds_to' => $f->reminder_at?->diffInSeconds($now),
+            ])
+            ->values();
+
+        return response()->json([
+            'now' => $now->toIso8601String(),
+            'due' => $due,
+            'upcoming' => $upcoming,
+        ]);
+    }
+
+    public function acknowledgeReminder(FollowUp $followUp)
+    {
+        $followUp->update([
+            'reminder_status' => 'acknowledged',
+        ]);
+
+        return response()->json(['ok' => true]);
+    }
 
 public function getClientProjects($id)
 {
@@ -108,8 +191,7 @@ public function getClientProjects($id)
     protected function validateData(Request $request): array
 {
     $validated = $request->validate([
-        'client_name' => ['required', 'string', 'max:255'],
-        'client_id' => ['nullable', 'exists:clients,id'],
+        'client_id' => ['required', 'exists:clients,id'],
         'follow_up_date' => ['required', 'date'],
         'follow_up_time' => ['required'],
         'priority' => ['required', 'in:Low,Medium,High'],
@@ -117,23 +199,13 @@ public function getClientProjects($id)
         'notes' => ['nullable', 'string'],
     ]);
 
-    $clientId = $validated['client_id'] ?? null;
-
-    if (!$clientId) {
-        $normalized = Str::lower(trim($validated['client_name']));
-        $matchedClient = Client::all()->first(function ($client) use ($normalized) {
-            $fullName = Str::lower(trim(($client->firstname ?? '') . ' ' . ($client->lastname ?? '')));
-            return $fullName === $normalized;
-        });
-
-        if ($matchedClient) {
-            $clientId = $matchedClient->id;
-        }
-    }
+    $clientId = $validated['client_id'];
+    $client = Client::find($clientId);
+    $clientName = trim(($client->firstname ?? '') . ' ' . ($client->lastname ?? '')) ?: ($client->name ?? 'Client');
 
     return [
         'client_id' => $clientId,
-        'client_name' => $validated['client_name'],
+        'client_name' => $clientName,
         'follow_up_date' => $validated['follow_up_date'],
         'follow_up_time' => $validated['follow_up_time'],
         'priority' => $validated['priority'],

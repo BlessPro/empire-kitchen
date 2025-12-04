@@ -59,7 +59,11 @@
                             @endphp
 
                             <tr class="hover:bg-gray-50">
-                                <td class="px-4 py-3 font-semibold text-gray-900">{{ $budget->name }}</td>
+                                <td class="px-4 py-3 font-semibold text-gray-900">
+                                    <a href="{{ route('accountant.budgets.show', $budget) }}" class="hover:underline text-fuchsia-900">
+                                        {{ $budget->name }}
+                                    </a>
+                                </td>
                                 <td class="px-4 py-3">{{ $start }} &mdash; {{ $end }}</td>
                                 <td class="px-4 py-3">{{ $currency }} {{ $formatAmount($budget->total_budget ?? $budget->main_amount ?? 0) }}</td>
                                 <td class="px-4 py-3">{{ $currency }} {{ $formatAmount($budget->total_cost ?? 0) }}</td>

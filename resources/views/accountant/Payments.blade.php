@@ -6,11 +6,12 @@
                 <main class="bg-[#F9F7F7] min-h-screen">
         <div class="p-3 space-y-2 sm:p-4">
              <div class="">
-                 <div class="flex items-center justify-between mb-6">
+                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
+                     <h2 class="text-xl font-semibold leading-tight text-gray-800">
+                         {{ __('Payments & Invoice') }}
+                     </h2>
 
-                     <!-- Top Navbar -->
-
-                     <div class="flex items-center space-x-4">
+                     <div class="flex items-center gap-3">
                          <a href="{{ route('accountant.Payment.Pay') }}">
                              <button
                                  class="flex items-center gap-2 px-4 py-2 text-sm font-semibold border rounded-full text-fuchsia-800 border-fuchsia-800">
@@ -19,25 +20,20 @@
                              </button>
                          </a>
 
-                             <div class="flex items-center justify-between">
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                {{ __('Payments & Invoice') }}
-            </h2>
-            <div x-data="{ open:false }" class="relative">
-                <button @click="open = !open"
-                    class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white border rounded-full bg-fuchsia-900 border-fuchsia-800 hover:bg-fuchsia-800">
-                    <i data-feather="plus"></i>
-                    New Invoice
-                </button>
-                <div x-cloak x-show="open" @click.away="open = false"
-                    class="absolute right-0 z-20 mt-2 bg-white border rounded-lg shadow w-44">
-                    <a href="{{ route('accountant.Invoice') }}"
-                       class="block px-4 py-2 text-sm hover:bg-gray-100">Project Invoice</a>
-                    <a href="{{ route('accountant.Invoice.other') }}"
-                       class="block px-4 py-2 text-sm hover:bg-gray-100">Other Invoice</a>
-                </div>
-            </div>
-        </div>
+                         <div x-data="{ open:false }" class="relative">
+                             <button @click="open = !open"
+                                 class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white border rounded-full bg-fuchsia-900 border-fuchsia-800 hover:bg-fuchsia-800">
+                                 <i data-feather="plus"></i>
+                                 New Invoice
+                             </button>
+                             <div x-cloak x-show="open" @click.away="open = false"
+                                 class="absolute right-0 z-20 mt-2 bg-white border rounded-lg shadow w-44">
+                                 <a href="{{ route('accountant.Invoice') }}"
+                                    class="block px-4 py-2 text-sm hover:bg-gray-100">Project Invoice</a>
+                                 <a href="{{ route('accountant.Invoice.other') }}"
+                                    class="block px-4 py-2 text-sm hover:bg-gray-100">Other Invoice</a>
+                             </div>
+                         </div>
                      </div>
                  </div>
                  {{-- table --}}

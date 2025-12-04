@@ -7,6 +7,9 @@ use App\Models\Installation;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Carbon;
 use App\Models\Project;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ProjectStageUpdatedMail;
+use App\Services\TwilioWhatsApp;
 class InstallationCalendarController extends Controller
 {
 
@@ -15,9 +18,10 @@ class InstallationCalendarController extends Controller
         $data = $request->validate([
             'project_id'   => [
                 'required',
-                Rule::exists('projects','id')->where(
-                    fn($q) => $q->whereRaw("LOWER(TRIM(COALESCE(booked_status,''))) = 'booked'")
-                ),
+                Rule::exists('projects','id')->where(function ($q) {
+                    $q->whereRaw("LOWER(TRIM(COALESCE(booked_status,''))) = 'booked'")
+                      ->whereRaw("LOWER(TRIM(COALESCE(current_stage,''))) = 'installation'");
+                }),
             ],
             'install_date' => ['required','date'],                       // YYYY-MM-DD
             'install_time' => ['required','regex:/^\d{2}:\d{2}(:\d{2})?$/'], // HH:MM or HH:MM:SS
@@ -38,7 +42,34 @@ class InstallationCalendarController extends Controller
 
         $data['user_id'] = $request->user()->id ?? null;
 
-        Installation::create($data);
+        $installation = Installation::create($data);
+
+        // Notify client (email + WhatsApp) about scheduled installation
+        $installation->loadMissing('project.client', 'client');
+        $project = $installation->project;
+        $client  = $project?->client ?? $installation->client;
+
+        $dateLabel = optional($installation->install_date)->format('F j, Y');
+        $timeLabel = $installation->install_time ?: null;
+        $msgTime   = $timeLabel ? " at {$timeLabel}" : '';
+        $message   = "Your installation for {$project->name} is scheduled for {$dateLabel}{$msgTime}. We will see you then.";
+
+        if ($client?->email) {
+            Mail::to($client->email)->send(
+                new ProjectStageUpdatedMail(
+                    $project,
+                    'INSTALLATION',
+                    $message
+                )
+            );
+        }
+
+        if ($client?->phone_number) {
+            app(TwilioWhatsApp::class)->send(
+                $client->phone_number,
+                $message
+            );
+        }
 
         return redirect()
             ->route('admin.ScheduleInstallation')
@@ -50,6 +81,7 @@ class InstallationCalendarController extends Controller
     {
 
     $bookedProjects = Project::whereRaw("LOWER(TRIM(COALESCE(booked_status,''))) = 'booked'")
+            ->whereRaw("LOWER(TRIM(COALESCE(current_stage,''))) = 'installation'")
             ->orderBy('name')
             ->get(['id','name']);
 
@@ -189,12 +221,42 @@ public function feed(Request $r)
     /** Mark installation as done */
     public function markDone(Installation $installation)
     {
+        $installation->loadMissing('project.client');
+
         if (!$installation->is_done) {
             $installation->forceFill([
                 'is_done' => true,
                 'done_at' => now(),
             ])->save();
         }
+
+        // Mark project completed (best-effort)
+        $project = $installation->project;
+        if ($project && strcasecmp((string) $project->status, 'COMPLETED') !== 0) {
+            $project->forceFill(['status' => 'COMPLETED'])->save();
+        }
+
+        // Notify client
+        $client = $project?->client ?? $installation->client;
+        $message = "Installation for {$project->name} is done. Thanks for doing business with us; we're on standby for after-service or maintenance.";
+
+        if ($client?->email) {
+            Mail::to($client->email)->send(
+                new ProjectStageUpdatedMail(
+                    $project,
+                    'INSTALLATION',
+                    $message
+                )
+            );
+        }
+
+        if ($client?->phone_number) {
+            app(TwilioWhatsApp::class)->send(
+                $client->phone_number,
+                $message
+            );
+        }
+
         return response()->json(['ok'=>true]);
     }
 

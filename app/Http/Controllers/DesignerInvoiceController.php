@@ -9,6 +9,7 @@ use App\Models\InvoiceSummary;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class DesignerInvoiceController extends Controller
 {
@@ -64,6 +65,7 @@ class DesignerInvoiceController extends Controller
             'client_id'             => ['required','exists:clients,id'],
             'project_id'            => ['required','exists:projects,id'],
             'due_date'              => ['required','date'],
+            'discount_percent'      => ['nullable','numeric','min:0','max:100'],
             'items'                 => ['required','array','min:1'],
             'items.*.item_name'     => ['required','string'],
             'items.*.quantity'      => ['required','integer','min:1'],
@@ -106,14 +108,21 @@ class DesignerInvoiceController extends Controller
             ]);
         }
 
-        $vat = $subtotal * 0.15;
-        $totalAmount = $subtotal + $vat;
+        $discountPercent = (float) ($validated['discount_percent'] ?? 0);
+        $discountAmount  = $subtotal * ($discountPercent / 100);
+        $netSubtotal     = max(0, $subtotal - $discountAmount);
+
+        $vat         = $netSubtotal * 0.15;
+        $totalAmount = $netSubtotal + $vat;
 
         InvoiceSummary::create([
-            'invoice_id'   => $invoice->id,
-            'subtotal'     => $subtotal,
-            'vat'          => $vat,
-            'total_amount' => $totalAmount,
+            'invoice_id'       => $invoice->id,
+            'raw_subtotal'     => $subtotal,
+            'discount_percent' => $discountPercent,
+            'discount_amount'  => $discountAmount,
+            'subtotal'         => $netSubtotal,
+            'vat'              => $vat,
+            'total_amount'     => $totalAmount,
         ]);
 
         return redirect()->route('designer.invoices.show', $invoice)->with('success', 'Invoice saved successfully!');
@@ -130,6 +139,51 @@ class DesignerInvoiceController extends Controller
         }
 
         return view('designer.Invoice.show', compact('invoice'));
+    }
+
+    public function sendToClient(Request $request, Invoice $invoice)
+    {
+        $designerId = Auth::id();
+        $invoice->load(['client', 'project', 'invoiceSummary']);
+
+        if (optional($invoice->project)->designer_id !== $designerId) {
+            abort(403);
+        }
+
+        $request->validate([
+            'pdf' => ['required', 'string'],
+        ]);
+
+        $clientEmail = $invoice->client->email ?? null;
+        if (!$clientEmail) {
+            return back()->withErrors('Client email not available for this quote.');
+        }
+
+        $pdfDataUri = $request->input('pdf');
+        $encoded    = preg_replace('/^data:application\\/pdf;base64,/', '', $pdfDataUri);
+        $pdfBinary  = base64_decode($encoded, true);
+
+        if (!$pdfBinary) {
+            return back()->withErrors('Unable to process PDF for emailing.');
+        }
+
+        $subject = 'Quote ' . $invoice->invoice_code;
+        $body    = 'This is the Quote for your project.';
+
+        Mail::send([], [], function ($message) use ($clientEmail, $subject, $body, $pdfBinary, $invoice) {
+            $message->to($clientEmail)
+                ->subject($subject)
+                ->text($body)
+                ->attachData($pdfBinary, 'quote-' . $invoice->invoice_code . '.pdf', [
+                    'mime' => 'application/pdf',
+                ]);
+        });
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Quote emailed to client.']);
+        }
+
+        return back()->with('success', 'Quote emailed to client.');
     }
 }
 

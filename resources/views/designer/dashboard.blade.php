@@ -102,11 +102,11 @@
                                         <li class="flex items-center justify-between pb-4 mb-4">
                                             <img src="{{ $comment->user->profile_pic
                                                 ? asset('storage/' . $comment->user->profile_pic)
-                                                : 'https://ui-avatars.com/api/?name=' . urlencode($comment->user->name) }}"
+                                                : 'https://ui-avatars.com/api/?name=' . urlencode($comment->user->employee->name ?? $comment->user->name ?? 'User') }}"
                                                 alt="Profile Photo" class="w-10 h-10 rounded-full pr-[2px]">
 
                                             <div>
-                                                <p><strong>{{ $comment->user->name }}</strong> added a comment in
+                                                <p><strong>{{ $comment->user->employee->name ?? $comment->user->name ?? 'User' }}</strong> added a comment in
                                                     <strong>{{ $comment->project->name }}</strong></p>
                                                 <p class="text-sm text-gray-500">
                                                     {{ $comment->created_at->diffForHumans() }}</p>
@@ -178,8 +178,11 @@
 
                                     </td>
                                     <td class="p-4 font-normal text-[15px]"> {{ ucfirst($project->status) }}</td>
-                                    <td class="p-4 font-normal text-[15px]"> <i data-feather="eye"
-                                            class="text-fuchsia-900 cursor:pointer hover:text-red-800"> </i></td>
+                                    <td class="p-4 font-normal text-[15px]">
+                                        <a href="{{ route('designer.projects.info', $project->id) }}" class="inline-flex items-center text-fuchsia-900 hover:text-red-800">
+                                            <i data-feather="eye"></i>
+                                        </a>
+                                    </td>
                                 </tr>
                             @endforeach
 

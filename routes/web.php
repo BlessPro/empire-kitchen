@@ -591,6 +591,7 @@ Route::middleware(['auth','role:designer'])
     Route::get('/invoices/create', [DesignerInvoiceController::class, 'create'])->name('invoices.create');
     Route::post('/invoices', [DesignerInvoiceController::class, 'store'])->name('invoices.store');
     Route::get('/invoices/{invoice}', [DesignerInvoiceController::class, 'show'])->name('invoices.show');
+    Route::post('/invoices/{invoice}/send', [DesignerInvoiceController::class, 'sendToClient'])->name('invoices.send');
     Route::get('/invoices/{client}/projects', [DesignerInvoiceController::class, 'projects'])->name('invoices.projects');
     Route::get('/invoice-area', [\App\Http\Controllers\DesignerInvoiceAreaController::class, 'index'])->name('invoice.area');
 });
@@ -702,6 +703,7 @@ Route::middleware(['auth','role:accountant'])
         Route::get('/budgets', [BudgetsController::class, 'index'])->name('budgets.index');
         Route::get('/budgets/create', [BudgetsController::class, 'create'])->name('budgets.create');
         Route::post('/budgets', [BudgetsController::class, 'store'])->name('budgets.store');
+        Route::get('/budgets/{budget}', [BudgetsController::class, 'show'])->name('budgets.show');
 
     });
 
@@ -763,6 +765,9 @@ Route::middleware(['auth','role:accountant'])
         Route::get('/sales/followups/filter', [SalesFollowUpController::class, 'filter'])->name('sales.followups.filter');
         Route::get('/sales/followups/{followUp}', [SalesFollowUpController::class, 'show'])->name('sales.followups.show');
         Route::put('/sales/followups/{followUp}', [SalesFollowUpController::class, 'update'])->name('sales.followups.update');
+        Route::post('/sales/followups/{followUp}/reminder', [SalesFollowUpController::class, 'setReminder'])->name('sales.followups.reminder');
+        Route::post('/sales/followups/{followUp}/reminder/ack', [SalesFollowUpController::class, 'acknowledgeReminder'])->name('sales.followups.reminder.ack');
+        Route::get('/sales/followups/reminders/feed', [SalesFollowUpController::class, 'reminderFeed'])->name('sales.followups.reminder.feed');
         Route::get('/sales/client/{id}/projects', [salesFollowUpController::class, 'getClientProjects']);
         Route::get('/sales/ClientManagement', [salesClientController::class, 'index'])->name('sales.ClientManagement');
         Route::get('/sales/ClientManagement/filter', [salesClientController::class, 'filter'])->name('sales.ClientManagement.filter');

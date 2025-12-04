@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Client;
 use App\Models\Project;
 use Illuminate\Support\Facades\DB;
+use App\Support\ProjectViewBuilder;
 
 class designerAssignDesigners extends Controller
 {
@@ -176,18 +177,21 @@ public function clientProjects(Request $request)
 
     return view('designer.AssignedProjects', compact('projects','statusOptions'));
 }
-public function showProjectInfo(Project $project)
+public function showProjectInfo(Request $request, Project $project)
 {
-    $project->load(['client', 'measurement', 'installation', 'design','comments.user']);
+    $vm = ProjectViewBuilder::build($project, $request)['project'];
 
-    return view('designer.ClientManagement.projectInfo', compact('project'));
+    return view('designer.ClientManagement.projectInfo', [
+        'project' => $vm,
+    ]);
 }
 
-public function showProjectname(Project $project)
+public function showProjectname(Request $request, Project $project)
 {
-    $project->load(['client', 'measurement', 'installation', 'design','comments.user']);
+    $vm = ProjectViewBuilder::build($project, $request)['project'];
 
-    return view('designer.ClientManagement.projectInfo', compact('project'));
-
+    return view('designer.ClientManagement.projectInfo', [
+        'project' => $vm,
+    ]);
 }
 }

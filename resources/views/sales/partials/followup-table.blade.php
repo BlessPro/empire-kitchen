@@ -35,7 +35,9 @@
                     data-time="{{ \Carbon\Carbon::parse($followUp->follow_up_time)->format('h:i A') }}"
                     data-notes="{{ e($followUp->notes ?? '') }}"
                     data-priority="{{ e($followUp->priority) }}"
-                    data-status="{{ $followUp->status }}">
+                    data-status="{{ $followUp->status }}"
+                    data-reminder-at="{{ optional($followUp->reminder_at)->toIso8601String() }}"
+                    data-reminder-status="{{ $followUp->reminder_status }}">
 
                     <td class="p-4 font-normal text-[15px]">
                         {{ $clientDisplay }}
@@ -54,7 +56,7 @@
                             <iconify-icon icon="proicons:eye" width="26"></iconify-icon>
                         </button>
 
-                         <button type="button" class="followup-view flex items-center text-fuchsia-700" data-id="{{ $followUp->id }}">
+                         <button type="button" class="followup-reminder flex items-center text-fuchsia-700" data-id="{{ $followUp->id }}">
                             <iconify-icon icon="solar:alarm-linear" width="26"></iconify-icon>
                         </button>
                     </td>
@@ -73,4 +75,3 @@
         {{ $followUps->links('pagination::tailwind') }}
     </div>
 @endif
-

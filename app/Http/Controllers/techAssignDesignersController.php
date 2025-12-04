@@ -19,6 +19,9 @@ use App\Models\Client;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ProjectStageUpdatedMail;
+use App\Services\TwilioWhatsApp;
 
 class techAssignDesignersController extends Controller
 {
@@ -260,6 +263,28 @@ public function assignDesigner(Request $request)
             []
         );
     });
+
+    // Notify client that the project moved to Design
+    $project->loadMissing('client');
+    $clientEmail = $project->client?->email;
+    if ($clientEmail) {
+        Mail::to($clientEmail)->send(
+            new ProjectStageUpdatedMail(
+                $project,
+                'DESIGN',
+                'Your project has moved to the Design stage and our team is preparing your concepts.'
+            )
+        );
+    }
+
+    // WhatsApp notify
+    $clientPhone = $project->client?->phone_number;
+    if ($clientPhone) {
+        app(TwilioWhatsApp::class)->send(
+            $clientPhone,
+            "Your project {$project->name} is now in Design. Our team is preparing your concepts."
+        );
+    }
 
     return back()->with('success','Designer and design date assigned successfully!');
 }

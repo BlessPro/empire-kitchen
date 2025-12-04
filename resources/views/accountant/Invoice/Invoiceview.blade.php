@@ -32,7 +32,10 @@
                         <div class="w-full space-y-1 text-right">
                             <div class="flex justify-between">
                                 <span class="font-semibold">INVOICE NUMBER:</span>
-                                <span>{{ $invoice->invoice_code }}</span>
+                                <a href="{{ route('accountant.Invoice.Invoiceview', $invoice->id) }}"
+                                   class="text-fuchsia-900 font-semibold hover:underline">
+                                    {{ $invoice->invoice_code }}
+                                </a>
                             </div>
                             <div class="flex justify-between">
                                 <span class="font-semibold">INVOICE DATE:</span>

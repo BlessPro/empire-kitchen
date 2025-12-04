@@ -57,10 +57,56 @@
                    value="********"
                    readonly
                    class="w-full px-4 py-2 border rounded-lg bg-gray-100 text-gray-700 cursor-not-allowed">
-            <form method="POST" action="{{ route('account.password.email') }}" class="mt-2">
-                @csrf
-                <button type="submit" class="text-sm font-medium text-fuchsia-900 hover:underline">Reset password</button>
-            </form>
+            <div class="mt-2 flex items-center gap-3">
+                <button type="button" id="designer-reset-password-btn"
+                        class="text-sm font-medium text-fuchsia-900 hover:underline">
+                    Reset password
+                </button>
+                <span id="designer-reset-password-status" class="text-sm text-gray-600"></span>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    (function () {
+        const btn = document.getElementById('designer-reset-password-btn');
+        const statusEl = document.getElementById('designer-reset-password-status');
+        if (!btn || !statusEl) return;
+
+        const endpoint = "{{ route('account.password.email') }}";
+        btn.addEventListener('click', async () => {
+            statusEl.textContent = '';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(endpoint, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                });
+
+                const isJson = (res.headers.get('content-type') || '').includes('application/json');
+                const data = isJson ? await res.json().catch(() => ({})) : {};
+
+                if (!res.ok || data?.ok === false) {
+                    const msg = data?.errors?.email || data?.message || 'Unable to send reset link.';
+                    statusEl.textContent = msg;
+                    statusEl.className = 'text-sm text-red-600';
+                    return;
+                }
+
+                statusEl.textContent = data?.message ?? 'Reset link sent to your email.';
+                statusEl.className = 'text-sm text-emerald-700';
+            } catch (err) {
+                statusEl.textContent = 'Network error. Please try again.';
+                statusEl.className = 'text-sm text-red-600';
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    })();
+</script>

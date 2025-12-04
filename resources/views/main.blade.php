@@ -27,8 +27,7 @@
 
       <!-- Logo -->
       <div class=" mb-[-20px]">
-        <!-- Replace with your logo image if needed -->
-        <img src="/empire-kitchen-logo.png" alt="Empire Kitchens Logo" class="w-[170px] h-[170px] " />
+        <img src="{{ asset('empire-kitchen-logo.png') }}" alt="Empire Kitchens Logo" class="w-[200px] h-auto" />
       </div>
 
       <!-- Welcome Text -->
@@ -48,7 +47,10 @@
               <span class="absolute left-3 top-2.5 text-gray-400">
                 <!-- User Icon -->
 
-             <iconify-icon icon="iconamoon:profile-light" width="24" "></iconify-icon>
+             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M4 20.4a8 8 0 0 1 16 0" />
+             </svg>
  <!-- Default: eye -->
         {{-- <iconify-icon icon="iconamoon--profile-thin"
                       class="w-5 h-5"
@@ -73,7 +75,10 @@
 
              {{-- <iconify-icon icon="
 material-symbols-light:lock-outline" width="24" "></iconify-icon> --}}
-<iconify-icon icon="material-symbols-light:lock-outline" width="24" "></iconify-icon>
+<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <rect x="5" y="11" width="14" height="9" rx="2" ry="2" stroke-width="1.6"/>
+    <path d="M9 11V8a3 3 0 0 1 6 0v3" stroke-width="1.6" stroke-linecap="round"/>
+</svg>
                 <!-- Lock Icon -->
                 {{-- <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -101,14 +106,16 @@ material-symbols-light:lock-outline" width="24" "></iconify-icon> --}}
             @click="show = !show">
 
         <!-- Default: eye -->
-        <iconify-icon icon="ion:eye-outline"
-                      class="w-5 h-5"
-                      x-show="!show"></iconify-icon>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" x-show="!show">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M2.25 12s3.25-6.25 9.75-6.25S21.75 12 21.75 12 18.5 18.25 12 18.25 2.25 12 2.25 12Z"/>
+            <circle cx="12" cy="12" r="2.75" stroke-width="1.6"/>
+        </svg>
 
         <!-- When visible: eye-off -->
-        <iconify-icon icon="mage:eye-off"
-                      class="w-5 h-5"
-                      x-show="show"></iconify-icon>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" x-show="show">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M3 3l18 18"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M10.477 10.485a2.75 2.75 0 0 1 3.04 3.04M9.88 4.22A9.5 9.5 0 0 1 12 3.75C18.5 3.75 21.75 12 21.75 12a16.87 16.87 0 0 1-3.137 4.36M6.35 6.365C3.856 8.215 2.25 12 2.25 12a16.88 16.88 0 0 0 4.66 5.34"/>
+        </svg>
     </button>
 </div>
 
@@ -123,9 +130,9 @@ material-symbols-light:lock-outline" width="24" "></iconify-icon> --}}
         <div class="flex items-center justify-between mb-6 text-sm">
           <label class="flex items-center">
             <input type="checkbox" class="form-checkbox text-[#5a0562] mr-2" checked />
-            <span onclick="window.location='{{ route('admin.clients.projects2'">Remember now</span>
+            <span>Remember me</span>
           </label>
-          <a href="#" class="[#5a0562] font-medium hover:underline">Forgot Password</a>
+          <a href="{{ route('password.request') }}" class="[#5a0562] font-medium hover:underline">Forgot Password</a>
         </div>
 
         <!-- Sign In Button -->
@@ -141,7 +148,7 @@ material-symbols-light:lock-outline" width="24" "></iconify-icon> --}}
     <!-- Right Section (Image) -->
     <div class="relative hidden h-full md:block md:w-1/2">
       <img
-        src="/side-image.jpg"
+        src="{{ asset('side-image.jpg') }}"
         alt="side-image.jpg"
         class="absolute inset-0 object-cover w-full h-full opacity-100"
       />

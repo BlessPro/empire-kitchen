@@ -61,9 +61,14 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <x-primary-button class="w-full justify-center">
+        <x-primary-button class="w-full justify-center bg-[#5A0562] hover:bg-[#4a044c]">
             {{ __('Save Password') }}
         </x-primary-button>
+
+        <p class="text-sm text-gray-600 text-center">
+            After saving, you should be redirected to login. If not, use this link:
+            <a href="{{ route('login') }}" class="text-fuchsia-900 hover:underline">Back to login</a>
+        </p>
     </form>
 
     <script>

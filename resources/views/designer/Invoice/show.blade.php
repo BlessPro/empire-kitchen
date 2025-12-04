@@ -1,138 +1,203 @@
-﻿<x-designer-layout>
+<x-designer-layout>
     @php
         $designImages = collect($invoice->project->designs ?? [])->flatMap(fn($d) => $d->images ?? [])->filter()->values();
+        $panes        = $designImages->isNotEmpty() ? $designImages : collect([null]);
+        $summary      = optional($invoice->invoiceSummary);
+        $client       = $invoice->client;
+        $primaryLabel = function ($img) use ($invoice) {
+            if ($img) {
+                $filename = pathinfo($img, PATHINFO_FILENAME) ?: basename($img);
+                return strtoupper($filename);
+            }
+            return strtoupper($invoice->invoiceItems->first()->item_name ?? optional($invoice->project)->name ?? 'DESIGN');
+        };
+        $totalAmount  = (float) ($summary->total_amount ?? 0);
+        $discountAmt  = (float) ($summary->discount_amount ?? 0);
+        $discountPct  = (float) ($summary->discount_percent ?? 0);
     @endphp
-    <main class="bg-[#F9F7F7] min-h-screen  px-4 sm:px-6">
-        <div class="flex items-center justify-between max-w-6xl mb-4">
-            <div class="flex items-center gap-2 text-sm text-slate-600">
-                <i data-feather="home" class="w-4 h-4 text-fuchsia-900"></i>
-                <i data-feather="chevron-right" class="w-4 h-4 text-fuchsia-900"></i>
-                <span class="font-semibold text-fuchsia-900">Invoice</span>
-            </div>
+    <main class="bg-white min-h-screen p-4">
+        <style>
+            .quote-pane { page-break-inside: avoid; }
+            .quote-pane + .quote-pane { page-break-before: always; }
+        </style>
+
+        <div class="flex justify-end max-w-6xl mx-auto mb-4 gap-3">
+            <button id="send-to-client-btn" onclick="sendToClient()"
+                class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full text-[#5A0562] border border-[#5A0562] hover:bg-[#5A0562] hover:text-white">
+                Send to Client
+            </button>
             <button onclick="downloadInvoice()"
                 class="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full text-white bg-[#5A0562] hover:bg-[#4a044c]">
-                <i data-feather="download" class="w-4 h-4"></i> 
                 Download
             </button>
         </div>
 
-        <div class="max-w-5xl mx-auto space-y-6">
-            <div id="invoice-section" class="p-8 space-y-8 text-sm text-gray-800 bg-white shadow rounded-2xl">
-                <div class="flex items-start justify-between">
-                    <div class="w-1/2">
-                        <img src="{{ asset('storage/images-one/empire logo-new.png') }}" alt="Empire Logo" class="h-16">
-                    </div>
-                    <div class="flex flex-col items-end w-1/2 space-y-4">
-                        <div class="text-right">
-                            <h2 class="mb-1 text-lg font-bold text-gray-900 uppercase">Invoice</h2>
-                            <p class="font-semibold">EMPIRE KITCHENS</p>
-                            <p>REG: 123000123000</p>
-                            <p>EmpireKitchens.com | +233 123 1234 123</p>
-                        </div>
-                        <div class="w-full space-y-1 text-right">
-                            <div class="flex justify-between">
-                                <span class="font-semibold">INVOICE NUMBER:</span>
-                                <span>{{ $invoice->invoice_code }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="font-semibold">INVOICE DATE:</span>
-                                <span>{{ \Carbon\Carbon::parse($invoice->created_at)->format('d M, Y') }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="font-semibold">DUE DATE:</span>
-                                <span>{{ \Carbon\Carbon::parse($invoice->due_date)->format('d M, Y') }}</span>
+        <div id="invoice-section" class="space-y-6">
+            @foreach($panes as $img)
+            <section class="w-full max-w-6xl mx-auto bg-white border border-gray-300 quote-pane text-[11px] leading-snug">
+                <!-- Top Header -->
+                <header class="border-b border-gray-300">
+                    <div class="flex flex-col md:flex-row">
+                        <!-- Logo / Brand -->
+                        <div class="flex-1 flex items-center justify-center py-3">
+                            <div class="flex items-center gap-3">
+                                <img src="{{ asset('storage/images-one/empire logo-new.png') }}" alt="Empire Kitchens Logo" class="h-10 w-auto">
+                                <div class="text-3xl font-extrabold tracking-[0.25em] text-purple-800">
+                                    EMPIRE KITCHENS
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <table class="w-full overflow-hidden text-left border border-gray-200 rounded-lg">
-                    <thead class="text-sm font-medium text-gray-700 bg-gray-100">
-                        <tr>
-                            <th class="px-4 py-2">Item Description</th>
-                            <th class="px-4 py-2 text-right">Qty</th>
-                            <th class="px-4 py-2 text-right">Unit Price</th>
-                            <th class="px-4 py-2 text-right">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($invoice->invoiceItems as $item)
-                        
-                            <tr class="border-t border-gray-200">
-                                <td class="px-4 py-2">{{ $item->item_name }}</td>
-                                <td class="px-4 py-2 text-right">{{ $item->quantity }}</td>
-                                <td class="px-4 py-2 text-right">{{ number_format($item->unit_price, 2) }}</td>
-                                <td class="px-4 py-2 text-right">{{ number_format($item->total_price, 2) }}</td>
-                            </tr>                            
-                        @endforeach
-                    </tbody>
-                </table>
-
-                <div class="flex justify-end">
-                    <div class="w-full p-4 rounded sm:w-1/3 bg-gray-50">
-                        <div class="flex justify-between py-1">
-                            <span>Sub total</span>
-                            <span>{{ number_format(optional($invoice->invoiceSummary)->subtotal ?? 0, 2) }}</span>
-                        </div>
-                        <div class="flex justify-between py-1">
-                            <span>VAT</span>
-                            <span>{{ number_format(optional($invoice->invoiceSummary)->vat ?? 0, 2) }}</span>
-                        </div>
-                        <div class="flex justify-between py-2 font-bold">
-                            <span>Total Amount</span>
-                            <span>{{ number_format(optional($invoice->invoiceSummary)->total_amount ?? 0, 2) }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-[#6B1E7233] p-6 text-gray-800 text-sm grid grid-cols-1 md:grid-cols-2 gap-4 rounded-xl">
-                    <div class="text-left">
-                        <h3 class="mb-2 font-semibold text-purple-800 uppercase">Payment Instructions</h3>
-                        <p>Empire Kitchens</p>
-                        <p>Bank name: ABSA Bank Limited</p>
-                        <p>SWIFT: NZO201230012</p>
-                        <p>Account number: 12-1234-123456-12</p>
-                        <p>Please use <strong>{{ $invoice->invoice_code }}</strong> as a reference number</p>
-                        <p class="mt-4">
-                            For any questions please contact us at
-                            <a href="mailto:info@empirekitchen.com" class="text-purple-800 underline">info@empirekitchen.com</a>
-                        </p>
-                    </div>
-                    <div class="flex items-start justify-end">
-                        <div class="text-right">
-                            <p>Pay online</p>
-                            <img src="{{ asset('storage/images-one/blank_qr_code.png') }}" alt="QR Code" class="w-32 mt-2">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <h3 class="text-lg font-semibold text-slate-900">CLIENT TO KINDLY TAKE NOTE</h3>
-                    <ul class="space-y-2 text-sm list-disc list-inside text-slate-700">
-                        <li>The above prices include cabinets, installation and transportation (within Greater Accra)</li>
-                        <li>Electricity to be provided by client when on site</li>
-                        <li>A deposit of 70% shall be made before delivery and the balance paid before installation</li>
-                        <li>Plumbing connections, building works and connections of appliances are not included</li>
-                        <li>Above prices do not include appliances unless specifically requested for by client and they shall be priced separately</li>
-                        <li>Above prices do not include appliances unless specifically requested for by client and they shall be priced separately</li>
-                    </ul>
-                </div>
-
-                
-                
-                @if($designImages->isNotEmpty())
-                <div class="space-y-4">
-                    <h3 class="text-lg font-semibold text-slate-900">DESIGNS</h3>
-                    <div class="grid gap-4 sm:grid-cols-2">
-                        @foreach($designImages as $img)
-                            <div class="w-full overflow-hidden border border-gray-200 rounded-xl">
-                                <img src="{{ asset('storage/' . ltrim($img, '/')) }}" alt="Design image" class="object-cover w-full h-full">
+                        <!-- Date & Client Details -->
+                        <div class="w-full md:w-64 border-t md:border-t-0 md:border-l border-gray-300 text-[11px]">
+                            <div class="flex justify-between border-b border-gray-300 px-3 py-2">
+                                <span class="font-semibold">Date:</span>
+                                <span>{{ \Carbon\Carbon::parse($invoice->created_at)->format('d F Y') }}</span>
                             </div>
-                        @endforeach
+
+                            <div class="px-3 py-2 border-b border-gray-300">
+                                <h2 class="text-blue-700 font-semibold text-[12px] mb-1">
+                                    Client Details
+                                </h2>
+                                <div class="space-y-1">
+                                    <p class="italic">{{ trim(($client->firstname ?? '') . ' ' . ($client->lastname ?? '')) ?: 'Client' }}</p>
+                                    <p>{{ $client->phone_number ?? '-' }}</p>
+                                    <p>{{ $client->location ?? '-' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Main Body -->
+                <div class="p-4 md:p-5 space-y-4">
+                    <!-- Image + Details -->
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <!-- Design Image -->
+                        <div class="md:col-span-2 border border-gray-300">
+                            <div class="h-60 md:h-64 bg-gray-100 flex items-center justify-center">
+                                @if($img)
+                                    <img src="{{ asset('storage/' . ltrim($img, '/')) }}" alt="Design image" class="object-contain max-h-full max-w-full h-auto w-auto">
+                                @else
+                                    <span class="text-gray-500 text-xs">NO DESIGN IMAGE ATTACHED</span>
+                                @endif
+                            </div>
+                            <div class="border-t border-gray-300 py-1 text-center text-red-700 text-[11px] font-semibold">
+                                {{ $primaryLabel($img) }}
+                            </div>
+                        </div>
+
+                        <!-- Details table -->
+                        <aside class="border border-gray-300 text-[11px]">
+                            <div class="border-b border-gray-300 px-3 py-2 flex">
+                                <span class="flex-1 font-semibold underline">Details</span>
+                                <span class="w-20 text-right font-semibold underline">Price</span>
+                            </div>
+
+                            @foreach ($invoice->invoiceItems as $item)
+                            <div class="px-3 py-2 border-b border-gray-300 flex">
+                                <div class="flex-1">
+                                    {{ $item->item_name }}
+                                    @if(!is_null($item->quantity))
+                                        <span class="text-red-600 font-semibold">{{ $item->quantity }}</span> pcs each @
+                                        <span class="text-red-600 font-semibold">{{ number_format($item->unit_price, 2) }}</span>
+                                    @else
+                                        <span class="text-red-600 font-semibold">{{ number_format($item->unit_price, 2) }}</span>
+                                    @endif
+                                </div>
+                                @php
+                                    $lineTotal = $item->total_price ?? (($item->quantity ?? 1) * ($item->unit_price ?? 0));
+                                @endphp
+                                <div class="w-20 text-right">{{ number_format($lineTotal, 2) }}</div>
+                            </div>
+                            @endforeach
+
+                            <div class="px-3 py-2 border-b border-gray-300 flex">
+                                <div class="flex-1 font-semibold">Subtotal</div>
+                                <div class="w-20 text-right">{{ number_format($summary->subtotal ?? 0, 2) }}</div>
+                            </div>
+
+                            @if($discountAmt > 0)
+                            <div class="px-3 py-2 flex">
+                                <div class="flex-1">Discount ({{ rtrim(rtrim(number_format($discountPct, 2), '0'), '.') }}%)</div>
+                                <div class="w-20 text-right">-{{ number_format($discountAmt, 2) }}</div>
+                            </div>
+                            @endif
+                        </aside>
+                    </div>
+
+                    <!-- Notes + Payment -->
+                    <div class="grid md:grid-cols-3 gap-4 items-start">
+                        <!-- Notes -->
+                        <section class="md:col-span-2 border border-gray-300 px-4 py-3">
+                            <h3 class="font-semibold mb-2">Client to kindly take note</h3>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>
+                                    The above prices include cabinets, installation and transportation
+                                    (within Greater Accra)
+                                </li>
+                                <li>Electricity to be provided by client whiles on site</li>
+                                <li>
+                                    A deposit of 70% shall be made before delivery and the balance paid
+                                    before installation
+                                </li>
+                                <li>
+                                    Plumbing connections, building works and connection of appliances
+                                    are not included
+                                </li>
+                                <li>
+                                    Above prices do not include appliances unless specifically requested
+                                    for by client and they shall be priced separately
+                                </li>
+                                <li>
+                                    Empire Kitchens reserves the right to repossess products not fully
+                                    paid for
+                                </li>
+                            </ul>
+                        </section>
+
+                        <!-- Amount + Terms -->
+                        <section class="border border-gray-300 px-4 py-3 space-y-2">
+                            <div class="flex justify-between border-b border-gray-300 pb-2">
+                                <span class="font-semibold">Amount Payable</span>
+                                <span class="font-semibold text-red-600">{{ number_format($totalAmount, 2) }}</span>
+                            </div>
+
+                            <div>
+                                <h4 class="font-semibold text-[11px] mb-1">Payment Terms</h4>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>
+                                        70% before production
+                                        <span class="text-red-600">({{ number_format($totalAmount * 0.70, 2) }})</span>
+                                    </li>
+                                    <li>
+                                        30% before delivery
+                                        <span class="text-red-600">({{ number_format($totalAmount * 0.30, 2) }})</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <p class="pt-1.5 text-right text-[11px] font-semibold text-red-600 leading-tight">
+                                PRICES ARE SUBJECT TO<br />
+                                ECONOMIC CHANGES
+                            </p>
+                        </section>
                     </div>
                 </div>
-                @endif
-            </div>
+
+                <!-- Footer -->
+                <footer class="border-t border-gray-300 text-center py-2.5 space-y-1">
+                    <p class="text-red-700 font-semibold text-[11px] tracking-wide">
+                        QUOTE IS VALID FOR 7 DAYS
+                    </p>
+                    <p class="text-[10px]">
+                        Tel: 024 60 80 730 / 055 625 1770 / 057 540 4399 &nbsp; | &nbsp;
+                        Email: info@empirekitchensltd.com &nbsp; | &nbsp;
+                        Website: www.empirekitchensltd.com
+                    </p>
+                </footer>
+            </section>
+            @endforeach
         </div>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -140,12 +205,59 @@
         function downloadInvoice() {
             const element = document.getElementById('invoice-section');
             const opt = {
-                filename: 'invoice.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                margin:       0.25,
+                filename:     'invoice.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 0.95, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
+                pagebreak:    { mode: ['avoid-all','css'], after: '.quote-pane' }
             };
             html2pdf().set(opt).from(element).save();
+        }
+
+        async function sendToClient() {
+            const btn = document.getElementById('send-to-client-btn');
+            if (!btn) return;
+            const original = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = 'Sending...';
+
+            try {
+                const element = document.getElementById('invoice-section');
+                const opt = {
+                    margin:       0.25,
+                    filename:     'invoice.pdf',
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 0.95, useCORS: true },
+                    jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
+                    pagebreak:    { mode: ['avoid-all','css'], after: '.quote-pane' }
+                };
+
+                const dataUrl = await html2pdf().set(opt).from(element).outputPdf('datauristring');
+
+                const response = await fetch("{{ route('designer.invoices.send', $invoice) }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ pdf: dataUrl })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || 'Unable to send quote.');
+                }
+
+                alert('Quote sent to client.');
+            } catch (err) {
+                console.error(err);
+                alert(err.message || 'Unable to send quote.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = original;
+            }
         }
     </script>
 </x-designer-layout>

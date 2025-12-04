@@ -3,8 +3,8 @@
         @include('admin.layouts.header')
     </x-slot>
 
-    <main class="ml-[280px] mt-[100px] flex-1 bg-[#F9F7F7] min-h-screen">
-        <div class="p-6">
+    <main class="bg-[#F9F7F7] min-h-screen pt-6 px-4 sm:px-6">
+        <div class="max-w-6xl mx-auto space-y-4">
             <div class="flex items-center justify-between mb-6">
                 <div>
                     <h1 class="text-2xl font-bold">Create Budget</h1>

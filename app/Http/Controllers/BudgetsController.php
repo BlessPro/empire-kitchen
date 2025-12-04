@@ -224,4 +224,38 @@ class BudgetsController extends Controller
             ->route('accountant.Project-Financials')
             ->with('success', 'Budget deleted.');
     }
+
+    public function show(Budget $budget)
+    {
+        $budget->load([
+            'allocations.category',
+            'allocations.costEntries:id,budget_allocation_id,amount',
+        ]);
+
+        $currency = $budget->currency ?? 'GHS';
+
+        $allocations = $budget->allocations->map(function ($alloc) use ($currency) {
+            $costTotal = $alloc->costEntries->sum('amount');
+            return [
+                'name'       => $alloc->category?->name ?? 'Category',
+                'amount'     => (float) $alloc->amount,
+                'note'       => $alloc->note,
+                'cost_total' => (float) $costTotal,
+                'balance'    => (float) $alloc->amount - $costTotal,
+            ];
+        });
+
+        $totals = [
+            'budget'  => (float) ($budget->main_amount ?? 0),
+            'cost'    => (float) $allocations->sum('cost_total'),
+            'balance' => (float) (($budget->main_amount ?? 0) - $allocations->sum('cost_total')),
+        ];
+
+        return view('accountant.Project-Financial.show-budget', [
+            'budget'      => $budget,
+            'currency'    => $currency,
+            'allocations' => $allocations,
+            'totals'      => $totals,
+        ]);
+    }
 }

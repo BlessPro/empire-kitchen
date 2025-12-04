@@ -44,13 +44,7 @@
 
 
             <form method="POST" action="{{ route('admin.products.update', $product) }}" enctype="multipart/form-data"
-                x-data="{
-                    step: {{ (int) request('step', 1) }},
-                    steps: ['Basics', 'Finish', 'Glass Door', 'Worktop', 'Sink & Top', 'Appliances', 'Information', 'Summary'],
-                    submitting: false,
-                    next() { if (this.step < this.steps.length - 1) this.step++; },
-                    prev() { if (this.step > 0) this.step--; }
-                }">
+                x-data="productWizard()">
                 @csrf
                 @method('PATCH')
 
@@ -402,9 +396,65 @@
 
                 <!-- STEP 7: Summary / Preview -->
                 <div x-show="step === 7" x-transition x-cloak>
-                    {{-- A summary of all the selected options (optional to render now) --}}
-                    <div class="w-full max-w-2xl p-4 mx-auto text-sm text-gray-700">
-                        Review your entries, then Submit.
+                    <div class="w-full max-w-3xl p-4 mx-auto space-y-4 text-sm text-gray-800">
+                        <div class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl">
+                            <div class="text-base font-semibold text-gray-900">Product</div>
+                            <dl class="mt-2 space-y-1" id="summary-product">
+                                <div class="flex items-center justify-between">
+                                    <dt class="text-gray-600">Name</dt>
+                                    <dd class="text-right" x-text="summary.product_name"></dd>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <dt class="text-gray-600">Type</dt>
+                                    <dd class="text-right" x-text="summary.product_type"></dd>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <dt class="text-gray-600">Finish</dt>
+                                    <dd class="text-right" x-text="summary.finish"></dd>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <dt class="text-gray-600">Finish color</dt>
+                                    <dd class="flex items-center gap-2 text-right">
+                                        <span class="inline-block w-4 h-4 border rounded-full"
+                                              :style="`background:${summary.finish_color || '#fff'}`"></span>
+                                        <span x-text="summary.finish_color"></span>
+                                    </dd>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <dt class="text-gray-600">Glass door</dt>
+                                    <dd class="text-right" x-text="summary.glass"></dd>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <dt class="text-gray-600">Worktop</dt>
+                                    <dd class="text-right" x-text="summary.worktop"></dd>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <dt class="text-gray-600">Worktop color</dt>
+                                    <dd class="flex items-center gap-2 text-right">
+                                        <span class="inline-block w-4 h-4 border rounded-full"
+                                              :style="`background:${summary.worktop_color || '#fff'}`"></span>
+                                        <span x-text="summary.worktop_color"></span>
+                                    </dd>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <dt class="text-gray-600">Sink & Top</dt>
+                                    <dd class="text-right" x-text="summary.sink_top"></dd>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <dt class="text-gray-600">Handle</dt>
+                                    <dd class="text-right" x-text="summary.handle"></dd>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <dt class="text-gray-600">Deadline</dt>
+                                    <dd class="text-right" x-text="summary.deadline"></dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <div class="p-4 bg-white border border-gray-100 shadow-sm rounded-2xl">
+                            <div class="text-base font-semibold text-gray-900">Notes</div>
+                            <p class="mt-2 text-sm text-gray-700 whitespace-pre-line" x-text="summary.notes"></p>
+                        </div>
                     </div>
                 </div>
 
@@ -440,6 +490,59 @@
 
         {{-- for accesory --}}
         <script>
+            function productWizard() {
+                return {
+                    step: {{ (int) request('step', 1) }},
+                    steps: ['Basics', 'Finish', 'Glass Door', 'Worktop', 'Sink & Top', 'Appliances', 'Information', 'Summary'],
+                    submitting: false,
+                    summary: {
+                        product_name: '',
+                        product_type: '',
+                        finish: '',
+                        finish_color: '',
+                        glass: '',
+                        worktop: '',
+                        worktop_color: '',
+                        sink_top: '',
+                        handle: '',
+                        deadline: '',
+                        notes: '',
+                    },
+                    populateSummary() {
+                        const val = (name) => (document.querySelector(`[name="${name}"]`) || {}).value || '-';
+                        const selectLabel = (name) => {
+                            const el = document.querySelector(`[name="${name}"]`);
+                            if (!el) return '-';
+                            const opt = el.options[el.selectedIndex];
+                            return (opt && opt.text.trim()) || el.value || '-';
+                        };
+                        this.summary.product_name = val('product[name]');
+                        this.summary.product_type = val('product[product_type]');
+                        this.summary.finish = selectLabel('product[type_of_finish]');
+                        this.summary.finish_color = val('product[finish_color_hex]') || '-';
+                        this.summary.glass = val('product[glass_door_type]') || '-';
+                        this.summary.worktop = val('product[worktop_type]') || '-';
+                        this.summary.worktop_color = val('product[worktop_color_hex]') || '-';
+                        this.summary.sink_top = val('product[sink_top_type]') || '-';
+                        this.summary.handle = val('product[handle]') || '-';
+                        this.summary.deadline = val('project[due_date]') || '-';
+                        this.summary.notes = (document.querySelector('[name="product[notes]"]') || {}).value || '-';
+                    },
+                    next() {
+                        if (this.step < this.steps.length - 1) {
+                            this.step++;
+                            if (this.step === this.steps.length - 1) this.populateSummary();
+                        }
+                    },
+                    prev() {
+                        if (this.step > 0) this.step--;
+                    },
+                    init() {
+                        if (this.step === this.steps.length - 1) this.populateSummary();
+                    }
+                };
+            }
+
             document.addEventListener('alpine:init', () => {
                 Alpine.data('accessoriesUI', (cfg) => ({
                     catalog: cfg.catalog ?? [],

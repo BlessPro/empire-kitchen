@@ -7,6 +7,11 @@
         <div class="p-6 space-y-4">
             <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-bold text-gray-900">Invoice Area</h1>
+                <a href="{{ route('designer.invoices.create') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white rounded-full bg-fuchsia-900 hover:bg-[#4a044c]">
+                    <span class="iconify text-lg" data-icon="ph:plus-bold"></span>
+                    Create Invoice
+                </a>
             </div>
 
             <div class="p-6 bg-white rounded-2xl shadow">

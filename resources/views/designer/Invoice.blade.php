@@ -22,12 +22,12 @@
                     <div class="flex items-center gap-2 text-sm text-slate-600">
                         <i data-feather="home" class="w-4 h-4 text-fuchsia-900"></i>
                         <i data-feather="chevron-right" class="w-4 h-4 text-fuchsia-900"></i>
-                        <span class="font-semibold text-fuchsia-900">Create Design Invoice</span>
+                        <span class="font-semibold text-fuchsia-900">Create Quote</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <a href="{{ route('designer.invoice.area') }}"
                            class="px-4 py-2 text-sm font-semibold text-white rounded-md bg-[#5A0562] hover:bg-[#4a044c]">
-                            Invoice
+                            Quotes
                         </a>
                         <a href="{{ route('designer.invoices.show', $invoice ?? ($invoiceId ?? 0)) }}?download=pdf"
                            class="inline-flex items-center gap-1 px-4 py-2 text-sm font-semibold text-white rounded-md bg-emerald-600 hover:bg-emerald-700">
@@ -159,32 +159,40 @@
 
                         <div class="space-y-4">
                             <div class="flex items-center justify-between">
-                                <h3 class="text-lg font-semibold text-purple-800">Invoice Items</h3>
-                                <button type="button" id="add-item-btn" class="px-4 py-2 text-white rounded-md bg-fuchsia-900 hover:bg-purple-800">
-                                    + Add Item
-                                </button>
-                            </div>
-                            <div id="items-container" class="space-y-4">
-                                <div class="item-row grid grid-cols-1 md:grid-cols-5 gap-3">
-                                    <input type="text" class="col-span-2 border border-gray-300 rounded-md px-3 py-2" name="items[0][item_name]" placeholder="Item name" required>
-                                    <input type="text" class="border border-gray-300 rounded-md px-3 py-2" name="items[0][description]" placeholder="Description">
-                                    <input type="number" class="border border-gray-300 rounded-md px-3 py-2 qty" name="items[0][quantity]" placeholder="Qty" min="1" required>
-                                    <input type="number" class="border border-gray-300 rounded-md px-3 py-2 unit" name="items[0][unit_price]" placeholder="Unit Price" step="0.01" min="0" required>
-                                    <strong class="text-right md:col-span-5">Total: GHS <span class="total">0.00</span></strong>
-                                </div>
+                            <h3 class="text-lg font-semibold text-purple-800">Quote Items</h3>
+                            <button type="button" id="add-item-btn" class="px-4 py-2 text-white rounded-md bg-fuchsia-900 hover:bg-purple-800">
+                                + Add Item
+                            </button>
+                        </div>
+                        <div id="items-container" class="space-y-4">
+                            <div class="item-row grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <input type="hidden" class="qty" name="items[0][quantity]" value="1">
+                                <input type="text" class="border border-gray-300 rounded-md px-3 py-2" name="items[0][item_name]" placeholder="Item" required>
+                                <input type="text" class="border border-gray-300 rounded-md px-3 py-2" name="items[0][description]" placeholder="Notes">
+                                <input type="number" class="border border-gray-300 rounded-md px-3 py-2 unit" name="items[0][unit_price]" placeholder="Price" step="0.01" min="0" required>
+                                <strong class="text-right md:col-span-3">Total: GHS <span class="total">0.00</span></strong>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-purple-50 mt-6 p-4 rounded-xl">
-                            <div>
-                                <h4 class="text-sm font-medium text-gray-700">Subtotal</h4>
-                                <p class="text-lg font-semibold" id="subtotal">0.00</p>
-                            </div>
-                            <div>
-                                <h4 class="text-sm font-medium text-gray-700">VAT (15%)</h4>
-                                <p class="text-lg font-semibold" id="vat">0.00</p>
-                            </div>
-                            <div>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 bg-purple-50 mt-6 p-4 rounded-xl">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700">Subtotal</h4>
+                            <p class="text-lg font-semibold" id="subtotal">0.00</p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700">Discount (%)</h4>
+                            <input type="number" min="0" max="100" name="discount_percent" id="discount-percent"
+                                   value="{{ old('discount_percent', 0) }}"
+                                   class="w-full mt-1 rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <p class="text-xs text-gray-600">Applies before VAT</p>
+                            <p class="text-sm font-semibold text-gray-800 mt-1">- <span id="discount-amount">0.00</span></p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700">VAT (15%)</h4>
+                            <p class="text-lg font-semibold" id="vat">0.00</p>
+                        </div>
+                        <div>
                                 <h4 class="text-sm font-medium text-gray-700">Total</h4>
                                 <p class="text-lg font-semibold" id="total">0.00</p>
                             </div>
@@ -216,6 +224,8 @@
             const subtotalEl = document.getElementById('subtotal');
             const vatEl = document.getElementById('vat');
             const totalEl = document.getElementById('total');
+            const discountInput = document.getElementById('discount-percent');
+            const discountAmountEl = document.getElementById('discount-amount');
 
             const projectsUrlTemplate = "{{ route('designer.invoices.projects', ['client' => 'CLIENT_ID']) }}";
 
@@ -271,23 +281,27 @@
                     row.querySelector('.total').textContent = total.toFixed(2);
                     subtotal += total;
                 });
-                const vat = subtotal * 0.15;
-                const grand = subtotal + vat;
+                const discountPct = parseFloat(discountInput?.value) || 0;
+                const discountAmt = subtotal * (discountPct / 100);
+                const netSubtotal = Math.max(0, subtotal - discountAmt);
+                const vat = netSubtotal * 0.15;
+                const grand = netSubtotal + vat;
 
-                subtotalEl.textContent = subtotal.toFixed(2);
+                subtotalEl.textContent = netSubtotal.toFixed(2);
+                if (discountAmountEl) discountAmountEl.textContent = discountAmt.toFixed(2);
                 vatEl.textContent = vat.toFixed(2);
                 totalEl.textContent = grand.toFixed(2);
             }
 
             addItemBtn.addEventListener('click', function() {
                 const row = document.createElement('div');
-                row.classList.add('item-row', 'grid', 'grid-cols-1', 'md:grid-cols-5', 'gap-3');
+                row.classList.add('item-row', 'grid', 'grid-cols-1', 'md:grid-cols-3', 'gap-3');
                 row.innerHTML = `
-                    <input type="text" class="col-span-2 border border-gray-300 rounded-md px-3 py-2" name="items[${itemIndex}][item_name]" placeholder="Item name" required>
-                    <input type="text" class="border border-gray-300 rounded-md px-3 py-2" name="items[${itemIndex}][description]" placeholder="Description">
-                    <input type="number" class="border border-gray-300 rounded-md px-3 py-2 qty" name="items[${itemIndex}][quantity]" placeholder="Qty" min="1" required>
-                    <input type="number" class="border border-gray-300 rounded-md px-3 py-2 unit" name="items[${itemIndex}][unit_price]" placeholder="Unit Price" step="0.01" min="0" required>
-                    <strong class="text-right md:col-span-5">Total: GHS <span class="total">0.00</span></strong>
+                    <input type="hidden" class="qty" name="items[${itemIndex}][quantity]" value="1">
+                    <input type="text" class="border border-gray-300 rounded-md px-3 py-2" name="items[${itemIndex}][item_name]" placeholder="Item" required>
+                    <input type="text" class="border border-gray-300 rounded-md px-3 py-2" name="items[${itemIndex}][description]" placeholder="Notes">
+                    <input type="number" class="border border-gray-300 rounded-md px-3 py-2 unit" name="items[${itemIndex}][unit_price]" placeholder="Price" step="0.01" min="0" required>
+                    <strong class="text-right md:col-span-3">Total: GHS <span class="total">0.00</span></strong>
                 `;
                 itemsContainer.appendChild(row);
                 itemIndex++;
@@ -297,9 +311,10 @@
                 });
             });
 
-            document.querySelectorAll('.qty, .unit').forEach(input => {
+            document.querySelectorAll('.qty, .unit, #discount-percent').forEach(input => {
                 input.addEventListener('input', calculateTotals);
             });
+            discountInput?.addEventListener('input', calculateTotals);
 
             if (initialClientId) {
                 clientSelect.value = initialClientId;
@@ -309,6 +324,8 @@
                 }
                 loadProjectsForClient(initialClientId, initialProjectId);
             }
+
+            calculateTotals();
         });
     </script>
 </x-designer-layout>

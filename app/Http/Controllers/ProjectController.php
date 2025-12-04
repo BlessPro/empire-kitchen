@@ -20,6 +20,10 @@ use App\Models\CommentView;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB; // --- IGNORE ---
 use Illuminate\Support\Facades\Storage;      // ★ NEW
+use App\Support\ProjectViewBuilder;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ProjectStageUpdatedMail;
+use App\Services\TwilioWhatsApp;
 
 
 //created on 2025-04-23
@@ -369,6 +373,20 @@ public function togglePhase(Request $request, Project $project, PhaseTemplate $t
         'checked' => ['required','boolean'],
     ]);
 
+    // project-level denominator (no product filter)
+    $templateIds = PhaseTemplate::where('is_active', 1)->pluck('id');
+    $total = $templateIds->count();
+
+    $doneBefore = ProjectPhase::where('project_id', $project->id)
+        ->where('is_checked', 1)
+        ->whereIn('phase_template_id', $templateIds)
+        ->count();
+
+    $existing = ProjectPhase::where('project_id', $project->id)
+        ->where('phase_template_id', $template->id)
+        ->first();
+    $wasChecked = (bool) ($existing?->is_checked ?? false);
+
     ProjectPhase::updateOrCreate(
         ['project_id' => $project->id, 'phase_template_id' => $template->id],
         [
@@ -377,10 +395,6 @@ public function togglePhase(Request $request, Project $project, PhaseTemplate $t
             'checked_at' => now(),
         ]
     );
-
-    // project-level denominator (no product filter)
-    $templateIds = PhaseTemplate::where('is_active', 1)->pluck('id');
-    $total = $templateIds->count();
 
     $done = ProjectPhase::where('project_id', $project->id)
         ->where('is_checked', 1)
@@ -411,6 +425,57 @@ public function togglePhase(Request $request, Project $project, PhaseTemplate $t
             'message'    => (optional($request->user()->employee)->name ?? $request->user()->name ?? 'Someone') . " completed phase '" . ($template->name ?? 'Phase') . "' on '{$project->name}'",
             'meta'       => ['template_id' => $template->id],
         ]);
+    }
+
+    // Notify client when production reaches the 3rd completed phase
+    $stageIsProduction = strtoupper((string) $project->current_stage) === 'PRODUCTION';
+    // Notify client when production starts (first phase checked)
+    $tplNameSlug = Str::of((string) ($template->name ?? ''))
+        ->lower()
+        ->replace(['_', ' '], '-')
+        ->__toString();
+    $isWorkOrder = in_array($tplNameSlug, ['work-order', 'workorder'], true);
+    if (($stageIsProduction || $isWorkOrder) && $doneBefore < 1 && $done >= 1 && (bool) $data['checked'] === true) {
+        $project->loadMissing('client');
+        $email = $project->client?->email;
+        if ($email) {
+            Mail::to($email)->send(
+                new ProjectStageUpdatedMail(
+                    $project,
+                    'PRODUCTION',
+                    'Your project is now in production. Our team has begun building your order.'
+                )
+            );
+        }
+        $phone = $project->client?->phone_number;
+        if ($phone) {
+            app(TwilioWhatsApp::class)->send(
+                $phone,
+                "Your project {$project->name} is now in production. Our team has begun building your order."
+            );
+        }
+    }
+
+    // Notify when Delivery phase is completed
+    if ($tplNameSlug === 'delivery' && (bool) $data['checked'] === true && !$wasChecked) {
+        $project->loadMissing('client');
+        $email = $project->client?->email;
+        if ($email) {
+            Mail::to($email)->send(
+                new ProjectStageUpdatedMail(
+                    $project,
+                    'PRODUCTION',
+                    'Production is complete and under review. We will update you with the installation schedule shortly.'
+                )
+            );
+        }
+        $phone = $project->client?->phone_number;
+        if ($phone) {
+            app(TwilioWhatsApp::class)->send(
+                $phone,
+                "Production for {$project->name} is complete and under review. We will update you with the installation schedule shortly."
+            );
+        }
     }
 
     return response()->json(['done'=>$done,'total'=>$total,'pct'=>$pct]);

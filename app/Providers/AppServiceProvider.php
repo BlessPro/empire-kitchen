@@ -59,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
                 ->markdown('emails.password-reset', [
                     'resetUrl' => $resetUrl,
                     'user'     => $notifiable,
+                    'loginUrl' => route('login'),
                     'logoUrl'  => asset('empire-kitchengold-icon.png'),
                     'appName'  => config('app.name', 'Empire Kitchen'),
                 ]);

@@ -13,15 +13,16 @@ We received a request to reset your Empire Kitchen account password. Click the b
 Reset Password
 @endcomponent
 
+After you reset, you should be sent to the login page. If you aren't redirected, you can log in directly here: {{ $loginUrl ?? url('/login') }}.
+
 If you didn’t request this, you can safely ignore this email.
 
-Thanks,
+Thanks,  
 {{ $appName ?? config('app.name') }} Team
 
 @slot('subcopy')
-If you’re having trouble clicking the "Reset Password" button, copy and paste this URL into your browser:
+If you're having trouble clicking the "Reset Password" button, copy and paste this URL into your browser:
 <br>
 <a href="{{ $resetUrl }}">{{ $resetUrl }}</a>
 @endslot
 @endcomponent
-

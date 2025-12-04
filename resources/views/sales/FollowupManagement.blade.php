@@ -52,17 +52,15 @@
                 @csrf
                 <input type="hidden" id="followup-form-method" name="_method" value="">
 
-                <div>
-                    <label class="mb-1 block text-sm font-medium text-gray-700">Client Name</label>
-                    <input type="text" name="client_name" id="followup-client-name" list="followup-client-options"
-                        class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
-                        placeholder="Type client name" autocomplete="off" required>
-                    <datalist id="followup-client-options">
-                        @foreach($clients as $client)
-                            <option value="{{ $client->firstname }} {{ $client->lastname }}" data-id="{{ $client->id }}"></option>
-                        @endforeach
-                    </datalist>
-                    <input type="hidden" name="client_id" id="followup-client-id">
+                <div class="relative">
+                    <label class="mb-1 block text-sm font-medium text-gray-700">Client</label>
+                    <input type="text" id="followup-client-search" placeholder="Search client..."
+                           class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-500"
+                           autocomplete="off" required>
+                    <input type="hidden" name="client_id" id="followup-client-id" required>
+                    <div id="followup-client-suggestions"
+                         class="absolute z-20 mt-1 hidden max-h-48 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-lg">
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -158,6 +156,40 @@
         </div>
     </div>
 
+    <!-- Reminder Modal -->
+    <div id="followup-reminder-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/60 px-4">
+        <div class="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <button type="button" id="followup-reminder-close" class="absolute top-3 right-4 text-2xl text-gray-500 hover:text-black">&times;</button>
+            <h3 class="text-lg font-semibold text-gray-900">Set Reminder</h3>
+            <p class="mt-1 text-sm text-gray-600">Pick a date and time to get an alarm for this follow-up.</p>
+
+            <div class="mt-4 space-y-3">
+                <label class="block text-sm font-medium text-gray-700">Reminder date & time</label>
+                <input type="datetime-local" id="followup-reminder-at" class="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-fuchsia-500">
+                <p id="followup-reminder-error" class="text-sm text-red-600"></p>
+            </div>
+
+            <div class="mt-5 flex justify-end gap-3">
+                <button type="button" id="followup-reminder-cancel" class="rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Cancel</button>
+                <button type="button" id="followup-reminder-save" class="rounded-full bg-fuchsia-900 px-4 py-2 text-sm font-semibold text-white hover:bg-fuchsia-800">Save Reminder</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alarm Overlay -->
+    <div id="followup-alarm-overlay" class="fixed inset-0 z-[70] hidden items-center justify-center bg-black/70 px-4">
+        <div class="relative w-full max-w-lg rounded-3xl bg-white p-8 text-center shadow-2xl">
+            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-red-600">
+                <iconify-icon icon="solar:alarm-bold" width="34"></iconify-icon>
+            </div>
+            <h3 class="mt-4 text-xl font-semibold text-gray-900">Reminder Alert</h3>
+            <p id="followup-alarm-text" class="mt-2 text-sm text-gray-700"></p>
+            <div class="mt-6 flex justify-center">
+                <button type="button" id="followup-alarm-dismiss" class="rounded-full bg-fuchsia-900 px-5 py-2 text-sm font-semibold text-white hover:bg-fuchsia-800">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
     @php
         $successBanner = session('success');
     @endphp
@@ -166,6 +198,13 @@ const followUpStoreUrl = "{{ route('sales.followup.store') }}";
 const followUpUpdateUrlTemplate = "{{ route('sales.followups.update', '__ID__') }}";
 const followUpShowUrlTemplate = "{{ route('sales.followups.show', '__ID__') }}";
 const followUpStatusUrlTemplate = "{{ url('/sales/followups/__ID__/update-status') }}";
+const followUpReminderUrlTemplate = "{{ route('sales.followups.reminder', '__ID__') }}";
+const followUpReminderAckUrlTemplate = "{{ route('sales.followups.reminder.ack', '__ID__') }}";
+const followUpReminderFeedUrl = "{{ route('sales.followups.reminder.feed') }}";
+const followUpClients = @json($clients->map(fn($c) => [
+    'id' => $c->id,
+    'label' => trim(($c->firstname ?? '') . ' ' . ($c->lastname ?? '')) ?: 'Client #'.$c->id,
+])->values());
 
 document.addEventListener('DOMContentLoaded', () => {
     // ====== GET ELEMENTS ======
@@ -180,7 +219,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const form = document.getElementById('followup-form');
     const methodField = document.getElementById('followup-form-method');
-    const clientNameInput = document.getElementById('followup-client-name');
     const clientIdField = document.getElementById('followup-client-id');
     const titleEl = document.getElementById('followup-form-title');
 
@@ -197,31 +235,70 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailProject = document.getElementById('detail-project');
     const detailNotes = document.getElementById('detail-notes');
 
+    // Reminder modal
+    const reminderModal = document.getElementById('followup-reminder-modal');
+    const reminderClose = document.getElementById('followup-reminder-close');
+    const reminderCancel = document.getElementById('followup-reminder-cancel');
+    const reminderSave = document.getElementById('followup-reminder-save');
+    const reminderInput = document.getElementById('followup-reminder-at');
+    const reminderError = document.getElementById('followup-reminder-error');
+    let activeReminderFollowUpId = null;
+
+    // Alarm overlay
+    const alarmOverlay = document.getElementById('followup-alarm-overlay');
+    const alarmText = document.getElementById('followup-alarm-text');
+    const alarmDismiss = document.getElementById('followup-alarm-dismiss');
+    let activeAlarmFollowUpId = null;
+    let alarmTimer = null;
+
     // hide success after 3s
     if (successBanner) {
         setTimeout(() => successBanner.classList.add('hidden'), 3000);
     }
 
-    // ====== CLIENT LIST (datalist) ======
-    const clientOptions = Array.from(document.querySelectorAll('#followup-client-options option')).map(opt => ({
-        label: (opt.value || '').trim().toLowerCase(),
-        id: opt.dataset.id || '',
-    }));
+    // ====== CLIENT SEARCH/SELECT (searchable dropdown) ======
+    const clientSearchInput = document.getElementById('followup-client-search');
+    const clientSuggestions = document.getElementById('followup-client-suggestions');
 
-    function syncClientId() {
-        if (!clientNameInput || !clientIdField) return;
-        const value = (clientNameInput.value || '').trim().toLowerCase();
-        const match = clientOptions.find(opt => opt.label === value);
-        clientIdField.value = match ? match.id : '';
+    function renderSuggestions(term = '') {
+        if (!clientSuggestions) return;
+        clientSuggestions.innerHTML = '';
+        const needle = term.trim().toLowerCase();
+        const matches = followUpClients.filter(c => !needle || c.label.toLowerCase().includes(needle)).slice(0, 20);
+        if (matches.length === 0) {
+            const li = document.createElement('div');
+            li.className = 'px-4 py-2 text-sm text-gray-500';
+            li.textContent = 'No results';
+            clientSuggestions.appendChild(li);
+        } else {
+            matches.forEach(c => {
+                const li = document.createElement('button');
+                li.type = 'button';
+                li.className = 'block w-full px-4 py-2 text-left text-sm hover:bg-gray-50';
+                li.textContent = c.label;
+                li.addEventListener('click', () => {
+                    if (clientSearchInput) clientSearchInput.value = c.label;
+                    if (clientIdField) clientIdField.value = c.id;
+                    clientSuggestions.classList.add('hidden');
+                });
+                clientSuggestions.appendChild(li);
+            });
+        }
+        clientSuggestions.classList.remove('hidden');
     }
 
-    if (clientNameInput) {
-        clientNameInput.addEventListener('input', syncClientId);
-        clientNameInput.addEventListener('blur', syncClientId);
+    if (clientSearchInput) {
+        clientSearchInput.addEventListener('input', () => {
+            if (clientIdField) clientIdField.value = '';
+            renderSuggestions(clientSearchInput.value);
+        });
+        clientSearchInput.addEventListener('focus', () => renderSuggestions(clientSearchInput.value));
     }
-    if (form) {
-        form.addEventListener('submit', syncClientId);
-    }
+    document.addEventListener('click', (e) => {
+        if (clientSuggestions && !clientSuggestions.contains(e.target) && e.target !== clientSearchInput) {
+            clientSuggestions.classList.add('hidden');
+        }
+    });
 
     // ====== FORM MODAL ======
     function resetForm() {
@@ -230,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (prioritySelect) prioritySelect.value = 'Medium';
         if (statusSelect) statusSelect.value = 'Unsold';
         if (clientIdField) clientIdField.value = '';
-        if (clientNameInput) clientNameInput.value = '';
+        if (clientSearchInput) clientSearchInput.value = '';
         if (notesField) notesField.value = '';
     }
 
@@ -243,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
             methodField.value = 'PUT';
             methodField.disabled = false;
 
-            if (clientNameInput) clientNameInput.value = data.client_name || '';
+            if (clientSearchInput) clientSearchInput.value = data.client_name || '';
             if (clientIdField) clientIdField.value = data.client_id || '';
             form.follow_up_date.value = data.follow_up_date || '';
             form.follow_up_time.value = data.follow_up_time || '';
@@ -387,6 +464,93 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function isoToLocalInput(value) {
+        if (!value) return '';
+        const d = new Date(value);
+        if (Number.isNaN(d.getTime())) return '';
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function openReminderModalFor(id) {
+        activeReminderFollowUpId = id;
+        reminderError.textContent = '';
+        const row = document.querySelector(`tr[data-id="${id}"]`);
+        const existing = row?.dataset.reminderAt || '';
+        const val = existing ? isoToLocalInput(existing) : '';
+        reminderInput.value = val;
+        const now = new Date();
+        reminderInput.min = isoToLocalInput(now.toISOString());
+        reminderModal.classList.remove('hidden');
+        reminderModal.classList.add('flex');
+    }
+
+    function closeReminderModal() {
+        reminderModal.classList.add('hidden');
+        reminderModal.classList.remove('flex');
+        activeReminderFollowUpId = null;
+    }
+
+    if (reminderClose) reminderClose.addEventListener('click', closeReminderModal);
+    if (reminderCancel) reminderCancel.addEventListener('click', closeReminderModal);
+    if (reminderModal) {
+        reminderModal.addEventListener('click', (e) => {
+            if (e.target === reminderModal) closeReminderModal();
+        });
+    }
+
+    if (reminderSave) {
+        reminderSave.addEventListener('click', async () => {
+            if (!activeReminderFollowUpId) return;
+            reminderError.textContent = '';
+            const value = reminderInput.value;
+            if (!value) {
+                reminderError.textContent = 'Please choose a date and time.';
+                return;
+            }
+
+            const url = followUpReminderUrlTemplate.replace('__ID__', activeReminderFollowUpId);
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({ reminder_at: value }),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok || data?.ok === false) {
+                    reminderError.textContent = data?.message || 'Unable to save reminder.';
+                    return;
+                }
+
+                const row = document.querySelector(`tr[data-id="${activeReminderFollowUpId}"]`);
+                if (row) {
+                    row.dataset.reminderAt = data.reminder_at || value;
+                    row.dataset.reminderStatus = data.reminder_status || 'scheduled';
+                }
+                closeReminderModal();
+            } catch (err) {
+                reminderError.textContent = 'Network error. Please try again.';
+            }
+        });
+    }
+
+    function bindReminderButtons() {
+        document.querySelectorAll('.followup-reminder').forEach(button => {
+            if (button.dataset.bound === 'true') return;
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const id = button.dataset.id;
+                if (id) openReminderModalFor(id);
+            });
+            button.dataset.bound = 'true';
+        });
+    }
+
     // ====== UPDATE ROW STATUS ======
     function updateRowStatus(id, status) {
         const row = document.querySelector(`tr[data-id="${id}"]`);
@@ -455,6 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('followup-table-container').innerHTML = html;
                 bindPagination();
                 bindViewButtons(); // re-bind eyes for new rows
+                bindReminderButtons();
             });
     }
 
@@ -467,11 +632,133 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // ====== Reminder feed & alarms ======
+    const notifBadge = document.getElementById('notifBadge');
+    const notifList = document.getElementById('notifList');
+    const notifEmpty = document.getElementById('notifEmpty');
+
+    function renderUpcoming(upcoming) {
+        if (!notifBadge) return;
+        if (!upcoming || upcoming.length === 0) {
+            notifBadge.classList.add('hidden');
+            if (notifList && notifEmpty) {
+                notifList.innerHTML = '';
+                notifEmpty.classList.remove('hidden');
+            }
+            return;
+        }
+        notifBadge.textContent = Math.min(upcoming.length, 9);
+        notifBadge.classList.remove('hidden');
+        if (notifList && notifEmpty) {
+            notifList.innerHTML = '';
+            notifEmpty.classList.add('hidden');
+            upcoming.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'px-4 py-3 text-sm hover:bg-gray-50';
+                const when = item.reminder_at ? new Date(item.reminder_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : '';
+                row.textContent = `Reminder at ${when} for ${item.client_name || 'Client'}`;
+                notifList.appendChild(row);
+            });
+        }
+    }
+
+    function playAlarm() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const duration = 0.25;
+            const freq = 880;
+            const beep = () => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            };
+            beep();
+            alarmTimer = setInterval(beep, 700);
+        } catch (e) {
+            // ignore audio errors
+        }
+    }
+
+    function stopAlarm() {
+        if (alarmTimer) {
+            clearInterval(alarmTimer);
+            alarmTimer = null;
+        }
+    }
+
+    function showAlarm(item) {
+        if (!alarmOverlay || !alarmText) return;
+        activeAlarmFollowUpId = item.id;
+        const when = item.reminder_at ? new Date(item.reminder_at).toLocaleString() : 'now';
+        alarmText.textContent = `Reminder for ${item.client_name || 'client'} is due (${when}).`;
+        alarmOverlay.classList.remove('hidden');
+        alarmOverlay.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        stopAlarm();
+        playAlarm();
+    }
+
+    function closeAlarmOverlay() {
+        if (!alarmOverlay) return;
+        alarmOverlay.classList.add('hidden');
+        alarmOverlay.classList.remove('flex');
+        document.body.style.overflow = '';
+        stopAlarm();
+        activeAlarmFollowUpId = null;
+    }
+
+    if (alarmDismiss) {
+        alarmDismiss.addEventListener('click', async () => {
+            if (!activeAlarmFollowUpId) {
+                closeAlarmOverlay();
+                return;
+            }
+            const url = followUpReminderAckUrlTemplate.replace('__ID__', activeAlarmFollowUpId);
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                });
+            } catch (e) {
+                // ignore
+            } finally {
+                closeAlarmOverlay();
+            }
+        });
+    }
+
+    async function pollReminders() {
+        try {
+            const res = await fetch(followUpReminderFeedUrl, { headers: { 'Accept': 'application/json' } });
+            const data = await res.json();
+            const upcoming = data?.upcoming || [];
+            const due = data?.due || [];
+            renderUpcoming(upcoming);
+            if (due.length && !activeAlarmFollowUpId) {
+                showAlarm(due[0]);
+            }
+        } catch (err) {
+            // swallow polling errors
+        }
+    }
+
     // ====== INITIAL BIND ======
     bindPagination();
     bindViewButtons();
+    bindReminderButtons();
+    pollReminders();
+    setInterval(pollReminders, 15000);
 });
 </script>
 
 </x-sales-layout>
-

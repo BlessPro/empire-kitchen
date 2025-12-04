@@ -61,7 +61,7 @@ class DesignerDashboardController extends Controller
             $query->where('user_id', $designerId);
         })
         ->latest()
-        ->with(['user', 'project'])
+        ->with(['user.employee', 'project'])
         ->take(5)
         ->get();
 
@@ -102,7 +102,7 @@ public function index(Request $request)
     $recentComments = Comment::whereHas('project', fn($q) => $q->where('designer_id', $designerId))
         ->whereDoesntHave('viewers', fn($q) => $q->where('user_id', $designerId))
         ->latest()
-        ->with(['user', 'project'])
+        ->with(['user.employee', 'project'])
         ->take(5)
         ->get();
 

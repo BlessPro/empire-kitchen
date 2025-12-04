@@ -22,6 +22,7 @@ class AccountPasswordReset extends ResetPassword
             ->subject('Reset Your Empire Kitchen Password')
             ->markdown('emails.password-reset', [
                 'resetUrl' => $resetUrl,
+                'loginUrl' => route('login'),
                 'user'     => $notifiable,
                 'logoUrl'  => asset('empire-kitchengold-icon.png'),
                 'appName'  => config('app.name', 'Empire Kitchen'),

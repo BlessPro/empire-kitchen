@@ -2,10 +2,13 @@
 @php
     // Allow this view to be reused with different layouts (admin/tech/etc.)
     $layoutComponent = $layoutComponent ?? 'layouts.app';
+    $headerInclude   = $headerInclude   ?? 'admin.layouts.header';
 @endphp
 <x-dynamic-component :component="$layoutComponent">
     <x-slot name="header">
-        @include('admin.layouts.header')
+        @if ($headerInclude)
+            @include($headerInclude)
+        @endif
     </x-slot>
 
     @php
@@ -125,16 +128,9 @@
                     @endphp
 
                     <div class="relative" id="stage-control">
-                        <button type="button" id="stage-chip"
-                                class="px-3 py-1 text-xs font-medium rounded-full {{ $stageClass }}">
+                        <span id="stage-chip" class="px-3 py-1 text-xs font-medium rounded-full {{ $stageClass }}">
                             {{ $stageLabel }}
-                        </button>
-                        <div id="stage-menu" class="absolute right-0 z-20 hidden mt-2 bg-white border border-gray-200 rounded-lg shadow-lg w-44">
-                            <button type="button" data-stage="MEASUREMENT" class="block w-full px-3 py-2 text-sm text-left hover:bg-gray-50">Measurement</button>
-                            <button type="button" data-stage="DESIGN" class="block w-full px-3 py-2 text-sm text-left hover:bg-gray-50">Design</button>
-                            <button type="button" data-stage="PRODUCTION" class="block w-full px-3 py-2 text-sm text-left hover:bg-gray-50">Production</button>
-                            <button type="button" data-stage="INSTALLATION" class="block w-full px-3 py-2 text-sm text-left hover:bg-gray-50">Installation</button>
-                        </div>
+                        </span>
                         <form id="stage-form" class="hidden" method="POST" action="{{ route('admin.projects.stage.update', $pid) }}">
                             @csrf
                             <input type="hidden" name="stage" id="stage-input" />
@@ -3082,6 +3078,34 @@
 
             toggles.forEach(cb => cb.addEventListener('change', refreshLocks));
             refreshLocks();
+        })();
+    </script>
+
+    {{-- Auto-set project stage to INSTALLATION when Delivery is checked --}}
+    <script>
+        (function(){
+            const csrf = '{{ csrf_token() }}';
+            const stageForm = document.getElementById('stage-form');
+            document.querySelectorAll('.phase-toggle[data-phase]').forEach(cb => {
+                cb.addEventListener('change', async () => {
+                    if ((cb.dataset.phase || '').toLowerCase() !== 'delivery') return;
+                    if (!cb.checked || !stageForm) return;
+                    try {
+                        await fetch(stageForm.getAttribute('action'), {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                                'X-CSRF-TOKEN': csrf,
+                            },
+                            body: new URLSearchParams({ stage: 'installation' }),
+                        });
+                    } catch (e) {
+                        console.error('Failed to update stage to INSTALLATION', e);
+                    }
+                });
+            });
         })();
     </script>
 

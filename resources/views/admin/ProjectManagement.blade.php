@@ -231,13 +231,17 @@
                         @endphp
 
                         <label class="block cursor-pointer assign-row" data-id="{{ $sup->id }}">
-                            <input type="radio" class="sr-only" name="pick" value="{{ $sup->id }}">
-                            <div class="flex items-center gap-3 p-3 hover:bg-gray-50">
+                            <input type="radio" class="sr-only peer" name="pick" value="{{ $sup->id }}">
+                            <div class="flex items-center gap-3 p-3 transition rounded-lg border border-transparent hover:bg-gray-50 peer-checked:border-[#5A0562]/50 peer-checked:bg-[#F8F1FB]">
                                 <img src="{{ $avatar }}" alt=""
                                     class="object-cover w-10 h-10 rounded-full">
                                 <div class="flex-1">
                                     <div class="font-medium text-gray-800">{{ $displayName }}</div>
                                 </div>
+
+                                <span class="flex items-center justify-center w-5 h-5 border rounded-full peer-checked:bg-[#5A0562] peer-checked:border-[#5A0562]">
+                                    <span class="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100"></span>
+                                </span>
 
                                 @if ($assignedTo)
                                     <span class="ml-2 text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
