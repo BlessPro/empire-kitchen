@@ -3,16 +3,16 @@
 This project is Laravel 12 with Vite. Keep `.env` off Git. Run everything from the project root (`empire-kitchen/empire-kitchen`).
 
 ### 1) Server prep
-- PHP 8.2+, Composer, Node 18+.
-- MySQL (or your DB) reachable with a database and user created.
+- PHP 8.2+, Composer, Node 18+ (with `pdo_pgsql`/PostgreSQL client libraries installed).
+- PostgreSQL reachable with a database and user created.
 - Web user must write to `storage/` and `bootstrap/cache/`.
 
 ### 2) Environment file (server only, never commit)
 - Copy `.env.example` to `.env`.
-- Set:
+- Set (PostgreSQL):
   - `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://your-domain`
   - Generate `APP_KEY`: `php artisan key:generate`
-  - DB creds: `DB_HOST/PORT/DATABASE/USERNAME/PASSWORD`
+  - DB creds: `DB_CONNECTION=pgsql`, `DB_HOST/PORT/DATABASE/USERNAME/PASSWORD`, `DB_PORT=5432`, `DB_SSLMODE=prefer|require` (as needed)
   - Mail: `MAIL_MAILER=smtp`, `MAIL_SCHEME=tls`, `MAIL_HOST`, `MAIL_PORT=587`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS`, `MAIL_FROM_NAME`
   - Queue/cache/session: `QUEUE_CONNECTION=database`, `CACHE_STORE=database`, `SESSION_DRIVER=database`
   - Pusher: `PUSHER_APP_ID/KEY/SECRET`, `PUSHER_HOST=`, `PUSHER_PORT=443`, `PUSHER_SCHEME=https`, `PUSHER_APP_CLUSTER=mt1`
