@@ -18,7 +18,6 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'employee_id',
         'email',
         'password',
@@ -63,6 +62,11 @@ public function getIsOnlineAttribute(): bool
 }
 
 public function employee() { return $this->belongsTo(Employee::class); }
+
+    public function getNameAttribute($value)
+    {
+        return $value ?? $this->employee?->name;
+    }
 
     public function getEmailAttribute($value)
     {
