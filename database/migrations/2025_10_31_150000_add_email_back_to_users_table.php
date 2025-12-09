@@ -15,18 +15,41 @@ return new class extends Migration {
             }
         });
 
+        $driver = Schema::getConnection()->getDriverName();
+
         if (
             Schema::hasColumn('users', 'employee_id') &&
             Schema::hasColumn('users', 'email') &&
             Schema::hasColumn('employees', 'email')
         ) {
-            DB::statement("
-                UPDATE users
-                SET email = employees.email
-                FROM employees
-                WHERE employees.id = users.employee_id
-                  AND employees.email IS NOT NULL
-            ");
+            if ($driver === 'pgsql') {
+                DB::statement("
+                    UPDATE users
+                    SET email = employees.email
+                    FROM employees
+                    WHERE employees.id = users.employee_id
+                      AND employees.email IS NOT NULL
+                ");
+            } elseif (in_array($driver, ['mysql', 'mariadb'], true)) {
+                DB::statement("
+                    UPDATE users u
+                    JOIN employees e ON e.id = u.employee_id
+                    SET u.email = e.email
+                    WHERE e.email IS NOT NULL
+                ");
+            } else {
+                DB::statement("
+                    UPDATE users
+                    SET email = (
+                        SELECT employees.email
+                        FROM employees
+                        WHERE employees.id = users.employee_id
+                        LIMIT 1
+                    )
+                    WHERE email IS NULL
+                      AND employee_id IS NOT NULL
+                ");
+            }
         }
     }
 

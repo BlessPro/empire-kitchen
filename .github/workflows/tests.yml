@@ -72,20 +72,19 @@ jobs:
     name: PHP ${{ matrix.php }}
 
     services:
-      mysql:
-        image: mysql:8.0
+      postgres:
+        image: postgres:16
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testing
-          MYSQL_USER: testing
-          MYSQL_PASSWORD: testing
+          POSTGRES_DB: testing
+          POSTGRES_USER: testing
+          POSTGRES_PASSWORD: testing
         ports:
-          - 3306:3306
+          - 5432:5432
         options: >-
-          --health-cmd="mysqladmin ping --silent"
+          --health-cmd="pg_isready -U testing"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=5
 
     steps:
       - name: Checkout code
@@ -95,7 +94,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, pdo_mysql
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, pdo_pgsql
           coverage: none
 
       - name: Install Composer dependencies
@@ -106,12 +105,19 @@ jobs:
 
       - name: Update .env database config
         run: |
-          sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=mysql/' .env
+          sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=pgsql/' .env
           sed -i 's/DB_HOST=.*/DB_HOST=127.0.0.1/' .env
-          sed -i 's/DB_PORT=.*/DB_PORT=3306/' .env
+          sed -i 's/DB_PORT=.*/DB_PORT=5432/' .env
           sed -i 's/DB_DATABASE=.*/DB_DATABASE=testing/' .env
           sed -i 's/DB_USERNAME=.*/DB_USERNAME=testing/' .env
           sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=testing/' .env
+
+      - name: Wait for PostgreSQL
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          until PGPASSWORD=testing pg_isready -h 127.0.0.1 -p 5432 -U testing; do sleep 2; done
+          PGPASSWORD=testing psql -h 127.0.0.1 -p 5432 -U testing -d testing -c "\l"
 
       - name: Generate app key
         run: php artisan key:generate
@@ -121,4 +127,3 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/phpunit
-
