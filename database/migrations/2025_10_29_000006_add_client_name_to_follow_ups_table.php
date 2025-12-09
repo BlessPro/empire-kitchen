@@ -31,13 +31,33 @@ return new class extends Migration
             });
         }
 
-        DB::statement("
-            UPDATE follow_ups f
-            SET client_name = TRIM(CONCAT(COALESCE(c.firstname, ''), ' ', COALESCE(c.lastname, '')))
-            FROM clients c
-            WHERE f.client_id = c.id
-              AND (f.client_name IS NULL OR f.client_name = '')
-        ");
+        if ($driver === 'pgsql') {
+            DB::statement("
+                UPDATE follow_ups f
+                SET client_name = TRIM(CONCAT(COALESCE(c.firstname, ''), ' ', COALESCE(c.lastname, '')))
+                FROM clients c
+                WHERE f.client_id = c.id
+                  AND (f.client_name IS NULL OR f.client_name = '')
+            ");
+        } elseif (in_array($driver, ['mysql', 'mariadb'], true)) {
+            DB::statement("
+                UPDATE follow_ups f
+                JOIN clients c ON c.id = f.client_id
+                SET f.client_name = TRIM(CONCAT(COALESCE(c.firstname, ''), ' ', COALESCE(c.lastname, '')))
+                WHERE (f.client_name IS NULL OR f.client_name = '')
+            ");
+        } else {
+            DB::statement("
+                UPDATE follow_ups
+                SET client_name = (
+                    SELECT TRIM(COALESCE(clients.firstname, '') || ' ' || COALESCE(clients.lastname, ''))
+                    FROM clients
+                    WHERE clients.id = follow_ups.client_id
+                )
+                WHERE client_id IS NOT NULL
+                  AND (client_name IS NULL OR client_name = '')
+            ");
+        }
     }
 
     public function down(): void
