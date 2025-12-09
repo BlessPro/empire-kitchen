@@ -47,6 +47,9 @@ jobs:
           mysql -h 127.0.0.1 -u user -ppassword -e "SHOW DATABASES;"
 
       - name: Configure Laravel
+        env:
+          CACHE_STORE: array
+          CACHE_DRIVER: array
         run: |
           php artisan config:clear
           php artisan cache:clear
@@ -71,4 +74,6 @@ jobs:
           DB_DATABASE: testing_db
           DB_USERNAME: user
           DB_PASSWORD: password
+          CACHE_STORE: array
+          CACHE_DRIVER: array
         run: php artisan test --debug
