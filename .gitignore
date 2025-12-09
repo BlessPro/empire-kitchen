@@ -3,9 +3,17 @@
 /public/build
 /public/hot
 /public/storage
+/bootstrap/cache/*.php
 /storage/*.key
 /storage/pail
+/storage/logs
+/storage/framework/cache/data
+/storage/framework/sessions
+/storage/framework/views
+/storage/app/public
 /vendor
+.DS_Store
+Thumbs.db
 .env
 .env.backup
 .env.production
@@ -21,3 +29,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/database/database.sqlite
+/coverage
+/report
+/dist
