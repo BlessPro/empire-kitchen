@@ -1,0 +1,71 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: empire-kitchen-app
+    container_name: empire-kitchen-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    environment:
+      APP_ENV: ${APP_ENV:-local}
+      APP_DEBUG: ${APP_DEBUG:-true}
+      APP_URL: ${APP_URL:-http://localhost:8081}
+      DB_CONNECTION: pgsql
+      DB_HOST: pgsql
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:-empire_kitchen}
+      DB_USERNAME: ${DB_USERNAME:-empire}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+      CACHE_STORE: ${CACHE_STORE:-database}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-database}
+    depends_on:
+      pgsql:
+        condition: service_healthy
+    networks:
+      - empire-network
+
+  web:
+    image: nginx:1.25
+    container_name: empire-kitchen-web
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8081}:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - empire-network
+
+  pgsql:
+    image: postgres:16
+    container_name: empire-kitchen-pgsql
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-empire_kitchen}
+      POSTGRES_USER: ${DB_USERNAME:-empire}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+    ports:
+      - "${DB_FORWARD_PORT:-5433}:5432"
+    volumes:
+      - pgsql-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-empire} -d ${DB_DATABASE:-empire_kitchen}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - empire-network
+
+networks:
+  empire-network:
+    driver: bridge
+
+volumes:
+  pgsql-data:

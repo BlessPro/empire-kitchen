@@ -61,6 +61,23 @@ In order to ensure that the Laravel community is welcoming to all, please review
 
 If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
+## Docker (Local Development)
+
+This repository ships with a lightweight Docker stack that runs PHP-FPM, Nginx, and PostgreSQL so you can work without installing anything locally.
+
+1. Copy your environment file if you have not already: `cp .env.example .env`.
+2. Start the services: `docker compose up -d` (the app is available at http://localhost:8081 by default).
+3. Install PHP dependencies: `docker compose exec app composer install`.
+4. Generate an app key: `docker compose exec app php artisan key:generate`.
+5. Run migrations: `docker compose exec app php artisan migrate`.
+6. Install Node/Vite dependencies: `docker compose exec app npm install`.
+7. Build production assets (`docker compose exec app npm run build`) or run Vite in dev mode with `docker compose exec app npm run dev -- --host 0.0.0.0 --port 5173` and forward the port when needed.
+
+Notes:
+- Nginx listens on `${APP_PORT:-8081}`; change `APP_PORT` in your environment to avoid port conflicts.
+- PostgreSQL is exposed on host port `${DB_FORWARD_PORT:-5433}` with credentials controlled by `DB_DATABASE/DB_USERNAME/DB_PASSWORD` variables.
+- The compose file overrides DB host/port inside containers, so you can keep your local `.env` pointed at 127.0.0.1 when running outside Docker.
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
