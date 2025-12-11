@@ -34,5 +34,19 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 
 WORKDIR /var/www/html
 
-# Default command is handled by docker-compose (php-fpm)
-CMD ["php-fpm"]
+# Install PHP dependencies
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
+
+# Install Node dependencies (for Vite)
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+
+# Copy application code
+COPY . .
+
+# Build assets to ensure Vite manifest exists
+RUN npm run build
+
+# Start Laravel's built-in server on the provided port (Render sets $PORT)
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
