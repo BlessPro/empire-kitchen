@@ -34,9 +34,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 
 WORKDIR /var/www/html
 
-# Install PHP dependencies
+# Install PHP dependencies (no scripts until code is present)
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
+RUN composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader --no-scripts
 
 # Install Node dependencies (for Vite)
 COPY package.json package-lock.json ./
@@ -45,7 +45,8 @@ RUN npm ci --no-audit --no-fund
 # Copy application code
 COPY . .
 
-# Build assets to ensure Vite manifest exists
+# Now run composer scripts (artisan available) and build assets
+RUN composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
 RUN npm run build
 
 # Start Laravel's built-in server on the provided port (Render sets $PORT)
