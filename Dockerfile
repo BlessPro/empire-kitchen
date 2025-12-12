@@ -47,6 +47,8 @@ COPY . .
 
 # Now run composer scripts (artisan available) and build assets
 RUN composer install --no-dev --prefer-dist --no-progress --no-interaction --optimize-autoloader
+RUN mkdir -p storage/framework/{cache/data,sessions,views} bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
 RUN npm run build
 
 # Start Laravel's built-in server on the provided port (Render sets $PORT)
