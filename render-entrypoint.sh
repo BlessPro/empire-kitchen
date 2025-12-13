@@ -12,8 +12,8 @@ chmod -R 775 storage bootstrap/cache || true
 # Clear cached config/routes/views
 php artisan optimize:clear || true
 
-# Uncomment if you want migrations to run automatically on each start
-# php artisan migrate --force || true
+# Run migrations automatically on each start (fails fast if DB unavailable)
+php artisan migrate --force || true
 
 # Start the built-in PHP server bound to Render's provided port
 php -S 0.0.0.0:${PORT:-8000} -t public
