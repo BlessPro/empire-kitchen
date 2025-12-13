@@ -9,11 +9,11 @@ mkdir -p storage/framework/cache storage/framework/cache/data \
 # Try to set permissions; ignore if not allowed
 chmod -R 775 storage bootstrap/cache || true
 
-# Clear cached config/routes/views
-php artisan optimize:clear || true
-
 # Run migrations automatically on each start (fails fast if DB unavailable)
 php artisan migrate --force || true
+
+# Clear cached config/routes/views
+php artisan optimize:clear || true
 
 # Start the built-in PHP server bound to Render's provided port
 php -S 0.0.0.0:${PORT:-8000} -t public
