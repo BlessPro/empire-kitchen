@@ -33,16 +33,36 @@ class RoleMiddleware
     // }
 
     public function handle($request, Closure $next, $role)
-{
-    if (auth()->check() && auth()->user()->role === $role) {
-        return $next($request);
+    {
+        if (! auth()->check()) {
+            abort(403, 'Unauthorised');
+        }
+
+        $userRole = $this->normalizeRole(auth()->user()->role);
+
+        $allowed = collect(explode('|', $role))
+            ->map(fn ($value) => $this->normalizeRole($value))
+            ->contains($userRole);
+
+        if ($allowed) {
+            return $next($request);
+        }
+
+        abort(403, 'Unauthorised');
     }
 
-    abort(403, 'Unauthorised');
-}
+    protected function normalizeRole(?string $role): string
+    {
+        $role = strtolower($role ?? '');
+
+        $aliases = [
+            'admin' => 'administrator',
+        ];
+
+        return $aliases[$role] ?? $role;
+    }
 
 }
-
 
 
 
