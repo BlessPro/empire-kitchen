@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ProjectStageUpdatedMail;
 use App\Services\TwilioWhatsApp;
 
-class techAssignDesignersController extends Controller
+class TechAssignDesignersController extends Controller
 {
     //
 //           public function index(){

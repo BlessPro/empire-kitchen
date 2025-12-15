@@ -60,7 +60,8 @@ $upcoming = \App\Models\Measurement::with([
         $projectName = $m->project_name ?? $m->project?->name ?? 'Untitled Project';
         $clientName  = $m->client_name  ?? $m->project?->client?->name ?? 'Unknown Client';
 
-        $palette = ['bg-orange-500','bg-green-500','bg-blue-500','bg-purple-500'];
+        // Use a palette different from the overview colors
+        $palette = ['bg-pink-500','bg-amber-500','bg-teal-500','bg-indigo-500'];
         $stripe  = $palette[crc32((string)($m->project_id ?? $projectName)) % count($palette)];
 
         return (object)[
