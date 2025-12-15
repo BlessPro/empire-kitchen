@@ -45,6 +45,11 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useTailwind();
         Paginator::useBootstrap();
 
+        // Force HTTPS URLs in production to avoid mixed-content issues
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         // Customize password reset email to include logo and brand content
         ResetPassword::toMailUsing(function ($notifiable, string $token) {
             $resetUrl = URL::to(
